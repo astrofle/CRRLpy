@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""
+If the SB list (sbs_list) has only one entry, then the script will fail.
+The easiest way to avoid this is to add a dummy line to the file.
+"""
+
 import numpy as np
 import glob
 import re
@@ -52,6 +57,7 @@ def main(good_list, sbs_list, basename, n, priority, path):
     for i in xrange(n):
         output = "{0}_stack{1}_SBs.log".format(basename, i+1)        
         if i == n - 1:
+            #print re.findall('SB\d+', sl[-1])
             try:
                 sb = re.findall('SB\d+', sl[-1])[0]
             except TypeError:

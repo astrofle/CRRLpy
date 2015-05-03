@@ -14,12 +14,15 @@ import sys
 import argparse
 
 def find_substring(array, substr):
+    """
+    """
+    
     for i,s in enumerate(array):
         if substr in s:
               return i
     return -1
 
-def match_weights(weights, lines, output):
+def match_weights(weights, lines, output, dup=False):
     """
     """
     
@@ -37,8 +40,10 @@ def match_weights(weights, lines, output):
                 print "This will not work."
                 print "Exiting now."
                 sys.exit()
-            
-            j = find_substring(wl['f0'], sb)
+            if not dup:
+                j = find_substring(wl['f0'], sb)
+            else:
+                j = find_substring(wl['f0'], l.split('_')[1]+'_'+sb)
             log.write("{0} {1}\n".format(l, wl['f1'][j]))
     
 
@@ -52,6 +57,8 @@ if __name__ == '__main__':
                         help="Name of the file with lines. (string)")
     parser.add_argument('output', type=str,
                         help="Name of the output file. (string)")
+    parser.add_argument('-d', '--duplicate', action='store_true',
+                        help="Are there duplicated subband numbers?. (string)")
     args = parser.parse_args()
     
-    match_weights(args.weights, args.lines, args.output)
+    match_weights(args.weights, args.lines, args.output, args.duplicate)
