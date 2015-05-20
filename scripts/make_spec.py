@@ -4,7 +4,7 @@ import numpy as np
 import argparse
 from crrlpy import crrls
 from crrlpy.models import rrlmod
-from crrlpy.synthspec import synth
+from crrlpy import synthspec as synth
 import pylab as plt
 
 def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM):
