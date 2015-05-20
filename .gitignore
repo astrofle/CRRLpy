@@ -1,0 +1,5 @@
+crrlpy/models/bbn
+crrlpy/models/bn
+crrlpy/models/hydrogen
+crrlpy/models/radtrans
+*.pyc
