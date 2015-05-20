@@ -4,7 +4,7 @@ import numpy as np
 import os
 import glob
 import re
-from crrlpy.linelist import frec_calc as fc
+from crrlpy import frec_calc as fc
 from astropy.constants import h, k_B
 from decimal import *
 from crrlpy.crrls import natural_sort
