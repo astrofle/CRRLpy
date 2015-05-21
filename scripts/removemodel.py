@@ -67,7 +67,7 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
                 
                 # Interpolate the model axis to the spectrum grid
                 interp_ym = interpolate.interp1d(fm, ym,
-                                                kind='cubic',
+                                                kind='linear',
                                                 bounds_error=False,
                                                 fill_value=0.0) 
                 y_mod += interp_ym(x)
@@ -75,7 +75,7 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
         else:
             # Interpolate the model axis to the spectrum grid
             interp_ym = interpolate.interp1d(xm, ym,
-                                            kind='cubic',
+                                            kind='linear',
                                             bounds_error=False,
                                             fill_value=0.0)
             y_mod += interp_ym(x)
@@ -143,6 +143,9 @@ if __name__ == '__main__':
                         help="Plot the spectra? Default: False")
     parser.add_argument('--plot_file', type=str, default=None,
                         help="Plot file name. Default: None")
+    parser.add_argument('-i', '--interp', type=str, default='linear',
+                        help="Kind of interpolation to use with scipy.interpolate.interp1d." \
+                             "Default: linear")
     args = parser.parse_args()
     
     if args.plot and not args.plot_file:
