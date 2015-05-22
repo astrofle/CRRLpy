@@ -9,6 +9,13 @@ import pylab as plt
 
 def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM):
     """
+    Generates a synthetic spectrum given an initial frequency a bandwidth and number of channels.
+    The synthetic spectrum will have Gaussian white noise across it and a nonlinear baseline.
+    The spectrum will be populated with RRL given the models of Salgado et al. (2015).
+    The line velocity can be specified as well as the transitions. The line model requires an
+    electron temperature, density, a temperature for the external radiation field, a covering factor
+    and an emission meassure.
+    For computing the line width of the profile a Doppler factor has to be specified.
     """
     
     ff = fi + bw

@@ -59,8 +59,11 @@ def make_rms_list(spec, output, transitions, z, dv, mode, f_col, y_col):
             rms = crrls.get_rms(y_lf)
             
             mrms = set_weight(mode, rms)
+            
+            # Get the SB frequency
+            freq = np.mean(x)
                 
-            log.write("{0}  {1}\n".format(s, mrms))  
+            log.write("{0}  {1}   {2}\n".format(s, mrms, freq))  
         
 if __name__ == '__main__':
     
