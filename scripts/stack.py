@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
-import numpy as np
+import matplotlib as mpl
+mpl.use('pdf')
 import pylab as plt
+import numpy as np
 import glob
 import sys
 import argparse

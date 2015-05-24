@@ -6,8 +6,10 @@ import os
 import re
 import collections
 
-import numpy as np
+import matplotlib as mpl
+mpl.use('pdf')
 import pylab as plt
+import numpy as np
 import scipy.integrate as sint
 
 from lmfit import Model
