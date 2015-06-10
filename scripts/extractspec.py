@@ -3,11 +3,12 @@
 from astropy.io import fits
 from astropy.table import Table
 from astropy.io import ascii
+import matplotlib.patches as mpatches
 import sys
 import numpy as np
 import pylab as plt
 
-def sector_mask(shape,centre,radius,angle_range):
+def sector_mask(shape, centre, radius, angle_range):
     """
     Return a boolean mask for a circular sector. The start/stop angles in  
     `angle_range` should be given in clockwise order.
@@ -85,15 +86,44 @@ def extract_spec(data, region):
         spec = data[:,:,region['params']['blcy']:region['params']['trcy'],
                        region['params']['blcx']:region['params']['trcx']]
         spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)
+        
     elif region['shape'] == 'circle':
         mask = sector_mask(data[0,0].shape,
-                           (region['params']['cx'], region['params']['cy']),
+                           (region['params']['cy'], region['params']['cx']),
                            region['params']['r'],
                            (0, 360))
-        mdata = data[:,:,~mask]
-        spec = mdata.sum(axis=2).sum(axis=0)
+        # Mask the data ouside the circle
+        # This method is too slow
+        mdata = np.ma.empty((data.sum(axis=0).shape))
+        for c in xrange(len(mdata)):
+            mdata[c] = np.ma.masked_where(~mask, data.sum(axis=0)[c])
+        spec = mdata.sum(axis=2).sum(axis=1)/(mdata.count()/len(mdata))
+       
+        #mdata = data[:,:,~mask]
+        #spec = mdata.sum(axis=2).sum(axis=1)/(mdata.count()/len(data[0]))
         
     return spec
+
+def show_rgn(ax, rgn):
+    """
+    Plots the extraction region.
+    """
+    
+    if rgn['shape'] == 'box':
+        ax.plot([rgn['params']['blcx']]*2, 
+                 [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
+        ax.plot([rgn['params']['blcx'],rgn['params']['trcx']], 
+                 [rgn['params']['blcy']]*2, 'r-')
+        ax.plot([rgn['params']['blcx'],rgn['params']['trcx']], 
+                 [rgn['params']['trcy']]*2, 'r-')
+        ax.plot([rgn['params']['trcx']]*2, 
+                 [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
+    
+    elif rgn['shape'] == 'circle':
+        patch = mpatches.Circle((rgn['params']['cx'], rgn['params']['cy']), 
+                                rgn['params']['r'], alpha=0.5, transform=ax.transData)
+        #plt.figure().artists.append(patch)
+        ax.add_patch(patch)
 
 def main(out, cube, region):
     """
@@ -117,15 +147,17 @@ def main(out, cube, region):
 
     ascii.write(tbtable, out, format='commented_header')
     
-    
-    plt.imshow(data.sum(axis=0).sum(axis=0), origin='lower')
-    plt.plot([rgn['params']['blcx']]*2, [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
-    plt.plot([rgn['params']['blcx'],rgn['params']['trcx']], [rgn['params']['blcy']]*2, 'r-')
-    plt.plot([rgn['params']['blcx'],rgn['params']['trcx']], [rgn['params']['trcy']]*2, 'r-')
-    plt.plot([rgn['params']['trcx']]*2, [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
+    fig = plt.figure(frameon=False)
+    ax = fig.add_subplot(1,1,1)
+    ax.imshow(data.sum(axis=0).sum(axis=0), origin='lower', interpolation='none')
+    show_rgn(ax, rgn)
+    #plt.plot([rgn['params']['blcx']]*2, [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
+    #plt.plot([rgn['params']['blcx'],rgn['params']['trcx']], [rgn['params']['blcy']]*2, 'r-')
+    #plt.plot([rgn['params']['blcx'],rgn['params']['trcx']], [rgn['params']['trcy']]*2, 'r-')
+    #plt.plot([rgn['params']['trcx']]*2, [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
     #plt.show()
-    plt.savefig('{0}_extract_region_{1}.png'.format(cube, region), 
-                bbox_inches='tight', pad_inches=0.3)
+    plt.savefig('{0}_extract_region_{1}.png'.format(cube, region))#, 
+                #bbox_inches='tight', pad_inches=0.3)
 
 if __name__ == '__main__':
     

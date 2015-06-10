@@ -1,12 +1,17 @@
 #!/usr/bin/env python
 
-import matplotlib as mpl
-mpl.use('pdf')
-import pylab as plt
-import numpy as np
 import glob
 import re
 import argparse
+import os
+
+import matplotlib as mpl
+havedisplay = "DISPLAY" in os.environ
+if not havedisplay:
+    mpl.use('Agg')
+import pylab as plt
+import numpy as np
+
 from matplotlib.backends.backend_pdf import PdfPages
 from crrlpy import crrls
 

@@ -7,7 +7,9 @@ import re
 import collections
 
 import matplotlib as mpl
-mpl.use('pdf')
+havedisplay = "DISPLAY" in os.environ
+if not havedisplay:
+    mpl.use('Agg')
 import pylab as plt
 import numpy as np
 import scipy.integrate as sint
@@ -1210,7 +1212,18 @@ def pressure_broad_coefs(Te):
               4.3290786,
               4.2814240]
     
-    return [a[te_indx], gammac[te_indx]]
+    a_func = interpolate.interp1d(te, a,
+                                  kind='linear',
+                                  bounds_error=False,
+                                  fill_value=0.0)
+    
+    g_func = interpolate.interp1d(te, gammac,
+                                  kind='linear',
+                                  bounds_error=False,
+                                  fill_value=0.0)
+    
+    #return [a[te_indx], gammac[te_indx]]
+    return [a_func(Te), g_func(Te)]
     
 def radiation_broad(n, W, Tr):
     """

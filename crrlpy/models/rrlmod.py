@@ -40,6 +40,36 @@ def itau_all(trans='alpha', n_max=1000):
         
     return [Te, ne, other, data]
 
+def itau_all_norad(trans='alpha', n_max=1000):
+    """
+    Loads all the available models.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    models = glob.glob('{0}/bbn/*_dat_bn_beta'.format(LOCALDIR))
+    natural_sort(models)
+    
+    Te = np.zeros(len(models))
+    ne = np.zeros(len(models))
+    other = np.zeros(len(models), dtype='|S20')
+    data = np.zeros((len(models),2,n_max-3))
+    for i,model in enumerate(models):
+        st = model[model.index('T')+2:model.index('T')+5]
+        Te[i] = str2val(st)
+        sn = model[model.index('ne')+3:model.index('ne')+7].split('_')[0]
+        ne[i] = str2val(sn)
+        other[i] = model.split('bn_beta')[-1]
+        #mod = np.loadtxt(model)
+        #mod = mod[:np.where(mod[:,0]==n_max)[0]]
+        n, int_tau = itau(st, sn, trans, n_max=1000, other=other[i])
+        #data[i,0] = mod[:,0]
+        #data[i,1] = mod[:,1]
+        data[i,0] = n
+        data[i,1] = int_tau
+        
+    return [Te, ne, other, data]
+
 def itau(temp, dens, trans, n_max=1000, other=''):
     """
     Gives the integrated optical depth for a given temperature and density. 
