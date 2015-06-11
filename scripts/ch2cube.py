@@ -7,7 +7,7 @@ import os
 import argparse
 import numpy as np
 
-blankval = -99
+blankval = np.nan
 
 def get_cube_dims(fitslist, chan_id='chan'):
     hdulist = fits.open(fitslist[0])
@@ -109,7 +109,7 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan'):
         hdulist.header['CRPIX4'] = crpix3
         hdulist.header['CUNIT4'] = cunit3
     
-    hdulist.header.append(('BLANK', blankval))
+    #hdulist.header.append(('BLANK', blankval))
     # Write to a fits file
     hdulist.writeto(outfits)
     
