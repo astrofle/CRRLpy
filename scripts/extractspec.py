@@ -1,7 +1,24 @@
 #!/usr/bin/env python
 
+"""
+Extracts a spectrum from a region in a spectral cube.
+The pixels will be averaged spatially inside the given region.
+The region must be specified as shape,coords,parameters
+Region can be, point, box or circle.
+Coords can be pix or sky.
+Parameters, for point the coordinates of the point, e.g. point,pix,512,256.
+For box the bottom left corner and top right corner coordinates, e.g. box,pix,256,256,512,512.
+For circle the center of the circle and the radius, e.g. circle,pix,512,256,10.
+If the coordinates are given in sky values, then the units must included, e.g. 
+point,pix,12h,2d will extract the spectrum for the pixel located at RA 12 hours and DEC 2 degrees.
+For circle the radius units in sky coordinates can be either d for degrees, m for arcminutes or 
+s for arcseconds. The conversion will use the scale in the RA direction of the cube, i.e. will 
+use CDELT1 to convert from angular units to pixels.
+"""
+
 import sys
 import re
+import argparse
 
 from astropy.io import fits
 from astropy.table import Table
@@ -257,14 +274,20 @@ def main(out, cube, region):
     ax.imshow(data.sum(axis=0).sum(axis=0), origin='lower', interpolation='none')
     show_rgn(ax, rgn)
 
-    plt.savefig('{0}_extract_region_{1}.png'.format(cube, region))#, 
-                #bbox_inches='tight', pad_inches=0.3)
+    plt.savefig('{0}_extract_region_{1}.png'.format(cube, region), 
+                bbox_inches='tight', pad_inches=0.3)
 
 if __name__ == '__main__':
     
-    cube = sys.argv[1]
-    region = sys.argv[2]
-    out = sys.argv[3]
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    parser.add_argument('cube', type=str,
+                        help="Cube to extract the spectrum from. (string)")
+    parser.add_argument('region', type=str,
+                        help="Spatial region where pixels are averaged. " \
+                             "e.g., point,sky,18h46m22s,-2d56m12s")
+    parser.add_argument('out', type=str,
+                        help="Output file name.")
+    args = parser.parse_args()
     
-    main(out, cube, region)
+    main(args.out, args.cube, args.region)
     
