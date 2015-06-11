@@ -279,7 +279,8 @@ def main(out, cube, region):
 
 if __name__ == '__main__':
     
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description=__doc__,
+                                     formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('cube', type=str,
                         help="Cube to extract the spectrum from. (string)")
     parser.add_argument('region', type=str,
