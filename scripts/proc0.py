@@ -9,7 +9,7 @@ from astropy.table import Table
 from astropy.io import ascii
 from crrlpy import crrls
 
-def main(spec, out):
+def main(spec, basename):
     """
     """
     
@@ -38,7 +38,7 @@ def main(spec, out):
                         names=['FREQ MHz',
                             'Tb Jy/BEAM'])
                         
-        out = '{0}_{1}.ascii'.format(out, sb)
+        out = '{0}_{1}.ascii'.format(basename, sb)
 
         ascii.write(tbtable, out, format='commented_header')
     
