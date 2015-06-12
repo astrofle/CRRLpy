@@ -3,6 +3,7 @@
 import sys
 import argparse
 import glob
+import re
 import numpy as np
 from astropy.table import Table
 from astropy.io import ascii
