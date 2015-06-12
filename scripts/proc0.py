@@ -38,7 +38,7 @@ def main(spec, out):
                         names=['FREQ MHz',
                             'Tb Jy/BEAM'])
                         
-        out = '{0}_{1}.ascii'.format(basename, sb)
+        out = '{0}_{1}.ascii'.format(out, sb)
 
         ascii.write(tbtable, out, format='commented_header')
     
