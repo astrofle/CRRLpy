@@ -177,8 +177,11 @@ def str2val(str):
     """
     """
     
-    aux = map(float, str.split('d'))
-    val = aux[0]*np.power(10., aux[1])
+    try:
+        aux = map(float, str.split('d'))
+        val = aux[0]*np.power(10., aux[1])
+    except ValueError:
+        val = 0
     
     return val
 

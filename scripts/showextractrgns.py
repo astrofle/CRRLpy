@@ -239,7 +239,7 @@ def split_str(str):
     return items[0], items[1]
     
     
-def main(out, cube, region):
+def main(out, cube, regions):
     """
     """
     
@@ -254,34 +254,39 @@ def main(out, cube, region):
     # Build a WCS object to handle sky coordinates
     w = set_wcs(head)
     
-    rgn = parse_region(region, w)
+    rgns = np.empty(len(regions.split('/')), dtype=object)
+    
+    for i,region in enumerate(regions.split('/')):
+        rgns[i] = parse_region(region, w)
     
     # Get the frequency axis
-    freq = get_axis(head, 3)
+    #freq = get_axis(head, 3)
 
-    spec = extract_spec(data, rgn)
+    #spec = extract_spec(data, rgn)
     
     #spec.set_fill_value(blank)
     #print "nspec {0}".format(len(spec))
-    try:
-        freqvvel = head['CUNIT3']
-    except KeyError:
-        freqvvel = 'KMS'
-    tbtable = Table([freq, spec.filled()], 
-                    names=['{0} {1}'.format(head['CTYPE3'], freqvvel),
-                           'Tb {0}'.format(head['BUNIT'])])
+    #try:
+        #freqvvel = head['CUNIT3']
+    #except KeyError:
+        #freqvvel = 'KMS'
+    #tbtable = Table([freq, spec.filled()], 
+                    #names=['{0} {1}'.format(head['CTYPE3'], freqvvel),
+                           #'Tb {0}'.format(head['BUNIT'])])
 
-    ascii.write(tbtable, out, format='commented_header')
+    #ascii.write(tbtable, out, format='commented_header')
     
     fig = plt.figure(frameon=False)
     ax = fig.add_subplot(1, 1, 1)
     try:
-        ax.imshow(data.sum(axis=0).sum(axis=0), origin='lower', interpolation='none')
+        ax.imshow(data.sum(axis=0).sum(axis=0), interpolation='none', origin='lower')
     except TypeError:
         ax.imshow(data.sum(axis=0), interpolation='none', origin='lower')
-    show_rgn(ax, rgn)
+    
+    for i,region in enumerate(regions.split('/')):
+        show_rgn(ax, rgns[i])
 
-    plt.savefig('{0}_extract_region_{1}.png'.format(cube, region), 
+    plt.savefig('{0}'.format(out), 
                 bbox_inches='tight', pad_inches=0.3)
 
 if __name__ == '__main__':
@@ -294,7 +299,7 @@ if __name__ == '__main__':
                         help="Spatial region where pixels are averaged. " \
                              "e.g., point,sky,18h46m22s,-2d56m12s")
     parser.add_argument('out', type=str,
-                        help="Output file name.")
+                        help="Output figure name.")
     args = parser.parse_args()
     
     main(args.out, args.cube, args.region)
