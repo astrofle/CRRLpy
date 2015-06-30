@@ -146,9 +146,17 @@ def get_axis(header, axis):
     
     axis = str(axis)
     dx = header.get("CDELT" + axis)
-    dx = int(dx)
-    p0 = header.get("CRPIX" + axis)
-    x0 = header.get("CRVAL" + axis)
+    try:
+        dx = int(dx)
+        p0 = header.get("CRPIX" + axis)
+        p0 = header.get("CRPIX" + axis)
+        x0 = header.get("CRVAL" + axis)
+        
+    except TypeError:
+        dx = 1
+        p0 = 1
+        x0 = 1
+
     n = header.get("NAXIS" + axis)
     print "Number channels in extracted spectrum: {0}".format(n)
     
