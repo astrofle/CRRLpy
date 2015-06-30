@@ -162,28 +162,41 @@ def get_axis(header, axis):
     
     return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
 
-def extract_spec(data, region):
+def extract_spec(data, region, naxis):
     """
     Sums the pixels inside a region preserving the spectral axis.
     """
     
     if region['shape'] == 'point':
-        spec = data[:,:,region['params']['cy'],region['params']['cx']]
-        spec = spec.sum(axis=0)
-    
+        if naxis > 3:
+            spec = data[:,:,region['params']['cy'],region['params']['cx']]
+            spec = spec.sum(axis=0)
+        else:
+            spec = data[:,region['params']['cy'],region['params']['cx']]
     elif region['shape'] == 'box':
-        spec = data[:,:,region['params']['blcy']:region['params']['trcy'],
-                    region['params']['blcx']:region['params']['trcx']]
         area = (region['params']['trcy'] - region['params']['blcy']) * \
-               (region['params']['trcx'] - region['params']['blcx'])
-        spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/area
-        
+                (region['params']['trcx'] - region['params']['blcx'])
+        if naxis > 3:
+            spec = data[:,:,region['params']['blcy']:region['params']['trcy'],
+                        region['params']['blcx']:region['params']['trcx']]
+            spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/area
+        else:
+            spec = data[:,region['params']['blcy']:region['params']['trcy'],
+                        region['params']['blcx']:region['params']['trcx']]
+            spec = spec.sum(axis=1).sum(axis=2)/area
     elif region['shape'] == 'circle':
-        mask = sector_mask(data[0,0].shape,
-                           (region['params']['cy'], region['params']['cx']),
-                           region['params']['r'],
-                           (0, 360))
-        
+        if naxis > 3:
+            mask = sector_mask(data[0,0].shape,
+                               (region['params']['cy'], region['params']['cx']),
+                               region['params']['r'],
+                               (0, 360))
+            mdata = data.sum(axis=0)[:,mask]
+        else:
+            mask = sector_mask(data[0].shape,
+                               (region['params']['cy'], region['params']['cx']),
+                               region['params']['r'],
+                               (0, 360))
+            mdata = data[:,mask]
         # Mask the data ouside the circle
         # This method is too slow
         #mdata = np.ma.empty((data.sum(axis=0).shape))
@@ -191,7 +204,7 @@ def extract_spec(data, region):
             #mdata[c] = np.ma.masked_where(~mask, data.sum(axis=0)[c])
         #spec = mdata.sum(axis=2).sum(axis=1)/(mdata.count()/len(mdata))
        
-        mdata = data.sum(axis=0)[:,mask]
+        
         spec = mdata.sum(axis=1)/len(np.where(mask.flatten()==1)[0])
         
     return spec
@@ -255,6 +268,8 @@ def main(out, cube, region):
     head = hdulist[0].header
     data = hdulist[0].data
     
+    naxis = head['NAXIS']
+    
     #blank = head['BLANK']
     
     data = np.ma.masked_invalid(data)
@@ -270,7 +285,7 @@ def main(out, cube, region):
     # Get the frequency axis
     freq = get_axis(head, 3)
 
-    spec = extract_spec(data, rgn)
+    spec = extract_spec(data, rgn, naxis)
     
     #spec.set_fill_value(blank)
     #print "nspec {0}".format(len(spec))
