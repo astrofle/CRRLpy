@@ -183,7 +183,7 @@ def extract_spec(data, region, naxis):
         else:
             spec = data[:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
-            spec = spec.sum(axis=1).sum(axis=2)/area
+            spec = spec.sum(axis=2).sum(axis=1)/area
     elif region['shape'] == 'circle':
         if naxis > 3:
             mask = sector_mask(data[0,0].shape,
@@ -291,11 +291,16 @@ def main(out, cube, region):
     #print "nspec {0}".format(len(spec))
     try:
         freqvvel = head['CUNIT3']
+        ftype = head['CTYPE3']
+        bunit = head['CTYPE3']
     except KeyError:
-        freqvvel = 'KMS'
+        ftype = 'None'
+        freqvvel = '(unitless)'
+        bunit = 'Only God knows'
+    
     tbtable = Table([freq, spec.filled()], 
-                    names=['{0} {1}'.format(head['CTYPE3'], freqvvel),
-                           'Tb {0}'.format(head['BUNIT'])])
+                    names=['{0} {1}'.format(ftype, freqvvel),
+                           'Tb {0}'.format(bunit)])
 
     ascii.write(tbtable, out, format='commented_header')
     
