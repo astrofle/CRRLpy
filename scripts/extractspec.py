@@ -252,8 +252,11 @@ def main(out, cube, region):
     data = np.ma.masked_invalid(data)
     
     # Build a WCS object to handle sky coordinates
-    w = set_wcs(head)
-    
+    if not pix in region:
+        w = set_wcs(head)
+    else:
+        w = None
+        
     rgn = parse_region(region, w)
     
     # Get the frequency axis
