@@ -112,6 +112,7 @@ def stack_filter(spec, output, vmax, vmin, dv, x_col, y_col, window, window_opts
     # If only one file is passed, it probably contains the list
     if len(specs) == 1:
         specs = np.genfromtxt(specs[0], dtype=str)
+
     if dv == 0:
         for s in specs:
             data = np.loadtxt(s)

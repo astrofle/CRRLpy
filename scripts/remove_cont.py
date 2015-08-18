@@ -43,13 +43,13 @@ def remove_baseline(freq, tb, model, p0, mask):
     
     return tbcsub
 
-def main(spec_in, spec_out, edge):
+def main(spec_in, spec_out, edge, xcol, ycol):
     """ main """
     
     # Load the data
     data = np.loadtxt(spec_in)
-    freq = data[:,0]
-    tb = data[:,1]
+    freq = data[:,xcol]
+    tb = data[:,ycol]
     
     # Get a mask for NaN values
     mask = nan_mask(freq, tb)
@@ -73,10 +73,16 @@ if __name__ == '__main__':
     parser.add_argument('out', help="Output spectrum without continuum.")
     parser.add_argument('-e', '--edge', help="How many edge channels \
                         should be ignored?", dest='edge', type=int, default=0)
+    parser.add_argument('--x_col', type=int, default=0,
+                        help="Column with x axis values. Default: 0")
+    parser.add_argument('--y_col', type=int, default=1,
+                        help="Column with y axis values. Default: 1")
     args = parser.parse_args()
     
     spec = args.spec
     out = args.out
     edge = args.edge
+    xcol = args.x_col
+    ycol = args.y_col
     
-    main(spec, out, edge)
+    main(spec, out, edge, xcol, ycol)

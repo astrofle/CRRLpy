@@ -40,6 +40,32 @@ def itau_all(trans='alpha', n_max=1000):
         
     return [Te, ne, other, data]
 
+def itau_all2(trans='alpha', n_max=1000):
+    """
+    Loads all the available models.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    models = glob.glob('{0}/bbn2/*'.format(LOCALDIR))
+    natural_sort(models)
+    
+    Te = np.zeros(len(models))
+    ne = np.zeros(len(models))
+    other = np.zeros(len(models), dtype='|S20')
+    data = np.zeros((len(models), 2, n_max))
+    for i,model in enumerate(models):
+        st = model.split('_')[3]
+        Te[i] = str2val(st)
+        sn = model.split('_')[5]
+        ne[i] = sn
+        other[i] = '_'.join(model.split('_')[8:11])
+        n, int_tau = itau2(st, sn, trans, n_max=n_max, other=other[i])
+        data[i,0] = n
+        data[i,1] = int_tau
+        
+    return [Te, ne, other, data]
+
 def itau_all_norad(trans='alpha', n_max=1000):
     """
     Loads all the available models.
@@ -74,6 +100,9 @@ def itau(temp, dens, trans, n_max=1000, other=''):
     """
     Gives the integrated optical depth for a given temperature and density. 
     The emission measure is unity. The output units are Hz.
+    
+    :returns: principal quantum number and integrated optical depth.
+    :rtype: numpy arrays.
     """
     
     bbn = load_betabn(temp, dens, other)
@@ -103,6 +132,38 @@ def itau(temp, dens, trans, n_max=1000, other=''):
     
     return n, i
 
+def itau2(temp, dens, trans, n_max=1000, other=''):
+    """
+    Gives the integrated optical depth for a given temperature and density. 
+    The emission measure is unity. The output units are Hz.
+    """
+    
+    bbn = load_betabn2(temp, dens, other)
+    n = bbn[:,0]
+    b = bbn[:,1]
+    
+    b = b[:n_max]
+    
+    t = str2val(temp)
+    d = dens
+    
+    dn = fc.set_dn(trans)
+    mdn = Mdn(dn)
+    
+    # Convert the betabn values to the corresponding transition
+    if 'alpha' not in trans:
+        
+        #specie, trans, n, freq = fc.make_line_list('CI', n_max, dn)
+        #bn = load_bn(temp, dens, other='')
+        #beta = (1 - np.divide(bn[dn::], bn[0::])*np.exp(-h*freq*1e6/(k_B*t)))/ \
+               #(1 - np.exp(-h*freq*1e6/(k_B*t)))
+        b = make_betabn(temp, dens, trans, n_max=n_max+1, other='')[1]
+    n = n[:n_max]
+    
+    i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
+    
+    return n, i
+
 def load_betabn(temp, dens, other=''):
     """
     Loads a model for the CRRL emission.
@@ -112,6 +173,22 @@ def load_betabn(temp, dens, other=''):
     
     mod_file = '{0}/bbn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat_bn_beta{3}'.format(LOCALDIR, temp, dens, other)
     
+    data = np.loadtxt(mod_file)
+    
+    return data
+
+def load_betabn2(temp, dens, other=''):
+    """
+    Loads a model for the CRRL emission.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    if other != '':
+        mod_file = '{0}/bbn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(LOCALDIR, temp, dens, other)
+    else:
+        mod_file = '{0}/bbn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(LOCALDIR, temp, dens)
+        
     data = np.loadtxt(mod_file)
     
     return data
@@ -148,7 +225,7 @@ def make_betabn(temp, dens, trans, n_max=1000, other=''):
         if i < len(freq)-dn:
             #bnn = np.divide(bn[i+dn,-1], bn[i,-1])
             bnn = Decimal(bn[i+dn,-1]) / Decimal(bn[i,-1])
-            e = -h.value*freq[i]*1e6/(k_B.value*t)
+            e = Decimal(-h.value*freq[i]*1e6/(k_B.value*t))
             exp = Decimal(e).exp()#Decimal(np.exp(-h.value*freq[i]*1e6/(k_B.value*t)))
             beta[i] = float((Decimal(1) - bnn*exp)/(Decimal(1) - exp))
         

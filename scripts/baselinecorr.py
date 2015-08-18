@@ -13,6 +13,10 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
     
     specs = glob.glob(spec)
     
+    # If only one file is passed, it probably contains the list
+    if len(specs) == 1:
+        specs = np.genfromtxt(specs[0], dtype=str)
+    
     for s in specs:
         
         # Determine the subband name
@@ -35,13 +39,19 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         np.ma.set_fill_value(mx, 0)
         gx = mx.compressed()
         gy = my.compressed()
-        b = UnivariateSpline(gx, gy, k=order)
+        
+        # Use a polynomial to remove the baseline
+        bp = np.polynomial.polynomial.polyfit(gx, gy, order)
+        b = np.polynomial.polynomial.polyval(gx, bp)
+        #b = UnivariateSpline(gx, gy, k=order)
         
         if median:
             # Only keep the baseline shape
-            gb = b(x) - np.median(b(x))
+            #gb = b(x) - np.median(b(x))
+            gb = b - np.median(b)
         else:
-            gb = b(x)
+            #gb = b(x)
+            gb = b
 
         if save:
             np.savetxt('{0}_{1}.ascii'.format(baseline, sb), 
