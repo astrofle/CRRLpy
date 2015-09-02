@@ -25,7 +25,8 @@ tprops = {'CIalpha':[r'C$\alpha$', 'r'],
           }
 ylbl = 1e-4
 
-def sbsplot(spec, output, show_lines, transitions, z, x_axis, x_col, y_axis, y_col):
+def sbsplot(spec, output, show_lines, transitions, z, 
+            x_axis, x_col, x_min, x_max, y_axis, y_col):
     """
     """
     
@@ -83,6 +84,7 @@ def sbsplot(spec, output, show_lines, transitions, z, x_axis, x_col, y_axis, y_c
                             c=tprops[t][1], mew=8, alpha=0.8)
         ax.set_xlabel(x_axis)
         ax.set_ylabel(y_axis)
+        ax.set_xlim(x_min, x_max)
         pdf.savefig(fig)
         plt.close(fig)
                 
@@ -111,6 +113,10 @@ if __name__ == '__main__':
                              "Default: Frequency (MHz)")
     parser.add_argument('--x_col', type=int, default=0,
                         help="Column with x axis values. Default: 0")
+    parser.add_argument('--x_max', type=float, default=500,
+                        help="Maximum x axis value to show. Default: 500")
+    parser.add_argument('--x_min', type=float, default=-500,
+                        help="Minimum x axis value to show. Default: -500")
     parser.add_argument('-y', '--y_axis', type=str, default='Optical depth',
                         help="Y axis of the spectra." \
                              "Default: Optical depth")
@@ -121,4 +127,5 @@ if __name__ == '__main__':
     sbsplot(args.spec, args.output, 
             args.show_lines, args.transitions, args.z,
             args.x_axis, args.x_col,
+            args.x_min, args.x_max,
             args.y_axis, args.y_col)

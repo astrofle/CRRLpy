@@ -176,6 +176,7 @@ def extract_spec(data, region, naxis, mode):
                 spec = spec.mean(axis=0)
         else:
             spec = data[:,region['params']['cy'],region['params']['cx']]
+            
     elif region['shape'] == 'box':
         area = (region['params']['trcy'] - region['params']['blcy']) * \
                 (region['params']['trcx'] - region['params']['blcx'])
@@ -185,14 +186,15 @@ def extract_spec(data, region, naxis, mode):
             if mode == 'sum':
                 spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/area
             elif mode == 'avg':
-                spec = spec.mean(axis=3).mean(axis=2).mean(axis=0)/area
+                spec = spec.mean(axis=3).mean(axis=2).mean(axis=0)#/area
         else:
             spec = data[:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
             if mode == 'sum':
                 spec = spec.sum(axis=2).sum(axis=1)/area
             elif mode == 'avg':
-                spec = spec.mean(axis=2).mean(axis=1)/area
+                spec = spec.mean(axis=2).mean(axis=1)#/area
+                
     elif region['shape'] == 'circle':
         if naxis > 3:
             mask = sector_mask(data[0,0].shape,
@@ -219,7 +221,7 @@ def extract_spec(data, region, naxis, mode):
         if mode == 'sum':
             spec = mdata.sum(axis=1)/len(np.where(mask.flatten()==1)[0])
         else:
-            spec = mdata.mean(axis=1)/len(np.where(mask.flatten()==1)[0])
+            spec = mdata.mean(axis=1)#/len(np.where(mask.flatten()==1)[0])
         
     return spec
 

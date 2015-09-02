@@ -933,14 +933,14 @@ def natural_sort(l):
     """
     l.sort(key=alphanum_key)
 
-def n2f(n, specie, transition, nmax=1500):
+def n2f(n, specie, transition, n_max=1500):
     """
-    Comverts a given principal quantum number n to the 
+    Converts a given principal quantum number n to the 
     frequency of a given transition and atomic specie.
     """
     
     dn = set_dn(transition)
-    specie, trans, nn, freq = make_line_list(specie, nmax, dn)
+    specie, trans, nn, freq = make_line_list(specie, n_max, dn)
     nii = np.in1d(nn, n)
     #nii = best_match_indx2(n, nn)
     
