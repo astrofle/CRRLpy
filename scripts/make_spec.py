@@ -50,9 +50,11 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM):
         dD_f = crrls.dv2df(f_l, dD*1e3)
         
         for j,f in enumerate(f_l):
-            itau = a_itau[np.where(n_itau==n_l[j])[0]]/1e6
-            print itau, dD, dD_f[j]/2., dL[j]/2.
+            itau = a_itau[np.where(n_itau==n_l[j])[0]][0]/1e6
             line = crrls.Voigt(freq, dD_f[j]/2., dL[j]/2., f, itau*EM)
+            print "Line properties:"
+            print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \
+                  "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
             tau_b += line
             
     np.savetxt(spec, np.c_[freq, tau_b])

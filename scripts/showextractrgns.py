@@ -25,6 +25,7 @@ from astropy.table import Table
 from astropy.io import ascii
 from astropy import wcs
 from astropy.coordinates import SkyCoord
+from crrlpy.crrls import is_number
 
 import astropy.units as u
 import matplotlib.patches as mpatches
@@ -70,6 +71,12 @@ def parse_region(region, w):
     coord = region.split(',')[1]
     params = region.split(',')[2:]
     
+    if is_number(params[-1]):
+        label = None 
+    else:
+        params = params[:-1]
+        label = region.split(',')[-1]
+    
     if shape == 'point':
         # Convert sky coordinates to pixels if required
         if 'sky' in coord.lower():
@@ -81,7 +88,8 @@ def parse_region(region, w):
 
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'point',
-               'params':{'cx':params[0], 'cy':params[1]}}
+               'params':{'cx':params[0], 'cy':params[1]},
+               'label':label}
     
     elif shape == 'box':
         # Convert sky coordinates to pixels if required
@@ -98,7 +106,8 @@ def parse_region(region, w):
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'box',
                'params':{'blcx':params[0], 'blcy':params[1], 
-                         'trcx':params[2], 'trcy':params[3]}}
+                         'trcx':params[2], 'trcy':params[3]},
+               'label':label}
                
     elif shape == 'circle':
         # Convert sky coordinates to pixels if required
@@ -124,7 +133,8 @@ def parse_region(region, w):
         
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'circle',
-               'params':{'cx':params[0], 'cy':params[1], 'r':params[2]}}
+               'params':{'cx':params[0], 'cy':params[1], 'r':params[2]},
+               'label':label}
         
     else:
         print 'region description not supported.'
@@ -219,12 +229,22 @@ def show_rgn(ax, rgn):
                  [rgn['params']['trcy']]*2, 'r-')
         ax.plot([rgn['params']['trcx']]*2, 
                  [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
+        # Define label location
+        xlabel = (rgn['params']['trcx'] + rgn['params']['blcx'])/2.
+        ylabel = rgn['params']['trcy']
     
     elif rgn['shape'] == 'circle':
         patch = mpatches.Circle((rgn['params']['cx'], rgn['params']['cy']), 
-                                rgn['params']['r'], alpha=0.5, transform=ax.transData)
-        #plt.figure().artists.append(patch)
+                                rgn['params']['r'], alpha=1, 
+                                transform=ax.transData, label=rgn['label'],
+                                color='red', ec='r', fc=None, lw=2, fill=False)
         ax.add_patch(patch)
+        # Define label location
+        xlabel = rgn['params']['cx'] #- 0.5*rgn['params']['r']
+        ylabel = rgn['params']['cy'] + rgn['params']['r']
+        
+    ax.annotate(rgn['label'], xy=(xlabel, ylabel), 
+                xytext=(xlabel, ylabel+0.2), color='r')
 
 def split_str(str):
     """
@@ -252,7 +272,8 @@ def main(out, cube, regions):
     data = np.ma.masked_invalid(data)
     
     # Build a WCS object to handle sky coordinates
-    w = set_wcs(head)
+    #w = set_wcs(head)
+    w=None
     
     rgns = np.empty(len(regions.split('/')), dtype=object)
     
@@ -285,9 +306,13 @@ def main(out, cube, regions):
     
     for i,region in enumerate(regions.split('/')):
         show_rgn(ax, rgns[i])
-
+        
+    ax.set_xlim(-0.5, head['NAXIS1']-0.5)
+    ax.set_ylim(-0.5, head['NAXIS2']-0.5)
+    
     plt.savefig('{0}'.format(out), 
                 bbox_inches='tight', pad_inches=0.3)
+    plt.close()
 
 if __name__ == '__main__':
     

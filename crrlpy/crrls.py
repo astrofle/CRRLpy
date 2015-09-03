@@ -19,7 +19,7 @@ from lmfit.models import VoigtModel, ConstantModel, GaussianModel, PolynomialMod
 from scipy.special import wofz
 from scipy import interpolate
 from scipy.constants import c
-from scipy.signal import wiener, savgol_filter
+from scipy.signal import wiener#, savgol_filter
 from scipy.ndimage.filters import gaussian_filter
 from frec_calc import set_dn, make_line_list
 
@@ -29,6 +29,28 @@ def alphanum_key(s):
         "z23a" -> ["z", 23, "a"]
     """
     return [ tryint(c) for c in re.split('([0-9]+)', s) ]
+
+def average(data, axis, n):
+    """
+    Averages data along the given axis by combining
+    n adjacent values.
+    """
+    
+    if n < 1:
+        print "Will not work"
+        avg_tmp = data
+    else:
+        avg_tmp = 0
+        for i in xrange(n):
+            si = (n - 1) - i
+            if si <= 0:
+                avg_tmp += data[i::n]
+            else:
+                avg_tmp += data[i:-si:n]
+        avg_tmp = avg_tmp/n
+        
+        return avg_tmp
+            #avg4_temp = (temp[0:-3:4] + temp[1:-2:4] + temp[2:-1:4] + temp[3::4])/4.
 
 def best_match_indx(value, array, tol):
     """
@@ -646,6 +668,34 @@ def gaussian_off(x, amplitude, center, sigma, c):
     
     return amplitude*np.exp(-np.power((x - center), 2.)/(2.*sigma**2.)) + c
 
+def get_axis(header, axis):
+    """
+    Constructs a cube axis
+    @param header - fits cube header
+    @type header - pyfits header
+    @param axis - axis to reconstruct
+    @type axis - int
+    @return - cube axis
+    @rtype - numpy array
+    """
+    
+    axis = str(axis)
+    dx = header.get("CDELT" + axis)
+    try:
+        dx = float(dx)
+        p0 = header.get("CRPIX" + axis)
+        p0 = header.get("CRPIX" + axis)
+        x0 = header.get("CRVAL" + axis)
+        
+    except TypeError:
+        dx = 1
+        p0 = 1
+        x0 = 1
+
+    n = header.get("NAXIS" + axis)
+    
+    return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+
 def get_line_mask(freq, reffreq, v0, dv0):
     """
     Return a mask with ranges 
@@ -711,6 +761,16 @@ def get_min_sep(array):
 
     da = min(abs(array[0:-1:2] - array[1::2]))
     return da
+
+def is_number(s):
+    """
+    Checks wether a string is a number or not.
+    """
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
 
 def linear(x, a, b):
     """
@@ -873,14 +933,14 @@ def natural_sort(l):
     """
     l.sort(key=alphanum_key)
 
-def n2f(n, specie, transition, nmax=1500):
+def n2f(n, specie, transition, n_max=1500):
     """
-    Comverts a given principal quantum number n to the 
+    Converts a given principal quantum number n to the 
     frequency of a given transition and atomic specie.
     """
     
     dn = set_dn(transition)
-    specie, trans, nn, freq = make_line_list(specie, nmax, dn)
+    specie, trans, nn, freq = make_line_list(specie, n_max, dn)
     nii = np.in1d(nn, n)
     #nii = best_match_indx2(n, nn)
     

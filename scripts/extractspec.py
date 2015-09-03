@@ -162,7 +162,7 @@ def get_axis(header, axis):
     
     return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
 
-def extract_spec(data, region, naxis):
+def extract_spec(data, region, naxis, mode):
     """
     Sums the pixels inside a region preserving the spectral axis.
     """
@@ -170,27 +170,41 @@ def extract_spec(data, region, naxis):
     if region['shape'] == 'point':
         if naxis > 3:
             spec = data[:,:,region['params']['cy'],region['params']['cx']]
-            spec = spec.sum(axis=0)
+            if mode == 'sum':
+                spec = spec.sum(axis=0)
+            elif mode == 'avg':
+                spec = spec.mean(axis=0)
         else:
             spec = data[:,region['params']['cy'],region['params']['cx']]
+            
     elif region['shape'] == 'box':
         area = (region['params']['trcy'] - region['params']['blcy']) * \
                 (region['params']['trcx'] - region['params']['blcx'])
         if naxis > 3:
             spec = data[:,:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
-            spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/area
+            if mode == 'sum':
+                spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/area
+            elif mode == 'avg':
+                spec = spec.mean(axis=3).mean(axis=2).mean(axis=0)#/area
         else:
             spec = data[:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
-            spec = spec.sum(axis=2).sum(axis=1)/area
+            if mode == 'sum':
+                spec = spec.sum(axis=2).sum(axis=1)/area
+            elif mode == 'avg':
+                spec = spec.mean(axis=2).mean(axis=1)#/area
+                
     elif region['shape'] == 'circle':
         if naxis > 3:
             mask = sector_mask(data[0,0].shape,
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
                                (0, 360))
-            mdata = data.sum(axis=0)[:,mask]
+            if mode == 'sum':
+                mdata = data.sum(axis=0)[:,mask]
+            elif mode == 'avg':
+                mdata = data.mean(axis=0)[:,mask]
         else:
             mask = sector_mask(data[0].shape,
                                (region['params']['cy'], region['params']['cx']),
@@ -204,8 +218,10 @@ def extract_spec(data, region, naxis):
             #mdata[c] = np.ma.masked_where(~mask, data.sum(axis=0)[c])
         #spec = mdata.sum(axis=2).sum(axis=1)/(mdata.count()/len(mdata))
        
-        
-        spec = mdata.sum(axis=1)/len(np.where(mask.flatten()==1)[0])
+        if mode == 'sum':
+            spec = mdata.sum(axis=1)/len(np.where(mask.flatten()==1)[0])
+        else:
+            spec = mdata.mean(axis=1)#/len(np.where(mask.flatten()==1)[0])
         
     return spec
 
@@ -260,7 +276,7 @@ def split_str(str):
     return items[0], items[1]
     
     
-def main(out, cube, region):
+def main(out, cube, region, mode):
     """
     """
     
@@ -285,7 +301,7 @@ def main(out, cube, region):
     # Get the frequency axis
     freq = get_axis(head, 3)
 
-    spec = extract_spec(data, rgn, naxis)
+    spec = extract_spec(data, rgn, naxis, mode)
     
     #spec.set_fill_value(blank)
     #print "nspec {0}".format(len(spec))
@@ -326,7 +342,9 @@ if __name__ == '__main__':
                              "e.g., point,sky,18h46m22s,-2d56m12s")
     parser.add_argument('out', type=str,
                         help="Output file name.")
+    parser.add_argument('-m', '--mode', type=str, default='sum',
+                        help="Mode of extraction. Can be sum or avg.")
     args = parser.parse_args()
     
-    main(args.out, args.cube, args.region)
+    main(args.out, args.cube, args.region, args.mode)
     

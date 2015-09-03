@@ -30,17 +30,22 @@ def main(spec, basename, freqf):
         
         data = np.loadtxt(s, comments='#')
         
+<<<<<<< HEAD
         freq = data[:,0]*freqf
         tb = data[:,1]
+=======
+        data[:,0] = data[:,0]/1e6
+>>>>>>> 9a19710e9f20b16293f86ff93b4c24c3d756372c
         
         # write the processed spectrum
-        tbtable = Table([freq, tb], 
-                        names=['FREQ MHz',
-                            'Tb Jy/BEAM'])
+        np.savetxt('{0}_{1}.ascii'.format(basename, sb), data)
+        #tbtable = Table([freq, tb], 
+                        #names=['FREQ MHz',
+                            #'Tb Jy/BEAM'])
                         
-        out = '{0}_{1}.ascii'.format(basename, sb)
+        #out = '{0}_{1}.ascii'.format(basename, sb)
 
-        ascii.write(tbtable, out, format='commented_header')
+        #ascii.write(tbtable, out, format='commented_header')
     
 if __name__ == '__main__':
     
