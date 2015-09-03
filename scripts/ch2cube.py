@@ -1,4 +1,5 @@
-#!/usr/bin/env python 
+#!/usr/bin/env python
+ 
 from astropy.io import fits
 from crrlpy.crrls import natural_sort
 import sys
