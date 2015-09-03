@@ -9,7 +9,7 @@ from astropy.table import Table
 from astropy.io import ascii
 from crrlpy import crrls
 
-def main(spec, basename):
+def main(spec, basename, freqf):
     """
     """
     
@@ -30,7 +30,7 @@ def main(spec, basename):
         
         data = np.loadtxt(s, comments='#')
         
-        freq = data[:,0]/1e6
+        freq = data[:,0]*freqf
         tb = data[:,1]
         
         # write the processed spectrum
@@ -44,15 +44,19 @@ def main(spec, basename):
     
 if __name__ == '__main__':
     
-    parser = argparse.ArgumentParser()
-    parser.add_argument('spec', 
-                        help="Spectrum to process.")
-    parser.add_argument('-o', '--outspec', 
-                        help="Output spectrum base name.", 
-                        type=str, dest='out', required=True)
-    args = parser.parse_args()
-    
-    spec = args.spec
-    out = args.out
-        
-    main(spec, out)
+	parser = argparse.ArgumentParser()
+	parser.add_argument('spec', 
+						help="Spectrum to process.")
+	parser.add_argument('-o', '--outspec', 
+						help="Output spectrum base name.", 
+						type=str, dest='out', required=True)
+	parser.add_argument('-f', '--freqf', type=float, default=1e-6,
+						help='Factor to multiply frequency with.')
+	args = parser.parse_args()
+	
+	spec = args.spec
+	out = args.out
+	freqf = args.freqf
+		
+	main(spec, out, freqf)
+	
