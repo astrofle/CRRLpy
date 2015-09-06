@@ -151,43 +151,43 @@ def itau_all_norad(trans='alpha', n_max=1000):
         
     return [Te, ne, other, data]
 
-def itau(temp, dens, trans, n_max=1000, other=''):
-    """
-    Gives the integrated optical depth for a given temperature and density. 
-    The emission measure is unity. The output units are Hz.
+#def itau(temp, dens, trans, n_max=1000, other=''):
+    #"""
+    #Gives the integrated optical depth for a given temperature and density. 
+    #The emission measure is unity. The output units are Hz.
     
-    :returns: principal quantum number and integrated optical depth.
-    :rtype: numpy arrays.
-    """
+    #:returns: principal quantum number and integrated optical depth.
+    #:rtype: numpy arrays.
+    #"""
     
-    bbn = load_betabn(temp, dens, other)
-    n = bbn[:,0]
-    b = bbn[:,1]
+    #bbn = load_betabn(temp, dens, other)
+    #n = bbn[:,0]
+    #b = bbn[:,1]
     
-    b = b[:np.where(n==n_max)[0]]
+    #b = b[:np.where(n==n_max)[0]]
     
     
-    t = str2val(temp)
-    d = str2val(dens)
+    #t = str2val(temp)
+    #d = str2val(dens)
     
-    dn = fc.set_dn(trans)
-    mdn = Mdn(dn)
+    #dn = fc.set_dn(trans)
+    #mdn = Mdn(dn)
     
-    # Convert the betabn values to the corresponding transition
-    if 'alpha' not in trans:
+    ## Convert the betabn values to the corresponding transition
+    #if 'alpha' not in trans:
         
-        #specie, trans, n, freq = fc.make_line_list('CI', n_max, dn)
-        #bn = load_bn(temp, dens, other='')
-        #beta = (1 - np.divide(bn[dn::], bn[0::])*np.exp(-h*freq*1e6/(k_B*t)))/ \
-               #(1 - np.exp(-h*freq*1e6/(k_B*t)))
-        b = make_betabn(temp, dens, trans, n_max=n_max+1, other='')[1]
-    n = n[:np.where(n==n_max)[0]]
+        ##specie, trans, n, freq = fc.make_line_list('CI', n_max, dn)
+        ##bn = load_bn(temp, dens, other='')
+        ##beta = (1 - np.divide(bn[dn::], bn[0::])*np.exp(-h*freq*1e6/(k_B*t)))/ \
+               ##(1 - np.exp(-h*freq*1e6/(k_B*t)))
+        #b = make_betabn(temp, dens, trans, n_max=n_max+1, other='')[1]
+    #n = n[:np.where(n==n_max)[0]]
     
-    i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
+    #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
     
-    return n, i
+    #return n, i
 
-def itau2(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
+def itau(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
     """
     Gives the integrated optical depth for a given temperature and density. 
     The emission measure is unity. The output units are Hz.
