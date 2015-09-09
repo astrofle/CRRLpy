@@ -13,143 +13,7 @@ getcontext().prec = 450
 
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
-def itau_all(trans='alpha', n_max=1000, verbose=False, value='itau'):
-    """
-    Loads all the available models.
-    """
-    
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans))
-    natural_sort(models)
-    models = np.asarray(models)
-    
-    models_len = np.asarray([len(model.split('_')) for model in models])
-    #models_tr = models[models_len>17]
-    #print models_tr[0].split('_')[11], models_tr[0].split('_')[4], models_tr[0].split('_')[6]
-    models_tr = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
-                                                     float(x.split('_')[6]),
-                                                     str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
-    #models_notr = models[models_len<=17]
-    #models_notr = sorted(models_notr, key=lambda model: (str2val(model.split('_')[4]), 
-                                                         #float(model.split('_')[6])))
-    #models = np.hstack((models_notr, models_tr))
-    models = models_tr
-    
-    Te = np.zeros(len(models))
-    ne = np.zeros(len(models))#, dtype='|S20')
-    other = np.zeros(len(models), dtype='|S20')
-    data = np.zeros((len(models), 2, n_max))
-    
-    for i,model in enumerate(models):
-        if verbose:
-            print model
-        st = model.split('_')[4]
-        Te[i] = str2val(st)
-        sn = model.split('_')[6].rstrip('0')
-        ne[i] = float(sn)
-        if len(model.split('_')) <= 17:
-            other[i] = '-'
-        else:
-            other[i] = '_'.join(model.split('_')[9:12])
-        if verbose:
-            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
-        n, int_tau = itau(st, 
-                          '{0:.4f}'.format(ne[i]), 
-                          trans, 
-                          n_max=n_max, 
-                          other=other[i], 
-                          verbose=verbose, 
-                          value=value)
-        data[i,0] = n
-        data[i,1] = int_tau
-        
-    return [Te, ne, other, data]
 
-def itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False):
-    """
-    Loads all the available models.
-    """
-    
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    models = glob.glob('{0}/H_bbn2_{1}/*'.format(LOCALDIR, trans))
-    natural_sort(models)
-    models = np.asarray(models)
-    
-    models = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
-                                           float(x.split('_')[6]),
-                                           str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
-    
-    Te = np.zeros(len(models))
-    ne = np.zeros(len(models))#, dtype='|S20')
-    other = np.zeros(len(models), dtype='|S20')
-    data = np.zeros((len(models), 2, n_max))
-    
-    for i,model in enumerate(models):
-        if verbose:
-            print model
-        st = model.split('_')[4]
-        Te[i] = str2val(st)
-        sn = model.split('_')[6].rstrip('0')
-        ne[i] = float(sn)
-        if len(model.split('_')) <= 17:
-            other[i] = '-'
-        else:
-            other[i] = '_'.join(model.split('_')[9:12])
-        if verbose:
-            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
-        n, int_tau = itau_h(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose)
-        data[i,0] = n
-        data[i,1] = int_tau
-        
-    return [Te, ne, other, data]
-
-def itau_all_match(trans_out='alpha', trans_tin='beta', n_max=1000, verbose=False, value='itau'):
-    """
-    Loads all trans_out models that can be found in trans_tin.
-    """
-    
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    target = [f.split('/')[-1] for f in glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans_tin))]
-    #print target[0]
-    models = ['bbn2_{0}/'.format(trans_out) + f for f in target]
-    #print models[0]
-    
-    [Te, ne, other, data] = load_models(models, trans_out, n_max, verbose, value)
-    
-    return [Te, ne, other, data]
-
-def itau_all_norad(trans='alpha', n_max=1000):
-    """
-    Loads all the available models.
-    """
-    
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    models = glob.glob('{0}/bbn/*_dat_bn_beta'.format(LOCALDIR))
-    natural_sort(models)
-    
-    Te = np.zeros(len(models))
-    ne = np.zeros(len(models))
-    other = np.zeros(len(models), dtype='|S20')
-    data = np.zeros((len(models),2,n_max-3))
-    for i,model in enumerate(models):
-        st = model[model.index('T')+2:model.index('T')+5]
-        Te[i] = str2val(st)
-        sn = model[model.index('ne')+3:model.index('ne')+7].split('_')[0]
-        ne[i] = str2val(sn)
-        other[i] = model.split('bn_beta')[-1]
-        #mod = np.loadtxt(model)
-        #mod = mod[:np.where(mod[:,0]==n_max)[0]]
-        n, int_tau = itau(st, sn, trans, n_max=1000, other=other[i])
-        #data[i,0] = mod[:,0]
-        #data[i,1] = mod[:,1]
-        data[i,0] = n
-        data[i,1] = int_tau
-        
-    return [Te, ne, other, data]
 
 #def itau(temp, dens, trans, n_max=1000, other=''):
     #"""
@@ -199,22 +63,13 @@ def itau(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
     dn = fc.set_dn(trans)
     mdn = Mdn(dn)
     
-    ## Convert the betabn values to the corresponding transition
-    #if 'alpha' not in trans:
-        
-        ##specie, trans, n, freq = fc.make_line_list('CI', n_max, dn)
-        ##bn = load_bn(temp, dens, other='')
-        ##beta = (1 - np.divide(bn[dn::], bn[0::])*np.exp(-h*freq*1e6/(k_B*t)))/ \
-               ##(1 - np.exp(-h*freq*1e6/(k_B*t)))
-        #n,b = make_betabn2(temp, dens, trans, n_max=n_max+1, other=other)
-        
-    #else:
-    bbn = load_betabn2(temp, dens, other, trans, verbose)
+    bbn = load_betabn(temp, dens, other, trans, verbose)
     n = bbn[:n_max,0]
     b = bbn[:n_max,1]
     
     if value == 'itau':
-        i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
+        #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
+        i = itau_norad(n, t, b, dn, mdn)
     elif value == 'bbnMdn':
         i = b*dn*mdn
     else:
@@ -222,7 +77,7 @@ def itau(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
         
     return n, i
 
-def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False):
+def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
     """
     Gives the integrated optical depth for a given temperature and density. 
     The emission measure is unity. The output units are Hz.
@@ -241,24 +96,226 @@ def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False):
     b = b[:n_max]
     n = n[:n_max]
     
-    #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
-    
-    return n, b
+    if value == 'itau':
+        #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
+        i = itau_norad(n, t, b, dn, mdn)
+    elif value == 'bbnMdn':
+        i = b*dn*mdn
+    else:
+        i = b
+        
+    return n, i
 
-def load_betabn(temp, dens, other=''):
+
+
+def load_itau_dict(dict, trans, n_max=1000, verbose=False, value='itau'):
     """
-    Loads a model for the CRRL emission.
+    Loads the models defined by dict.
+    """
+    
+    data = np.zeros((len(dict['te']),2,n_max))
+    
+    for i,t in enumerate(dict['te']):
+        
+        if verbose:
+            print "Trying to load model: ne={0}, te={1}, tr={2}".format(dict['ne'][i], t, dict['tr'][i])
+        n, int_tau = itau(t, 
+                          '{0:.4f}'.format(dict['ne'][i]), 
+                          trans, 
+                          n_max=n_max, 
+                          other=dict['tr'][i], 
+                          verbose=verbose, 
+                          value=value)
+        
+        data[i,0] = n
+        data[i,1] = int_tau
+    
+    te = np.asarray(map(str2val, dict['te']))
+    
+    return [te, dict['ne'], dict['tr'], data]
+
+def load_itau_all(trans='alpha', n_max=1000, verbose=False, value='itau'):
+    """
+    Loads all the available models.
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    mod_file = '{0}/bbn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat_bn_beta{3}'.format(LOCALDIR, temp, dens, other)
+    models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans))
+    natural_sort(models)
+    models = np.asarray(models)
     
-    data = np.loadtxt(mod_file)
+    models_len = np.asarray([len(model.split('_')) for model in models])
+    models_tr = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
+                                                     float(x.split('_')[6]),
+                                                     str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
+    models = models_tr
     
-    return data
+    Te = np.zeros(len(models))
+    ne = np.zeros(len(models))
+    other = np.zeros(len(models), dtype='|S20')
+    data = np.zeros((len(models), 2, n_max))
+    
+    for i,model in enumerate(models):
+        if verbose:
+            print model
+        st = model.split('_')[4]
+        Te[i] = str2val(st)
+        sn = model.split('_')[6].rstrip('0')
+        ne[i] = float(sn)
+        if len(model.split('_')) <= 17:
+            other[i] = '-'
+        else:
+            other[i] = '_'.join(model.split('_')[9:12])
+        if verbose:
+            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
+        n, int_tau = itau(st, 
+                          '{0:.4f}'.format(ne[i]), 
+                          trans, 
+                          n_max=n_max, 
+                          other=other[i], 
+                          verbose=verbose, 
+                          value=value)
+        data[i,0] = n
+        data[i,1] = int_tau
+        
+    return [Te, ne, other, data]
 
-def load_betabn2(temp, dens, other='', trans='alpha', verbose=False):
+def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau'):
+    """
+    Loads all the available models.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    models = glob.glob('{0}/H_bbn2_{1}/*'.format(LOCALDIR, trans))
+    natural_sort(models)
+    models = np.asarray(models)
+    
+    models = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
+                                           float(x.split('_')[6]),
+                                           str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
+    
+    Te = np.zeros(len(models))
+    ne = np.zeros(len(models))#, dtype='|S20')
+    other = np.zeros(len(models), dtype='|S20')
+    data = np.zeros((len(models), 2, n_max))
+    
+    for i,model in enumerate(models):
+        if verbose:
+            print model
+        st = model.split('_')[4]
+        Te[i] = str2val(st)
+        sn = model.split('_')[6].rstrip('0')
+        ne[i] = float(sn)
+        if len(model.split('_')) <= 17:
+            other[i] = '-'
+        else:
+            other[i] = '_'.join(model.split('_')[9:12])
+        if verbose:
+            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
+        n, int_tau = itau_h(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose, value=value)
+        data[i,0] = n
+        data[i,1] = int_tau
+        
+    return [Te, ne, other, data]
+
+def load_itau_all_match(trans_out='alpha', trans_tin='beta', n_max=1000, verbose=False, value='itau'):
+    """
+    Loads all trans_out models that can be found in trans_tin.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    target = [f.split('/')[-1] for f in glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans_tin))]
+    #print target[0]
+    models = ['bbn2_{0}/'.format(trans_out) + f for f in target]
+    #print models[0]
+    
+    [Te, ne, other, data] = load_models(models, trans_out, n_max, verbose, value)
+    
+    return [Te, ne, other, data]
+
+def load_itau_all_norad(trans='alpha', n_max=1000):
+    """
+    Loads all the available models.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    models = glob.glob('{0}/bbn/*_dat_bn_beta'.format(LOCALDIR))
+    natural_sort(models)
+    
+    Te = np.zeros(len(models))
+    ne = np.zeros(len(models))
+    other = np.zeros(len(models), dtype='|S20')
+    data = np.zeros((len(models), 2, n_max))
+    for i,model in enumerate(models):
+        st = model[model.index('T')+2:model.index('T')+5]
+        Te[i] = str2val(st)
+        sn = model[model.index('ne')+3:model.index('ne')+7].split('_')[0]
+        ne[i] = str2val(sn)
+        other[i] = model.split('bn_beta')[-1]
+        #mod = np.loadtxt(model)
+        #mod = mod[:np.where(mod[:,0]==n_max)[0]]
+        n, int_tau = itau(st, sn, trans, n_max=1000, other=other[i])
+        #data[i,0] = mod[:,0]
+        #data[i,1] = mod[:,1]
+        data[i,0] = n
+        data[i,1] = int_tau
+        
+    return [Te, ne, other, data]
+
+def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='itau'):
+    """
+    Loads models given a temperature, radiation field and an 
+    upper limit for the electron density.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    models = glob.glob('{0}/bbn2_{1}/*_T_{2}_*_{3}_*'.format(LOCALDIR, trans, 
+                                                             temp, trad))
+    #print models
+    natural_sort(models)
+    models = np.asarray(models)
+    
+    models_len = np.asarray([len(model.split('_')) for model in models])
+    models = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
+                                           float(x.split('_')[6]),
+                                           str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
+    
+    models = np.asarray(models)
+    nes = np.asarray([float(model.split('_')[6].rstrip('0')) for model in models])
+    
+    # Only select those models with a density equal or lower than the specified value: dens.
+    models = models[nes <= dens]
+    #print models
+    
+    return load_models(models, trans, n_max=n_max, verbose=verbose, value=value)
+
+def itau_norad(n, te, b, dn, mdn):
+    """
+    Returns the optical depth with only the approximate solution to the 
+    radiative transfer problem.
+    """
+    
+    return -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*te))/np.power(te, 5./2.)
+
+#def load_betabn(temp, dens, other=''):
+    #"""
+    #Loads a model for the CRRL emission.
+    #"""
+    
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    #mod_file = '{0}/bbn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat_bn_beta{3}'.format(LOCALDIR, temp, dens, other)
+    
+    #data = np.loadtxt(mod_file)
+    
+    #return data
+
+def load_betabn(temp, dens, other='', trans='alpha', verbose=False):
     """
     Loads a model for the CRRL emission.
     """
@@ -266,12 +323,12 @@ def load_betabn2(temp, dens, other='', trans='alpha', verbose=False):
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
-        model_file = 'bbn2_{0}/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
+        model_file = 'bbn2_{0}/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
         if verbose:
             print 'Will try to locate: {0}'.format(model_file)
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     else:
-        model_file = 'bbn2_{0}/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
+        model_file = 'bbn2_{0}/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
         if verbose:
             print 'Will try to locate: {0}'.format(model_file)
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
@@ -350,24 +407,18 @@ def load_bn2(temp, dens, trans, other=''):
 def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
     """
     Loads the models in backwards compatible mode.
+    It will sort the models by Te, ne and Tr.
     """
-    natural_sort(models)
+
     models = np.asarray(models)
     
     models_len = np.asarray([len(model.split('_')) for model in models])
-    #models_tr = models[models_len>17]
-    #print models_tr[0].split('_')[11], models_tr[0].split('_')[4], models_tr[0].split('_')[6]
-    models_tr = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
-                                                     float(x.split('_')[6]),
-                                                     str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
-    #models_notr = models[models_len<=17]
-    #models_notr = sorted(models_notr, key=lambda model: (str2val(model.split('_')[4]), 
-                                                         #float(model.split('_')[6])))
-    #models = np.hstack((models_notr, models_tr))
-    models = models_tr
-    
+    models = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
+                                                   float(x.split('_')[6]),
+                                                   str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
+        
     Te = np.zeros(len(models))
-    ne = np.zeros(len(models))#, dtype='|S20')
+    ne = np.zeros(len(models))
     other = np.zeros(len(models), dtype='|S20')
     data = np.zeros((len(models), 2, n_max))
     
@@ -384,7 +435,7 @@ def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
             other[i] = '_'.join(model.split('_')[9:12])
         if verbose:
             print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
-        n, int_tau = itau2(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose, value=value)
+        n, int_tau = itau(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose, value=value)
         data[i,0] = n
         data[i,1] = int_tau
         

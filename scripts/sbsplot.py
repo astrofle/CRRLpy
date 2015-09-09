@@ -84,7 +84,8 @@ def sbsplot(spec, output, show_lines, transitions, z,
                             c=tprops[t][1], mew=8, alpha=0.8)
         ax.set_xlabel(x_axis)
         ax.set_ylabel(y_axis)
-        ax.set_xlim(x_min, x_max)
+        if x_max:
+            ax.set_xlim(x_min, x_max)
         pdf.savefig(fig)
         plt.close(fig)
                 
@@ -113,10 +114,10 @@ if __name__ == '__main__':
                              "Default: Frequency (MHz)")
     parser.add_argument('--x_col', type=int, default=0,
                         help="Column with x axis values. Default: 0")
-    parser.add_argument('--x_max', type=float, default=500,
-                        help="Maximum x axis value to show. Default: 500")
-    parser.add_argument('--x_min', type=float, default=-500,
-                        help="Minimum x axis value to show. Default: -500")
+    parser.add_argument('--x_max', type=float, default=None,
+                        help="Maximum x axis value to show. Default: None")
+    parser.add_argument('--x_min', type=float, default=None,
+                        help="Minimum x axis value to show. Default: None")
     parser.add_argument('-y', '--y_axis', type=str, default='Optical depth',
                         help="Y axis of the spectra." \
                              "Default: Optical depth")
