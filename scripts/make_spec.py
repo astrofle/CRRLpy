@@ -7,7 +7,7 @@ from crrlpy.models import rrlmod
 from crrlpy import synthspec as synth
 import pylab as plt
 
-def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM):
+def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM, verbose=False):
     """
     Generates a synthetic spectrum given an initial frequency a bandwidth and number of channels.
     The synthetic spectrum will have Gaussian white noise across it and a nonlinear baseline.
@@ -46,16 +46,18 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM):
         n_itau, a_itau = rrlmod.itau(rrlmod.val2str(Te), 
                                      rrlmod.val2str(ne), 
                                      trans[2:], n_max=1500, 
-                                     other='case_diffuse_{0}'.format(rrlmod.val2str(Tr)))
+                                     other='case_diffuse_{0}'.format(rrlmod.val2str(Tr))
+                                     verbose=verbose)
     
         dD_f = crrls.dv2df(f_l, dD*1e3)
         
         for j,f in enumerate(f_l):
             itau = a_itau[np.where(n_itau==n_l[j])[0]][0]/1e6
             line = crrls.Voigt(freq, dD_f[j]/2., dL[j]/2., f, itau*EM)
-            print "Line properties:"
-            print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \
-                  "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
+            if verbose:
+                print "Line properties:"
+                print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \
+                    "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
             tau_b += line
             
     np.savetxt(spec, np.c_[freq, tau_b])
