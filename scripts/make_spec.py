@@ -7,7 +7,7 @@ from crrlpy.models import rrlmod
 from crrlpy import synthspec as synth
 import pylab as plt
 
-def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM, verbose=False):
+def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM, n_max=1500, verbose=False):
     """
     Generates a synthetic spectrum given an initial frequency a bandwidth and number of channels.
     The synthetic spectrum will have Gaussian white noise across it and a nonlinear baseline.
@@ -44,8 +44,8 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM, verb
         dL_p = crrls.pressure_broad_salgado(n_l, Te, ne)/1e6
         dL = dL_r + dL_p
         n_itau, a_itau = rrlmod.itau(rrlmod.val2str(Te), 
-                                     rrlmod.val2str(ne), 
-                                     trans[2:], n_max=1500, 
+                                     ne, 
+                                     trans[2:], n_max=n_max, 
                                      other='case_diffuse_{0}'.format(rrlmod.val2str(Tr))
                                      verbose=verbose)
     
