@@ -46,7 +46,7 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM, n_ma
         n_itau, a_itau = rrlmod.itau(rrlmod.val2str(Te), 
                                      ne, 
                                      trans[2:], n_max=n_max, 
-                                     other='case_diffuse_{0}'.format(rrlmod.val2str(Tr))
+                                     other='case_diffuse_{0}'.format(rrlmod.val2str(Tr)),
                                      verbose=verbose)
     
         dD_f = crrls.dv2df(f_l, dD*1e3)
