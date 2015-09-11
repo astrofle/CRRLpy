@@ -7,7 +7,9 @@ from crrlpy.models import rrlmod
 from crrlpy import synthspec as synth
 import pylab as plt
 
-def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM, n_max=1500, verbose=False):
+def make_spec(spec, fi, bw, n, rms, v0, transitions, baseline, order,
+              Te, ne, Tr, W, dD, EM, 
+              n_max=1500, verbose=False):
     """
     Generates a synthetic spectrum given an initial frequency a bandwidth and number of channels.
     The synthetic spectrum will have Gaussian white noise across it and a nonlinear baseline.
@@ -31,8 +33,10 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, Te, ne, Tr, W, dD, EM, n_ma
     
     # Create a baseline that mimics a standing wave 
     # and add it to the spectrum.
-    baseline = synth.make_baseline(n*2, n/250.)
-    tau_b = tau_n
+    tau_b = tau_n + synth.make_ripples(2*n, n/250., n, rms)
+    
+    if baseline:
+        tau_b += synth.make_offset(rms, freq, order=order)
     
     z = v0/3e5
     for i,trans in enumerate(transitions.split(',')):
@@ -81,19 +85,29 @@ if __name__ == '__main__':
                         help="Electron density. (float)")
     parser.add_argument('--Tr', type=float,
                         help="Radiation field in K. (float)")
-    parser.add_argument('-w', type=float,
-                        help="Cloud covering factor. (float)")
+    parser.add_argument('-w', type=float, default=1,
+                        help="Cloud covering factor. (float)\n" \
+                             "Default: 1")
     parser.add_argument('-e', '--EM', type=float,
                         help="Emission meassure in pc cm^-6. (float)")
-    parser.add_argument('-d', '--doppler', type=float,
-                        help="Doppler FWHM in km/s. (float)")
+    parser.add_argument('-d', '--doppler', type=float, default=2.,
+                        help="Doppler FWHM in km/s. (float)\n" \
+                             "Default: 2")
     parser.add_argument('-v', '--v0', type=float, default=0,
-                        help="Cloud velocity in km/s. (float)")
+                        help="Cloud velocity in km/s. (float)\n" \
+                             "Default: 0")
     parser.add_argument('-r', '--rms', type=float,
                         help="Spectral rms in optical depth units. (float)")
-    parser.add_argument('--transitions', type=str,
-                        help="Spectral rms in optical depth units. (string)")
+    parser.add_argument('--transitions', type=str, default='CIalpha',
+                        help="Transitions to include in the simulated spectrum.\n" \
+                             "E.g. 'CIalpha,CIbeta,HIalpha'. (string)\n" \
+                             "Default: CIalpha")
+    parser.add_argument('--baseline', action='store_true',
+                        help="Add a baseline offset to the spectrum?")
+    parser.add_argument('--order', type=int, default=None,
+                        help="Baseline order to add to the spectrum.")
     args = parser.parse_args()
     
     make_spec(args.spec, args.fi, args.bw, args.nchan, args.rms, args.v0, 
-              args.transitions, args.Te, args.ne, args.Tr, args.w, args.doppler, args.EM)
+              args.transitions, args.baseline, args.order,
+              args.Te, args.ne, args.Tr, args.w, args.doppler, args.EM)

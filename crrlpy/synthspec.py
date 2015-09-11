@@ -1,46 +1,39 @@
 #!/usr/bin/env python
 
 import numpy as np
-from crrlpy import crrls
+from numpy.polynomial.polynomial import polyval
 
-def make_noise(mu, sigma, n):
+def make_ripples(n, b, nout, rms):
     
-    return np.random.normal(mu, sigma, n)
-
-def make_baseline(n, b):
+    if n < nout:
+        print "Requested number of channels is larger than box size."
+        print "Will not generate ripples."
+        return np.zeros(len(nout))
     
     box = np.zeros(n)
     box[b/2:-b/2] = 1
     base = np.fft.fft(box)
     
     #return np.abs(base)
-    return base.real
+    return rms*base.real[n/2-nout/2:n/2+nout/2]
 
-def make_lw(n, freq, dn, Te, ne, Tr, W, dD):
+def make_noise(mu, sigma, n):
+    
+    return np.random.normal(mu, sigma, n)
+
+
+def make_offset(rms, x, order=0):
     """
-    Freq in Hz
-    Doppler width dD in m s^-1
-    Returns the combined line width in Hz
+    Generates an offset.
+    Order specifies the 
+    polynomial order to use.
     """
     
-    dP = crrls.pressure_broad(n, Te, ne) # kHz
-    dR = crrls.radiation_broad(n, W, Tr) # kHz
+    c = []
+    for i in range(order):
+        if i == 0:
+            c.append(np.random.normal(0, 2*rms))
+        else:
+            c.append(np.random.uniform(-1, 1))
     
-    # Convert Doppler line width to frequency units
-    dfD = crrls.dv2df(freq, dD) # Hz
-    dfD = dfD/1e3               # kHz
-
-    # Make the combined linewidths
-    dL = dP + dR
-    df = crrls.line_width(dfD, dL)
-    
-    return df*1e3
-
-def make_dL(n, Te, ne, Tr, W):
-    
-    dP = crrls.pressure_broad(n, Te, ne) # kHz
-    dR = crrls.radiation_broad(n, W, Tr) # kHz
-    
-    dL = dP + dR
-    
-    return dL
+    return 100*rms*polyval((x - x.mean())/x.mean(), c, tensor=False)
