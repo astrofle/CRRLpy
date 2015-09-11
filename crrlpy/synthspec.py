@@ -14,7 +14,6 @@ def make_ripples(n, b, nout, rms):
     box[b/2:-b/2] = 1
     base = np.fft.fft(box)
     
-    #return np.abs(base)
     return rms*base.real[n/2-nout/2:n/2+nout/2]
 
 def make_noise(mu, sigma, n):

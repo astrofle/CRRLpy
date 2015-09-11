@@ -33,7 +33,7 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, baseline, order,
     
     # Create a baseline that mimics a standing wave 
     # and add it to the spectrum.
-    tau_b = tau_n + synth.make_ripples(2*n, n/250., n, rms)
+    tau_b = tau_n + synth.make_ripples(2*n, n/256., n, rms)
     
     if baseline:
         tau_b += synth.make_offset(rms, freq, order=order)
