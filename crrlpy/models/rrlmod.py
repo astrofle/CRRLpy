@@ -169,12 +169,8 @@ def load_itau_all(trans='alpha', n_max=1000, verbose=False, value='itau'):
             other[i] = '_'.join(model.split('_')[9:12])
         if verbose:
             print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
-        n, int_tau = itau(st, 
-                          '{0:.4f}'.format(ne[i]), 
-                          trans, 
-                          n_max=n_max, 
-                          other=other[i], 
-                          verbose=verbose, 
+        n, int_tau = itau(st, ne[i], trans, n_max=n_max, 
+                          other=other[i], verbose=verbose, 
                           value=value)
         data[i,0] = n
         data[i,1] = int_tau

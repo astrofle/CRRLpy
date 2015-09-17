@@ -44,20 +44,23 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
             sb = 'SB???'
         
         data = np.loadtxt(s)
-        x = np.copy(data[:,x_col])
-        y = np.copy(data[:,y_col])
+        p = data[:,x_col].argsort()
+        x = np.copy(data[p,x_col])
+        y = np.copy(data[p,y_col])
         
         mask = np.isnan(y)
         
         # Load model
         mod = np.loadtxt(model)
-        xm = mod[:,0]
-        ym = mod[:,1]
+        p = mod[:,0].argsort()
+        xm = mod[p,0]
+        ym = mod[p,1]
         # remove NaNs
         ym = ym[~np.isnan(xm)]
         xm = xm[~np.isnan(xm)]
         
         qns, freqs = crrls.find_lines_sb(x, transition, z)
+        #print qns
         
         y_mod = np.zeros(len(y))
         ys = np.copy(y)
@@ -67,12 +70,15 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
             for i,n in enumerate(qns):
                 # Convert the model velocity axis to frequency
                 fm = crrls.vel2freq(freqs[i]*(1+z), xm*1e3)
+                p = fm.argsort()
+                ym = ym[p]
+                fm = fm[p]
                 
                 # Interpolate the model axis to the spectrum grid
                 interp_ym = interpolate.interp1d(fm, ym,
                                                 kind='linear',
                                                 bounds_error=False,
-                                                fill_value=0.0) 
+                                                fill_value=0.0)
                 y_mod += interp_ym(x)
                 
         else:
@@ -89,7 +95,7 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
         # Return the masked values to their NaN values
         ys[mask] = np.nan
         x[mask] = np.nan
-
+        
         if plot:
             fig = plt.figure(frameon=False)
             fig.suptitle(sb)

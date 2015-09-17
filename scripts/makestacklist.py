@@ -22,13 +22,13 @@ def fill_sb_list(first_sb, last_sb, sb_list, output, path):
             if last_sb in s:
                 break
             if i >= i0:
-                if not path: 
+                if not path:
                     log.write("{0}\n".format(s))
                 else:
                     log.write("{0}/{1}\n".format(path, s.split('/')[-1]))
             
 
-def main(good_list, sbs_list, basename, n, priority, path):
+def main(good_list, sbs_list, basename, n, priority, path, first):
     """
     """
     
@@ -45,7 +45,7 @@ def main(good_list, sbs_list, basename, n, priority, path):
         i += 1
     
     # Save the start point of every stack
-    fn = np.array(['SB000']*n)
+    fn = np.array([first]*n)
     # Create the list of lines for every stack
     for i in xrange(n):
         fn[i] = re.findall('SB\d+', gl[sum(ns[:i])])[0]
@@ -53,7 +53,7 @@ def main(good_list, sbs_list, basename, n, priority, path):
             for j in xrange(sum(ns[:i]),ns[i]+sum(ns[:i])):
                 log.write("{0}\n".format(gl[j]))
 
-    first_sb = 'SB000'
+    first_sb = first
     for i in xrange(n):
         output = "{0}_stack{1}_SBs.log".format(basename, i+1)        
         if i == n - 1:
@@ -91,7 +91,10 @@ if __name__ == '__main__':
                         help="Path to use for the list of SBs. (string)\n" \
                              "Must be the path to the SBs that will have\n" \
                              "the transition removed.")
+    parser.add_argument('--first', type=str, default='SB000',
+                        help="First sub band in the data. (string)\n" \
+                             "Useful if the sub band numbers do not start at 000.")
     args = parser.parse_args()
     
     main(args.good_list, args.sbs_list, args.basename, args.nstacks, 
-         args.priority, args.path)
+         args.priority, args.path, args.first)

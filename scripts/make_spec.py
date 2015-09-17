@@ -7,7 +7,7 @@ from crrlpy.models import rrlmod
 from crrlpy import synthspec as synth
 import pylab as plt
 
-def make_spec(spec, fi, bw, n, rms, v0, transitions, baseline, order,
+def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
               Te, ne, Tr, W, dD, EM, 
               n_max=1500, verbose=False):
     """
@@ -33,10 +33,12 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, baseline, order,
     
     # Create a baseline that mimics a standing wave 
     # and add it to the spectrum.
-    tau_b = tau_n + synth.make_ripples(2*n, n/256., n, rms)
+    # This values produce a nice variation.
+    if bandpass:
+        tau_n += synth.make_ripples(4*n, n/2., n, rms)
     
     if baseline:
-        tau_b += synth.make_offset(rms, freq, order=order)
+        tau_n += synth.make_offset(rms, freq, order=order)
     
     z = v0/3e5
     for i,trans in enumerate(transitions.split(',')):
@@ -62,9 +64,9 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, baseline, order,
                 print "Line properties:"
                 print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \
                     "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
-            tau_b += line
+            tau_n += line
             
-    np.savetxt(spec, np.c_[freq, tau_b])
+    np.savetxt(spec, np.c_[freq, tau_n])
     
     
 if __name__ == '__main__':
@@ -102,6 +104,8 @@ if __name__ == '__main__':
                         help="Transitions to include in the simulated spectrum.\n" \
                              "E.g. 'CIalpha,CIbeta,HIalpha'. (string)\n" \
                              "Default: CIalpha")
+    parser.add_argument('--bandpass', action='store_true',
+                        help="Add a bandpass filter response to the spectrum?")
     parser.add_argument('--baseline', action='store_true',
                         help="Add a baseline offset to the spectrum?")
     parser.add_argument('--order', type=int, default=None,
