@@ -71,8 +71,11 @@ def set_dn(name):
         dn = 4
     return dn
 
-def make_line_list(specie, nmax, dn):
-    n = np.arange(1, nmax)
+def make_line_list(specie, n_max, dn):
+    """
+    """
+    
+    n = np.arange(1, n_max)
     
     # Define the electron mass in atomic mass units
     m_e_amu = m_e/physical_constants['atomic mass constant'][0]
