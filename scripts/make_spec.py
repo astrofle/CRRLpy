@@ -1,14 +1,28 @@
 #!/usr/bin/env python
 
-import numpy as np
+
 import argparse
+import os
+import matplotlib as mpl
+havedisplay = "DISPLAY" in os.environ
+if not havedisplay:
+    mpl.use('Agg')
+
+import numpy as np
+import pylab as plt
+
 from crrlpy import crrls
 from crrlpy.models import rrlmod
 from crrlpy import synthspec as synth
-import pylab as plt
+
+def power_law(freq, Tc, nu):
+    """
+    """
+    
+    return Tc*np.power(freq/100., nu)
 
 def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
-              Te, ne, Tr, W, dD, EM, 
+              Te, ne, Tr, W, dD, EM, cont, Tc, nu, plot, plot_out,
               n_max=1500, verbose=False):
     """
     Generates a synthetic spectrum given an initial frequency a bandwidth and number of channels.
@@ -42,30 +56,44 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
     
     z = v0/3e5
     for i,trans in enumerate(transitions.split(',')):
-        
-        n_l, f_l = crrls.find_lines_sb(freq, trans, z)
-        
-        # Generate the line properties as a function of n
-        dL_r = crrls.radiation_broad_salgado(n_l, W, Tr)/1e6
-        dL_p = crrls.pressure_broad_salgado(n_l, Te, ne)/1e6
-        dL = dL_r + dL_p
-        n_itau, a_itau = rrlmod.itau(rrlmod.val2str(Te), 
-                                     ne, 
-                                     trans[2:], n_max=n_max, 
-                                     other='case_diffuse_{0}'.format(rrlmod.val2str(Tr)),
-                                     verbose=verbose)
-    
-        dD_f = crrls.dv2df(f_l, dD*1e3)
-        
-        for j,f in enumerate(f_l):
-            itau = a_itau[np.where(n_itau==n_l[j])[0]][0]/1e6
-            line = crrls.Voigt(freq, dD_f[j]/2., dL[j]/2., f, itau*EM)
-            if verbose:
-                print "Line properties:"
-                print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \
-                    "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
-            tau_n += line
+        if trans != '':
+            n_l, f_l = crrls.find_lines_sb(freq, trans, z)
             
+            # Generate the line properties as a function of n
+            dL_r = crrls.radiation_broad_salgado(n_l, W, Tr)/1e6
+            dL_p = crrls.pressure_broad_salgado(n_l, Te, ne)/1e6
+            dL = dL_r + dL_p
+            n_itau, a_itau = rrlmod.itau(rrlmod.val2str(Te), 
+                                        ne, 
+                                        trans[2:], n_max=n_max, 
+                                        other='case_diffuse_{0}'.format(rrlmod.val2str(Tr)),
+                                        verbose=verbose)
+        
+            dD_f = crrls.dv2df(f_l, dD*1e3)
+            
+            for j,f in enumerate(f_l):
+                itau = a_itau[np.where(n_itau==n_l[j])[0]][0]/1e6
+                line = crrls.Voigt(freq, dD_f[j]/2., dL[j]/2., f, itau*EM)
+                if verbose:
+                    print "Line properties:"
+                    print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \
+                        "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
+                tau_n += line
+            
+    if cont:
+        tau_n = (1 + tau_n)*power_law(freq, Tc, nu)
+        
+    if plot:
+        fig = plt.figure(frameon=False)
+        ax = fig.add_subplot(1, 1, 1)
+        ax.plot(freq, tau_n, 'k-', label='generated spectrum')
+        ax.plot(freq, power_law(freq, Tc, nu), 'r-', label='continuum')
+        plt.legend(loc=0, numpoints=1, frameon=False)
+        plt.savefig('{0}'.format(plot_out), 
+                bbox_inches='tight', pad_inches=0.3)
+        plt.close()
+        
+        
     np.savetxt(spec, np.c_[freq, tau_n])
     
     
@@ -110,8 +138,20 @@ if __name__ == '__main__':
                         help="Add a baseline offset to the spectrum?")
     parser.add_argument('--order', type=int, default=None,
                         help="Baseline order to add to the spectrum.")
+    parser.add_argument('--cont', action='store_true',
+                        help="Add continuum to the spectra?.\n" \
+                             "Assumes a power law spectrum with Tc at 100 MHz.")
+    parser.add_argument('--Tc', type=float,
+                        help="Power law continuum intensity at 100 MHz. (float)")
+    parser.add_argument('--plawexp', type=float, default=-2.6,
+                        help="Continuum power law exponent.")
+    parser.add_argument('--plot', action='store_true',
+                        help="Plot the generated spectrum?")
+    parser.add_argument('--plot_out', type=str,
+                        help="Plot name. (string)")
     args = parser.parse_args()
     
     make_spec(args.spec, args.fi, args.bw, args.nchan, args.rms, args.v0, 
               args.transitions, args.baseline, args.order,
-              args.Te, args.ne, args.Tr, args.w, args.doppler, args.EM)
+              args.Te, args.ne, args.Tr, args.w, args.doppler, args.EM, 
+              args.cont, args.Tc, args.plawexp, args.plot, args.plot_out)
