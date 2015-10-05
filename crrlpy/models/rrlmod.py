@@ -1,55 +1,77 @@
 #!/usr/bin/env python
 
+from __future__ import division
+
 import numpy as np
 import os
 import glob
 import re
-import filecmp
+
+import astropy.units as u
+
 from crrlpy import frec_calc as fc
-from astropy.constants import h, k_B
-from decimal import *
-from crrlpy.crrls import natural_sort
-getcontext().prec = 450
+from astropy.constants import h, k_B, c, m_e, Ryd
+from astropy.analytic_functions import blackbody_nu
+from crrlpy.crrls import natural_sort, best_match_indx2, f2n
+from mpmath import mp
+mp.dps = 50 
 
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
+def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
+    """
+    Returns the correction factor for the Planck function.
+    """
+    
+    kl = kappa_line_lte(Te, ne, nion, Z, Tr, trans, n_max=1500)
+    kc = kappa_cont(freq, Te, ne, nion, Z)
+    
+    return (kc + kl*bni)/(kc + kl*bnf*bnfni)
+    
+def I_cont(nu, Te, tau, I0):
+    """
+    Returns the continuum intensity.
+    """
+    
+    bnu = blackbody_nu(nu, Te)
+    
+    return bnu*(1. - np.exp(-tau)) + I0*np.exp(-tau)
 
-
-#def itau(temp, dens, trans, n_max=1000, other=''):
-    #"""
-    #Gives the integrated optical depth for a given temperature and density. 
-    #The emission measure is unity. The output units are Hz.
+def I_external(nu, Tbkg, Tff, tau_ff, Tr, nu0=100e6*u.MHz, alpha=-2.6):
+    """
+    """
+    if Tbkg.value != 0:
+        bnu_bkg = blackbody_nu(nu, Tbkg)
+    else:
+        bnu_bkg = 0
     
-    #:returns: principal quantum number and integrated optical depth.
-    #:rtype: numpy arrays.
-    #"""
-    
-    #bbn = load_betabn(temp, dens, other)
-    #n = bbn[:,0]
-    #b = bbn[:,1]
-    
-    #b = b[:np.where(n==n_max)[0]]
-    
-    
-    #t = str2val(temp)
-    #d = str2val(dens)
-    
-    #dn = fc.set_dn(trans)
-    #mdn = Mdn(dn)
-    
-    ## Convert the betabn values to the corresponding transition
-    #if 'alpha' not in trans:
+    if Tff.value != 0:
+        bnu_ff = blackbody_nu(nu, Tff)
+        exp_ff = (1. - np.exp(-tau_ff))
+    else:
+        bnu_ff = 0
+        exp_ff = 0
         
-        ##specie, trans, n, freq = fc.make_line_list('CI', n_max, dn)
-        ##bn = load_bn(temp, dens, other='')
-        ##beta = (1 - np.divide(bn[dn::], bn[0::])*np.exp(-h*freq*1e6/(k_B*t)))/ \
-               ##(1 - np.exp(-h*freq*1e6/(k_B*t)))
-        #b = make_betabn(temp, dens, trans, n_max=n_max+1, other='')[1]
-    #n = n[:np.where(n==n_max)[0]]
+    if Tr.value != 0:
+        Tpl = Tr*np.power(nu/nu0, alpha)
+        bnu_pl = blackbody_nu(nu, Tpl)
+    else:
+        bnu_pl = 0
     
-    #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
+    return bnu_bkg + bnu_ff*exp_ff + bnu_pl
+
+def I_total(nu, Te, tau, I0, eta):
+    """
+    """
     
-    #return n, i
+    bnu = blackbody_nu(nu, Te)
+    
+    #exp = np.empty(len(tau), dtype=mp.mpf)
+    #for i,t in enumerate(tau):
+        #exp[i] = mp.exp(-t)
+    exp = np.exp(-tau)
+    
+    return bnu*eta*(1. - exp) + I0*exp
 
 def itau(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
     """
@@ -106,7 +128,142 @@ def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau')
         
     return n, i
 
+def j_line_lte(n, ne, nion, Te, Z, trans):
+    """
+    """
+    
+    trans = fc.set_name(trans)
+    
+    Aninf = np.loadtxt('{0}/rates/einstein_Anm_{1}.txt'.format(LOCALDIR, trans))
+    cte = h/4./np.pi
+    Nni = level_pop_lte(n, ne, nion, Te, Z)
+    lc = line_center(nu)
+    
+    return cte*Aninf[:,2]*Nni*lc
 
+def kappa_cont(freq, Te, ne, nion, Z):
+    """
+    """
+    
+    nu = freq.to('GHz').value
+    v = 0.65290+2./3.*np.log10(nu) - np.log10(Te.to('K').value)
+    
+    kc = np.zeros(len(nu))
+    
+    #mask_1 = v <= -2.6
+    mask_2 = (v > -5) & (v <= -0.25)
+    mask_3 = v > -0.25
+    
+    #kc[mask_1] = 6.9391e-8*np.power(Z, 2)*ne*nion*np.power(nu[mask_1], -2.)* \
+                 #np.power(1e4/Te.to('K').value, 1.5)* \
+                 #(4.6950 - np.log10(Z) + 1.5*np.log(Te.to('K').value/1e4) - np.log10(nu[mask_1]))
+    
+    v_2 = v[mask_2]
+    log10I_m0 = -1.232644*v_2 + 0.098747
+    kc[mask_2] = kappa_cont_base(nu[mask_2], Te.to('K').value, ne.cgs.value, 
+                                 nion.cgs.value, Z)*np.power(10., log10I_m0)
+    
+    v_3 = v[mask_3]
+    log10I_m0 = -1.084191*v_3 + 0.135860
+    kc[mask_3] = kappa_cont_base(nu[mask_3], Te.to('K').value, ne.cgs.value, 
+                                 nion.cgs.value, Z)*np.power(10., log10I_m0)
+    
+    #if v < -2.:
+        #kc = 6.9391e-8*np.power(Z, 2)*ne*nion*np.power(nu, -2.)*np.power(1e4/Te, 1.5)* \
+             #(4.6950 - np.log10(Z) + 1.5*np.log(Te/1e4) - np.log10(nu))
+    #elif v >= -2. and v <= -0.25:
+        #log10I_m0 = -1.232644*v + 0.098747
+    #elif v > -0.25:
+        #log10I_m0 = -1.084191*v + 0.135860
+    
+    #if v >= -2.:
+        #kc = 4.6460/np.power(nu, 7./3.)/np.power(Te, 1.5)* \
+            #(np.exp(4.7993e-2*nu/Te) - 1.)* \
+            #np.exp(aliv/np.log10(np.exp(1)))#*np.exp(-h*freq/k_B/Te)
+        
+    return kc*u.pc**-1*np.exp(-h.cgs.value*nu/k_B.cgs.value/Te.cgs.value)
+
+def kappa_cont_base(nu, Te, ne, nion, Z):
+    
+    return 4.6460/np.power(nu, 7./3.)/np.power(Te, 1.5)* \
+            (np.exp(4.7993e-2*nu/Te) - 1.)*np.power(Z, 8./3.)*ne*nion
+
+def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
+    """
+    Computes the line absorption coefficient between levels ni and nf, ni>nf.
+    This can only go up to n_max 1500 because of the tables used for the
+    Einstein Anm coefficients.
+    """
+    
+    cte = np.power(c, 2.)/(16.*np.pi)*np.power(np.power(h, 2)/(2.*np.pi*m_e*k_B), 3./2.)
+    
+    bn = load_bn2(val2str(Te), ne, other='case_diffuse_{0}'.format(val2str(Tr)))
+    bn = bn[:np.where(bn[:,0] == n_max)[0]]
+    Anfni = np.loadtxt('{0}/rates/einstein_Anm_{1}.txt'.format(LOCALDIR, trans))
+    
+    # Cut the Einstein Amn coefficients table to match the bn values
+    i_bn_i = best_match_indx2(bn[0,0], Anfni[:,1])
+    i_bn_f = best_match_indx2(bn[-1,0], Anfni[:,0])
+    Anfni = Anfni[i_bn_i:i_bn_f+1]
+    
+    ni = Anfni[:,0]
+    nf = Anfni[:,1]
+    
+    omega_ni = 2*np.power(ni, 2)
+    omega_i = 1.
+    
+    xi_ni = xi(ni, Te, Z)
+    xi_nf = xi(nf, Te, Z)
+    
+    exp_ni = np.exp(xi_ni.value)
+    exp_nf = np.exp(xi_nf.value)
+    
+    #print len(Anfni), len(bn[1:,-1]), len(bn[:-1,-1]), len(omega_ni[:]), len(ni), len(exp_ni), len(exp_nf)
+    kl = cte.value/np.power(Te, 3./2.)*ne*nion*Anfni[:,2]*omega_ni[:]/omega_i*(bn[1:,-1]*exp_ni - bn[:-1,-1]*exp_nf)
+    #kl = 
+    
+    return kl
+
+def kappa_line_lte(nu, Te, ne, nion, Z, Tr, line, n_min=1, n_max=1500):
+    """
+    Returns the line absorption coefficient.
+    """
+    
+    ni = f2n(nu.to('MHz').value, line, n_max) + 1.
+    
+    trans = fc.set_name(line)
+    
+    cte = (np.power(c, 2.)/(8.*np.pi))
+    Aninf = np.loadtxt('{0}/rates/einstein_Anm_{1}.txt'.format(LOCALDIR, trans))
+    Aninf = Aninf[np.where(Aninf[:,1] == n_min)[0]:np.where(Aninf[:,1] == n_max)[0]]
+    
+    #Nni = np.empty(len(ni), dtype=mp.mpf)
+    #exp = np.empty(len(ni), dtype=mp.mpf)
+    #for i,n in enumerate(ni):
+        #Nni[i] = mp.mpf(level_pop_lte(n, ne, nion, Te, Z).cgs.value)
+        #exp[i] = np.exp(-h.cgs.value*nu[i].cgs.value/k_B.cgs.value/Te.cgs.value)
+    exp = np.exp(-h*nu/k_B/Te)
+    Nni = level_pop_lte(ni, ne, nion, Te, Z)
+    
+    return cte/np.power(nu, 2.)*Nni*Aninf[:,2]*(1. - exp)#*np.power(Aninf[:,0]/Aninf[:,1], 2.)
+    
+
+def level_pop_lte(n, ne, nion, Te, Z):
+    """
+    Returns the level population of level n.
+    The return has units of cm-3.
+    """
+    
+    omega_ni = 2*np.power(n, 2)
+    omega_i = 1.
+    
+    xi_n = xi(n, Te, Z)
+    
+    exp_xi_n = np.exp(xi_n.value)
+    
+    Nn = ne*nion*np.power(np.power(h, 2.)/(2*np.pi*m_e*k_B*Te), 1.5)*omega_ni/omega_i/2.*exp_xi_n
+    
+    return Nn
 
 def load_itau_dict(dict, trans, n_max=1000, verbose=False, value='itau'):
     """
@@ -298,19 +455,6 @@ def itau_norad(n, te, b, dn, mdn):
     
     return -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*te))/np.power(te, 5./2.)
 
-#def load_betabn(temp, dens, other=''):
-    #"""
-    #Loads a model for the CRRL emission.
-    #"""
-    
-    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    #mod_file = '{0}/bbn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat_bn_beta{3}'.format(LOCALDIR, temp, dens, other)
-    
-    #data = np.loadtxt(mod_file)
-    
-    #return data
-
 def load_betabn(temp, dens, other='', trans='alpha', verbose=False):
     """
     Loads a model for the CRRL emission.
@@ -343,12 +487,12 @@ def load_betabn_h(temp, dens, other='', trans='alpha', verbose=False):
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
-        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}*_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
+        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
         if verbose:
             print 'Will try to locate: {0}'.format(model_file)
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     else:
-        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}*_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
+        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
         if verbose:
             print 'Will try to locate: {0}'.format(model_file)
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
@@ -372,7 +516,7 @@ def load_bn(temp, dens, other=''):
     
     return data
 
-def load_bn2(temp, dens, trans, other=''):
+def load_bn2(temp, dens, other=''):
     """
     Loads the bn values from the CRRL models.
     """
@@ -380,11 +524,11 @@ def load_bn2(temp, dens, trans, other=''):
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens)
+        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens)
         print "Loading {0}".format(mod_file)
         mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens))[0]
     else:
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens, other)
+        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens, other)
         print "Loading {0}".format(mod_file)
         mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens, other))[0]
     
@@ -552,3 +696,9 @@ def valid_ne(trans):
     ne = np.asarray([float(model.split('_')[6].rstrip('0')) for model in models])
     
     return np.unique(ne)
+
+def xi(n, Te, Z):
+    """
+    """
+    
+    return np.power(Z, 2.)*h*c*Ryd/(k_B*np.power(n, 2)*Te)

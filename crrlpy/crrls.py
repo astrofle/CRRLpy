@@ -74,12 +74,24 @@ def best_match_indx(value, array, tol):
         return upp[0]
     
 def best_match_indx2(value, array):
+    """
+    """
     
     array = np.array(array)
     subarr = abs(array - value)
     subarrmin = subarr.min()
     
     return np.where(subarr == subarrmin)[0][0]
+
+def best_match_value(value, array):
+    """
+    """
+    
+    array = np.array(array)
+    subarr = abs(array - value)
+    subarrmin = subarr.min()
+    
+    return array[np.where(subarr == subarrmin)[0][0]]
     
 def blank_lines(freq, tau, reffreqs, v0, dv0):
     
@@ -164,16 +176,16 @@ def dv_minus_doppler(dV, ddV, dD, ddD):
     
     return dL, ddL
 
-def f2n(f, specie, transition, nmax=1500):
+def f2n(f, line, n_max=1500):
     """
     Comverts a given frequency to a principal quantum 
     number n of a given transition and atomic specie.
     """
     
-    dn = set_dn(transition)
-    specie, trans, nn, freq = make_line_list(specie, nmax, dn)
-    #fii = np.in1d(freq, f)
-    fii = best_match_indx2(f, freq)
+    dn = set_dn(line)
+    line, nn, freq = make_line_list(line, n_max=n_max)
+    fii = np.in1d(freq, f)
+    #fii = best_match_indx2(f, freq)
     
     return nn[fii]
 
@@ -920,6 +932,18 @@ def lookup_freq(n, specie, trans):
     
     return freqs[indx]
 
+def lorentz_width(n, ne, Te, Tr, W, dn=1):
+    """
+    Gives the Lorentzian line width due to a combination
+    of radiation and collisional broadening. The width
+    is the FWHM in Hz. It uses the models of Salgado et al. (2015).
+    """
+    
+    dL_r = radiation_broad_salgado(n, W, Tr)
+    dL_p = pressure_broad_salgado(n, Te, ne, dn)
+    
+    return dL_r + dL_p
+
 def mask_outliers(data, m=2):
     """
     Masks values larger than m times the data median.
@@ -933,16 +957,15 @@ def natural_sort(l):
     """
     l.sort(key=alphanum_key)
 
-def n2f(n, specie, transition, n_max=1500):
+def n2f(n, line, n_min=1, n_max=1500):
     """
     Converts a given principal quantum number n to the 
-    frequency of a given transition and atomic specie.
+    frequency of a given line.
     """
     
-    dn = set_dn(transition)
-    specie, trans, nn, freq = make_line_list(specie, n_max, dn)
+    dn = set_dn(line)
+    line, nn, freq = make_line_list(line, n_min, n_max)
     nii = np.in1d(nn, n)
-    #nii = best_match_indx2(n, nn)
     
     return freq[nii]
 
@@ -1126,81 +1149,15 @@ def pressure_broad(n, Te, ne):
     
     return 2e-5*np.power(Te, -3./2.)*np.exp(-26./np.power(Te, 1./3.))*ne*np.power(n, 5.2)
 
-def pressure_broad_salgado(n, Te, ne):
+def pressure_broad_salgado(n, Te, ne, dn=1):
     """
     Pressure induced broadening in Hz.
     Salgado et al. (2015)
     """
+    a, g = pressure_broad_coefs(Te)
     
-    te = [10, 20, 30, 40, 50, 60, 70, 80, 90,
-          100, 200, 300, 400, 500, 600, 700,
-          800, 900, 1000, 2000, 3000, 4000, 5000,
-          6000, 7000, 8000, 9000, 10000, 20000, 30000]
-    te_indx = best_match_indx2(Te, te)
-    
-    a = [-10.974098,           
-         -10.669695,
-         -10.494541,
-         -10.370271,
-         -10.273172,
-         -10.191374,
-         -10.124309,
-         -10.064037,
-         -10.010153,
-         -9.9613006,
-         -9.6200366,
-         -9.4001678,
-         -9.2336349,
-         -9.0848840,
-         -8.9690170,
-         -8.8686695,
-         -8.7802238,
-         -8.7012421,
-         -8.6299908,
-         -8.2718376,
-         -8.0093937,
-         -7.8344941,
-         -7.7083367,
-         -7.6126791,
-         -7.5375720,
-         -7.4770500,
-         -7.4272885,
-         -7.3857095,
-         -7.1811733,
-         -7.1132522]
-    
-    gammac = [5.4821631,
-              5.4354009,
-              5.4071360,
-              5.3861013,
-              5.3689105,
-              5.3535398,
-              5.3409679,
-              5.3290318,
-              5.3180304,
-              5.3077770,
-              5.2283700,
-              5.1700702,
-              5.1224893,
-              5.0770049,
-              5.0408369,
-              5.0086342,
-              4.9796105,
-              4.9532071,
-              4.9290080,
-              4.8063682,
-              4.7057576,
-              4.6356118,
-              4.5831746,
-              4.5421547,
-              4.5090104,
-              4.4815675,
-              4.4584053,
-              4.4385507,
-              4.3290786,
-              4.2814240]
-    
-    return ne*np.power(10., a[te_indx])*np.power(n, gammac[te_indx])
+    return ne*np.power(10., a)*np.power(n, g) #+ 
+               #np.power(10., a)*np.power(n + dn, g))#/4./np.pi
 
 def pressure_broad_coefs(Te):
     

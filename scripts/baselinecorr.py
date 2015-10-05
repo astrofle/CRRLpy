@@ -5,7 +5,6 @@ import glob
 import re
 import sys
 import argparse
-from scipy.interpolate import UnivariateSpline
 
 def main(spec, basename, order, median, x_col, y_col, save, baseline):
     """
@@ -42,20 +41,18 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         
         # Use a polynomial to remove the baseline
         bp = np.polynomial.polynomial.polyfit(gx, gy, order)
-        b = np.polynomial.polynomial.polyval(gx, bp)
-        #b = UnivariateSpline(gx, gy, k=order)
+        # Interpolate and extrapolate to the original x axis
+        b = np.polynomial.polynomial.polyval(x, bp)
         
         if median:
             # Only keep the baseline shape
-            #gb = b(x) - np.median(b(x))
             gb = b - np.median(b)
         else:
-            #gb = b(x)
             gb = b
 
         if save:
             np.savetxt('{0}_{1}.ascii'.format(baseline, sb), 
-                       np.c_[x, gb])#np.ma.masked_where(np.ma.getmask(mx), gb).compressed()])
+                       np.c_[x, gb])
         
         data[:,y_col] = y - gb
                 
