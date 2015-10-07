@@ -270,26 +270,26 @@ def load_itau_dict(dict, trans, n_max=1000, verbose=False, value='itau'):
     Loads the models defined by dict.
     """
     
-    data = np.zeros((len(dict['te']),2,n_max))
+    data = np.zeros((len(dict['Te']),2,n_max))
     
-    for i,t in enumerate(dict['te']):
+    for i,t in enumerate(dict['Te']):
         
         if verbose:
-            print "Trying to load model: ne={0}, te={1}, tr={2}".format(dict['ne'][i], t, dict['tr'][i])
+            print "Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i])
         n, int_tau = itau(t, 
-                          '{0:.4f}'.format(dict['ne'][i]), 
+                          dict['ne'][i], 
                           trans, 
                           n_max=n_max, 
-                          other=dict['tr'][i], 
+                          other=dict['Tr'][i], 
                           verbose=verbose, 
                           value=value)
         
         data[i,0] = n
         data[i,1] = int_tau
     
-    te = np.asarray(map(str2val, dict['te']))
+    te = np.asarray(map(str2val, dict['Te']))
     
-    return [te, dict['ne'], dict['tr'], data]
+    return [te, dict['ne'], dict['Tr'], data]
 
 def load_itau_all(trans='alpha', n_max=1000, verbose=False, value='itau'):
     """
@@ -455,7 +455,7 @@ def itau_norad(n, te, b, dn, mdn):
     
     return -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*te))/np.power(te, 5./2.)
 
-def load_betabn(temp, dens, other='', trans='alpha', verbose=False):
+def load_betabn(temp, dens, other='', trans='CIalpha', verbose=False):
     """
     Loads a model for the CRRL emission.
     """
