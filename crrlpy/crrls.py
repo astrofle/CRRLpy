@@ -1145,6 +1145,7 @@ def plot_fit_single(fig, x, y, fit, params, rms, x0, \
 def pressure_broad(n, Te, ne):
     """
     Pressure induced broadening in Hz.
+    Shaver (1975)
     """
     
     return 2e-5*np.power(Te, -3./2.)*np.exp(-26./np.power(Te, 1./3.))*ne*np.power(n, 5.2)
@@ -1152,12 +1153,12 @@ def pressure_broad(n, Te, ne):
 def pressure_broad_salgado(n, Te, ne, dn=1):
     """
     Pressure induced broadening in Hz.
+    This gives the FWHM of a Lorentzian line.
     Salgado et al. (2015)
     """
     a, g = pressure_broad_coefs(Te)
     
-    return ne*np.power(10., a)*np.power(n, g) #+ 
-               #np.power(10., a)*np.power(n + dn, g))#/4./np.pi
+    return ne*np.power(10., a)*(np.power(n, g) + np.power(n + dn, g))/2./np.pi
 
 def pressure_broad_coefs(Te):
     
@@ -1239,7 +1240,6 @@ def pressure_broad_coefs(Te):
                                   bounds_error=False,
                                   fill_value=0.0)
     
-    #return [a[te_indx], gammac[te_indx]]
     return [a_func(Te), g_func(Te)]
     
 def radiation_broad(n, W, Tr):
@@ -1252,6 +1252,7 @@ def radiation_broad(n, W, Tr):
 def radiation_broad_salgado(n, W, Tr):
     """
     Radiation induced broadening in Hz.
+    This gives the FWHM of a Lorentzian line.
     Salgado et al. (2015)
     """
     
@@ -1632,24 +1633,6 @@ def voigt_area_err(area, amp, damp, fwhm, dfwhm, gamma, sigma):
     err = np.sqrt(err_a**2 + err_f**2 + err_c**2)
     
     return err
-
-def voigt_integral(amplitude, center, sigma, gamma, xmin, xmax):
-    return sint.quad(Voigt, xmin, xmax, args=(amplitude, center, sigma, gamma))
-
-def voigt_model(freq, amp, mu, sigma, gamma=None, c=0):
-    """
-    Evaluate a Voigt profile with an arbitrary offset level c.
-    """
-    
-    if not gamma:
-        gamma = sigma
-    
-    vmod = VoigtModel()
-    cmod = ConstantModel()
-
-    mod = vmod + cmod
-    
-    return mod.eval(x=freq, amplitude=amp, center=mu, sigma=sigma, gamma=gamma, c=c)
 
 def voigt_peak(A, alphaD, alphaL):
     """
