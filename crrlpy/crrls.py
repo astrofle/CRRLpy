@@ -14,6 +14,7 @@ import pylab as plt
 import numpy as np
 import scipy.integrate as sint
 
+from astropy.constants import k_B
 from lmfit import Model
 from lmfit.models import VoigtModel, ConstantModel, GaussianModel, PolynomialModel, PowerLawModel
 from scipy.special import wofz
@@ -1257,6 +1258,18 @@ def radiation_broad_salgado(n, W, Tr):
     """
     
     return 6.096e-17*W*Tr*np.power(n, 5.8)
+
+def radiation_broad_salgado_general(n, W, Tr, nu0, alpha):
+    """
+    Radiation induced broadening in Hz.
+    This gives the FWHM of a Lorentzian line.
+    Salgado et al. (2015)
+    """
+    
+    cte = 2./np.pi*2.14e4*np.power(6.578e15/nu0, alpha + 1.)*k_B.cgs.value*nu0
+    dnexp = alpha - 2.
+    
+    return W*cte*Tr*np.power(n, -3*alpha - 2.)*(1 + np.power(2., dnexp) + np.power(3., dnexp))
 
 def remove_baseline(freq, tb, model, p0, mask):
     """
