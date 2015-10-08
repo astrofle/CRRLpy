@@ -1263,6 +1263,7 @@ def radiation_broad_salgado_general(n, W, Tr, nu0, alpha):
     """
     Radiation induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
+    The expression is valid for power law like radiation fields.
     Salgado et al. (2015)
     """
     

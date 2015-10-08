@@ -65,7 +65,7 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
             dL = dL_r + dL_p
             n_itau, a_itau = rrlmod.itau(rrlmod.val2str(Te), 
                                         ne, 
-                                        trans[2:], n_max=n_max, 
+                                        trans, n_max=n_max, 
                                         other='case_diffuse_{0}'.format(rrlmod.val2str(Tr)),
                                         verbose=verbose)
         
