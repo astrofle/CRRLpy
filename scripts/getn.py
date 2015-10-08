@@ -16,7 +16,7 @@ def get_n(line_list):
         l.split('/')[-1]
         nl[i] = int(re.findall('n\d+', l)[0][1:])
     
-    print np.mean(nl)
+    print int(round(np.mean(nl)))
     if nl[0] < nl[-1]:
         print "{0}-{1}".format(nl[0], nl[-1])
     else:

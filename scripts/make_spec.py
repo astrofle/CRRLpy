@@ -63,10 +63,16 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
             dL_r = crrls.radiation_broad_salgado(n_l, W, Tr)/1e6
             dL_p = crrls.pressure_broad_salgado(n_l, Te, ne)/1e6
             dL = dL_r + dL_p
+            
+            if Tr != 0:
+                other = 'case_diffuse_{0}'.format(rrlmod.val2str(Tr))
+            else:
+                other = ''
+            
             n_itau, a_itau = rrlmod.itau(rrlmod.val2str(Te), 
                                         ne, 
                                         trans, n_max=n_max, 
-                                        other='case_diffuse_{0}'.format(rrlmod.val2str(Tr)),
+                                        other=other,
                                         verbose=verbose)
         
             dD_f = crrls.dv2df(f_l, dD*1e3)

@@ -69,18 +69,18 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
         if not freq:
             for i,n in enumerate(qns):
                 # Convert the model velocity axis to frequency
-                fm = crrls.vel2freq(freqs[i]*(1+z), xm*1e3)
+                fm = crrls.vel2freq(freqs[i]*(1.+z), xm*1e3)
                 p = fm.argsort()
-                ym = ym[p]
+                ymod = ym[p]
                 fm = fm[p]
                 
                 # Interpolate the model axis to the spectrum grid
-                interp_ym = interpolate.interp1d(fm, ym,
+                interp_ym = interpolate.interp1d(fm, ymod,
                                                 kind='linear',
                                                 bounds_error=False,
                                                 fill_value=0.0)
                 y_mod += interp_ym(x)
-                
+                                
         else:
             # Interpolate the model axis to the spectrum grid
             interp_ym = interpolate.interp1d(xm, ym,
