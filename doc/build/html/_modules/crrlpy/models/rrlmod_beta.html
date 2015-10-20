@@ -1,0 +1,882 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>crrlpy.models.rrlmod_beta &mdash; CRRLpy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/sphinx_paramlinks.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="CRRLpy 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for crrlpy.models.rrlmod_beta</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="kn">as</span> <span class="nn">u</span>
+
+<span class="kn">from</span> <span class="nn">crrlpy</span> <span class="kn">import</span> <span class="n">frec_calc</span> <span class="k">as</span> <span class="n">fc</span>
+<span class="kn">from</span> <span class="nn">astropy.constants</span> <span class="kn">import</span> <span class="n">h</span><span class="p">,</span> <span class="n">k_B</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m_e</span><span class="p">,</span> <span class="n">Ryd</span><span class="p">,</span> <span class="n">e</span>
+<span class="kn">from</span> <span class="nn">astropy.analytic_functions</span> <span class="kn">import</span> <span class="n">blackbody_nu</span>
+<span class="kn">from</span> <span class="nn">crrlpy.crrls</span> <span class="kn">import</span> <span class="n">natural_sort</span><span class="p">,</span> <span class="n">best_match_indx2</span><span class="p">,</span> <span class="n">f2n</span><span class="p">,</span> <span class="n">n2f</span>
+<span class="kn">from</span> <span class="nn">mpmath</span> <span class="kn">import</span> <span class="n">mp</span>
+<span class="n">mp</span><span class="o">.</span><span class="n">dps</span> <span class="o">=</span> <span class="mi">50</span> 
+
+<span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+
+<div class="viewcode-block" id="broken_plaw"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.broken_plaw">[docs]</a><span class="k">def</span> <span class="nf">broken_plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        
+    <span class="n">low</span> <span class="o">=</span> <span class="n">plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">x0</span><span class="p">)</span>
+    <span class="n">hgh</span> <span class="o">=</span> <span class="n">plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">x0</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">low</span> <span class="o">+</span> <span class="n">hgh</span>
+    
+</div>
+<div class="viewcode-block" id="eta"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.eta">[docs]</a><span class="k">def</span> <span class="nf">eta</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the correction factor for the Planck function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">kl</span> <span class="o">=</span> <span class="n">kappa_line_lte</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">)</span>
+    <span class="n">kc</span> <span class="o">=</span> <span class="n">kappa_cont</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">kc</span> <span class="o">+</span> <span class="n">kl</span><span class="o">*</span><span class="n">bni</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">kc</span> <span class="o">+</span> <span class="n">kl</span><span class="o">*</span><span class="n">bnf</span><span class="o">*</span><span class="n">bnfni</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="I_Bnu"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.I_Bnu">[docs]</a><span class="k">def</span> <span class="nf">I_Bnu</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">Inu_funct</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param specie: Atomic specie to calculate for.</span>
+<span class="sd">    :param n: Principal quantum number at which to evaluate :math:`\\frac{2}{\\pi}\\sum_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.</span>
+<span class="sd">    :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It&#39;s first argument must be the frequency.</span>
+<span class="sd">    :param *args: Arguments to Inu_funct. The frequency must be left out. \</span>
+<span class="sd">    The frequency will be passed internally in units of MHz. Use the same \</span>
+<span class="sd">    unit when required. :paramref:`Inu_funct` must take the frequency as first parameter.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">cte</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">gauss</span><span class="o">**</span><span class="mf">2.</span><span class="o">/</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">m_e</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">c</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">Ryd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;1/cm&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">Z</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
+
+    <span class="n">Inu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">BninfInu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">dn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">):</span>
+        <span class="n">nu</span><span class="p">[:,</span><span class="n">dn</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">n2f</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">specie</span><span class="o">+</span><span class="n">fc</span><span class="o">.</span><span class="n">set_trans</span><span class="p">(</span><span class="n">dn</span><span class="p">))</span>
+        <span class="n">Inu</span><span class="p">[:,</span><span class="n">dn</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Inu_funct</span><span class="p">(</span><span class="n">nu</span><span class="p">[:,</span><span class="n">dn</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span>
+        <span class="n">BninfInu</span><span class="p">[:,</span><span class="n">dn</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">cte</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">n</span><span class="o">**</span><span class="mf">6.</span><span class="o">/</span><span class="p">(</span><span class="n">dn</span><span class="o">*</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">dn</span><span class="p">)</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">Mdn</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span><span class="o">*</span><span class="n">Inu</span><span class="p">[:,</span><span class="n">dn</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="mf">2.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">BninfInu</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="I_broken_plaw"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.I_broken_plaw">[docs]</a><span class="k">def</span> <span class="nf">I_broken_plaw</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">nu0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the blackbody function evaluated at nu. </span>
+<span class="sd">    As temperature a broken power law is used.</span>
+<span class="sd">    The power law shape is has parameters: Tr, nu0, alpha1 and alpha2.</span>
+<span class="sd">    </span>
+<span class="sd">    :param nu: Frequency. (Hz) or astropy.units.Quantity_</span>
+<span class="sd">    :param Tr: Temperature at nu0. (K) or astropy.units.Quantity_</span>
+<span class="sd">    :param nu0: Frequency at which the spectral index changes. (Hz) or astropy.units.Quantity_</span>
+<span class="sd">    :param alpha1: spectral index for :math:`\\nu&lt;\\nu_0`</span>
+<span class="sd">    :param alpha2: spectral index for :math:`\\nu\\geq\\nu_0`</span>
+<span class="sd">    :returns: Specific intensity in erg / (cm2 Hz s sr). See `astropy.analytic_functions.blackbody.blackbody_nu`__</span>
+<span class="sd">    </span>
+<span class="sd">    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity</span>
+<span class="sd">    __ blackbody_</span>
+<span class="sd">    .. _blackbody: http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">Tbpl</span> <span class="o">=</span> <span class="n">broken_plaw</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nu0</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">)</span>
+    
+    <span class="n">bnu_bpl</span> <span class="o">=</span> <span class="n">blackbody_nu</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Tbpl</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">bnu_bpl</span>
+</div>
+<div class="viewcode-block" id="I_cont"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.I_cont">[docs]</a><span class="k">def</span> <span class="nf">I_cont</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">unitless</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param nu: Frequency. (Hz) or astropy.units.Quantity_</span>
+<span class="sd">    :param Te: Temperature of the source function. (K) or astropy.units.Quantity_</span>
+<span class="sd">    :param tau: Optical depth of the medium.</span>
+<span class="sd">    :param I0: Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see :paramref:`unitless`.</span>
+<span class="sd">    :param unitless: If True the return </span>
+<span class="sd">    :returns: The specific intensity of a ray of light after traveling in an LTE \</span>
+<span class="sd">    medium with source function :math:`B_{\\nu}(T_{e})` after crossing an optical \</span>
+<span class="sd">    depth :math:`\\tau_{\\nu}`. The units are erg / (cm2 Hz s sr). See `astropy.analytic_functions.blackbody.blackbody_nu`__</span>
+<span class="sd">    </span>
+<span class="sd">    __ blackbody_</span>
+<span class="sd">    .. _blackbody: http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">bnu</span> <span class="o">=</span> <span class="n">blackbody_nu</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">unitless</span><span class="p">:</span>
+        <span class="n">bnu</span> <span class="o">=</span> <span class="n">bnu</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span>
+        
+    <span class="k">return</span> <span class="n">bnu</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tau</span><span class="p">))</span> <span class="o">+</span> <span class="n">I0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tau</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="I_external"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.I_external">[docs]</a><span class="k">def</span> <span class="nf">I_external</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Tbkg</span><span class="p">,</span> <span class="n">Tff</span><span class="p">,</span> <span class="n">tau_ff</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">nu0</span><span class="o">=</span><span class="mf">100e6</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">MHz</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=-</span><span class="mf">2.6</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This method is equivalent to the IDL routine </span>
+<span class="sd">    </span>
+<span class="sd">    :param nu: Frequency. (Hz) or astropy.units.Quantity_</span>
+<span class="sd">    </span>
+<span class="sd">    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">Tbkg</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">bnu_bkg</span> <span class="o">=</span> <span class="n">blackbody_nu</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Tbkg</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bnu_bkg</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">if</span> <span class="n">Tff</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">bnu_ff</span> <span class="o">=</span> <span class="n">blackbody_nu</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Tff</span><span class="p">)</span>
+        <span class="n">exp_ff</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tau_ff</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bnu_ff</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">exp_ff</span> <span class="o">=</span> <span class="mi">0</span>
+        
+    <span class="k">if</span> <span class="n">Tr</span><span class="o">.</span><span class="n">value</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">Tpl</span> <span class="o">=</span> <span class="n">plaw</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nu0</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span><span class="c">#Tr*np.power(nu/nu0, alpha)</span>
+        <span class="n">bnu_pl</span> <span class="o">=</span> <span class="n">blackbody_nu</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Tpl</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">bnu_pl</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">return</span> <span class="n">bnu_bkg</span> <span class="o">+</span> <span class="n">bnu_ff</span><span class="o">*</span><span class="n">exp_ff</span> <span class="o">+</span> <span class="n">bnu_pl</span>
+</div>
+<div class="viewcode-block" id="I_total"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.I_total">[docs]</a><span class="k">def</span> <span class="nf">I_total</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">eta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">bnu</span> <span class="o">=</span> <span class="n">blackbody_nu</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">)</span>
+    
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">tau</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">bnu</span><span class="o">*</span><span class="n">eta</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">exp</span><span class="p">)</span> <span class="o">+</span> <span class="n">I0</span><span class="o">*</span><span class="n">exp</span>
+</div>
+<div class="viewcode-block" id="itau"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.itau">[docs]</a><span class="k">def</span> <span class="nf">itau</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gives the integrated optical depth for a given temperature and density. </span>
+<span class="sd">    The emission measure is unity. The output units are Hz.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">dens</span>
+    
+    <span class="n">dn</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_dn</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    <span class="n">mdn</span> <span class="o">=</span> <span class="n">Mdn</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
+    
+    <span class="n">bbn</span> <span class="o">=</span> <span class="n">load_betabn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="n">nimin</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">n_min</span><span class="p">,</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">nimax</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">bbn</span><span class="p">[</span><span class="n">nimin</span><span class="p">:</span><span class="n">nimax</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">bbn</span><span class="p">[</span><span class="n">nimin</span><span class="p">:</span><span class="n">nimax</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;itau&#39;</span><span class="p">:</span>
+        <span class="c">#i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">itau_norad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">mdn</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;bbnMdn&#39;</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">b</span><span class="o">*</span><span class="n">dn</span><span class="o">*</span><span class="n">mdn</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">b</span>
+        
+    <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span>
+</div>
+<div class="viewcode-block" id="itau_h"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.itau_h">[docs]</a><span class="k">def</span> <span class="nf">itau_h</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gives the integrated optical depth for a given temperature and density. </span>
+<span class="sd">    The emission measure is unity. The output units are Hz.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">dens</span>
+    
+    <span class="n">dn</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_dn</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    <span class="n">mdn</span> <span class="o">=</span> <span class="n">Mdn</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
+    
+    <span class="n">bbn</span> <span class="o">=</span> <span class="n">load_betabn_h</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[:</span><span class="n">n_max</span><span class="p">]</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[:</span><span class="n">n_max</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;itau&#39;</span><span class="p">:</span>
+        <span class="c">#i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">itau_norad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">mdn</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;bbnMdn&#39;</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">b</span><span class="o">*</span><span class="n">dn</span><span class="o">*</span><span class="n">mdn</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">b</span>
+        
+    <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span>
+</div>
+<div class="viewcode-block" id="j_line_lte"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.j_line_lte">[docs]</a><span class="k">def</span> <span class="nf">j_line_lte</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">trans</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    
+    <span class="n">Aninf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/rates/einstein_Anm_{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    <span class="n">cte</span> <span class="o">=</span> <span class="n">h</span><span class="o">/</span><span class="mf">4.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+    <span class="n">Nni</span> <span class="o">=</span> <span class="n">level_pop_lte</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    <span class="n">lc</span> <span class="o">=</span> <span class="n">line_center</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">cte</span><span class="o">*</span><span class="n">Aninf</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">Nni</span><span class="o">*</span><span class="n">lc</span>
+</div>
+<div class="viewcode-block" id="kappa_cont"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.kappa_cont">[docs]</a><span class="k">def</span> <span class="nf">kappa_cont</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">nu</span> <span class="o">=</span> <span class="n">freq</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;GHz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="mf">0.65290</span><span class="o">+</span><span class="mf">2.</span><span class="o">/</span><span class="mf">3.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Te</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    
+    <span class="n">kc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">nu</span><span class="p">))</span>
+    
+    <span class="c">#mask_1 = v &lt;= -2.6</span>
+    <span class="n">mask_2</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">5</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">v</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">)</span>
+    <span class="n">mask_3</span> <span class="o">=</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.25</span>
+    
+    <span class="c">#kc[mask_1] = 6.9391e-8*np.power(Z, 2)*ne*nion*np.power(nu[mask_1], -2.)* \</span>
+                 <span class="c">#np.power(1e4/Te.to(&#39;K&#39;).value, 1.5)* \</span>
+                 <span class="c">#(4.6950 - np.log10(Z) + 1.5*np.log(Te.to(&#39;K&#39;).value/1e4) - np.log10(nu[mask_1]))</span>
+    
+    <span class="n">v_2</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">mask_2</span><span class="p">]</span>
+    <span class="n">log10I_m0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.232644</span><span class="o">*</span><span class="n">v_2</span> <span class="o">+</span> <span class="mf">0.098747</span>
+    <span class="n">kc</span><span class="p">[</span><span class="n">mask_2</span><span class="p">]</span> <span class="o">=</span> <span class="n">kappa_cont_base</span><span class="p">(</span><span class="n">nu</span><span class="p">[</span><span class="n">mask_2</span><span class="p">],</span> <span class="n">Te</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ne</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> 
+                                 <span class="n">nion</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="n">log10I_m0</span><span class="p">)</span>
+    
+    <span class="n">v_3</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="n">mask_3</span><span class="p">]</span>
+    <span class="n">log10I_m0</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.084191</span><span class="o">*</span><span class="n">v_3</span> <span class="o">+</span> <span class="mf">0.135860</span>
+    <span class="n">kc</span><span class="p">[</span><span class="n">mask_3</span><span class="p">]</span> <span class="o">=</span> <span class="n">kappa_cont_base</span><span class="p">(</span><span class="n">nu</span><span class="p">[</span><span class="n">mask_3</span><span class="p">],</span> <span class="n">Te</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;K&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ne</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> 
+                                 <span class="n">nion</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="n">log10I_m0</span><span class="p">)</span>
+    
+    <span class="c">#if v &lt; -2.:</span>
+        <span class="c">#kc = 6.9391e-8*np.power(Z, 2)*ne*nion*np.power(nu, -2.)*np.power(1e4/Te, 1.5)* \</span>
+             <span class="c">#(4.6950 - np.log10(Z) + 1.5*np.log(Te/1e4) - np.log10(nu))</span>
+    <span class="c">#elif v &gt;= -2. and v &lt;= -0.25:</span>
+        <span class="c">#log10I_m0 = -1.232644*v + 0.098747</span>
+    <span class="c">#elif v &gt; -0.25:</span>
+        <span class="c">#log10I_m0 = -1.084191*v + 0.135860</span>
+    
+    <span class="c">#if v &gt;= -2.:</span>
+        <span class="c">#kc = 4.6460/np.power(nu, 7./3.)/np.power(Te, 1.5)* \</span>
+            <span class="c">#(np.exp(4.7993e-2*nu/Te) - 1.)* \</span>
+            <span class="c">#np.exp(aliv/np.log10(np.exp(1)))#*np.exp(-h*freq/k_B/Te)</span>
+        
+    <span class="k">return</span> <span class="n">kc</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">pc</span><span class="o">**-</span><span class="mi">1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">nu</span><span class="o">/</span><span class="n">k_B</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">/</span><span class="n">Te</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="kappa_cont_base"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.kappa_cont_base">[docs]</a><span class="k">def</span> <span class="nf">kappa_cont_base</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
+    
+    <span class="k">return</span> <span class="mf">4.6460</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="mf">7.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">*</span> \
+            <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">4.7993e-2</span><span class="o">*</span><span class="n">nu</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="mf">8.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span><span class="o">*</span><span class="n">ne</span><span class="o">*</span><span class="n">nion</span>
+</div>
+<div class="viewcode-block" id="kappa_line"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.kappa_line">[docs]</a><span class="k">def</span> <span class="nf">kappa_line</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the line absorption coefficient between levels ni and nf, ni&gt;nf.</span>
+<span class="sd">    This can only go up to n_max 1500 because of the tables used for the</span>
+<span class="sd">    Einstein Anm coefficients.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">cte</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">16.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">m_e</span><span class="o">*</span><span class="n">k_B</span><span class="p">),</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+    
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn2</span><span class="p">(</span><span class="n">val2str</span><span class="p">(</span><span class="n">Te</span><span class="p">),</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;case_diffuse_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val2str</span><span class="p">(</span><span class="n">Tr</span><span class="p">)))</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">n_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">Anfni</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/rates/einstein_Anm_{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    
+    <span class="c"># Cut the Einstein Amn coefficients table to match the bn values</span>
+    <span class="n">i_bn_i</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">i_bn_f</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">Anfni</span> <span class="o">=</span> <span class="n">Anfni</span><span class="p">[</span><span class="n">i_bn_i</span><span class="p">:</span><span class="n">i_bn_f</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="n">ni</span> <span class="o">=</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">nf</span> <span class="o">=</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="n">omega_ni</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">omega_i</span> <span class="o">=</span> <span class="mf">1.</span>
+    
+    <span class="n">xi_ni</span> <span class="o">=</span> <span class="n">xi</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    <span class="n">xi_nf</span> <span class="o">=</span> <span class="n">xi</span><span class="p">(</span><span class="n">nf</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    
+    <span class="n">exp_ni</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">xi_ni</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">exp_nf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">xi_nf</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    
+    <span class="c">#print len(Anfni), len(bn[1:,-1]), len(bn[:-1,-1]), len(omega_ni[:]), len(ni), len(exp_ni), len(exp_nf)</span>
+    <span class="n">kl</span> <span class="o">=</span> <span class="n">cte</span><span class="o">.</span><span class="n">value</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">ne</span><span class="o">*</span><span class="n">nion</span><span class="o">*</span><span class="n">Anfni</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">omega_ni</span><span class="p">[:]</span><span class="o">/</span><span class="n">omega_i</span><span class="o">*</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">exp_ni</span> <span class="o">-</span> <span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">exp_nf</span><span class="p">)</span>
+    <span class="c">#kl = </span>
+    
+    <span class="k">return</span> <span class="n">kl</span>
+</div>
+<div class="viewcode-block" id="kappa_line_lte"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.kappa_line_lte">[docs]</a><span class="k">def</span> <span class="nf">kappa_line_lte</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the line absorption coefficient.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">ni</span> <span class="o">=</span> <span class="n">f2n</span><span class="p">(</span><span class="n">nu</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;MHz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_max</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.</span>
+    
+    <span class="n">trans</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    
+    <span class="n">cte</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">8.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span>
+    <span class="n">Aninf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/rates/einstein_Anm_{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    <span class="n">Aninf</span> <span class="o">=</span> <span class="n">Aninf</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Aninf</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">n_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Aninf</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">n_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+    
+    <span class="c">#Nni = np.empty(len(ni), dtype=mp.mpf)</span>
+    <span class="c">#exp = np.empty(len(ni), dtype=mp.mpf)</span>
+    <span class="c">#for i,n in enumerate(ni):</span>
+        <span class="c">#Nni[i] = mp.mpf(level_pop_lte(n, ne, nion, Te, Z).cgs.value)</span>
+        <span class="c">#exp[i] = np.exp(-h.cgs.value*nu[i].cgs.value/k_B.cgs.value/Te.cgs.value)</span>
+    <span class="n">exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">*</span><span class="n">nu</span><span class="o">/</span><span class="n">k_B</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span>
+    <span class="n">Nni</span> <span class="o">=</span> <span class="n">level_pop_lte</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">cte</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">Nni</span><span class="o">*</span><span class="n">Aninf</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">exp</span><span class="p">)</span><span class="c">#*np.power(Aninf[:,0]/Aninf[:,1], 2.)</span>
+    
+</div>
+<div class="viewcode-block" id="level_pop_lte"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.level_pop_lte">[docs]</a><span class="k">def</span> <span class="nf">level_pop_lte</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the level population of level n.</span>
+<span class="sd">    The return has units of cm-3.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">omega_ni</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">omega_i</span> <span class="o">=</span> <span class="mf">1.</span>
+    
+    <span class="n">xi_n</span> <span class="o">=</span> <span class="n">xi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
+    
+    <span class="n">exp_xi_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">xi_n</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+    
+    <span class="n">Nn</span> <span class="o">=</span> <span class="n">ne</span><span class="o">*</span><span class="n">nion</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">m_e</span><span class="o">*</span><span class="n">k_B</span><span class="o">*</span><span class="n">Te</span><span class="p">),</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">*</span><span class="n">omega_ni</span><span class="o">/</span><span class="n">omega_i</span><span class="o">/</span><span class="mf">2.</span><span class="o">*</span><span class="n">exp_xi_n</span>
+    
+    <span class="k">return</span> <span class="n">Nn</span>
+</div>
+<div class="viewcode-block" id="load_itau_dict"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_itau_dict">[docs]</a><span class="k">def</span> <span class="nf">load_itau_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the models defined by dict.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]),</span><span class="mi">2</span><span class="p">,</span><span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]):</span>
+        
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, Te={1}, Tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">t</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> 
+                          <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> 
+                          <span class="n">trans</span><span class="p">,</span>
+                          <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span>
+                          <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> 
+                          <span class="n">other</span><span class="o">=</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> 
+                          <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> 
+                          <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
+    
+    <span class="n">te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">str2val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]))</span>
+    
+    <span class="k">return</span> <span class="p">[</span><span class="n">te</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="load_itau_all"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_itau_all">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all</span><span class="p">(</span><span class="n">trans</span><span class="o">=</span><span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads all the available models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    
+    <span class="n">models_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">])</span>
+    <span class="n">models_tr</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]),</span> 
+                                                     <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]),</span>
+                                                     <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">models_tr</span>
+    
+    <span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S20&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">model</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="n">sn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">)</span>
+        <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">17</span><span class="p">:</span>
+            <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, te={1}, tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> 
+                          <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> 
+                          <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
+        
+    <span class="k">return</span> <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="load_itau_all_hydrogen"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_itau_all_hydrogen">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all_hydrogen</span><span class="p">(</span><span class="n">trans</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads all the available models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/H_bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]),</span> 
+                                           <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]),</span>
+                                           <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+    
+    <span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span><span class="c">#, dtype=&#39;|S20&#39;)</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S20&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">model</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="n">sn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">)</span>
+        <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">17</span><span class="p">:</span>
+            <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, te={1}, tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau_h</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">sn</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
+        
+    <span class="k">return</span> <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="load_itau_all_match"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_itau_all_match">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all_match</span><span class="p">(</span><span class="n">trans_out</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">trans_tin</span><span class="o">=</span><span class="s">&#39;beta&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads all trans_out models that can be found in trans_tin.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans_tin</span><span class="p">))]</span>
+    <span class="c">#print target[0]</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;bbn2_{0}/&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trans_out</span><span class="p">)</span> <span class="o">+</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">target</span><span class="p">]</span>
+    <span class="c">#print models[0]</span>
+    
+    <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span> <span class="o">=</span> <span class="n">load_models</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">trans_out</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="load_itau_all_norad"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_itau_all_norad">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all_norad</span><span class="p">(</span><span class="n">trans</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads all the available models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn/*_dat_bn_beta&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">))</span>
+    <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    
+    <span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S20&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;T&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">:</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;T&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span><span class="p">]</span>
+        <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="n">sn</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;ne&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">:</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;ne&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+        <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;bn_beta&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c">#mod = np.loadtxt(model)</span>
+        <span class="c">#mod = mod[:np.where(mod[:,0]==n_max)[0]]</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">sn</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="c">#data[i,0] = mod[:,0]</span>
+        <span class="c">#data[i,1] = mod[:,1]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
+        
+    <span class="k">return</span> <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="load_itau_nelim"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_itau_nelim">[docs]</a><span class="k">def</span> <span class="nf">load_itau_nelim</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">trad</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads models given a temperature, radiation field and an </span>
+<span class="sd">    upper limit for the electron density.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*_T_{2}_*_{3}_*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> 
+                                                             <span class="n">temp</span><span class="p">,</span> <span class="n">trad</span><span class="p">))</span>
+    <span class="c">#print models</span>
+    <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    
+    <span class="n">models_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">])</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]),</span> 
+                                           <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]),</span>
+                                           <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    <span class="n">nes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">])</span>
+    
+    <span class="c"># Only select those models with a density equal or lower than the specified value: dens.</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">models</span><span class="p">[</span><span class="n">nes</span> <span class="o">&lt;=</span> <span class="n">dens</span><span class="p">]</span>
+    <span class="c">#print models</span>
+    
+    <span class="k">return</span> <span class="n">load_models</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="itau_norad"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.itau_norad">[docs]</a><span class="k">def</span> <span class="nf">itau_norad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">te</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">mdn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the optical depth with only the approximate solution to the </span>
+<span class="sd">    radiative transfer problem.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="o">-</span><span class="mf">1.069e7</span><span class="o">*</span><span class="n">dn</span><span class="o">*</span><span class="n">mdn</span><span class="o">*</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.58e5</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">te</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">te</span><span class="p">,</span> <span class="mf">5.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="load_betabn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_betabn">[docs]</a><span class="k">def</span> <span class="nf">load_betabn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads a model for the CRRL emission.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">model_file</span> <span class="o">=</span> <span class="s">&#39;bbn2_{0}/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_datbn_beta&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Will try to locate: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+        <span class="n">model_path</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">model_file</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model_file</span> <span class="o">=</span> <span class="s">&#39;bbn2_{0}/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Will try to locate: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+        <span class="n">model_path</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">model_file</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="load_betabn_h"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_betabn_h">[docs]</a><span class="k">def</span> <span class="nf">load_betabn_h</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads a model for the HRRL emission.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">model_file</span> <span class="o">=</span> <span class="s">&#39;H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Will try to locate: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+        <span class="n">model_path</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">model_file</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">model_file</span> <span class="o">=</span> <span class="s">&#39;H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trans</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Will try to locate: {0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model_file</span><span class="p">)</span>
+        <span class="n">model_path</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/{1}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">model_file</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="load_bn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_bn">[docs]</a><span class="k">def</span> <span class="nf">load_bn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the bn values from the CRRL models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">mod_file</span> <span class="o">=</span> <span class="s">&#39;{0}/bn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat{3}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="load_bn2"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_bn2">[docs]</a><span class="k">def</span> <span class="nf">load_bn2</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the bn values from the CRRL models.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="s">&#39;bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="s">&#39;bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="k">print</span> <span class="s">&quot;Loaded {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">data</span>
+    
+    
+    <span class="c">#mod_file = &#39;{0}/bn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat{3}&#39;.format(LOCALDIR, temp, dens, other)</span>
+    
+    <span class="c">#data = np.loadtxt(mod_file)</span>
+    
+    <span class="c">#return data</span>
+    </div>
+<div class="viewcode-block" id="load_models"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.load_models">[docs]</a><span class="k">def</span> <span class="nf">load_models</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the models in backwards compatible mode.</span>
+<span class="sd">    It will sort the models by Te, ne and Tr.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    
+    <span class="n">models_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">])</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]),</span> 
+                                                   <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]),</span>
+                                                   <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+        
+    <span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S20&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">model</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="n">sn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">)</span>
+        <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">17</span><span class="p">:</span>
+            <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, te={1}, tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">sn</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
+        
+    <span class="k">return</span> <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="make_betabn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.make_betabn">[docs]</a><span class="k">def</span> <span class="nf">make_betabn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">t</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span>
+    
+    <span class="n">dn</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_dn</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_line_list</span><span class="p">(</span><span class="s">&#39;CI&#39;</span><span class="p">,</span> <span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dn</span><span class="p">)</span>
+    <span class="c"># Cut bn first</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span>
+    
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">-</span><span class="n">dn</span><span class="p">:</span>
+            <span class="c">#bnn = np.divide(bn[i+dn,-1], bn[i,-1])</span>
+            <span class="n">bnn</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">dn</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">1e6</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="c">#Decimal(np.exp(-h.value*freq[i]*1e6/(k_B.value*t)))</span>
+            <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">bnn</span><span class="o">*</span><span class="n">exp</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">exp</span><span class="p">))</span>
+        
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">beta</span><span class="o">*</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+</div>
+<div class="viewcode-block" id="make_betabn2"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.make_betabn2">[docs]</a><span class="k">def</span> <span class="nf">make_betabn2</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">t</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">dens</span>
+    
+    <span class="n">dn</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_dn</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn2</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+    <span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_line_list</span><span class="p">(</span><span class="s">&#39;CI&#39;</span><span class="p">,</span> <span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dn</span><span class="p">)</span>
+    <span class="c"># Cut bn first</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:</span><span class="n">n_max</span><span class="p">]</span><span class="c">#bn[:np.where(bn[:,0]==n_max)[0]]</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span>
+    
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">-</span><span class="n">dn</span><span class="p">:</span>
+            <span class="c">#bnn = np.divide(bn[i+dn,-1], bn[i,-1])</span>
+            <span class="n">bnn</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">dn</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">1e6</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="c">#Decimal(np.exp(-h.value*freq[i]*1e6/(k_B.value*t)))</span>
+            <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">bnn</span><span class="o">*</span><span class="n">exp</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">exp</span><span class="p">))</span>
+        
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">beta</span><span class="o">*</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
+    </div>
+<div class="viewcode-block" id="Mdn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.Mdn">[docs]</a><span class="k">def</span> <span class="nf">Mdn</span><span class="p">(</span><span class="n">dn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gives the M(dn) factor for a given dn.</span>
+<span class="sd">    ref. Menzel (1968)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">mdn</span> <span class="o">=</span> <span class="mf">0.1908</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">mdn</span> <span class="o">=</span> <span class="mf">0.02633</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">mdn</span> <span class="o">=</span> <span class="mf">0.008106</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">mdn</span> <span class="o">=</span> <span class="mf">0.003492</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">mdn</span> <span class="o">=</span> <span class="mf">0.001812</span>
+        
+    <span class="k">return</span> <span class="n">mdn</span>
+</div>
+<div class="viewcode-block" id="plaw"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.plaw">[docs]</a><span class="k">def</span> <span class="nf">plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a power law.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">y0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">x0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="str2val"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.str2val">[docs]</a><span class="k">def</span> <span class="nf">str2val</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">aux</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;d&#39;</span><span class="p">))</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">aux</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="n">aux</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">return</span> <span class="n">val</span>
+</div>
+<div class="viewcode-block" id="val2str"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.val2str">[docs]</a><span class="k">def</span> <span class="nf">val2str</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a float to the str format required for loading the</span>
+<span class="sd">    CRRL models. E.g., a temperature of 70 K is 7d1.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">val</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">is_integer</span><span class="p">():</span>
+        <span class="k">return</span> <span class="s">&quot;{0:.0f}d{1:.0f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;{0}d{1:.0f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="valid_ne"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.valid_ne">[docs]</a><span class="k">def</span> <span class="nf">valid_ne</span><span class="p">(</span><span class="n">trans</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks all the available models and lists the available ne values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    
+    <span class="n">models_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">])</span>
+    <span class="c">#models_tr = models[models_len&gt;17]</span>
+    <span class="c">#print models_tr[0].split(&#39;_&#39;)[11], models_tr[0].split(&#39;_&#39;)[4], models_tr[0].split(&#39;_&#39;)[6]</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]),</span> 
+                                           <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]),</span>
+                                           <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ne</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="xi"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod_beta.xi">[docs]</a><span class="k">def</span> <span class="nf">xi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">Ryd</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">Te</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
