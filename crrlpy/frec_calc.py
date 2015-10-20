@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
 import argparse
+
 import numpy as np
+
 from scipy.constants import c, m_e, physical_constants
+from astropy import units as u
 
 def line_freq(Z, R_X, n, dn):
     """
@@ -11,21 +14,6 @@ def line_freq(Z, R_X, n, dn):
     """
     
     return (Z**2)*R_X*c*((1./(n**2))-(1./((n + dn)**2)))
-
-def set_name(trans):
-    """
-    """
-    
-    if 'alpha' in trans:
-        name = 'alpha'
-    elif 'beta' in trans:
-        name = 'beta'
-    elif 'gamma' in trans:
-        name = 'gamma'
-    elif 'delta' in trans:
-        name = 'delta'
-        
-    return name
 
 def set_specie(specie):
     """
@@ -64,6 +52,8 @@ def set_trans(dn):
     """
     Sets a name depending on the difference between
     atomic levels.
+    :param dn: Separation between ni and nf, :math:`dn=ni-nf`.
+    :returns: alpha, beta, gamma, delta or epsilon depending on :paramref:`dn`.
     """
     if dn == 1:
         name = 'alpha'
@@ -73,22 +63,10 @@ def set_trans(dn):
         name = 'gamma'
     if dn == 4:
         name = 'delta'
+    if dn == 5:
+        name = 'epsilon'
+        
     return name
-
-#def set_dn(name):
-    #"""
-    #Sets the upper level depending on 
-    #the transition name.
-    #"""
-    #if name == 'alpha':
-        #dn = 1
-    #if name == 'beta':
-        #dn = 2
-    #if name == 'gamma':
-        #dn = 3
-    #if name == 'delta':
-        #dn = 4
-    #return dn
 
 def set_dn(name):
     """
@@ -104,9 +82,12 @@ def set_dn(name):
         dn = 3
     if 'delta' in name:
         dn = 4
+    if 'epsilon' in name:
+        dn = 5
+        
     return dn
 
-def make_line_list(line, n_min=1, n_max=1500):
+def make_line_list(line, n_min=1, n_max=1500, unitless=True):
     """
     Creates a list of frequencies for the
     corresponding n level. The frequencies
@@ -120,9 +101,6 @@ def make_line_list(line, n_min=1, n_max=1500):
     
     # set the specie
     X = set_specie(line)
-    # Set the transition name
-    name = set_name(line)
-    #trans = set_trans(line)
     dn = set_dn(line)
     
     M_X = X[0]
@@ -130,6 +108,9 @@ def make_line_list(line, n_min=1, n_max=1500):
     Z = X[4]
     
     freq = line_freq(Z, R_X, n, dn)
+    
+    if not unitless:
+        freq = freq*u.MHz
     
     return line, n, freq
 
@@ -140,7 +121,7 @@ def main():
     parser.add_argument('-n', '--n_max', type=int,
                         dest='n_max', default=1500, help="Maximum n number")
     parser.add_argument('-l', '--line', dest='line', default='CI', type=str,
-                        help="Specie name. Can be CI, HeI, HI, CI13, CI14 or SI")
+                        help="Line name. E.g., CIalpha, HeIbeta, HIalpha, CI13alpha, CI14gamma or SIepsilon")
     args = parser.parse_args()
     
     n_min = args.n_min

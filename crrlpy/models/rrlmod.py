@@ -10,13 +10,23 @@ import re
 import astropy.units as u
 
 from crrlpy import frec_calc as fc
-from astropy.constants import h, k_B, c, m_e, Ryd
+from astropy.constants import h, k_B, c, m_e, Ryd, e
 from astropy.analytic_functions import blackbody_nu
-from crrlpy.crrls import natural_sort, best_match_indx2, f2n
+from crrlpy.crrls import natural_sort, best_match_indx2, f2n, n2f
 from mpmath import mp
 mp.dps = 50 
 
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+
+def broken_plaw(x, x0, y0, alpha1, alpha2):
+    """
+    """
+        
+    low = plaw(x, x0, y0, alpha1) * (x < x0)
+    hgh = plaw(x, x0, y0, alpha2) * (x >= x0)
+    
+    return low + hgh
+    
 
 def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     """
@@ -27,19 +37,86 @@ def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     kc = kappa_cont(freq, Te, ne, nion, Z)
     
     return (kc + kl*bni)/(kc + kl*bnf*bnfni)
-    
-def I_cont(nu, Te, tau, I0):
+
+def I_Bnu(specie, Z, n, Inu_funct, *args):
     """
-    Returns the continuum intensity.
+    :param specie: Atomic specie to calculate for.
+    :param n: Principal quantum number at which to evaluate :math:`\\frac{2}{\\pi}\\sum_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.
+    :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It's first argument must be the frequency.
+    :param *args: Arguments to Inu_funct. The frequency must be left out. \
+    The frequency will be passed internally in units of MHz. Use the same \
+    unit when required. :paramref:`Inu_funct` must take the frequency as first parameter.
+    
+    """
+    
+    cte = 2.*np.pi**2.*e.gauss**2./(h.cgs.value*m_e.cgs.value*c.cgs.value**2.*Ryd.to('1/cm')*Z**2.)
+
+    Inu = np.empty((len(n), 5))
+    BninfInu = np.empty((len(n), 5))
+    nu = np.empty((len(n), 5))
+    
+    for dn in range(1,6):
+        nu[:,dn-1] = n2f(n, specie+fc.set_trans(dn))
+        Inu[:,dn-1] = Inu_funct(nu[:,dn-1]*1e6, *args).cgs.value
+        BninfInu[:,dn-1] = cte.cgs.value*n**6./(dn*(n + dn)**2.)*Mdn(dn)*Inu[:,dn-1]
+    
+    return 2./np.pi*BninfInu.sum(axis=1)
+
+def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
+    """
+    Returns the blackbody function evaluated at nu. 
+    As temperature a broken power law is used.
+    The power law shape is has parameters: Tr, nu0, alpha1 and alpha2.
+    
+    :param nu: Frequency. (Hz) or astropy.units.Quantity_
+    :param Tr: Temperature at nu0. (K) or astropy.units.Quantity_
+    :param nu0: Frequency at which the spectral index changes. (Hz) or astropy.units.Quantity_
+    :param alpha1: spectral index for :math:`\\nu<\\nu_0`
+    :param alpha2: spectral index for :math:`\\nu\\geq\\nu_0`
+    :returns: Specific intensity in erg / (cm2 Hz s sr). See `astropy.analytic_functions.blackbody.blackbody_nu`__
+    
+    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity
+    __ blackbody_
+    .. _blackbody: http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu
+    """
+    
+    Tbpl = broken_plaw(nu, nu0, Tr, alpha1, alpha2)
+    
+    bnu_bpl = blackbody_nu(nu, Tbpl)
+    
+    return bnu_bpl
+
+def I_cont(nu, Te, tau, I0, unitless=False):
+    """
+    :param nu: Frequency. (Hz) or astropy.units.Quantity_
+    :param Te: Temperature of the source function. (K) or astropy.units.Quantity_
+    :param tau: Optical depth of the medium.
+    :param I0: Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see :paramref:`unitless`.
+    :param unitless: If True the return 
+    :returns: The specific intensity of a ray of light after traveling in an LTE \
+    medium with source function :math:`B_{\\nu}(T_{e})` after crossing an optical \
+    depth :math:`\\tau_{\\nu}`. The units are erg / (cm2 Hz s sr). See `astropy.analytic_functions.blackbody.blackbody_nu`__
+    
+    __ blackbody_
+    .. _blackbody: http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu
     """
     
     bnu = blackbody_nu(nu, Te)
     
+    if unitless:
+        bnu = bnu.cgs.value
+        
     return bnu*(1. - np.exp(-tau)) + I0*np.exp(-tau)
 
 def I_external(nu, Tbkg, Tff, tau_ff, Tr, nu0=100e6*u.MHz, alpha=-2.6):
     """
+    This method is equivalent to the IDL routine 
+    
+    :param nu: Frequency. (Hz) or astropy.units.Quantity_
+    
+    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity
     """
+    
     if Tbkg.value != 0:
         bnu_bkg = blackbody_nu(nu, Tbkg)
     else:
@@ -53,7 +130,7 @@ def I_external(nu, Tbkg, Tff, tau_ff, Tr, nu0=100e6*u.MHz, alpha=-2.6):
         exp_ff = 0
         
     if Tr.value != 0:
-        Tpl = Tr*np.power(nu/nu0, alpha)
+        Tpl = plaw(nu, nu0, Tr, alpha)#Tr*np.power(nu/nu0, alpha)
         bnu_pl = blackbody_nu(nu, Tpl)
     else:
         bnu_pl = 0
@@ -66,14 +143,11 @@ def I_total(nu, Te, tau, I0, eta):
     
     bnu = blackbody_nu(nu, Te)
     
-    #exp = np.empty(len(tau), dtype=mp.mpf)
-    #for i,t in enumerate(tau):
-        #exp[i] = mp.exp(-t)
     exp = np.exp(-tau)
     
     return bnu*eta*(1. - exp) + I0*exp
 
-def itau(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
+def itau(temp, dens, trans, n_min=5, n_max=1000, other='', verbose=False, value='itau'):
     """
     Gives the integrated optical depth for a given temperature and density. 
     The emission measure is unity. The output units are Hz.
@@ -86,8 +160,10 @@ def itau(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
     mdn = Mdn(dn)
     
     bbn = load_betabn(temp, dens, other, trans, verbose)
-    n = bbn[:n_max,0]
-    b = bbn[:n_max,1]
+    nimin = best_match_indx2(n_min, bbn[:,0])
+    nimax = best_match_indx2(n_max, bbn[:,0])
+    n = bbn[nimin:nimax,0]
+    b = bbn[nimin:nimax,1]
     
     if value == 'itau':
         #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
@@ -265,12 +341,12 @@ def level_pop_lte(n, ne, nion, Te, Z):
     
     return Nn
 
-def load_itau_dict(dict, trans, n_max=1000, verbose=False, value='itau'):
+def load_itau_dict(dict, trans, n_min=5, n_max=1000, verbose=False, value='itau'):
     """
     Loads the models defined by dict.
     """
     
-    data = np.zeros((len(dict['Te']),2,n_max))
+    data = np.zeros((len(dict['Te']),2,n_max-n_min))
     
     for i,t in enumerate(dict['Te']):
         
@@ -278,7 +354,8 @@ def load_itau_dict(dict, trans, n_max=1000, verbose=False, value='itau'):
             print "Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i])
         n, int_tau = itau(t, 
                           dict['ne'][i], 
-                          trans, 
+                          trans,
+                          n_min=n_min,
                           n_max=n_max, 
                           other=dict['Tr'][i], 
                           verbose=verbose, 
@@ -291,7 +368,7 @@ def load_itau_dict(dict, trans, n_max=1000, verbose=False, value='itau'):
     
     return [te, dict['ne'], dict['Tr'], data]
 
-def load_itau_all(trans='alpha', n_max=1000, verbose=False, value='itau'):
+def load_itau_all(trans='CIalpha', n_min=5, n_max=1000, verbose=False, value='itau'):
     """
     Loads all the available models.
     """
@@ -311,7 +388,7 @@ def load_itau_all(trans='alpha', n_max=1000, verbose=False, value='itau'):
     Te = np.zeros(len(models))
     ne = np.zeros(len(models))
     other = np.zeros(len(models), dtype='|S20')
-    data = np.zeros((len(models), 2, n_max))
+    data = np.zeros((len(models), 2, n_max-n_min))
     
     for i,model in enumerate(models):
         if verbose:
@@ -326,7 +403,7 @@ def load_itau_all(trans='alpha', n_max=1000, verbose=False, value='itau'):
             other[i] = '_'.join(model.split('_')[9:12])
         if verbose:
             print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
-        n, int_tau = itau(st, ne[i], trans, n_max=n_max, 
+        n, int_tau = itau(st, ne[i], trans, n_min=n_min, n_max=n_max, 
                           other=other[i], verbose=verbose, 
                           value=value)
         data[i,0] = n
@@ -649,6 +726,13 @@ def Mdn(dn):
         mdn = 0.001812
         
     return mdn
+
+def plaw(x, x0, y0, alpha):
+    """
+    Returns a power law.
+    """
+    
+    return y0*np.power(x/x0, alpha)
 
 def str2val(str):
     """

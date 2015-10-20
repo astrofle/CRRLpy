@@ -155,7 +155,7 @@ def dv_minus_doppler(dV, ddV, dD, ddD):
     a = 0.5346
     b = 0.2166
     
-    d = np.power(2*a*dV, 2) - 4*(b - a*a)*(np.power(dD, 2) - np.power(dV, 2))
+    d = np.power(2.*a*dV, 2) - 4.*(b - a*a)*(np.power(dD, 2.) - np.power(dV, 2.))
     
     if d < 0:
         print "No real solutions, check input."
@@ -166,12 +166,50 @@ def dv_minus_doppler(dV, ddV, dD, ddD):
     
     if dL_m < dV:
         dL = dL_m
-        ddL1 = (-2*a - ((a*a*dV) + 8*(b - a*a)*dV)/np.sqrt(np.power(2*a*dV, 2) - 4*(b-a*a)*(np.power(dD, 2) - np.power(dV, 2))))/(2*(b - a*a))
+        ddL1 = (-2.*a - ((a*a*dV) + 8.*(b - a*a)*dV)/np.sqrt(np.power(2.*a*dV, 2.) - 4.*(b-a*a)*(np.power(dD, 2.) - np.power(dV, 2.))))/(2.*(b - a*a))
     else:
         dL = dL_p
-        ddL1 = (-2*a + ((a*a*dV) + 8*(b - a*a)*dV)/np.sqrt(np.power(2*a*dV, 2) - 4*(b-a*a)*(np.power(dD, 2) - np.power(dV, 2))))/(2*(b - a*a))
+        ddL1 = (-2.*a + ((a*a*dV) + 8.*(b - a*a)*dV)/np.sqrt(np.power(2.*a*dV, 2.) - 4.*(b-a*a)*(np.power(dD, 2.) - np.power(dV, 2.))))/(2.*(b - a*a))
         
-    ddL2 = 4*(b - a*a)*dD/np.sqrt(np.power(2*a*dV, 2) - 4*(b - a*a)*(np.power(dD, 2) - np.power(dV, 2)))
+    ddL2 = 4.*(b - a*a)*dD/np.sqrt(np.power(2.*a*dV, 2.) - 4.*(b - a*a)*(np.power(dD, 2.) - np.power(dV, 2.)))
+    
+    ddL = np.sqrt(np.power(ddL1*ddV, 2) + np.power(ddL2*ddV, 2)) 
+    
+    return dL, ddL
+
+def dv_minus_doppler2(dV, ddV, dD, ddD):
+    """
+    Returns the Lorentzian contribution to the 
+    line width assuming that the line has a Voigt 
+    profile.
+    dV (float) Total line width.
+    ddV (float) Uncertainty in the total line width.
+    dD (float) Doppler contribution to the line width.
+    ddD (float) Uncertainty in the Doppler contribution to the line width.
+    """
+    
+    a = 0.5346
+    b = 0.2166
+    
+    den = (a*a - b)
+    dif = np.power(dV, 2.) - np.power(dD, 2.)
+    d = np.power(a*dV, 2) - den*dif
+    
+    if d < 0:
+        print "No real solutions, check input."
+        return 0
+    
+    dL_p = (a*dV + np.sqrt(d))/den
+    dL_m = (a*dV - np.sqrt(d))/den
+    
+    if dL_m < dV:
+        dL = dL_m
+        ddL1 = (a + (a*a*dV - dV*den)/np.sqrt(np.power(a*dV, 2) - den*dif))/den
+    else:
+        dL = dL_p
+        ddL1 = (a - (a*a*dV - dV*den)/np.sqrt(np.power(a*dV, 2) - den*dif))/den
+        
+    ddL2 = dD/np.sqrt(np.power(a*dV, 2) - den*dif)
     
     ddL = np.sqrt(np.power(ddL1*ddV, 2) + np.power(ddL2*ddV, 2)) 
     
@@ -183,10 +221,8 @@ def f2n(f, line, n_max=1500):
     number n of a given transition and atomic specie.
     """
     
-    dn = set_dn(line)
     line, nn, freq = make_line_list(line, n_max=n_max)
     fii = np.in1d(freq, f)
-    #fii = best_match_indx2(f, freq)
     
     return nn[fii]
 
@@ -958,14 +994,13 @@ def natural_sort(l):
     """
     l.sort(key=alphanum_key)
 
-def n2f(n, line, n_min=1, n_max=1500):
+def n2f(n, line, n_min=1, n_max=1500, unitless=True):
     """
     Converts a given principal quantum number n to the 
     frequency of a given line.
     """
     
-    dn = set_dn(line)
-    line, nn, freq = make_line_list(line, n_min, n_max)
+    line, nn, freq = make_line_list(line, n_min, n_max, unitless)
     nii = np.in1d(nn, n)
     
     return freq[nii]
