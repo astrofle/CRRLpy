@@ -199,6 +199,9 @@ latex_elements = {
 
 # Additional stuff for the LaTeX preamble.
 #'preamble': '',
+'preamble': '''
+        \\hypersetup{unicode=true}
+     '''
 }
 
 # Grouping the document tree into LaTeX files. List of tuples

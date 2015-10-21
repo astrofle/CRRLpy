@@ -18,16 +18,29 @@ mp.dps = 50
 
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
-def broken_plaw(x, x0, y0, alpha1, alpha2):
+def broken_plaw(nu, nu0, T0, alpha1, alpha2):
     """
+    Defines a broken power law.
+    
+    .. math::
+    
+       T(\\nu) = T_{0}\\left(\\dfrac{\\nu}{\\nu_{0}}\\right)^{\\alpha_1}\\mbox{ if }\\nu<\\nu_{0}
+       
+       T(\\nu) = T_{0}\\left(\\dfrac{\\nu}{\\nu_{0}}\\right)^{\\alpha_2}\\mbox{ if }\\nu\\geq\\nu_{0}
+    
+    :param nu: Frequency.
+    :param nu0: Frequency at which the power law breaks.
+    :param T0: Value of the power law at nu0.
+    :param alpha1: Index of the power law for nu<nu0.
+    :param alpha2: Index of the power law for nu>=nu0.
+    :returns: Broken power law evalueated at nu. 
     """
         
-    low = plaw(x, x0, y0, alpha1) * (x < x0)
-    hgh = plaw(x, x0, y0, alpha2) * (x >= x0)
+    low = plaw(nu, nu0, T0, alpha1) * (x < x0)
+    hgh = plaw(nu, nu0, T0, alpha2) * (x >= x0)
     
     return low + hgh
     
-
 def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     """
     Returns the correction factor for the Planck function.
@@ -40,6 +53,9 @@ def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
 
 def I_Bnu(specie, Z, n, Inu_funct, *args):
     """
+    Calculates the product :math:`B_{n+\\Delta n,n}I_{\\nu}` to 
+    compute the line broadening due to a radiation field :math:`I_{\\nu}`.
+    
     :param specie: Atomic specie to calculate for.
     :param n: Principal quantum number at which to evaluate :math:`\\frac{2}{\\pi}\\sum_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.
     :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It's first argument must be the frequency.
