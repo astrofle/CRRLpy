@@ -69,16 +69,29 @@
 
 <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
 
-<div class="viewcode-block" id="broken_plaw"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.broken_plaw">[docs]</a><span class="k">def</span> <span class="nf">broken_plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">):</span>
+<div class="viewcode-block" id="broken_plaw"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.broken_plaw">[docs]</a><span class="k">def</span> <span class="nf">broken_plaw</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nu0</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines a broken power law.</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">       T(\\nu) = T_{0}\\left(\\dfrac{\\nu}{\\nu_{0}}\\right)^{\\alpha_1}\\mbox{ if }\\nu&lt;\\nu_{0}</span>
+<span class="sd">       </span>
+<span class="sd">       T(\\nu) = T_{0}\\left(\\dfrac{\\nu}{\\nu_{0}}\\right)^{\\alpha_2}\\mbox{ if }\\nu\\geq\\nu_{0}</span>
+<span class="sd">    </span>
+<span class="sd">    :param nu: Frequency.</span>
+<span class="sd">    :param nu0: Frequency at which the power law breaks.</span>
+<span class="sd">    :param T0: Value of the power law at nu0.</span>
+<span class="sd">    :param alpha1: Index of the power law for nu&lt;nu0.</span>
+<span class="sd">    :param alpha2: Index of the power law for nu&gt;=nu0.</span>
+<span class="sd">    :returns: Broken power law evalueated at nu. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
         
-    <span class="n">low</span> <span class="o">=</span> <span class="n">plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">x0</span><span class="p">)</span>
-    <span class="n">hgh</span> <span class="o">=</span> <span class="n">plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">x0</span><span class="p">)</span>
+    <span class="n">low</span> <span class="o">=</span> <span class="n">plaw</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nu0</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">x0</span><span class="p">)</span>
+    <span class="n">hgh</span> <span class="o">=</span> <span class="n">plaw</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nu0</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="n">x0</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">low</span> <span class="o">+</span> <span class="n">hgh</span>
-    
-</div>
+    </div>
 <div class="viewcode-block" id="eta"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.eta">[docs]</a><span class="k">def</span> <span class="nf">eta</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the correction factor for the Planck function.</span>
@@ -91,6 +104,9 @@
 </div>
 <div class="viewcode-block" id="I_Bnu"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.I_Bnu">[docs]</a><span class="k">def</span> <span class="nf">I_Bnu</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">Inu_funct</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the product :math:`B_{n+\\Delta n,n}I_{\\nu}` to </span>
+<span class="sd">    compute the line broadening due to a radiation field :math:`I_{\\nu}`.</span>
+<span class="sd">    </span>
 <span class="sd">    :param specie: Atomic specie to calculate for.</span>
 <span class="sd">    :param n: Principal quantum number at which to evaluate :math:`\\frac{2}{\\pi}\\sum_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.</span>
 <span class="sd">    :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It&#39;s first argument must be the frequency.</span>
