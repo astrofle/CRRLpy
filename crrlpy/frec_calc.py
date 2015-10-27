@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+__docformat__ = 'reStructuredText'
+
 import argparse
 
 import numpy as np
@@ -9,14 +11,31 @@ from astropy import units as u
 
 def line_freq(Z, R_X, n, dn):
     """
-    Uses Rydberg formula to get the frequency
-    of a transition to quantum number n.
+    Uses the Rydberg formula to get the frequency
+    of a transition to quantum number n for a given atom.
+    
+    :param Z: Charge of the atom.
+    :param R_X: 
+    :param n: Principal quantum number of the transition. :math:`n+\\Delta n\\rightarrow n`.
+    :param dn: Difference between the principal quantum number of the initial state \
+    and the final state. :math:`\\Delta n=n_{f}-n_{i}`.
+    :type Z: int
+    :type R_X: float
+    :type n: int
+    :type dn: int
+    :returns: The frequency of the transition in MHz.
+    :rtype: float
     """
     
     return (Z**2)*R_X*c*((1./(n**2))-(1./((n + dn)**2)))
 
 def set_specie(specie):
     """
+    Sets atomic constants based on the atomic specie.
+    
+    :param specie: Atomic specie.
+    :type specie: string
+    :returns: Array with the atomic mass in a.m.u., ionization potential, abundance relative to HI, :math:`V_{X}-V_{H}` and the electric charge.
     """
     
     # data for species (table 1 RG92)
@@ -52,8 +71,11 @@ def set_trans(dn):
     """
     Sets a name depending on the difference between
     atomic levels.
-    :param dn: Separation between ni and nf, :math:`dn=ni-nf`.
+    
+    :param dn: Separation between ni and nf, :math:`\\Delta n=n_{i}-n_{f}`.
+    :type dn: int
     :returns: alpha, beta, gamma, delta or epsilon depending on :paramref:`dn`.
+    :rtype: string
     """
     if dn == 1:
         name = 'alpha'
@@ -72,6 +94,18 @@ def set_dn(name):
     """
     Sets the value of Delta n depending on 
     the transition name.
+    
+    :param name: Name of the transition.
+    :type name: string
+    :returns: :math:`\\Delta n` for the given transition.
+    :rtype: int
+    
+    :Example:
+    
+    >>> set_dn('CIalpha')
+    1
+    >>> set_dn('CIdelta')
+    4
     """
     
     if 'alpha' in name:
@@ -90,8 +124,16 @@ def set_dn(name):
 def make_line_list(line, n_min=1, n_max=1500, unitless=True):
     """
     Creates a list of frequencies for the
-    corresponding n level. The frequencies
+    corresponding line. The frequencies
     are in MHz.
+    
+    :param line: Line to compute the frequencies for.
+    :param n_min: Minimum n number to include in the list.
+    :param n_max: Maximum n number to include in the list.
+    :param unitless: If True the list will have no units. If not the list will be of astropy.units.Quantity_ objects.
+    :returns: List with the frequency of the transitions for the line.
+    
+    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity
     """
     
     n = np.arange(n_min, n_max)
@@ -115,6 +157,10 @@ def make_line_list(line, n_min=1, n_max=1500, unitless=True):
     return line, n, freq
 
 def main():
+    """
+    Main body of the program. Useful for calling as a script.
+    """
+    
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--n_min', type=int,
                         dest='n_min', default=1, help="Minimum n number")
