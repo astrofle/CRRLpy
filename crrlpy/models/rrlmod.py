@@ -36,8 +36,8 @@ def broken_plaw(nu, nu0, T0, alpha1, alpha2):
     :returns: Broken power law evalueated at nu. 
     """
         
-    low = plaw(nu, nu0, T0, alpha1) * (x < x0)
-    hgh = plaw(nu, nu0, T0, alpha2) * (x >= x0)
+    low = plaw(nu, nu0, T0, alpha1) * (nu < nu0)
+    hgh = plaw(nu, nu0, T0, alpha2) * (nu >= nu0)
     
     return low + hgh
     
@@ -163,19 +163,30 @@ def I_total(nu, Te, tau, I0, eta):
     
     return bnu*eta*(1. - exp) + I0*exp
 
-def itau(temp, dens, trans, n_min=5, n_max=1000, other='', verbose=False, value='itau'):
+def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='itau'):
     """
     Gives the integrated optical depth for a given temperature and density. 
     The emission measure is unity. The output units are Hz.
+    
+    :param temp: Electron temperature. Must be a string of the form '8d1'.
+    :param dens: Electron density. Float
+    :param line: Line to load models for.
+    :param n_min: Minimum n value to include in the output. Int Default 1
+    :param n_max: Maximum n value to include in the output. Int Default 1500, Maximum allowed value 9900
+    :param other: String to search for different radiation fields and others.
+    :param verbose: Verbose output? Bool
+    :param value: ['itau'|'bbnMdn'|none] Value to output. itau will output the integrated optical depth.
+    bbnMdn will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` times the oscillator strenght :math:`M(\\Delta n)`.
+    :returns: The principal quantum number and its asociated value.
     """
 
     t = str2val(temp)
     d = dens
     
-    dn = fc.set_dn(trans)
+    dn = fc.set_dn(line)
     mdn = Mdn(dn)
     
-    bbn = load_betabn(temp, dens, other, trans, verbose)
+    bbn = load_betabn(temp, dens, other, line, verbose)
     nimin = best_match_indx2(n_min, bbn[:,0])
     nimax = best_match_indx2(n_max, bbn[:,0])
     n = bbn[nimin:nimax,0]
