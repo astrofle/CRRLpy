@@ -13,29 +13,29 @@ Contents:
 
    includeme
    
-crrlpy.crrls module
--------------------
-
-.. automodule:: crrlpy.crrls
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-    
-crrlpy.models.rrlmod module
----------------------------
-
-.. automodule:: crrlpy.models.rrlmod
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. crrlpy.crrls module
+.. -------------------
+.. 
+.. .. automodule:: crrlpy.crrls
+..     :members:
+..     :undoc-members:
+..     :private-members:
+..     :show-inheritance:
+..     
+.. crrlpy.models.rrlmod module
+.. ---------------------------
+.. 
+.. .. automodule:: crrlpy.models.rrlmod
+..     :members:
+..     :undoc-members:
+..     :private-members:
+..     :show-inheritance:
+.. 
+.. 
+.. Indices and tables
+.. ==================
+.. 
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
 
