@@ -1,6 +1,6 @@
 CRRLpy
 ======
-Tools for processing **C**arbon **R**adio **R**ecombination **L**ine spectra.
+Tools for processing **C**\arbon **R**\adio **R**\ecombination **L**\ine spectra.
 
 The models are not shipped with the modules and scripts.
 
