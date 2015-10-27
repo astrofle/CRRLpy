@@ -1,0 +1,281 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>crrlpy.frec_calc &mdash; CRRLpy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/sphinx_paramlinks.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="CRRLpy 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for crrlpy.frec_calc</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+
+<span class="n">__docformat__</span> <span class="o">=</span> <span class="s">&#39;reStructuredText&#39;</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">scipy.constants</span> <span class="kn">import</span> <span class="n">c</span><span class="p">,</span> <span class="n">m_e</span><span class="p">,</span> <span class="n">physical_constants</span>
+<span class="kn">from</span> <span class="nn">astropy</span> <span class="kn">import</span> <span class="n">units</span> <span class="k">as</span> <span class="n">u</span>
+
+<div class="viewcode-block" id="line_freq"><a class="viewcode-back" href="../../includeme.html#crrlpy.frec_calc.line_freq">[docs]</a><span class="k">def</span> <span class="nf">line_freq</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">R_X</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Uses the Rydberg formula to get the frequency</span>
+<span class="sd">    of a transition to quantum number n for a given atom.</span>
+<span class="sd">    </span>
+<span class="sd">    :param Z: Charge of the atom.</span>
+<span class="sd">    :param R_X: </span>
+<span class="sd">    :param n: Principal quantum number of the transition. :math:`n+\\Delta n\\rightarrow n`.</span>
+<span class="sd">    :param dn: Difference between the principal quantum number of the initial state \</span>
+<span class="sd">    and the final state. :math:`\\Delta n=n_{f}-n_{i}`.</span>
+<span class="sd">    :type Z: int</span>
+<span class="sd">    :type R_X: float</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :type dn: int</span>
+<span class="sd">    :returns: The frequency of the transition in MHz.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">Z</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">R_X</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="p">((</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">n</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">-</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">((</span><span class="n">n</span> <span class="o">+</span> <span class="n">dn</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)))</span>
+</div>
+<div class="viewcode-block" id="set_specie"><a class="viewcode-back" href="../../includeme.html#crrlpy.frec_calc.set_specie">[docs]</a><span class="k">def</span> <span class="nf">set_specie</span><span class="p">(</span><span class="n">specie</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets atomic constants based on the atomic specie.</span>
+<span class="sd">    </span>
+<span class="sd">    :param specie: Atomic specie.</span>
+<span class="sd">    :type specie: string</span>
+<span class="sd">    :returns: Array with the atomic mass in a.m.u., ionization potential, abundance relative to HI, :math:`V_{X}-V_{H}` and the electric charge.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c"># data for species (table 1 RG92)</span>
+    <span class="c"># [atomic.mass, ion.potential, abundance, V_X-V_H, Z]</span>
+    <span class="k">if</span> <span class="s">&#39;HI&#39;</span> <span class="ow">in</span> <span class="n">specie</span><span class="p">:</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0078</span><span class="p">,</span><span class="mf">13.6</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;HI&#39;</span>
+    <span class="k">if</span> <span class="s">&#39;HeI&#39;</span> <span class="ow">in</span> <span class="n">specie</span><span class="p">:</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">4.0026</span><span class="p">,</span><span class="mf">24.6</span><span class="p">,</span><span class="mf">0.1</span><span class="p">,</span><span class="mf">122.1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;HeI&#39;</span>
+    <span class="k">if</span> <span class="s">&#39;CI&#39;</span> <span class="ow">in</span> <span class="n">specie</span><span class="p">:</span>
+        <span class="c">#X = [12.0000,11.4,3.e-4,149.5,6.0]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">12.0000</span><span class="p">,</span><span class="mf">11.4</span><span class="p">,</span><span class="mf">3.e-4</span><span class="p">,</span><span class="mf">149.5</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;CI&#39;</span>
+    <span class="k">if</span> <span class="s">&#39;NI&#39;</span> <span class="ow">in</span> <span class="n">specie</span><span class="p">:</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">14.0067</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;NI&#39;</span>
+    <span class="k">if</span> <span class="s">&#39;SI&#39;</span> <span class="ow">in</span> <span class="n">specie</span><span class="p">:</span>
+        <span class="c">#X = [37.9721,10.3,2.e-5,158.0,16.0]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">37.9721</span><span class="p">,</span><span class="mf">10.3</span><span class="p">,</span><span class="mf">2.e-5</span><span class="p">,</span><span class="mf">158.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;SI&#39;</span>
+    <span class="c"># isotopes</span>
+    <span class="k">if</span> <span class="s">&#39;CI13&#39;</span> <span class="ow">in</span> <span class="n">specie</span><span class="p">:</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">13.00335</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;CI13&#39;</span>
+    <span class="k">if</span> <span class="s">&#39;CI14&#39;</span> <span class="ow">in</span> <span class="n">specie</span><span class="p">:</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mf">14.003241</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;CI14&#39;</span>
+        
+    <span class="k">return</span> <span class="n">X</span>
+</div>
+<div class="viewcode-block" id="set_trans"><a class="viewcode-back" href="../../includeme.html#crrlpy.frec_calc.set_trans">[docs]</a><span class="k">def</span> <span class="nf">set_trans</span><span class="p">(</span><span class="n">dn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets a name depending on the difference between</span>
+<span class="sd">    atomic levels.</span>
+<span class="sd">    </span>
+<span class="sd">    :param dn: Separation between ni and nf, :math:`\\Delta n=n_{i}-n_{f}`.</span>
+<span class="sd">    :type dn: int</span>
+<span class="sd">    :returns: alpha, beta, gamma, delta or epsilon depending on :paramref:`dn`.</span>
+<span class="sd">    :rtype: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;alpha&#39;</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;beta&#39;</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;gamma&#39;</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;delta&#39;</span>
+    <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;epsilon&#39;</span>
+        
+    <span class="k">return</span> <span class="n">name</span>
+</div>
+<div class="viewcode-block" id="set_dn"><a class="viewcode-back" href="../../includeme.html#crrlpy.frec_calc.set_dn">[docs]</a><span class="k">def</span> <span class="nf">set_dn</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sets the value of Delta n depending on </span>
+<span class="sd">    the transition name.</span>
+<span class="sd">    </span>
+<span class="sd">    :param name: Name of the transition.</span>
+<span class="sd">    :type name: string</span>
+<span class="sd">    :returns: :math:`\\Delta n` for the given transition.</span>
+<span class="sd">    :rtype: int</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; set_dn(&#39;CIalpha&#39;)</span>
+<span class="sd">    1</span>
+<span class="sd">    &gt;&gt;&gt; set_dn(&#39;CIdelta&#39;)</span>
+<span class="sd">    4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="s">&#39;alpha&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="s">&#39;beta&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="s">&#39;gamma&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="k">if</span> <span class="s">&#39;delta&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="k">if</span> <span class="s">&#39;epsilon&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="n">dn</span> <span class="o">=</span> <span class="mi">5</span>
+        
+    <span class="k">return</span> <span class="n">dn</span>
+</div>
+<div class="viewcode-block" id="make_line_list"><a class="viewcode-back" href="../../includeme.html#crrlpy.frec_calc.make_line_list">[docs]</a><span class="k">def</span> <span class="nf">make_line_list</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">unitless</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a list of frequencies for the</span>
+<span class="sd">    corresponding line. The frequencies</span>
+<span class="sd">    are in MHz.</span>
+<span class="sd">    </span>
+<span class="sd">    :param line: Line to compute the frequencies for.</span>
+<span class="sd">    :param n_min: Minimum n number to include in the list.</span>
+<span class="sd">    :param n_max: Maximum n number to include in the list.</span>
+<span class="sd">    :param unitless: If True the list will have no units. If not the list will be of astropy.units.Quantity_ objects.</span>
+<span class="sd">    :returns: List with the frequency of the transitions for the line.</span>
+<span class="sd">    </span>
+<span class="sd">    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="p">)</span>
+    
+    <span class="c"># Define the electron mass in atomic mass units</span>
+    <span class="n">m_e_amu</span> <span class="o">=</span> <span class="n">m_e</span><span class="o">/</span><span class="n">physical_constants</span><span class="p">[</span><span class="s">&#39;atomic mass constant&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="c"># set the specie</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">set_specie</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">dn</span> <span class="o">=</span> <span class="n">set_dn</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    
+    <span class="n">M_X</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">R_X</span> <span class="o">=</span> <span class="mf">10.97373</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">m_e_amu</span><span class="o">/</span><span class="n">M_X</span><span class="p">))</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    
+    <span class="n">freq</span> <span class="o">=</span> <span class="n">line_freq</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="n">R_X</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">dn</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">unitless</span><span class="p">:</span>
+        <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">MHz</span>
+    
+    <span class="k">return</span> <span class="n">line</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span>
+</div>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../includeme.html#crrlpy.frec_calc.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main body of the program. Useful for calling as a script.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-i&#39;</span><span class="p">,</span> <span class="s">&#39;--n_min&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s">&#39;n_min&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Minimum n number&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-n&#39;</span><span class="p">,</span> <span class="s">&#39;--n_max&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                        <span class="n">dest</span><span class="o">=</span><span class="s">&#39;n_max&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&quot;Maximum n number&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&#39;-l&#39;</span><span class="p">,</span> <span class="s">&#39;--line&#39;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s">&#39;line&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;CI&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s">&quot;Line name. E.g., CIalpha, HeIbeta, HIalpha, CI13alpha, CI14gamma or SIepsilon&quot;</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    
+    <span class="n">n_min</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_min</span>
+    <span class="n">n_max</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">n_max</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">line</span>
+    
+    <span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">make_line_list</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="p">)</span>
+    
+    <span class="c"># Write the line list to a file</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="s">&#39;RRL_{0}{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outf</span><span class="p">:</span>
+        <span class="n">outf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;#SPECIES-NAME,  TRANSITION-TYPE,  N-LEVEL,  FREQUENCY-[MHZ]</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ni</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">outf</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;{0}  {1}  {2}  {3}</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">ni</span><span class="p">,</span> <span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
