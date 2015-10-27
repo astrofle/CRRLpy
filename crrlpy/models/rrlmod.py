@@ -1,5 +1,16 @@
 #!/usr/bin/env python
 
+"""
+.. module:: rrlmod
+   :platform: Unix
+   :synopsis: RRL model tools.
+
+.. moduleauthor:: Pedro Salas <psalas@strw.leidenuniv.nl>
+
+"""
+
+#__docformat__ = 'reStructuredText'
+
 from __future__ import division
 
 import numpy as np
@@ -82,14 +93,16 @@ def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
     """
     Returns the blackbody function evaluated at nu. 
     As temperature a broken power law is used.
-    The power law shape is has parameters: Tr, nu0, alpha1 and alpha2.
+    The power law shape has parameters: Tr, nu0, alpha1 and alpha2.
     
     :param nu: Frequency. (Hz) or astropy.units.Quantity_
+    :type nu: (Hz) or astropy.units.Quantity_
     :param Tr: Temperature at nu0. (K) or astropy.units.Quantity_
     :param nu0: Frequency at which the spectral index changes. (Hz) or astropy.units.Quantity_
     :param alpha1: spectral index for :math:`\\nu<\\nu_0`
     :param alpha2: spectral index for :math:`\\nu\\geq\\nu_0`
-    :returns: Specific intensity in erg / (cm2 Hz s sr). See `astropy.analytic_functions.blackbody.blackbody_nu`__
+    :returns: Specific intensity in :math:`\\rm{erg}\\,\\rm{cm}^{-2}\\,\\rm{Hz}^{-1}\\,\\rm{s}^{-1}\\,\\rm{sr}^{-1}`. See `astropy.analytic_functions.blackbody.blackbody_nu`__
+    :rtype: astropy.units.Quantity_
     
     .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity
     __ blackbody_
@@ -104,7 +117,11 @@ def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
 
 def I_cont(nu, Te, tau, I0, unitless=False):
     """
-    :param nu: Frequency. (Hz) or astropy.units.Quantity_
+    Computes the specific intensity due to a blackbody at temperature :math:`T_{e}` and optical depth :math:`\\tau`. It considers that there is 
+    background radiation with :math:`I_{0}`.
+    
+    :param nu: Frequency.
+    :type nu: (Hz) or astropy.units.Quantity_
     :param Te: Temperature of the source function. (K) or astropy.units.Quantity_
     :param tau: Optical depth of the medium.
     :param I0: Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see :paramref:`unitless`.
@@ -287,6 +304,9 @@ def kappa_cont(freq, Te, ne, nion, Z):
     return kc*u.pc**-1*np.exp(-h.cgs.value*nu/k_B.cgs.value/Te.cgs.value)
 
 def kappa_cont_base(nu, Te, ne, nion, Z):
+    """
+    
+    """
     
     return 4.6460/np.power(nu, 7./3.)/np.power(Te, 1.5)* \
             (np.exp(4.7993e-2*nu/Te) - 1.)*np.power(Z, 8./3.)*ne*nion
@@ -323,7 +343,6 @@ def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     
     #print len(Anfni), len(bn[1:,-1]), len(bn[:-1,-1]), len(omega_ni[:]), len(ni), len(exp_ni), len(exp_nf)
     kl = cte.value/np.power(Te, 3./2.)*ne*nion*Anfni[:,2]*omega_ni[:]/omega_i*(bn[1:,-1]*exp_ni - bn[:-1,-1]*exp_nf)
-    #kl = 
     
     return kl
 
@@ -340,11 +359,6 @@ def kappa_line_lte(nu, Te, ne, nion, Z, Tr, line, n_min=1, n_max=1500):
     Aninf = np.loadtxt('{0}/rates/einstein_Anm_{1}.txt'.format(LOCALDIR, trans))
     Aninf = Aninf[np.where(Aninf[:,1] == n_min)[0]:np.where(Aninf[:,1] == n_max)[0]]
     
-    #Nni = np.empty(len(ni), dtype=mp.mpf)
-    #exp = np.empty(len(ni), dtype=mp.mpf)
-    #for i,n in enumerate(ni):
-        #Nni[i] = mp.mpf(level_pop_lte(n, ne, nion, Te, Z).cgs.value)
-        #exp[i] = np.exp(-h.cgs.value*nu[i].cgs.value/k_B.cgs.value/Te.cgs.value)
     exp = np.exp(-h*nu/k_B/Te)
     Nni = level_pop_lte(ni, ne, nion, Te, Z)
     
@@ -507,17 +521,19 @@ def load_itau_all_norad(trans='alpha', n_max=1000):
     ne = np.zeros(len(models))
     other = np.zeros(len(models), dtype='|S20')
     data = np.zeros((len(models), 2, n_max))
+    
     for i,model in enumerate(models):
+      
         st = model[model.index('T')+2:model.index('T')+5]
         Te[i] = str2val(st)
+        
         sn = model[model.index('ne')+3:model.index('ne')+7].split('_')[0]
         ne[i] = str2val(sn)
+        
         other[i] = model.split('bn_beta')[-1]
-        #mod = np.loadtxt(model)
-        #mod = mod[:np.where(mod[:,0]==n_max)[0]]
+
         n, int_tau = itau(st, sn, trans, n_max=1000, other=other[i])
-        #data[i,0] = mod[:,0]
-        #data[i,1] = mod[:,1]
+
         data[i,0] = n
         data[i,1] = int_tau
         
@@ -655,11 +671,9 @@ def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
     """
 
     models = np.asarray(models)
-    
-    models_len = np.asarray([len(model.split('_')) for model in models])
     models = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
-                                                   float(x.split('_')[6]),
-                                                   str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
+                                           float(x.split('_')[6]),
+                                           str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
         
     Te = np.zeros(len(models))
     ne = np.zeros(len(models))
@@ -685,60 +699,75 @@ def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
         
     return [Te, ne, other, data]
 
-def make_betabn(temp, dens, trans, n_max=1000, other=''):
+def make_betabn(line, temp, dens, n_min=5, n_max=1000, other=''):
     """
     """
     
     t = str2val(temp)
     d = str2val(dens)
     
-    dn = fc.set_dn(trans)
-    bn = load_bn(temp, dens, other='')
-    specie, trans, n, freq = fc.make_line_list('CI', bn[-1,0]+1, dn)
+    bn = load_bn(temp, dens, other=other)
+    line, n, freq = fc.make_line_list(line, n_min=n_min, n_max=n_max)
+    
     # Cut bn first
-    bn = bn[:np.where(bn[:,0]==n_max)[0]]
+    bn = bn[np.where(bn[:,0]==n_min)[0]:np.where(bn[:,0]==n_max)[0]]
     freq = freq[np.where(n==bn[0,0])[0]:np.where(n==bn[-1,0])[0]]
     
     beta = np.empty(len(freq))
+    
     for i in xrange(len(freq)):
         if i < len(freq)-dn:
-            #bnn = np.divide(bn[i+dn,-1], bn[i,-1])
+
             bnn = Decimal(bn[i+dn,-1]) / Decimal(bn[i,-1])
             e = Decimal(-h.value*freq[i]*1e6/(k_B.value*t))
-            exp = Decimal(e).exp()#Decimal(np.exp(-h.value*freq[i]*1e6/(k_B.value*t)))
+            exp = Decimal(e).exp()
             beta[i] = float((Decimal(1) - bnn*exp)/(Decimal(1) - exp))
         
     return np.array([bn[:-1,0], beta*bn[:-1,1]])
 
-def make_betabn2(temp, dens, trans, n_max=1000, other=''):
+def make_betabn2(line, temp, dens, n_min=5, n_max=1000, other=''):
     """
     """
     
     t = str2val(temp)
     d = dens
     
-    dn = fc.set_dn(trans)
+    dn = fc.set_dn(line)
     bn = load_bn2(temp, dens, other=other)
-    specie, trans, n, freq = fc.make_line_list('CI', bn[-1,0]+1, dn)
+    line, n, freq = fc.make_line_list(line, n_min=n_min, n_max=bn[-1,0]+1)
+    
     # Cut bn first
-    bn = bn[:n_max]#bn[:np.where(bn[:,0]==n_max)[0]]
+    bn = bn[np.where(bn[:,0]==n_min)[0]:np.where(bn[:,0]==n_max)[0]]
+    #bn = bn[n_min:n_max]
     freq = freq[np.where(n==bn[0,0])[0]:np.where(n==bn[-1,0])[0]]
     
     beta = np.empty(len(freq))
+    
     for i in xrange(len(freq)):
         if i < len(freq)-dn:
-            #bnn = np.divide(bn[i+dn,-1], bn[i,-1])
+          
             bnn = Decimal(bn[i+dn,-1]) / Decimal(bn[i,-1])
             e = Decimal(-h.value*freq[i]*1e6/(k_B.value*t))
-            exp = Decimal(e).exp()#Decimal(np.exp(-h.value*freq[i]*1e6/(k_B.value*t)))
+            exp = Decimal(e).exp()
             beta[i] = float((Decimal(1) - bnn*exp)/(Decimal(1) - exp))
         
     return np.array([bn[:-1,0], beta*bn[:-1,1]])
     
 def Mdn(dn):
     """
-    Gives the M(dn) factor for a given dn.
+    Gives the :math:`M(\\Delta n)` factor for a given :math:`\\Delta n`.
     ref. Menzel (1968)
+    
+    :param dn: :math:`\\Delta n`.
+    :returns: :math:`M(\\Delta n)`
+    :rtype: float
+    
+    :Example:
+    
+    >>> Mdn(1)
+    0.1908
+    >>> Mdn(5)
+    0.001812
     """
     
     if dn == 1:
