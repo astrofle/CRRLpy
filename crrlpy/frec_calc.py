@@ -36,6 +36,12 @@ def set_specie(specie):
     :param specie: Atomic specie.
     :type specie: string
     :returns: Array with the atomic mass in a.m.u., ionization potential, abundance relative to HI, :math:`V_{X}-V_{H}` and the electric charge.
+    
+    :Example:
+    
+    >>> set_specie('CI')
+    [12.0, 11.4, 0.0003, 149.5, 1.0]
+
     """
     
     # data for species (table 1 RG92)
@@ -72,7 +78,7 @@ def set_trans(dn):
     Sets a name depending on the difference between
     atomic levels.
     
-    :param dn: Separation between ni and nf, :math:`\\Delta n=n_{i}-n_{f}`.
+    :param dn: Separation between :math:`n_{i}` and :math:`n_{f}`, :math:`\\Delta n=n_{i}-n_{f}`.
     :type dn: int
     :returns: alpha, beta, gamma, delta or epsilon depending on :paramref:`dn`.
     :rtype: string

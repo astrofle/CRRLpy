@@ -27,14 +27,31 @@ from frec_calc import set_dn, make_line_list
 def alphanum_key(s):
     """ 
     Turn a string into a list of string and number chunks.
-        "z23a" -> ["z", 23, "a"]
+    
+    :param s: String
+    :returns: List with strings and integers.
+    :rtype: list
+    
+    :Example:
+    
+    >>> alphanum_key("z23a")
+    ["z", 23, "a"]
+    
     """
     return [ tryint(c) for c in re.split('([0-9]+)', s) ]
 
 def average(data, axis, n):
     """
-    Averages data along the given axis by combining
-    n adjacent values.
+    Averages data along the given axis by combining n adjacent values.
+    
+    :param data: Data to average along a given axis.
+    :type data: numpy array
+    :param axis: Axis along which to average.
+    :type axis: int
+    :param n: Factor by which to average.
+    :type n: int
+    :returns: Data decimated by a factor n along the given axis.
+    :rtype: numpy array
     """
     
     if n < 1:
@@ -51,31 +68,52 @@ def average(data, axis, n):
         avg_tmp = avg_tmp/n
         
         return avg_tmp
-            #avg4_temp = (temp[0:-3:4] + temp[1:-2:4] + temp[2:-1:4] + temp[3::4])/4.
 
 def best_match_indx(value, array, tol):
     """
     Searchs for the best match to a value inside an array given a tolerance.
-    @param value - value to find inside the array
-    @type value - float
-    @param tol - tolerance for match
-    @type tol - float
-    @param array - list to search for the given value
-    @type array - numpy.array
-    @return - best match for val inside array
-    @rtype - float
+    
+    :param value: Value to find inside the array.
+    :type value: float
+    :param tol: Tolerance for match.
+    :type tol: float
+    :param array: List to search for the given value.
+    :type array: numpy.array
+    :return: Best match for val inside array.
+    :rtype: float
     """
+    
     upp = np.where(array >= value - tol)[0]
     low = np.where(array <= value + tol)[0]
+    
     if bool(set(upp) & set(low)):
-        return iter(set(upp) & set(low)).next()
+        out = iter(set(upp) & set(low)).next()
+        #return iter(set(upp) & set(low)).next()
     elif low.any():
-        return low[-1]
+        out = low[-1]
+        #return low[-1]
     else:
-        return upp[0]
+        out = upp[0]
+        #return upp[0]
+    return out
     
 def best_match_indx2(value, array):
     """
+    Searchs for the index of the closest entry to value inside an array.
+    
+    :param value: Value to find inside the array.
+    :type value: float
+    :param array: List to search for the given value.
+    :type array: list or numpy.array
+    :return: Best match index for the value inside array.
+    :rtype: float
+    
+    :Example:
+    
+    >>> a = [1,2,3,4]
+    >>> best_match_indx2(3, a)
+    2
+    
     """
     
     array = np.array(array)
@@ -86,6 +124,21 @@ def best_match_indx2(value, array):
 
 def best_match_value(value, array):
     """
+    Searchs for the closest ocurrence of value in array.
+    
+    :param value: Value to find inside the array.
+    :type value: float
+    :param array: List to search for the given value.
+    :type array: list or numpy.array
+    :return: Best match for the value inside array.
+    :rtype: float.
+    
+    :Example:
+    
+    >>> a = [1,2,3,4]
+    >>> best_match_value(3.5, a)
+    3
+    
     """
     
     array = np.array(array)
@@ -95,6 +148,13 @@ def best_match_value(value, array):
     return array[np.where(subarr == subarrmin)[0][0]]
     
 def blank_lines(freq, tau, reffreqs, v0, dv0):
+    """
+    Blanks the lines in a spectra.
+    
+    :param freq: Frequency axis of the spectra.
+    :type freq: array
+    :
+    """
     
     try:
         for ref in reffreqs:
@@ -127,29 +187,45 @@ def blank_lines2(freq, tau, reffreqs, dv):
 
 def df2dv(f0, df):
     """
-    Convert a frequency delta
-    to a velocity delta given
-    a central frequency.
+    Convert a frequency delta to a velocity delta given a central frequency.
+    
+    :param f0: Rest frequency. (Hz)
+    :type f0: float
+    :param df: Frequency delta. (Hz)
+    :type df: float
+    :returns: The equivalent velocity delta for the given frequency delta.
+    :rtype: float in Hz
     """
+    
     return c*(df/f0)
 
 def dv2df(f0, dv):
     """
-    Convert a velocity delta
-    to a frequeny delta given
-    a central frequency.
+    Convert a velocity delta to a frequency delta given a central frequency.
+    
+    :param f0: Rest frequency. (Hz)
+    :type f0: float
+    :param dv: Velocity delta. (m/s)
+    :type dv: float
+    :returns: The equivalent frequency delta for the given velocity delta.
+    :rtype: float in :math:`\mbox{m s}^{-1}`
     """
+    
     return dv*f0/c
 
 def dv_minus_doppler(dV, ddV, dD, ddD):
     """
-    Returns the Lorentzian contribution to the 
-    line width assuming that the line has a Voigt 
-    profile.
-    dV (float) Total line width.
-    ddV (float) Uncertainty in the total line width.
-    dD (float) Doppler contribution to the line width.
-    ddD (float) Uncertainty in the Doppler contribution to the line width.
+    Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.
+    
+    :param dV: Total line width
+    :type dV: float
+    :param ddV: Uncertainty in the total line width.
+    :type ddV: float
+    :param dD: Doppler contribution to the line width.
+    :type dD: float
+    :param ddD: Uncertainty in the Doppler contribution to the line width.
+    :returns: The Lorentz contribution to the total line width.
+    :rtype: float
     """
     
     a = 0.5346
@@ -179,13 +255,17 @@ def dv_minus_doppler(dV, ddV, dD, ddD):
 
 def dv_minus_doppler2(dV, ddV, dD, ddD):
     """
-    Returns the Lorentzian contribution to the 
-    line width assuming that the line has a Voigt 
-    profile.
-    dV (float) Total line width.
-    ddV (float) Uncertainty in the total line width.
-    dD (float) Doppler contribution to the line width.
-    ddD (float) Uncertainty in the Doppler contribution to the line width.
+    Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.
+    
+    :param dV: Total line width
+    :type dV: float
+    :param ddV: Uncertainty in the total line width.
+    :type ddV: float
+    :param dD: Doppler contribution to the line width.
+    :type dD: float
+    :param ddD: Uncertainty in the Doppler contribution to the line width.
+    :returns: The Lorentz contribution to the total line width.
+    :rtype: float
     """
     
     a = 0.5346
@@ -217,8 +297,7 @@ def dv_minus_doppler2(dV, ddV, dD, ddD):
 
 def f2n(f, line, n_max=1500):
     """
-    Comverts a given frequency to a principal quantum 
-    number n of a given transition and atomic specie.
+    Converts a given frequency to a principal quantum number n for a given line.
     """
     
     line, nn, freq = make_line_list(line, n_max=n_max)
@@ -228,9 +307,16 @@ def f2n(f, line, n_max=1500):
 
 def find_lines_in_band(freq, species='CI', transition='alpha', z=0, verbose=False):
     """
-    Finds if there are any lines corresponding to 
-    transitions of the given species in the frequency range.
+    Finds if there are any lines corresponding to transitions of the given species in the frequency range. \
     The line transition frequencies are corrected for redshift.
+    
+    :param freq:
+    :param species:
+    :param z: Redshift to apply to the rest frequencies.
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :returns:
+    :rtype: List of principal quantum numbers and list of reference frequencies.
     """
     
     # Load the reference frequencies
@@ -283,12 +369,11 @@ def find_lines_sb(freq, transition, z=0, verbose=False):
     return refqns, reffreqs
 
 def fit_continuum(x, y, degree, p0):
-    
     """
-    Divide tb by given a model
-    and starting parameters p0.
+    Divide tb by given a model and starting parameters p0.
     Returns: tb/model - 1
     """
+    
     # Divide by linear baseline
     mod = PolynomialModel(degree)
     params = mod.make_params()
@@ -661,18 +746,22 @@ def fit_storage():
 
 def freq2vel(f0, f):
     """
-    Convert a frequency axis
-    to a velocity axis given
-    a central frequency.
-    Uses the radio definition 
-    of velocity.
+    Convert a frequency axis to a velocity axis given a central frequency.
+    Uses the radio definition of velocity.
+    
+    :param f0: Rest frequency for the conversion. (Hz)
+    :type f0: float
+    :param f: Frequencies to be converted to velocity. (Hz)
+    :type f: numpy array
+    :returns: f converted to velocity given a rest frequency :math:`f_{0}`.
+    :rtype: numpy array
     """
+    
     return c*(1. - f/f0)
 
 def FWHM2sigma(fwhm):
     """
-    Converts a FWHM to the standard deviation of 
-    a Gaussian distribution.
+    Converts a FWHM to the standard deviation of a Gaussian distribution.
     """
     
     return fwhm/(2.*np.sqrt(2.*np.log(2.)))
@@ -688,8 +777,7 @@ def Gauss(y, **kwargs):
 
 def gauss_area(amplitude, sigma):
     """
-    Returns the area under a Gaussian of a 
-    given amplitude and sigma.
+    Returns the area under a Gaussian of a given amplitude and sigma.
     """
     
     return amplitude*sigma*np.sqrt(2*np.pi)
@@ -720,19 +808,19 @@ def gaussian_off(x, amplitude, center, sigma, c):
 def get_axis(header, axis):
     """
     Constructs a cube axis
-    @param header - fits cube header
-    @type header - pyfits header
-    @param axis - axis to reconstruct
-    @type axis - int
-    @return - cube axis
-    @rtype - numpy array
+    
+    :param header: Fits cube header.
+    :type header: pyfits header
+    :param axis: Axis to reconstruct.
+    :type axis: int
+    :returns: cube axis
+    :rtype: numpy array
     """
     
     axis = str(axis)
     dx = header.get("CDELT" + axis)
     try:
         dx = float(dx)
-        p0 = header.get("CRPIX" + axis)
         p0 = header.get("CRPIX" + axis)
         x0 = header.get("CRVAL" + axis)
         
@@ -743,16 +831,24 @@ def get_axis(header, axis):
 
     n = header.get("NAXIS" + axis)
     
+    p0 -= 1 # Fits files index start at 1, not for python.
+    
     return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
 
 def get_line_mask(freq, reffreq, v0, dv0):
     """
-    Return a mask with ranges 
-    where a line is expected in
-    the given frequency range for
-    a line with a given reference 
-    frequency at expected velocity 
-    v0 and line width dv0.
+    Return a mask with ranges where a line is expected in the given frequency range for \
+    a line with a given reference frequency at expected velocity v0 and line width dv0.
+    
+    :param freq: Frequency axis where the line is located.
+    :type freq: numpy array or list
+    :param reffreq: Reference frequency for the line.
+    :type reffreq: float
+    :param v0: Velocity of the line. (km/s)
+    :type v0: float
+    :param dv0: Velocity range to mask. (km/s)
+    :type dv0: float
+    :returns: Mask centered at the line center and width dv0 referenced to the input :paramref:`freq`.
     """
     
     #print v0
@@ -778,11 +874,10 @@ def get_line_mask(freq, reffreq, v0, dv0):
 
 def get_line_mask2(freq, reffreq, dv):
     """
-    Return a mask with ranges 
-    where a line is expected in
-    the given frequency range for
-    a line with a given reference 
-    frequency and line width dv.
+    Return a mask with ranges where a line is expected in the given frequency range for \
+    a line with a given reference frequency and line width dv.
+    
+    
     """
     
     df = dv2df(reffreq, dv*1e3)
@@ -797,6 +892,20 @@ def get_line_mask2(freq, reffreq, dv):
     return [f_mini, f_maxi]
 
 def get_rms(data, axis=None):
+    """
+    Computes the rms of the given data.
+    
+    :param data: Array with values where to compute the rms.
+    :type data: numpy array or list
+    :param axis: Axis over which to compute the rms. Default: None
+    :type axis: int
+    :returns: The rms of data.
+    .. math::
+    
+        \\mbox{\\it rms}=\\sqrt{\\langle\\mbox{data}\\rangle^{2}+V[\\mbox{data}]}
+        
+    where :math:`V` is the variance of the data.
+    """
     rms = np.sqrt(np.power(np.std(data, axis=axis), 2) \
            + np.power(np.mean(data, axis=axis), 2))
     rms = np.sqrt(np.average(np.power(data, 2)))
