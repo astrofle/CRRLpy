@@ -51,6 +51,17 @@
   <h1>Source code for crrlpy.models.rrlmod</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: rrlmod</span>
+<span class="sd">   :platform: Unix</span>
+<span class="sd">   :synopsis: RRL model tools.</span>
+
+<span class="sd">.. moduleauthor:: Pedro Salas &lt;psalas@strw.leidenuniv.nl&gt;</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c">#__docformat__ = &#39;reStructuredText&#39;</span>
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -133,14 +144,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the blackbody function evaluated at nu. </span>
 <span class="sd">    As temperature a broken power law is used.</span>
-<span class="sd">    The power law shape is has parameters: Tr, nu0, alpha1 and alpha2.</span>
+<span class="sd">    The power law shape has parameters: Tr, nu0, alpha1 and alpha2.</span>
 <span class="sd">    </span>
 <span class="sd">    :param nu: Frequency. (Hz) or astropy.units.Quantity_</span>
+<span class="sd">    :type nu: (Hz) or astropy.units.Quantity_</span>
 <span class="sd">    :param Tr: Temperature at nu0. (K) or astropy.units.Quantity_</span>
 <span class="sd">    :param nu0: Frequency at which the spectral index changes. (Hz) or astropy.units.Quantity_</span>
 <span class="sd">    :param alpha1: spectral index for :math:`\\nu&lt;\\nu_0`</span>
 <span class="sd">    :param alpha2: spectral index for :math:`\\nu\\geq\\nu_0`</span>
-<span class="sd">    :returns: Specific intensity in erg / (cm2 Hz s sr). See `astropy.analytic_functions.blackbody.blackbody_nu`__</span>
+<span class="sd">    :returns: Specific intensity in :math:`\\rm{erg}\\,\\rm{cm}^{-2}\\,\\rm{Hz}^{-1}\\,\\rm{s}^{-1}\\,\\rm{sr}^{-1}`. See `astropy.analytic_functions.blackbody.blackbody_nu`__</span>
+<span class="sd">    :rtype: astropy.units.Quantity_</span>
 <span class="sd">    </span>
 <span class="sd">    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity</span>
 <span class="sd">    __ blackbody_</span>
@@ -155,7 +168,11 @@
 </div>
 <div class="viewcode-block" id="I_cont"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.I_cont">[docs]</a><span class="k">def</span> <span class="nf">I_cont</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">unitless</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param nu: Frequency. (Hz) or astropy.units.Quantity_</span>
+<span class="sd">    Computes the specific intensity due to a blackbody at temperature :math:`T_{e}` and optical depth :math:`\\tau`. It considers that there is </span>
+<span class="sd">    background radiation with :math:`I_{0}`.</span>
+<span class="sd">    </span>
+<span class="sd">    :param nu: Frequency.</span>
+<span class="sd">    :type nu: (Hz) or astropy.units.Quantity_</span>
 <span class="sd">    :param Te: Temperature of the source function. (K) or astropy.units.Quantity_</span>
 <span class="sd">    :param tau: Optical depth of the medium.</span>
 <span class="sd">    :param I0: Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see :paramref:`unitless`.</span>
@@ -338,6 +355,9 @@
     <span class="k">return</span> <span class="n">kc</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">pc</span><span class="o">**-</span><span class="mi">1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">nu</span><span class="o">/</span><span class="n">k_B</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">/</span><span class="n">Te</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="kappa_cont_base"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.kappa_cont_base">[docs]</a><span class="k">def</span> <span class="nf">kappa_cont_base</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="mf">4.6460</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="mf">7.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">*</span> \
             <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">4.7993e-2</span><span class="o">*</span><span class="n">nu</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="mf">8.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span><span class="o">*</span><span class="n">ne</span><span class="o">*</span><span class="n">nion</span>
@@ -374,7 +394,6 @@
     
     <span class="c">#print len(Anfni), len(bn[1:,-1]), len(bn[:-1,-1]), len(omega_ni[:]), len(ni), len(exp_ni), len(exp_nf)</span>
     <span class="n">kl</span> <span class="o">=</span> <span class="n">cte</span><span class="o">.</span><span class="n">value</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">ne</span><span class="o">*</span><span class="n">nion</span><span class="o">*</span><span class="n">Anfni</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="n">omega_ni</span><span class="p">[:]</span><span class="o">/</span><span class="n">omega_i</span><span class="o">*</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">exp_ni</span> <span class="o">-</span> <span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">exp_nf</span><span class="p">)</span>
-    <span class="c">#kl = </span>
     
     <span class="k">return</span> <span class="n">kl</span>
 </div>
@@ -391,11 +410,6 @@
     <span class="n">Aninf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/rates/einstein_Anm_{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
     <span class="n">Aninf</span> <span class="o">=</span> <span class="n">Aninf</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Aninf</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">n_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">Aninf</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">n_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
     
-    <span class="c">#Nni = np.empty(len(ni), dtype=mp.mpf)</span>
-    <span class="c">#exp = np.empty(len(ni), dtype=mp.mpf)</span>
-    <span class="c">#for i,n in enumerate(ni):</span>
-        <span class="c">#Nni[i] = mp.mpf(level_pop_lte(n, ne, nion, Te, Z).cgs.value)</span>
-        <span class="c">#exp[i] = np.exp(-h.cgs.value*nu[i].cgs.value/k_B.cgs.value/Te.cgs.value)</span>
     <span class="n">exp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">*</span><span class="n">nu</span><span class="o">/</span><span class="n">k_B</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span>
     <span class="n">Nni</span> <span class="o">=</span> <span class="n">level_pop_lte</span><span class="p">(</span><span class="n">ni</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
     
@@ -558,17 +572,19 @@
     <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
     <span class="n">other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S20&#39;</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="p">))</span>
+    
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+      
         <span class="n">st</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;T&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">:</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;T&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span><span class="p">]</span>
         <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        
         <span class="n">sn</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;ne&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">:</span><span class="n">model</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s">&#39;ne&#39;</span><span class="p">)</span><span class="o">+</span><span class="mi">7</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+        
         <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;bn_beta&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="c">#mod = np.loadtxt(model)</span>
-        <span class="c">#mod = mod[:np.where(mod[:,0]==n_max)[0]]</span>
+
         <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">sn</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="c">#data[i,0] = mod[:,0]</span>
-        <span class="c">#data[i,1] = mod[:,1]</span>
+
         <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
         <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
         
@@ -706,11 +722,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
-    
-    <span class="n">models_len</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">])</span>
     <span class="n">models</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">]),</span> 
-                                                   <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]),</span>
-                                                   <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+                                           <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">6</span><span class="p">]),</span>
+                                           <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
         
     <span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
     <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
@@ -736,60 +750,75 @@
         
     <span class="k">return</span> <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="make_betabn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.make_betabn">[docs]</a><span class="k">def</span> <span class="nf">make_betabn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="make_betabn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.make_betabn">[docs]</a><span class="k">def</span> <span class="nf">make_betabn</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">t</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">dens</span><span class="p">)</span>
     
-    <span class="n">dn</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_dn</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
-    <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_line_list</span><span class="p">(</span><span class="s">&#39;CI&#39;</span><span class="p">,</span> <span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dn</span><span class="p">)</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
+    <span class="n">line</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_line_list</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">)</span>
+    
     <span class="c"># Cut bn first</span>
-    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
     <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span>
     
     <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">))</span>
+    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">-</span><span class="n">dn</span><span class="p">:</span>
-            <span class="c">#bnn = np.divide(bn[i+dn,-1], bn[i,-1])</span>
+
             <span class="n">bnn</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">dn</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">e</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">1e6</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
-            <span class="n">exp</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="c">#Decimal(np.exp(-h.value*freq[i]*1e6/(k_B.value*t)))</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span>
             <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">bnn</span><span class="o">*</span><span class="n">exp</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">exp</span><span class="p">))</span>
         
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">beta</span><span class="o">*</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
 </div>
-<div class="viewcode-block" id="make_betabn2"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.make_betabn2">[docs]</a><span class="k">def</span> <span class="nf">make_betabn2</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="make_betabn2"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.make_betabn2">[docs]</a><span class="k">def</span> <span class="nf">make_betabn2</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">t</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
     <span class="n">d</span> <span class="o">=</span> <span class="n">dens</span>
     
-    <span class="n">dn</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_dn</span><span class="p">(</span><span class="n">trans</span><span class="p">)</span>
+    <span class="n">dn</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">set_dn</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn2</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">)</span>
-    <span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_line_list</span><span class="p">(</span><span class="s">&#39;CI&#39;</span><span class="p">,</span> <span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">dn</span><span class="p">)</span>
+    <span class="n">line</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">make_line_list</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    
     <span class="c"># Cut bn first</span>
-    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:</span><span class="n">n_max</span><span class="p">]</span><span class="c">#bn[:np.where(bn[:,0]==n_max)[0]]</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_min</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="n">n_max</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="c">#bn = bn[n_min:n_max]</span>
     <span class="n">freq</span> <span class="o">=</span> <span class="n">freq</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]:</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span>
     
     <span class="n">beta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">))</span>
+    
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span><span class="o">-</span><span class="n">dn</span><span class="p">:</span>
-            <span class="c">#bnn = np.divide(bn[i+dn,-1], bn[i,-1])</span>
+          
             <span class="n">bnn</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">dn</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="n">e</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="o">-</span><span class="n">h</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">freq</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="mf">1e6</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">t</span><span class="p">))</span>
-            <span class="n">exp</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span><span class="c">#Decimal(np.exp(-h.value*freq[i]*1e6/(k_B.value*t)))</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">exp</span><span class="p">()</span>
             <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">bnn</span><span class="o">*</span><span class="n">exp</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">Decimal</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">exp</span><span class="p">))</span>
         
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">beta</span><span class="o">*</span><span class="n">bn</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
     </div>
 <div class="viewcode-block" id="Mdn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.Mdn">[docs]</a><span class="k">def</span> <span class="nf">Mdn</span><span class="p">(</span><span class="n">dn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Gives the M(dn) factor for a given dn.</span>
+<span class="sd">    Gives the :math:`M(\\Delta n)` factor for a given :math:`\\Delta n`.</span>
 <span class="sd">    ref. Menzel (1968)</span>
+<span class="sd">    </span>
+<span class="sd">    :param dn: :math:`\\Delta n`.</span>
+<span class="sd">    :returns: :math:`M(\\Delta n)`</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; Mdn(1)</span>
+<span class="sd">    0.1908</span>
+<span class="sd">    &gt;&gt;&gt; Mdn(5)</span>
+<span class="sd">    0.001812</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
