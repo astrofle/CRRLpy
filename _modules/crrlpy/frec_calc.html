@@ -87,6 +87,12 @@
 <span class="sd">    :param specie: Atomic specie.</span>
 <span class="sd">    :type specie: string</span>
 <span class="sd">    :returns: Array with the atomic mass in a.m.u., ionization potential, abundance relative to HI, :math:`V_{X}-V_{H}` and the electric charge.</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; set_specie(&#39;CI&#39;)</span>
+<span class="sd">    [12.0, 11.4, 0.0003, 149.5, 1.0]</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c"># data for species (table 1 RG92)</span>
@@ -123,7 +129,7 @@
 <span class="sd">    Sets a name depending on the difference between</span>
 <span class="sd">    atomic levels.</span>
 <span class="sd">    </span>
-<span class="sd">    :param dn: Separation between ni and nf, :math:`\\Delta n=n_{i}-n_{f}`.</span>
+<span class="sd">    :param dn: Separation between :math:`n_{i}` and :math:`n_{f}`, :math:`\\Delta n=n_{i}-n_{f}`.</span>
 <span class="sd">    :type dn: int</span>
 <span class="sd">    :returns: alpha, beta, gamma, delta or epsilon depending on :paramref:`dn`.</span>
 <span class="sd">    :rtype: string</span>

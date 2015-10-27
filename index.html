@@ -63,8 +63,7 @@
 <dl class="function">
 <dt id="crrlpy.crrls.FWHM2sigma">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">FWHM2sigma</tt><big>(</big><em>fwhm</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#FWHM2sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.FWHM2sigma" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a FWHM to the standard deviation of 
-a Gaussian distribution.</p>
+<dd><p>Converts a FWHM to the standard deviation of a Gaussian distribution.</p>
 </dd></dl>
 
 <dl class="function">
@@ -103,47 +102,153 @@ amplitude: the line area</p>
 <dl class="function">
 <dt id="crrlpy.crrls.alphanum_key">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">alphanum_key</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#alphanum_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.alphanum_key" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Turn a string into a list of string and number chunks.</dt>
-<dd>&#8220;z23a&#8221; -&gt; [&#8220;z&#8221;, 23, &#8220;a&#8221;]</dd>
-</dl>
+<dd><p>Turn a string into a list of string and number chunks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><span class="target" id="crrlpy.crrls.alphanum_key.params.s"></span><strong>s</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.alphanum_key.params.s">¶</a> &#8211; String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List with strings and integers.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alphanum_key</span><span class="p">(</span><span class="s">&quot;z23a&quot;</span><span class="p">)</span>
+<span class="go">[&quot;z&quot;, 23, &quot;a&quot;]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.average">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">average</tt><big>(</big><em>data</em>, <em>axis</em>, <em>n</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.average" title="Permalink to this definition">¶</a></dt>
-<dd><p>Averages data along the given axis by combining
-n adjacent values.</p>
+<dd><p>Averages data along the given axis by combining n adjacent values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.average.params.data"></span><strong>data</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.average.params.data">¶</a> &#8211; Data to average along a given axis.</li>
+<li><span class="target" id="crrlpy.crrls.average.params.axis"></span><strong>axis</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.average.params.axis">¶</a> &#8211; Axis along which to average.</li>
+<li><span class="target" id="crrlpy.crrls.average.params.n"></span><strong>n</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.average.params.n">¶</a> &#8211; Factor by which to average.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Data decimated by a factor n along the given axis.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.best_match_indx">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">best_match_indx</tt><big>(</big><em>value</em>, <em>array</em>, <em>tol</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_indx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_indx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Searchs for the best match to a value inside an array given a tolerance.
-&#64;param value - value to find inside the array
-&#64;type value - float
-&#64;param tol - tolerance for match
-&#64;type tol - float
-&#64;param array - list to search for the given value
-&#64;type array - numpy.array
-&#64;return - best match for val inside array
-&#64;rtype - float</p>
+<dd><p>Searchs for the best match to a value inside an array given a tolerance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.best_match_indx.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.best_match_indx.params.value">¶</a> &#8211; Value to find inside the array.</li>
+<li><span class="target" id="crrlpy.crrls.best_match_indx.params.tol"></span><strong>tol</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.best_match_indx.params.tol">¶</a> &#8211; Tolerance for match.</li>
+<li><span class="target" id="crrlpy.crrls.best_match_indx.params.array"></span><strong>array</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.best_match_indx.params.array">¶</a> &#8211; List to search for the given value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match for val inside array.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.best_match_indx2">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">best_match_indx2</tt><big>(</big><em>value</em>, <em>array</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_indx2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_indx2" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Searchs for the index of the closest entry to value inside an array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.best_match_indx2.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.best_match_indx2.params.value">¶</a> &#8211; Value to find inside the array.</li>
+<li><span class="target" id="crrlpy.crrls.best_match_indx2.params.array"></span><strong>array</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.best_match_indx2.params.array">¶</a> &#8211; List to search for the given value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match index for the value inside array.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_match_indx2</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.best_match_value">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">best_match_value</tt><big>(</big><em>value</em>, <em>array</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Searchs for the closest ocurrence of value in array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.best_match_value.params.value"></span><strong>value</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.best_match_value.params.value">¶</a> &#8211; Value to find inside the array.</li>
+<li><span class="target" id="crrlpy.crrls.best_match_value.params.array"></span><strong>array</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.best_match_value.params.array">¶</a> &#8211; List to search for the given value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match for the value inside array.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_match_value</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.blank_lines">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">blank_lines</tt><big>(</big><em>freq</em>, <em>tau</em>, <em>reffreqs</em>, <em>v0</em>, <em>dv0</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#blank_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.blank_lines" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Blanks the lines in a spectra.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><span class="target" id="crrlpy.crrls.blank_lines.params.freq"></span><strong>freq</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.blank_lines.params.freq">¶</a> &#8211; Frequency axis of the spectra.</td>
+</tr>
+</tbody>
+</table>
+<p>:</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.blank_lines2">
@@ -153,56 +258,133 @@ n adjacent values.</p>
 <dl class="function">
 <dt id="crrlpy.crrls.df2dv">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">df2dv</tt><big>(</big><em>f0</em>, <em>df</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#df2dv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.df2dv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a frequency delta
-to a velocity delta given
-a central frequency.</p>
+<dd><p>Convert a frequency delta to a velocity delta given a central frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.df2dv.params.f0"></span><strong>f0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.df2dv.params.f0">¶</a> &#8211; Rest frequency. (Hz)</li>
+<li><span class="target" id="crrlpy.crrls.df2dv.params.df"></span><strong>df</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.df2dv.params.df">¶</a> &#8211; Frequency delta. (Hz)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The equivalent velocity delta for the given frequency delta.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float in Hz</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.dv2df">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">dv2df</tt><big>(</big><em>f0</em>, <em>dv</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#dv2df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv2df" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a velocity delta
-to a frequeny delta given
-a central frequency.</p>
+<dd><p>Convert a velocity delta to a frequency delta given a central frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.dv2df.params.f0"></span><strong>f0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv2df.params.f0">¶</a> &#8211; Rest frequency. (Hz)</li>
+<li><span class="target" id="crrlpy.crrls.dv2df.params.dv"></span><strong>dv</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv2df.params.dv">¶</a> &#8211; Velocity delta. (m/s)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The equivalent frequency delta for the given velocity delta.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float in <span class="math">\(\mbox{m s}^{-1}\)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.dv_minus_doppler">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">dv_minus_doppler</tt><big>(</big><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the Lorentzian contribution to the 
-line width assuming that the line has a Voigt 
-profile.
-dV (float) Total line width.
-ddV (float) Uncertainty in the total line width.
-dD (float) Doppler contribution to the line width.
-ddD (float) Uncertainty in the Doppler contribution to the line width.</p>
+<dd><p>Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler.params.dV"></span><strong>dV</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler.params.dV">¶</a> &#8211; Total line width</li>
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler.params.ddV"></span><strong>ddV</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler.params.ddV">¶</a> &#8211; Uncertainty in the total line width.</li>
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler.params.dD"></span><strong>dD</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler.params.dD">¶</a> &#8211; Doppler contribution to the line width.</li>
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler.params.ddD"></span><strong>ddD</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler.params.ddD">¶</a> &#8211; Uncertainty in the Doppler contribution to the line width.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Lorentz contribution to the total line width.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.dv_minus_doppler2">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">dv_minus_doppler2</tt><big>(</big><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the Lorentzian contribution to the 
-line width assuming that the line has a Voigt 
-profile.
-dV (float) Total line width.
-ddV (float) Uncertainty in the total line width.
-dD (float) Doppler contribution to the line width.
-ddD (float) Uncertainty in the Doppler contribution to the line width.</p>
+<dd><p>Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler2.params.dV"></span><strong>dV</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler2.params.dV">¶</a> &#8211; Total line width</li>
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler2.params.ddV"></span><strong>ddV</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler2.params.ddV">¶</a> &#8211; Uncertainty in the total line width.</li>
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler2.params.dD"></span><strong>dD</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler2.params.dD">¶</a> &#8211; Doppler contribution to the line width.</li>
+<li><span class="target" id="crrlpy.crrls.dv_minus_doppler2.params.ddD"></span><strong>ddD</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.dv_minus_doppler2.params.ddD">¶</a> &#8211; Uncertainty in the Doppler contribution to the line width.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Lorentz contribution to the total line width.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.f2n">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">f2n</tt><big>(</big><em>f</em>, <em>line</em>, <em>n_max=1500</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#f2n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.f2n" title="Permalink to this definition">¶</a></dt>
-<dd><p>Comverts a given frequency to a principal quantum 
-number n of a given transition and atomic specie.</p>
+<dd><p>Converts a given frequency to a principal quantum number n for a given line.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.find_lines_in_band">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">find_lines_in_band</tt><big>(</big><em>freq</em>, <em>species='CI'</em>, <em>transition='alpha'</em>, <em>z=0</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#find_lines_in_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.find_lines_in_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds if there are any lines corresponding to 
-transitions of the given species in the frequency range.
-The line transition frequencies are corrected for redshift.</p>
+<dd><p>Finds if there are any lines corresponding to transitions of the given species in the frequency range.     The line transition frequencies are corrected for redshift.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.find_lines_in_band.params.freq"></span><strong>freq</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.find_lines_in_band.params.freq">¶</a> &#8211; </li>
+<li><span class="target" id="crrlpy.crrls.find_lines_in_band.params.species"></span><strong>species</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.find_lines_in_band.params.species">¶</a> &#8211; </li>
+<li><span class="target" id="crrlpy.crrls.find_lines_in_band.params.z"></span><strong>z</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.find_lines_in_band.params.z">¶</a> &#8211; Redshift to apply to the rest frequencies.</li>
+<li><span class="target" id="crrlpy.crrls.find_lines_in_band.params.verbose"></span><strong>verbose</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.find_lines_in_band.params.verbose">¶</a> &#8211; Verbose output?</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">List of principal quantum numbers and list of reference frequencies.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -216,8 +398,7 @@ The line transition frequencies are corrected for redshift.</p>
 <dl class="function">
 <dt id="crrlpy.crrls.fit_continuum">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">fit_continuum</tt><big>(</big><em>x</em>, <em>y</em>, <em>degree</em>, <em>p0</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_continuum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_continuum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Divide tb by given a model
-and starting parameters p0.
+<dd><p>Divide tb by given a model and starting parameters p0.
 Returns: tb/model - 1</p>
 </dd></dl>
 
@@ -237,18 +418,32 @@ be fitted.</p>
 <dl class="function">
 <dt id="crrlpy.crrls.freq2vel">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">freq2vel</tt><big>(</big><em>f0</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#freq2vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.freq2vel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a frequency axis
-to a velocity axis given
-a central frequency.
-Uses the radio definition 
-of velocity.</p>
+<dd><p>Convert a frequency axis to a velocity axis given a central frequency.
+Uses the radio definition of velocity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.freq2vel.params.f0"></span><strong>f0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.freq2vel.params.f0">¶</a> &#8211; Rest frequency for the conversion. (Hz)</li>
+<li><span class="target" id="crrlpy.crrls.freq2vel.params.f"></span><strong>f</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.freq2vel.params.f">¶</a> &#8211; Frequencies to be converted to velocity. (Hz)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">f converted to velocity given a rest frequency <span class="math">\(f_{0}\)</span>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.gauss_area">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">gauss_area</tt><big>(</big><em>amplitude</em>, <em>sigma</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the area under a Gaussian of a 
-given amplitude and sigma.</p>
+<dd><p>Returns the area under a Gaussian of a given amplitude and sigma.</p>
 </dd></dl>
 
 <dl class="function">
@@ -265,34 +460,54 @@ given amplitude and sigma.</p>
 <dl class="function">
 <dt id="crrlpy.crrls.get_axis">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_axis</tt><big>(</big><em>header</em>, <em>axis</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_axis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs a cube axis
-&#64;param header - fits cube header
-&#64;type header - pyfits header
-&#64;param axis - axis to reconstruct
-&#64;type axis - int
-&#64;return - cube axis
-&#64;rtype - numpy array</p>
+<dd><p>Constructs a cube axis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.get_axis.params.header"></span><strong>header</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_axis.params.header">¶</a> &#8211; Fits cube header.</li>
+<li><span class="target" id="crrlpy.crrls.get_axis.params.axis"></span><strong>axis</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_axis.params.axis">¶</a> &#8211; Axis to reconstruct.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">cube axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.get_line_mask">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_line_mask</tt><big>(</big><em>freq</em>, <em>reffreq</em>, <em>v0</em>, <em>dv0</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a mask with ranges 
-where a line is expected in
-the given frequency range for
-a line with a given reference 
-frequency at expected velocity 
-v0 and line width dv0.</p>
+<dd><p>Return a mask with ranges where a line is expected in the given frequency range for     a line with a given reference frequency at expected velocity v0 and line width dv0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.get_line_mask.params.freq"></span><strong>freq</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_line_mask.params.freq">¶</a> &#8211; Frequency axis where the line is located.</li>
+<li><span class="target" id="crrlpy.crrls.get_line_mask.params.reffreq"></span><strong>reffreq</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_line_mask.params.reffreq">¶</a> &#8211; Reference frequency for the line.</li>
+<li><span class="target" id="crrlpy.crrls.get_line_mask.params.v0"></span><strong>v0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_line_mask.params.v0">¶</a> &#8211; Velocity of the line. (km/s)</li>
+<li><span class="target" id="crrlpy.crrls.get_line_mask.params.dv0"></span><strong>dv0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_line_mask.params.dv0">¶</a> &#8211; Velocity range to mask. (km/s)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Mask centered at the line center and width dv0 referenced to the input <tt class="xref py py-paramref docutils literal"><span class="pre">freq</span></tt>.</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.get_line_mask2">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_line_mask2</tt><big>(</big><em>freq</em>, <em>reffreq</em>, <em>dv</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a mask with ranges 
-where a line is expected in
-the given frequency range for
-a line with a given reference 
-frequency and line width dv.</p>
+<dd><p>Return a mask with ranges where a line is expected in the given frequency range for     a line with a given reference frequency and line width dv.</p>
 </dd></dl>
 
 <dl class="function">
@@ -305,7 +520,26 @@ an array.</p>
 <dl class="function">
 <dt id="crrlpy.crrls.get_rms">
 <tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_rms</tt><big>(</big><em>data</em>, <em>axis=None</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_rms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_rms" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the rms of the given data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.crrls.get_rms.params.data"></span><strong>data</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_rms.params.data">¶</a> &#8211; Array with values where to compute the rms.</li>
+<li><span class="target" id="crrlpy.crrls.get_rms.params.axis"></span><strong>axis</strong><a class="paramlink headerlink reference internal" href="#crrlpy.crrls.get_rms.params.axis">¶</a> &#8211; Axis over which to compute the rms. Default: None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The rms of data.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[\mbox{\it rms}=\sqrt{\langle\mbox{data}\rangle^{2}+V[\mbox{data}]}\]</div>
+<p>where <span class="math">\(V\)</span> is the variance of the data.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.is_number">
@@ -920,9 +1154,9 @@ CRRL models. E.g., a temperature of 70 K is 7d1.</p>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="crrlpy-crrls-frec-calc-module">
-<h2>crrlpy.crrls.frec_calc module<a class="headerlink" href="#crrlpy-crrls-frec-calc-module" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-crrlpy.frec_calc"></span><dl class="function">
+<div class="section" id="module-crrlpy.frec_calc">
+<span id="crrlpy-crrls-frec-calc-module"></span><h2>crrlpy.crrls.frec_calc module<a class="headerlink" href="#module-crrlpy.frec_calc" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
 <dt id="crrlpy.frec_calc.line_freq">
 <tt class="descclassname">crrlpy.frec_calc.</tt><tt class="descname">line_freq</tt><big>(</big><em>Z</em>, <em>R_X</em>, <em>n</em>, <em>dn</em><big>)</big><a class="reference internal" href="_modules/crrlpy/frec_calc.html#line_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.line_freq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses the Rydberg formula to get the frequency
@@ -1019,8 +1253,14 @@ the transition name.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Array with the atomic mass in a.m.u., ionization potential, abundance relative to HI, <span class="math">\(V_{X}-V_{H}\)</span> and the electric charge.</td>
 </tr>
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">set_specie</span><span class="p">(</span><span class="s">&#39;CI&#39;</span><span class="p">)</span>
+<span class="go">[12.0, 11.4, 0.0003, 149.5, 1.0]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1032,7 +1272,7 @@ atomic levels.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><span class="target" id="crrlpy.frec_calc.set_trans.params.dn"></span><strong>dn</strong><a class="paramlink headerlink reference internal" href="#crrlpy.frec_calc.set_trans.params.dn">¶</a> &#8211; Separation between ni and nf, <span class="math">\(\Delta n=n_{i}-n_{f}\)</span>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><span class="target" id="crrlpy.frec_calc.set_trans.params.dn"></span><strong>dn</strong><a class="paramlink headerlink reference internal" href="#crrlpy.frec_calc.set_trans.params.dn">¶</a> &#8211; Separation between <span class="math">\(n_{i}\)</span> and <span class="math">\(n_{f}\)</span>, <span class="math">\(\Delta n=n_{i}-n_{f}\)</span>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">alpha, beta, gamma, delta or epsilon depending on <tt class="xref py py-paramref docutils literal"><span class="pre">dn</span></tt>.</td>
 </tr>
@@ -1064,7 +1304,7 @@ atomic levels.</p>
 <li><a class="reference internal" href="#">This is the documentation for CRRLpy</a><ul>
 <li><a class="reference internal" href="#module-crrlpy.crrls">crrlpy.crrls module</a></li>
 <li><a class="reference internal" href="#module-crrlpy.models.rrlmod">crrlpy.models.rrlmod module</a></li>
-<li><a class="reference internal" href="#crrlpy-crrls-frec-calc-module">crrlpy.crrls.frec_calc module</a></li>
+<li><a class="reference internal" href="#module-crrlpy.frec_calc">crrlpy.crrls.frec_calc module</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>

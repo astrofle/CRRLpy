@@ -78,14 +78,31 @@
 <div class="viewcode-block" id="alphanum_key"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.alphanum_key">[docs]</a><span class="k">def</span> <span class="nf">alphanum_key</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">    Turn a string into a list of string and number chunks.</span>
-<span class="sd">        &quot;z23a&quot; -&gt; [&quot;z&quot;, 23, &quot;a&quot;]</span>
+<span class="sd">    </span>
+<span class="sd">    :param s: String</span>
+<span class="sd">    :returns: List with strings and integers.</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; alphanum_key(&quot;z23a&quot;)</span>
+<span class="sd">    [&quot;z&quot;, 23, &quot;a&quot;]</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span> <span class="n">tryint</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;([0-9]+)&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="p">]</span>
 </div>
 <div class="viewcode-block" id="average"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.average">[docs]</a><span class="k">def</span> <span class="nf">average</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Averages data along the given axis by combining</span>
-<span class="sd">    n adjacent values.</span>
+<span class="sd">    Averages data along the given axis by combining n adjacent values.</span>
+<span class="sd">    </span>
+<span class="sd">    :param data: Data to average along a given axis.</span>
+<span class="sd">    :type data: numpy array</span>
+<span class="sd">    :param axis: Axis along which to average.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :param n: Factor by which to average.</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :returns: Data decimated by a factor n along the given axis.</span>
+<span class="sd">    :rtype: numpy array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -102,31 +119,52 @@
         <span class="n">avg_tmp</span> <span class="o">=</span> <span class="n">avg_tmp</span><span class="o">/</span><span class="n">n</span>
         
         <span class="k">return</span> <span class="n">avg_tmp</span>
-            <span class="c">#avg4_temp = (temp[0:-3:4] + temp[1:-2:4] + temp[2:-1:4] + temp[3::4])/4.</span>
 </div>
 <div class="viewcode-block" id="best_match_indx"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_indx">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Searchs for the best match to a value inside an array given a tolerance.</span>
-<span class="sd">    @param value - value to find inside the array</span>
-<span class="sd">    @type value - float</span>
-<span class="sd">    @param tol - tolerance for match</span>
-<span class="sd">    @type tol - float</span>
-<span class="sd">    @param array - list to search for the given value</span>
-<span class="sd">    @type array - numpy.array</span>
-<span class="sd">    @return - best match for val inside array</span>
-<span class="sd">    @rtype - float</span>
+<span class="sd">    </span>
+<span class="sd">    :param value: Value to find inside the array.</span>
+<span class="sd">    :type value: float</span>
+<span class="sd">    :param tol: Tolerance for match.</span>
+<span class="sd">    :type tol: float</span>
+<span class="sd">    :param array: List to search for the given value.</span>
+<span class="sd">    :type array: numpy.array</span>
+<span class="sd">    :return: Best match for val inside array.</span>
+<span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="n">upp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">array</span> <span class="o">&gt;=</span> <span class="n">value</span> <span class="o">-</span> <span class="n">tol</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">low</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">array</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">+</span> <span class="n">tol</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    
     <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">upp</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">low</span><span class="p">)):</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">upp</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">low</span><span class="p">))</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">upp</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">low</span><span class="p">))</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="c">#return iter(set(upp) &amp; set(low)).next()</span>
     <span class="k">elif</span> <span class="n">low</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
-        <span class="k">return</span> <span class="n">low</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">low</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c">#return low[-1]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">upp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">upp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c">#return upp[0]</span>
+    <span class="k">return</span> <span class="n">out</span>
     </div>
 <div class="viewcode-block" id="best_match_indx2"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_indx2">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx2</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Searchs for the index of the closest entry to value inside an array.</span>
+<span class="sd">    </span>
+<span class="sd">    :param value: Value to find inside the array.</span>
+<span class="sd">    :type value: float</span>
+<span class="sd">    :param array: List to search for the given value.</span>
+<span class="sd">    :type array: list or numpy.array</span>
+<span class="sd">    :return: Best match index for the value inside array.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; a = [1,2,3,4]</span>
+<span class="sd">    &gt;&gt;&gt; best_match_indx2(3, a)</span>
+<span class="sd">    2</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
@@ -137,6 +175,21 @@
 </div>
 <div class="viewcode-block" id="best_match_value"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_value">[docs]</a><span class="k">def</span> <span class="nf">best_match_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Searchs for the closest ocurrence of value in array.</span>
+<span class="sd">    </span>
+<span class="sd">    :param value: Value to find inside the array.</span>
+<span class="sd">    :type value: float</span>
+<span class="sd">    :param array: List to search for the given value.</span>
+<span class="sd">    :type array: list or numpy.array</span>
+<span class="sd">    :return: Best match for the value inside array.</span>
+<span class="sd">    :rtype: float.</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; a = [1,2,3,4]</span>
+<span class="sd">    &gt;&gt;&gt; best_match_value(3.5, a)</span>
+<span class="sd">    3</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
@@ -146,6 +199,13 @@
     <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">subarr</span> <span class="o">==</span> <span class="n">subarrmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
     </div>
 <div class="viewcode-block" id="blank_lines"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.blank_lines">[docs]</a><span class="k">def</span> <span class="nf">blank_lines</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">reffreqs</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">dv0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Blanks the lines in a spectra.</span>
+<span class="sd">    </span>
+<span class="sd">    :param freq: Frequency axis of the spectra.</span>
+<span class="sd">    :type freq: array</span>
+<span class="sd">    :</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">try</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">reffreqs</span><span class="p">:</span>
@@ -178,29 +238,45 @@
 </div>
 <div class="viewcode-block" id="df2dv"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.df2dv">[docs]</a><span class="k">def</span> <span class="nf">df2dv</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a frequency delta</span>
-<span class="sd">    to a velocity delta given</span>
-<span class="sd">    a central frequency.</span>
+<span class="sd">    Convert a frequency delta to a velocity delta given a central frequency.</span>
+<span class="sd">    </span>
+<span class="sd">    :param f0: Rest frequency. (Hz)</span>
+<span class="sd">    :type f0: float</span>
+<span class="sd">    :param df: Frequency delta. (Hz)</span>
+<span class="sd">    :type df: float</span>
+<span class="sd">    :returns: The equivalent velocity delta for the given frequency delta.</span>
+<span class="sd">    :rtype: float in Hz</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">return</span> <span class="n">c</span><span class="o">*</span><span class="p">(</span><span class="n">df</span><span class="o">/</span><span class="n">f0</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="dv2df"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.dv2df">[docs]</a><span class="k">def</span> <span class="nf">dv2df</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">dv</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a velocity delta</span>
-<span class="sd">    to a frequeny delta given</span>
-<span class="sd">    a central frequency.</span>
+<span class="sd">    Convert a velocity delta to a frequency delta given a central frequency.</span>
+<span class="sd">    </span>
+<span class="sd">    :param f0: Rest frequency. (Hz)</span>
+<span class="sd">    :type f0: float</span>
+<span class="sd">    :param dv: Velocity delta. (m/s)</span>
+<span class="sd">    :type dv: float</span>
+<span class="sd">    :returns: The equivalent frequency delta for the given velocity delta.</span>
+<span class="sd">    :rtype: float in :math:`\mbox{m s}^{-1}`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">return</span> <span class="n">dv</span><span class="o">*</span><span class="n">f0</span><span class="o">/</span><span class="n">c</span>
 </div>
 <div class="viewcode-block" id="dv_minus_doppler"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.dv_minus_doppler">[docs]</a><span class="k">def</span> <span class="nf">dv_minus_doppler</span><span class="p">(</span><span class="n">dV</span><span class="p">,</span> <span class="n">ddV</span><span class="p">,</span> <span class="n">dD</span><span class="p">,</span> <span class="n">ddD</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the Lorentzian contribution to the </span>
-<span class="sd">    line width assuming that the line has a Voigt </span>
-<span class="sd">    profile.</span>
-<span class="sd">    dV (float) Total line width.</span>
-<span class="sd">    ddV (float) Uncertainty in the total line width.</span>
-<span class="sd">    dD (float) Doppler contribution to the line width.</span>
-<span class="sd">    ddD (float) Uncertainty in the Doppler contribution to the line width.</span>
+<span class="sd">    Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</span>
+<span class="sd">    </span>
+<span class="sd">    :param dV: Total line width</span>
+<span class="sd">    :type dV: float</span>
+<span class="sd">    :param ddV: Uncertainty in the total line width.</span>
+<span class="sd">    :type ddV: float</span>
+<span class="sd">    :param dD: Doppler contribution to the line width.</span>
+<span class="sd">    :type dD: float</span>
+<span class="sd">    :param ddD: Uncertainty in the Doppler contribution to the line width.</span>
+<span class="sd">    :returns: The Lorentz contribution to the total line width.</span>
+<span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">a</span> <span class="o">=</span> <span class="mf">0.5346</span>
@@ -230,13 +306,17 @@
 </div>
 <div class="viewcode-block" id="dv_minus_doppler2"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.dv_minus_doppler2">[docs]</a><span class="k">def</span> <span class="nf">dv_minus_doppler2</span><span class="p">(</span><span class="n">dV</span><span class="p">,</span> <span class="n">ddV</span><span class="p">,</span> <span class="n">dD</span><span class="p">,</span> <span class="n">ddD</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the Lorentzian contribution to the </span>
-<span class="sd">    line width assuming that the line has a Voigt </span>
-<span class="sd">    profile.</span>
-<span class="sd">    dV (float) Total line width.</span>
-<span class="sd">    ddV (float) Uncertainty in the total line width.</span>
-<span class="sd">    dD (float) Doppler contribution to the line width.</span>
-<span class="sd">    ddD (float) Uncertainty in the Doppler contribution to the line width.</span>
+<span class="sd">    Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</span>
+<span class="sd">    </span>
+<span class="sd">    :param dV: Total line width</span>
+<span class="sd">    :type dV: float</span>
+<span class="sd">    :param ddV: Uncertainty in the total line width.</span>
+<span class="sd">    :type ddV: float</span>
+<span class="sd">    :param dD: Doppler contribution to the line width.</span>
+<span class="sd">    :type dD: float</span>
+<span class="sd">    :param ddD: Uncertainty in the Doppler contribution to the line width.</span>
+<span class="sd">    :returns: The Lorentz contribution to the total line width.</span>
+<span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">a</span> <span class="o">=</span> <span class="mf">0.5346</span>
@@ -268,8 +348,7 @@
 </div>
 <div class="viewcode-block" id="f2n"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.f2n">[docs]</a><span class="k">def</span> <span class="nf">f2n</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Comverts a given frequency to a principal quantum </span>
-<span class="sd">    number n of a given transition and atomic specie.</span>
+<span class="sd">    Converts a given frequency to a principal quantum number n for a given line.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">line</span><span class="p">,</span> <span class="n">nn</span><span class="p">,</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">make_line_list</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">)</span>
@@ -279,9 +358,16 @@
 </div>
 <div class="viewcode-block" id="find_lines_in_band"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.find_lines_in_band">[docs]</a><span class="k">def</span> <span class="nf">find_lines_in_band</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">species</span><span class="o">=</span><span class="s">&#39;CI&#39;</span><span class="p">,</span> <span class="n">transition</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Finds if there are any lines corresponding to </span>
-<span class="sd">    transitions of the given species in the frequency range.</span>
+<span class="sd">    Finds if there are any lines corresponding to transitions of the given species in the frequency range. \</span>
 <span class="sd">    The line transition frequencies are corrected for redshift.</span>
+<span class="sd">    </span>
+<span class="sd">    :param freq:</span>
+<span class="sd">    :param species:</span>
+<span class="sd">    :param z: Redshift to apply to the rest frequencies.</span>
+<span class="sd">    :param verbose: Verbose output?</span>
+<span class="sd">    :type verbose: bool</span>
+<span class="sd">    :returns:</span>
+<span class="sd">    :rtype: List of principal quantum numbers and list of reference frequencies.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c"># Load the reference frequencies</span>
@@ -334,12 +420,11 @@
     <span class="k">return</span> <span class="n">refqns</span><span class="p">,</span> <span class="n">reffreqs</span>
 </div>
 <div class="viewcode-block" id="fit_continuum"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.fit_continuum">[docs]</a><span class="k">def</span> <span class="nf">fit_continuum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">degree</span><span class="p">,</span> <span class="n">p0</span><span class="p">):</span>
-    
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Divide tb by given a model</span>
-<span class="sd">    and starting parameters p0.</span>
+<span class="sd">    Divide tb by given a model and starting parameters p0.</span>
 <span class="sd">    Returns: tb/model - 1</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="c"># Divide by linear baseline</span>
     <span class="n">mod</span> <span class="o">=</span> <span class="n">PolynomialModel</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
@@ -712,18 +797,22 @@
 </div>
 <div class="viewcode-block" id="freq2vel"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.freq2vel">[docs]</a><span class="k">def</span> <span class="nf">freq2vel</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert a frequency axis</span>
-<span class="sd">    to a velocity axis given</span>
-<span class="sd">    a central frequency.</span>
-<span class="sd">    Uses the radio definition </span>
-<span class="sd">    of velocity.</span>
+<span class="sd">    Convert a frequency axis to a velocity axis given a central frequency.</span>
+<span class="sd">    Uses the radio definition of velocity.</span>
+<span class="sd">    </span>
+<span class="sd">    :param f0: Rest frequency for the conversion. (Hz)</span>
+<span class="sd">    :type f0: float</span>
+<span class="sd">    :param f: Frequencies to be converted to velocity. (Hz)</span>
+<span class="sd">    :type f: numpy array</span>
+<span class="sd">    :returns: f converted to velocity given a rest frequency :math:`f_{0}`.</span>
+<span class="sd">    :rtype: numpy array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">return</span> <span class="n">c</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">f</span><span class="o">/</span><span class="n">f0</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FWHM2sigma"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.FWHM2sigma">[docs]</a><span class="k">def</span> <span class="nf">FWHM2sigma</span><span class="p">(</span><span class="n">fwhm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a FWHM to the standard deviation of </span>
-<span class="sd">    a Gaussian distribution.</span>
+<span class="sd">    Converts a FWHM to the standard deviation of a Gaussian distribution.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="n">fwhm</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">)))</span>
@@ -739,8 +828,7 @@
 </div>
 <div class="viewcode-block" id="gauss_area"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.gauss_area">[docs]</a><span class="k">def</span> <span class="nf">gauss_area</span><span class="p">(</span><span class="n">amplitude</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the area under a Gaussian of a </span>
-<span class="sd">    given amplitude and sigma.</span>
+<span class="sd">    Returns the area under a Gaussian of a given amplitude and sigma.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="n">amplitude</span><span class="o">*</span><span class="n">sigma</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
@@ -771,19 +859,19 @@
 <div class="viewcode-block" id="get_axis"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.get_axis">[docs]</a><span class="k">def</span> <span class="nf">get_axis</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructs a cube axis</span>
-<span class="sd">    @param header - fits cube header</span>
-<span class="sd">    @type header - pyfits header</span>
-<span class="sd">    @param axis - axis to reconstruct</span>
-<span class="sd">    @type axis - int</span>
-<span class="sd">    @return - cube axis</span>
-<span class="sd">    @rtype - numpy array</span>
+<span class="sd">    </span>
+<span class="sd">    :param header: Fits cube header.</span>
+<span class="sd">    :type header: pyfits header</span>
+<span class="sd">    :param axis: Axis to reconstruct.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :returns: cube axis</span>
+<span class="sd">    :rtype: numpy array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">axis</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
     <span class="n">dx</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;CDELT&quot;</span> <span class="o">+</span> <span class="n">axis</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dx</span><span class="p">)</span>
-        <span class="n">p0</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;CRPIX&quot;</span> <span class="o">+</span> <span class="n">axis</span><span class="p">)</span>
         <span class="n">p0</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;CRPIX&quot;</span> <span class="o">+</span> <span class="n">axis</span><span class="p">)</span>
         <span class="n">x0</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;CRVAL&quot;</span> <span class="o">+</span> <span class="n">axis</span><span class="p">)</span>
         
@@ -794,16 +882,24 @@
 
     <span class="n">n</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;NAXIS&quot;</span> <span class="o">+</span> <span class="n">axis</span><span class="p">)</span>
     
+    <span class="n">p0</span> <span class="o">-=</span> <span class="mi">1</span> <span class="c"># Fits files index start at 1, not for python.</span>
+    
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">p0</span><span class="o">*</span><span class="n">dx</span><span class="p">,</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">p0</span><span class="o">*</span><span class="n">dx</span> <span class="o">+</span> <span class="n">n</span><span class="o">*</span><span class="n">dx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="get_line_mask"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.get_line_mask">[docs]</a><span class="k">def</span> <span class="nf">get_line_mask</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">reffreq</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">dv0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return a mask with ranges </span>
-<span class="sd">    where a line is expected in</span>
-<span class="sd">    the given frequency range for</span>
-<span class="sd">    a line with a given reference </span>
-<span class="sd">    frequency at expected velocity </span>
-<span class="sd">    v0 and line width dv0.</span>
+<span class="sd">    Return a mask with ranges where a line is expected in the given frequency range for \</span>
+<span class="sd">    a line with a given reference frequency at expected velocity v0 and line width dv0.</span>
+<span class="sd">    </span>
+<span class="sd">    :param freq: Frequency axis where the line is located.</span>
+<span class="sd">    :type freq: numpy array or list</span>
+<span class="sd">    :param reffreq: Reference frequency for the line.</span>
+<span class="sd">    :type reffreq: float</span>
+<span class="sd">    :param v0: Velocity of the line. (km/s)</span>
+<span class="sd">    :type v0: float</span>
+<span class="sd">    :param dv0: Velocity range to mask. (km/s)</span>
+<span class="sd">    :type dv0: float</span>
+<span class="sd">    :returns: Mask centered at the line center and width dv0 referenced to the input :paramref:`freq`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c">#print v0</span>
@@ -829,11 +925,10 @@
 </div>
 <div class="viewcode-block" id="get_line_mask2"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.get_line_mask2">[docs]</a><span class="k">def</span> <span class="nf">get_line_mask2</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">reffreq</span><span class="p">,</span> <span class="n">dv</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return a mask with ranges </span>
-<span class="sd">    where a line is expected in</span>
-<span class="sd">    the given frequency range for</span>
-<span class="sd">    a line with a given reference </span>
-<span class="sd">    frequency and line width dv.</span>
+<span class="sd">    Return a mask with ranges where a line is expected in the given frequency range for \</span>
+<span class="sd">    a line with a given reference frequency and line width dv.</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">df</span> <span class="o">=</span> <span class="n">dv2df</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="n">dv</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span>
@@ -848,6 +943,20 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">f_mini</span><span class="p">,</span> <span class="n">f_maxi</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="get_rms"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.get_rms">[docs]</a><span class="k">def</span> <span class="nf">get_rms</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the rms of the given data.</span>
+<span class="sd">    </span>
+<span class="sd">    :param data: Array with values where to compute the rms.</span>
+<span class="sd">    :type data: numpy array or list</span>
+<span class="sd">    :param axis: Axis over which to compute the rms. Default: None</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :returns: The rms of data.</span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">        \\mbox{\\it rms}=\\sqrt{\\langle\\mbox{data}\\rangle^{2}+V[\\mbox{data}]}</span>
+<span class="sd">        </span>
+<span class="sd">    where :math:`V` is the variance of the data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> \
            <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
     <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>

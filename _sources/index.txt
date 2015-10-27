@@ -32,7 +32,7 @@ crrlpy.models.rrlmod module
     :show-inheritance:
     
 crrlpy.crrls.frec_calc module
----------------------------
+-----------------------------
 
 .. automodule:: crrlpy.frec_calc
     :members:
