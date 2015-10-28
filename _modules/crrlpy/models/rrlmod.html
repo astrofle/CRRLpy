@@ -8,7 +8,7 @@
     
     <title>crrlpy.models.rrlmod &mdash; CRRLpy 0.1 documentation</title>
     
-    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/sphinx_paramlinks.css" type="text/css" />
     
@@ -24,29 +24,20 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="CRRLpy 0.1 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for crrlpy.models.rrlmod</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
@@ -261,7 +252,6 @@
     <span class="n">b</span> <span class="o">=</span> <span class="n">bbn</span><span class="p">[</span><span class="n">nimin</span><span class="p">:</span><span class="n">nimax</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
     
     <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;itau&#39;</span><span class="p">:</span>
-        <span class="c">#i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">itau_norad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">mdn</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">value</span> <span class="o">==</span> <span class="s">&#39;bbnMdn&#39;</span><span class="p">:</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">b</span><span class="o">*</span><span class="n">dn</span><span class="o">*</span><span class="n">mdn</span>
@@ -314,6 +304,7 @@
 </div>
 <div class="viewcode-block" id="kappa_cont"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.kappa_cont">[docs]</a><span class="k">def</span> <span class="nf">kappa_cont</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the absorption coefficient for the free-free process.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">nu</span> <span class="o">=</span> <span class="n">freq</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;GHz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span>
@@ -364,9 +355,25 @@
 </div>
 <div class="viewcode-block" id="kappa_line"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.kappa_line">[docs]</a><span class="k">def</span> <span class="nf">kappa_line</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the line absorption coefficient between levels ni and nf, ni&gt;nf.</span>
-<span class="sd">    This can only go up to n_max 1500 because of the tables used for the</span>
-<span class="sd">    Einstein Anm coefficients.</span>
+<span class="sd">    Computes the line absorption coefficient for CRRLs between levels :mat:`n_{i}` and :math:`n_{f}`, :math:`n_{i}&gt;n_{f}`.</span>
+<span class="sd">    This can only go up to :math:`n_{\\rm{max}}` 1500 because of the tables used for the Einstein Anm coefficients.</span>
+<span class="sd">    </span>
+<span class="sd">    :param Te: Electron temperature of the gas. (K)</span>
+<span class="sd">    :type Te: float</span>
+<span class="sd">    :param ne: Electron density. (:math:`\\mbox{cm}^{-3}`)</span>
+<span class="sd">    :type ne: float</span>
+<span class="sd">    :param nion: Ion density. (:math:`\\mbox{cm}^{-3}`)</span>
+<span class="sd">    :type nion: float</span>
+<span class="sd">    :param Z: Electric charge of the atoms being considered.</span>
+<span class="sd">    :type Z: int</span>
+<span class="sd">    :param Tr: Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</span>
+<span class="sd">    :type Tr: float</span>
+<span class="sd">    :param trans: Transition for which to compute the absorption coefficient.</span>
+<span class="sd">    :type trans: string</span>
+<span class="sd">    :param n_max: Maximum principal quantum number to include in the output.</span>
+<span class="sd">    :type n_max: int&lt;1500</span>
+<span class="sd">    :returns: </span>
+<span class="sd">    :rtype: array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">cte</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">16.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">m_e</span><span class="o">*</span><span class="n">k_B</span><span class="p">),</span> <span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
@@ -399,7 +406,26 @@
 </div>
 <div class="viewcode-block" id="kappa_line_lte"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.kappa_line_lte">[docs]</a><span class="k">def</span> <span class="nf">kappa_line_lte</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the line absorption coefficient.</span>
+<span class="sd">    Returns the line absorption coefficient under LTE conditions.</span>
+<span class="sd">    </span>
+<span class="sd">    :param nu: Frequency. (Hz)</span>
+<span class="sd">    :type nu: array</span>
+<span class="sd">    :param Te: Electron temperature of the gas. (K)</span>
+<span class="sd">    :type Te: float</span>
+<span class="sd">    :param ne: Electron density. (:math:`\\mbox{cm}^{-3}`)</span>
+<span class="sd">    :type ne: float</span>
+<span class="sd">    :param nion: Ion density. (:math:`\\mbox{cm}^{-3}`)</span>
+<span class="sd">    :type nion: float</span>
+<span class="sd">    :param Z: Electric charge of the atoms being considered.</span>
+<span class="sd">    :type Z: int</span>
+<span class="sd">    :param Tr: Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</span>
+<span class="sd">    :type Tr: float</span>
+<span class="sd">    :param trans: Transition for which to compute the absorption coefficient.</span>
+<span class="sd">    :type trans: string</span>
+<span class="sd">    :param n_max: Maximum principal quantum number to include in the output.</span>
+<span class="sd">    :type n_max: int&lt;1500</span>
+<span class="sd">    :returns: </span>
+<span class="sd">    :rtype: array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">ni</span> <span class="o">=</span> <span class="n">f2n</span><span class="p">(</span><span class="n">nu</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;MHz&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_max</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.</span>
@@ -419,7 +445,7 @@
 <div class="viewcode-block" id="level_pop_lte"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.level_pop_lte">[docs]</a><span class="k">def</span> <span class="nf">level_pop_lte</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the level population of level n.</span>
-<span class="sd">    The return has units of cm-3.</span>
+<span class="sd">    The return has units of :math:`\\mbox{cm}^{-3}`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">omega_ni</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -462,7 +488,7 @@
 </div>
 <div class="viewcode-block" id="load_itau_all"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_itau_all">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all</span><span class="p">(</span><span class="n">trans</span><span class="o">=</span><span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loads all the available models.</span>
+<span class="sd">    Loads all the available models for Carbon.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
@@ -505,7 +531,7 @@
 </div>
 <div class="viewcode-block" id="load_itau_all_hydrogen"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_itau_all_hydrogen">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all_hydrogen</span><span class="p">(</span><span class="n">trans</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loads all the available models.</span>
+<span class="sd">    Loads all the available models for Hydrogen.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
@@ -519,7 +545,7 @@
                                            <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">11</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
     
     <span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
-    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span><span class="c">#, dtype=&#39;|S20&#39;)</span>
+    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
     <span class="n">other</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S20&#39;</span><span class="p">)</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="p">))</span>
     
@@ -544,15 +570,13 @@
 </div>
 <div class="viewcode-block" id="load_itau_all_match"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_itau_all_match">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all_match</span><span class="p">(</span><span class="n">trans_out</span><span class="o">=</span><span class="s">&#39;alpha&#39;</span><span class="p">,</span> <span class="n">trans_tin</span><span class="o">=</span><span class="s">&#39;beta&#39;</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loads all trans_out models that can be found in trans_tin.</span>
+<span class="sd">    Loads all trans_out models that can be found in trans_tin. This is useful when analyzing line ratios.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
     
     <span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans_tin</span><span class="p">))]</span>
-    <span class="c">#print target[0]</span>
     <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;bbn2_{0}/&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">trans_out</span><span class="p">)</span> <span class="o">+</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">target</span><span class="p">]</span>
-    <span class="c">#print models[0]</span>
     
     <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span> <span class="o">=</span> <span class="n">load_models</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">trans_out</span><span class="p">,</span> <span class="n">n_max</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
     
@@ -837,6 +861,21 @@
 <div class="viewcode-block" id="plaw"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.plaw">[docs]</a><span class="k">def</span> <span class="nf">plaw</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a power law.</span>
+<span class="sd">    </span>
+<span class="sd">    .. math::</span>
+<span class="sd">    </span>
+<span class="sd">       y(x)=y_0\\left(\\frac{x}{x_0}\\right)^{alpha}</span>
+<span class="sd">       </span>
+<span class="sd">    :param x: x values for which to compute the power law.</span>
+<span class="sd">    :type x: float or array like</span>
+<span class="sd">    :param x0: x value for which the power law has amplitude :paramref:`y0`.</span>
+<span class="sd">    :type x0: float</span>
+<span class="sd">    :param y0: Amplitude of the power law at :paramref:`x0`.</span>
+<span class="sd">    :type y0: float</span>
+<span class="sd">    :param alpha: Index of the power law.</span>
+<span class="sd">    :type alpha: float</span>
+<span class="sd">    :returns: A power law of index :paramref:`alpha` evaluated at :paramref:`x`, with amplitude :paramref:`y0` at :paramref:`x0`.</span>
+<span class="sd">    :rtype: float or array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="n">y0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">x0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
@@ -898,9 +937,17 @@
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
       <input type="text" name="q" />
@@ -917,22 +964,17 @@
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2015, Pedro Salas.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      &copy;2015, Pedro Salas.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
     </div>
+
+    
+
+    
   </body>
 </html>

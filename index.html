@@ -8,7 +8,7 @@
     
     <title>This is the documentation for CRRLpy &mdash; CRRLpy 0.1 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/sphinx_paramlinks.css" type="text/css" />
     
@@ -24,31 +24,20 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="CRRLpy 0.1 documentation" href="#" />
-    <link rel="next" title="CRRLpy" href="includeme.html" /> 
+    <link rel="next" title="CRRLpy" href="includeme.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="includeme.html" title="CRRLpy"
-             accesskey="N">next</a> |</li>
-        <li><a href="#">CRRLpy 0.1 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  <body role="document">  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="this-is-the-documentation-for-crrlpy">
 <h1>This is the documentation for CRRLpy<a class="headerlink" href="#this-is-the-documentation-for-crrlpy" title="Permalink to this headline">¶</a></h1>
@@ -62,30 +51,30 @@
 <span id="crrlpy-crrls-module"></span><h2>crrlpy.crrls module<a class="headerlink" href="#module-crrlpy.crrls" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="crrlpy.crrls.FWHM2sigma">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">FWHM2sigma</tt><big>(</big><em>fwhm</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#FWHM2sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.FWHM2sigma" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">FWHM2sigma</code><span class="sig-paren">(</span><em>fwhm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#FWHM2sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.FWHM2sigma" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a FWHM to the standard deviation of a Gaussian distribution.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.Gauss">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">Gauss</tt><big>(</big><em>y</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#Gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Gauss" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">Gauss</code><span class="sig-paren">(</span><em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#Gauss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Gauss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a Gaussian filter to y.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.Gaussian">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">Gaussian</tt><big>(</big><em>x</em>, <em>sigma</em>, <em>center</em>, <em>amplitude</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#Gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Gaussian" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">Gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>sigma</em>, <em>center</em>, <em>amplitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#Gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>1-d Gaussian with no amplitude offset.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.SavGol">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">SavGol</tt><big>(</big><em>y</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#SavGol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.SavGol" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">SavGol</code><span class="sig-paren">(</span><em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#SavGol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.SavGol" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.Voigt">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">Voigt</tt><big>(</big><em>x</em>, <em>sigma</em>, <em>gamma</em>, <em>center</em>, <em>amplitude</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#Voigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Voigt" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">Voigt</code><span class="sig-paren">(</span><em>x</em>, <em>sigma</em>, <em>gamma</em>, <em>center</em>, <em>amplitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#Voigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Voigt" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Voigt line shape in terms of its physical parameters
 x: independent variable
 sigma: HWHM of the Gaussian
@@ -96,12 +85,12 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.Wiener">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">Wiener</tt><big>(</big><em>y</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#Wiener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Wiener" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">Wiener</code><span class="sig-paren">(</span><em>y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#Wiener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Wiener" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.alphanum_key">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">alphanum_key</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#alphanum_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.alphanum_key" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">alphanum_key</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#alphanum_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.alphanum_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn a string into a list of string and number chunks.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -111,7 +100,7 @@ amplitude: the line area</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List with strings and integers.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>
@@ -125,7 +114,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.average">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">average</tt><big>(</big><em>data</em>, <em>axis</em>, <em>n</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.average" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">average</code><span class="sig-paren">(</span><em>data</em>, <em>axis</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.average" title="Permalink to this definition">¶</a></dt>
 <dd><p>Averages data along the given axis by combining n adjacent values.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -150,7 +139,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.best_match_indx">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">best_match_indx</tt><big>(</big><em>value</em>, <em>array</em>, <em>tol</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_indx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_indx" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">best_match_indx</code><span class="sig-paren">(</span><em>value</em>, <em>array</em>, <em>tol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_indx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_indx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Searchs for the best match to a value inside an array given a tolerance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -166,7 +155,7 @@ amplitude: the line area</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match for val inside array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -175,7 +164,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.best_match_indx2">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">best_match_indx2</tt><big>(</big><em>value</em>, <em>array</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_indx2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_indx2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">best_match_indx2</code><span class="sig-paren">(</span><em>value</em>, <em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_indx2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_indx2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Searchs for the index of the closest entry to value inside an array.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -190,7 +179,7 @@ amplitude: the line area</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match index for the value inside array.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
@@ -206,7 +195,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.best_match_value">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">best_match_value</tt><big>(</big><em>value</em>, <em>array</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_value" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">best_match_value</code><span class="sig-paren">(</span><em>value</em>, <em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Searchs for the closest ocurrence of value in array.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -237,7 +226,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.blank_lines">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">blank_lines</tt><big>(</big><em>freq</em>, <em>tau</em>, <em>reffreqs</em>, <em>v0</em>, <em>dv0</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#blank_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.blank_lines" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">blank_lines</code><span class="sig-paren">(</span><em>freq</em>, <em>tau</em>, <em>reffreqs</em>, <em>v0</em>, <em>dv0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#blank_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.blank_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Blanks the lines in a spectra.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -252,12 +241,12 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.blank_lines2">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">blank_lines2</tt><big>(</big><em>freq</em>, <em>tau</em>, <em>reffreqs</em>, <em>dv</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#blank_lines2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.blank_lines2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">blank_lines2</code><span class="sig-paren">(</span><em>freq</em>, <em>tau</em>, <em>reffreqs</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#blank_lines2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.blank_lines2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.df2dv">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">df2dv</tt><big>(</big><em>f0</em>, <em>df</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#df2dv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.df2dv" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">df2dv</code><span class="sig-paren">(</span><em>f0</em>, <em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#df2dv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.df2dv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a frequency delta to a velocity delta given a central frequency.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -281,7 +270,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.dv2df">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">dv2df</tt><big>(</big><em>f0</em>, <em>dv</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#dv2df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv2df" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">dv2df</code><span class="sig-paren">(</span><em>f0</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#dv2df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv2df" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a velocity delta to a frequency delta given a central frequency.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -305,7 +294,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.dv_minus_doppler">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">dv_minus_doppler</tt><big>(</big><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">dv_minus_doppler</code><span class="sig-paren">(</span><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -322,7 +311,7 @@ amplitude: the line area</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Lorentz contribution to the total line width.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -331,7 +320,7 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.dv_minus_doppler2">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">dv_minus_doppler2</tt><big>(</big><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">dv_minus_doppler2</code><span class="sig-paren">(</span><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -348,7 +337,7 @@ amplitude: the line area</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Lorentz contribution to the total line width.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -357,13 +346,13 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.f2n">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">f2n</tt><big>(</big><em>f</em>, <em>line</em>, <em>n_max=1500</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#f2n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.f2n" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">f2n</code><span class="sig-paren">(</span><em>f</em>, <em>line</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#f2n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.f2n" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a given frequency to a principal quantum number n for a given line.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.find_lines_in_band">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">find_lines_in_band</tt><big>(</big><em>freq</em>, <em>species='CI'</em>, <em>transition='alpha'</em>, <em>z=0</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#find_lines_in_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.find_lines_in_band" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">find_lines_in_band</code><span class="sig-paren">(</span><em>freq</em>, <em>species='CI'</em>, <em>transition='alpha'</em>, <em>z=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#find_lines_in_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.find_lines_in_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds if there are any lines corresponding to transitions of the given species in the frequency range.     The line transition frequencies are corrected for redshift.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -389,35 +378,35 @@ amplitude: the line area</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.find_lines_sb">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">find_lines_sb</tt><big>(</big><em>freq</em>, <em>transition</em>, <em>z=0</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#find_lines_sb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.find_lines_sb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds if there are any lines corresponding to 
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">find_lines_sb</code><span class="sig-paren">(</span><em>freq</em>, <em>transition</em>, <em>z=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#find_lines_sb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.find_lines_sb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds if there are any lines corresponding to
 transitions of the given species in the frequency range.
 The line transition frequencies are corrected for redshift.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.fit_continuum">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">fit_continuum</tt><big>(</big><em>x</em>, <em>y</em>, <em>degree</em>, <em>p0</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_continuum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_continuum" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">fit_continuum</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>degree</em>, <em>p0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_continuum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_continuum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Divide tb by given a model and starting parameters p0.
 Returns: tb/model - 1</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.fit_line">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">fit_line</tt><big>(</big><em>sb</em>, <em>n</em>, <em>ref</em>, <em>vel</em>, <em>tau</em>, <em>rms</em>, <em>model</em>, <em>v0=None</em>, <em>verbose=True</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_line" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">fit_line</code><span class="sig-paren">(</span><em>sb</em>, <em>n</em>, <em>ref</em>, <em>vel</em>, <em>tau</em>, <em>rms</em>, <em>model</em>, <em>v0=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_line" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.fit_storage">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">fit_storage</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_storage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a dictionary with the 
-entries for the parameters to 
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">fit_storage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a dictionary with the
+entries for the parameters to
 be fitted.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.freq2vel">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">freq2vel</tt><big>(</big><em>f0</em>, <em>f</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#freq2vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.freq2vel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">freq2vel</code><span class="sig-paren">(</span><em>f0</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#freq2vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.freq2vel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a frequency axis to a velocity axis given a central frequency.
 Uses the radio definition of velocity.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -442,24 +431,24 @@ Uses the radio definition of velocity.</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.gauss_area">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">gauss_area</tt><big>(</big><em>amplitude</em>, <em>sigma</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gauss_area</code><span class="sig-paren">(</span><em>amplitude</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the area under a Gaussian of a given amplitude and sigma.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.gauss_area_err">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">gauss_area_err</tt><big>(</big><em>amplitude</em>, <em>amplitude_err</em>, <em>sigma</em>, <em>sigma_err</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area_err" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gauss_area_err</code><span class="sig-paren">(</span><em>amplitude</em>, <em>amplitude_err</em>, <em>sigma</em>, <em>sigma_err</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area_err" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.gaussian_off">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">gaussian_off</tt><big>(</big><em>x</em>, <em>amplitude</em>, <em>center</em>, <em>sigma</em>, <em>c</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#gaussian_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gaussian_off" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gaussian_off</code><span class="sig-paren">(</span><em>x</em>, <em>amplitude</em>, <em>center</em>, <em>sigma</em>, <em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gaussian_off"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gaussian_off" title="Permalink to this definition">¶</a></dt>
 <dd><p>1-d Gaussian with a constant amplitude offset.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.get_axis">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_axis</tt><big>(</big><em>header</em>, <em>axis</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_axis" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_axis</code><span class="sig-paren">(</span><em>header</em>, <em>axis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs a cube axis</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -483,7 +472,7 @@ Uses the radio definition of velocity.</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.get_line_mask">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_line_mask</tt><big>(</big><em>freq</em>, <em>reffreq</em>, <em>v0</em>, <em>dv0</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_line_mask</code><span class="sig-paren">(</span><em>freq</em>, <em>reffreq</em>, <em>v0</em>, <em>dv0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a mask with ranges where a line is expected in the given frequency range for     a line with a given reference frequency at expected velocity v0 and line width dv0.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -497,7 +486,7 @@ Uses the radio definition of velocity.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Mask centered at the line center and width dv0 referenced to the input <tt class="xref py py-paramref docutils literal"><span class="pre">freq</span></tt>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Mask centered at the line center and width dv0 referenced to the input <code class="xref py py-paramref docutils literal"><span class="pre">freq</span></code>.</p>
 </td>
 </tr>
 </tbody>
@@ -506,20 +495,20 @@ Uses the radio definition of velocity.</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.get_line_mask2">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_line_mask2</tt><big>(</big><em>freq</em>, <em>reffreq</em>, <em>dv</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_line_mask2</code><span class="sig-paren">(</span><em>freq</em>, <em>reffreq</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a mask with ranges where a line is expected in the given frequency range for     a line with a given reference frequency and line width dv.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.get_min_sep">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_min_sep</tt><big>(</big><em>array</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_min_sep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_min_sep" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_min_sep</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_min_sep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_min_sep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the minimum element separation in
 an array.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.get_rms">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">get_rms</tt><big>(</big><em>data</em>, <em>axis=None</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#get_rms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_rms" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_rms</code><span class="sig-paren">(</span><em>data</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_rms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_rms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the rms of the given data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -537,25 +526,25 @@ an array.</p>
 </tbody>
 </table>
 <div class="math">
-\[\mbox{\it rms}=\sqrt{\langle\mbox{data}\rangle^{2}+V[\mbox{data}]}\]</div>
+\[\mbox{rms}=\sqrt{\langle\mbox{data}\rangle^{2}+V[\mbox{data}]}\]</div>
 <p>where <span class="math">\(V\)</span> is the variance of the data.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.is_number">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">is_number</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#is_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.is_number" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">is_number</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#is_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.is_number" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks wether a string is a number or not.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.line_width">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">line_width</tt><big>(</big><em>dD</em>, <em>dL</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#line_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.line_width" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">line_width</code><span class="sig-paren">(</span><em>dD</em>, <em>dL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#line_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.line_width" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference external" href="http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile">http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</a></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.line_width_err">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">line_width_err</tt><big>(</big><em>dD</em>, <em>dL</em>, <em>ddD</em>, <em>ddL</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#line_width_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.line_width_err" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">line_width_err</code><span class="sig-paren">(</span><em>dD</em>, <em>dL</em>, <em>ddD</em>, <em>ddL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#line_width_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.line_width_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the error in the FWHM of
 a Voigt profile.
 <a class="reference external" href="http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile">http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</a></p>
@@ -563,22 +552,22 @@ a Voigt profile.
 
 <dl class="function">
 <dt id="crrlpy.crrls.linear">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">linear</tt><big>(</big><em>x</em>, <em>a</em>, <em>b</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.linear" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">linear</code><span class="sig-paren">(</span><em>x</em>, <em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear model.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.load_model">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">load_model</tt><big>(</big><em>prop</em>, <em>specie</em>, <em>temp</em>, <em>dens</em>, <em>other=None</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">load_model</code><span class="sig-paren">(</span><em>prop</em>, <em>specie</em>, <em>temp</em>, <em>dens</em>, <em>other=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a model for the CRRL emission.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.load_ref">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">load_ref</tt><big>(</big><em>specie</em>, <em>trans</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#load_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_ref" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">load_ref</code><span class="sig-paren">(</span><em>specie</em>, <em>trans</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#load_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_ref" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the reference spectrum for the
 specified atomic specie and transition.
-Available species and transitions: 
+Available species and transitions:
 CI alpha
 CI beta
 CI delta
@@ -594,10 +583,10 @@ SI beta</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.load_ref2">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">load_ref2</tt><big>(</big><em>transition</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#load_ref2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_ref2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">load_ref2</code><span class="sig-paren">(</span><em>transition</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#load_ref2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_ref2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the reference spectrum for the
 specified atomic specie and transition.
-Available transitions: 
+Available transitions:
 CIalpha
 CIbeta
 CIdelta
@@ -613,13 +602,13 @@ SIbeta</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.lookup_freq">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">lookup_freq</tt><big>(</big><em>n</em>, <em>specie</em>, <em>trans</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#lookup_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.lookup_freq" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">lookup_freq</code><span class="sig-paren">(</span><em>n</em>, <em>specie</em>, <em>trans</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#lookup_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.lookup_freq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the frequency of a given transition.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.lorentz_width">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">lorentz_width</tt><big>(</big><em>n</em>, <em>ne</em>, <em>Te</em>, <em>Tr</em>, <em>W</em>, <em>dn=1</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#lorentz_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.lorentz_width" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">lorentz_width</code><span class="sig-paren">(</span><em>n</em>, <em>ne</em>, <em>Te</em>, <em>Tr</em>, <em>W</em>, <em>dn=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#lorentz_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.lorentz_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the Lorentzian line width due to a combination
 of radiation and collisional broadening. The width
 is the FWHM in Hz. It uses the models of Salgado et al. (2015).</p>
@@ -627,59 +616,59 @@ is the FWHM in Hz. It uses the models of Salgado et al. (2015).</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.mask_outliers">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">mask_outliers</tt><big>(</big><em>data</em>, <em>m=2</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#mask_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.mask_outliers" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">mask_outliers</code><span class="sig-paren">(</span><em>data</em>, <em>m=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#mask_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.mask_outliers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Masks values larger than m times the data median.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.n2f">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">n2f</tt><big>(</big><em>n</em>, <em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em>, <em>unitless=True</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#n2f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.n2f" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a given principal quantum number n to the 
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">n2f</code><span class="sig-paren">(</span><em>n</em>, <em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em>, <em>unitless=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#n2f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.n2f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a given principal quantum number n to the
 frequency of a given line.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.natural_sort">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">natural_sort</tt><big>(</big><em>l</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#natural_sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.natural_sort" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">natural_sort</code><span class="sig-paren">(</span><em>l</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#natural_sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.natural_sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sort the given list in the way that humans expect.
 Sorting is done in place.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.plot_fit">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">plot_fit</tt><big>(</big><em>fig</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>params</em>, <em>vparams</em>, <em>sparams</em>, <em>rms</em>, <em>x0</em>, <em>refs</em>, <em>refs_cb=None</em>, <em>refs_cd=None</em>, <em>refs_cg=None</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_fit" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_fit</code><span class="sig-paren">(</span><em>fig</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>params</em>, <em>vparams</em>, <em>sparams</em>, <em>rms</em>, <em>x0</em>, <em>refs</em>, <em>refs_cb=None</em>, <em>refs_cd=None</em>, <em>refs_cg=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_fit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.plot_fit_single">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">plot_fit_single</tt><big>(</big><em>fig</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>params</em>, <em>rms</em>, <em>x0</em>, <em>refs</em>, <em>refs_cb=None</em>, <em>refs_cd=None</em>, <em>refs_cg=None</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_fit_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_fit_single" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_fit_single</code><span class="sig-paren">(</span><em>fig</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>params</em>, <em>rms</em>, <em>x0</em>, <em>refs</em>, <em>refs_cb=None</em>, <em>refs_cd=None</em>, <em>refs_cg=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_fit_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_fit_single" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.plot_model">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">plot_model</tt><big>(</big><em>x</em>, <em>y</em>, <em>xm</em>, <em>ym</em>, <em>out</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_model</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>xm</em>, <em>ym</em>, <em>out</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.plot_spec_vel">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">plot_spec_vel</tt><big>(</big><em>out</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>A</em>, <em>Aerr</em>, <em>x0</em>, <em>x0err</em>, <em>sx</em>, <em>sxerr</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_spec_vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_spec_vel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_spec_vel</code><span class="sig-paren">(</span><em>out</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>A</em>, <em>Aerr</em>, <em>x0</em>, <em>x0err</em>, <em>sx</em>, <em>sxerr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_spec_vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_spec_vel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.pressure_broad">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">pressure_broad</tt><big>(</big><em>n</em>, <em>Te</em>, <em>ne</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">pressure_broad</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>ne</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pressure induced broadening in Hz.
 Shaver (1975)</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.pressure_broad_coefs">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">pressure_broad_coefs</tt><big>(</big><em>Te</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_coefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_coefs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">pressure_broad_coefs</code><span class="sig-paren">(</span><em>Te</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_coefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_coefs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.pressure_broad_salgado">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">pressure_broad_salgado</tt><big>(</big><em>n</em>, <em>Te</em>, <em>ne</em>, <em>dn=1</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_salgado" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">pressure_broad_salgado</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>ne</em>, <em>dn=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_salgado" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pressure induced broadening in Hz.
 This gives the FWHM of a Lorentzian line.
 Salgado et al. (2015)</p>
@@ -687,13 +676,13 @@ Salgado et al. (2015)</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.radiation_broad">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">radiation_broad</tt><big>(</big><em>n</em>, <em>W</em>, <em>Tr</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">radiation_broad</code><span class="sig-paren">(</span><em>n</em>, <em>W</em>, <em>Tr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radiation induced broadening in Hz.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.radiation_broad_salgado">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">radiation_broad_salgado</tt><big>(</big><em>n</em>, <em>W</em>, <em>Tr</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad_salgado" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">radiation_broad_salgado</code><span class="sig-paren">(</span><em>n</em>, <em>W</em>, <em>Tr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad_salgado" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radiation induced broadening in Hz.
 This gives the FWHM of a Lorentzian line.
 Salgado et al. (2015)</p>
@@ -701,7 +690,7 @@ Salgado et al. (2015)</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.radiation_broad_salgado_general">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">radiation_broad_salgado_general</tt><big>(</big><em>n</em>, <em>W</em>, <em>Tr</em>, <em>nu0</em>, <em>alpha</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad_salgado_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad_salgado_general" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">radiation_broad_salgado_general</code><span class="sig-paren">(</span><em>n</em>, <em>W</em>, <em>Tr</em>, <em>nu0</em>, <em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad_salgado_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad_salgado_general" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radiation induced broadening in Hz.
 This gives the FWHM of a Lorentzian line.
 The expression is valid for power law like radiation fields.
@@ -710,7 +699,7 @@ Salgado et al. (2015)</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.remove_baseline">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">remove_baseline</tt><big>(</big><em>freq</em>, <em>tb</em>, <em>model</em>, <em>p0</em>, <em>mask</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#remove_baseline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.remove_baseline" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">remove_baseline</code><span class="sig-paren">(</span><em>freq</em>, <em>tb</em>, <em>model</em>, <em>p0</em>, <em>mask</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#remove_baseline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.remove_baseline" title="Permalink to this definition">¶</a></dt>
 <dd><p>Divide tb by given a model
 and starting parameters p0.
 Returns: tb/model - 1</p>
@@ -718,28 +707,28 @@ Returns: tb/model - 1</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.sigma2FWHM">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">sigma2FWHM</tt><big>(</big><em>sigma</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2FWHM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2FWHM" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2FWHM</code><span class="sig-paren">(</span><em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2FWHM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2FWHM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the sigma parameter of a Gaussian distribution
 to its FWHM.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.sigma2FWHM_err">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">sigma2FWHM_err</tt><big>(</big><em>dsigma</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2FWHM_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2FWHM_err" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2FWHM_err</code><span class="sig-paren">(</span><em>dsigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2FWHM_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2FWHM_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the error on the sigma parameter of a Gaussian distribution
 to the error on the FWHM.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.stack_interpol">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">stack_interpol</tt><big>(</big><em>spectra</em>, <em>vmin</em>, <em>vmax</em>, <em>dv</em>, <em>show=True</em>, <em>rmsvec=False</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#stack_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.stack_interpol" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">stack_interpol</code><span class="sig-paren">(</span><em>spectra</em>, <em>vmin</em>, <em>vmax</em>, <em>dv</em>, <em>show=True</em>, <em>rmsvec=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#stack_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.stack_interpol" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.stack_irregular">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">stack_irregular</tt><big>(</big><em>lines</em>, <em>window=''</em>, <em>**kargs</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#stack_irregular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.stack_irregular" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stacks spectra by adding them together and 
-then convolving with a window to reduce 
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">stack_irregular</code><span class="sig-paren">(</span><em>lines</em>, <em>window=''</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#stack_irregular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.stack_irregular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stacks spectra by adding them together and
+then convolving with a window to reduce
 the noise.
 Available window functions:
 Gaussian, Savitzky-Golay and Wiener.</p>
@@ -747,7 +736,7 @@ Gaussian, Savitzky-Golay and Wiener.</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.sum_line">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">sum_line</tt><big>(</big><em>sb</em>, <em>n</em>, <em>ref</em>, <em>vel</em>, <em>tau</em>, <em>v0</em>, <em>tau0</em>, <em>dtau0</em>, <em>thr</em>, <em>rms</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#sum_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sum_line" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">sum_line</code><span class="sig-paren">(</span><em>sb</em>, <em>n</em>, <em>ref</em>, <em>vel</em>, <em>tau</em>, <em>v0</em>, <em>tau0</em>, <em>dtau0</em>, <em>thr</em>, <em>rms</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sum_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sum_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Integrate the spectrum near a given velocity v0.
 It stops when the channels are within a threshold
 from a reference level.</p>
@@ -755,17 +744,17 @@ from a reference level.</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.sum_storage">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">sum_storage</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#sum_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sum_storage" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">sum_storage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sum_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sum_storage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.tryint">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">tryint</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#tryint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.tryint" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">tryint</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#tryint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.tryint" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.vel2freq">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">vel2freq</tt><big>(</big><em>f0</em>, <em>vel</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#vel2freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.vel2freq" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">vel2freq</code><span class="sig-paren">(</span><em>f0</em>, <em>vel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#vel2freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.vel2freq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a velocity axis
 to a frequency axis given
 a central frequency.
@@ -774,26 +763,26 @@ Uses the radio definition.</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.voigt">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">voigt</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.voigt_area">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">voigt_area</tt><big>(</big><em>amp</em>, <em>fwhm</em>, <em>gamma</em>, <em>sigma</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_area" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_area</code><span class="sig-paren">(</span><em>amp</em>, <em>fwhm</em>, <em>gamma</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the area under a Voigt profile.
 This approximation has an error of less than 0.5%</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.voigt_area_err">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">voigt_area_err</tt><big>(</big><em>area</em>, <em>amp</em>, <em>damp</em>, <em>fwhm</em>, <em>dfwhm</em>, <em>gamma</em>, <em>sigma</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_area_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_area_err" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_area_err</code><span class="sig-paren">(</span><em>area</em>, <em>amp</em>, <em>damp</em>, <em>fwhm</em>, <em>dfwhm</em>, <em>gamma</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_area_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_area_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the error of the area under a Voigt profile.
 Assumes that the parameter c has an error of 0.5%.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.voigt_peak">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">voigt_peak</tt><big>(</big><em>A</em>, <em>alphaD</em>, <em>alphaL</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_peak</code><span class="sig-paren">(</span><em>A</em>, <em>alphaD</em>, <em>alphaL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the peak of a Voigt profile given
 its Area and the HWHM of the Gaussian and
 Lorentz profiles.</p>
@@ -801,14 +790,14 @@ Lorentz profiles.</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.voigt_peak2area">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">voigt_peak2area</tt><big>(</big><em>peak</em>, <em>alphaD</em>, <em>alphaL</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak2area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak2area" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_peak2area</code><span class="sig-paren">(</span><em>peak</em>, <em>alphaD</em>, <em>alphaL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak2area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak2area" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the peak of a Voigt profile into the area under the profile
 given the HWHM of the profile.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.voigt_peak_err">
-<tt class="descclassname">crrlpy.crrls.</tt><tt class="descname">voigt_peak_err</tt><big>(</big><em>peak</em>, <em>A</em>, <em>dA</em>, <em>alphaD</em>, <em>dalphaD</em><big>)</big><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak_err" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_peak_err</code><span class="sig-paren">(</span><em>peak</em>, <em>A</em>, <em>dA</em>, <em>alphaD</em>, <em>dalphaD</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak_err" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the error on the peak of
 the Voigt profile.</p>
 </dd></dl>
@@ -818,8 +807,8 @@ the Voigt profile.</p>
 <span id="crrlpy-models-rrlmod-module"></span><h2>crrlpy.models.rrlmod module<a class="headerlink" href="#module-crrlpy.models.rrlmod" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="module-rrlmod"></span><dl class="function">
 <dt id="crrlpy.models.rrlmod.I_Bnu">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">I_Bnu</tt><big>(</big><em>specie</em>, <em>Z</em>, <em>n</em>, <em>Inu_funct</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_Bnu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_Bnu" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the product <span class="math">\(B_{n+\Delta n,n}I_{\nu}\)</span> to 
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_Bnu</code><span class="sig-paren">(</span><em>specie</em>, <em>Z</em>, <em>n</em>, <em>Inu_funct</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_Bnu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_Bnu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the product <span class="math">\(B_{n+\Delta n,n}I_{\nu}\)</span> to
 compute the line broadening due to a radiation field <span class="math">\(I_{\nu}\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -829,7 +818,7 @@ compute the line broadening due to a radiation field <span class="math">\(I_{\nu
 <li><span class="target" id="crrlpy.models.rrlmod.I_Bnu.params.specie"></span><strong>specie</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_Bnu.params.specie">¶</a> &#8211; Atomic specie to calculate for.</li>
 <li><span class="target" id="crrlpy.models.rrlmod.I_Bnu.params.n"></span><strong>n</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_Bnu.params.n">¶</a> &#8211; Principal quantum number at which to evaluate <span class="math">\(\frac{2}{\pi}\sum_{\Delta n}B_{n+\Delta n,n}I_{n+\Delta n,n}(\nu)\)</span>.</li>
 <li><span class="target" id="crrlpy.models.rrlmod.I_Bnu.params.Inu_funct"></span><strong>Inu_funct</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_Bnu.params.Inu_funct">¶</a> &#8211; Function to call and evaluate <span class="math">\(I_{n+\Delta n,n}(\nu)\)</span>. It&#8217;s first argument must be the frequency.</li>
-<li><span class="target" id="crrlpy.models.rrlmod.I_Bnu.params.*args"></span><strong>*args</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_Bnu.params.*args">¶</a> &#8211; Arguments to Inu_funct. The frequency must be left out.     The frequency will be passed internally in units of MHz. Use the same     unit when required. <tt class="xref py py-paramref docutils literal"><span class="pre">Inu_funct</span></tt> must take the frequency as first parameter.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.I_Bnu.params.*args"></span><strong>*args</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_Bnu.params.*args">¶</a> &#8211; Arguments to Inu_funct. The frequency must be left out.     The frequency will be passed internally in units of MHz. Use the same     unit when required. <code class="xref py py-paramref docutils literal"><span class="pre">Inu_funct</span></code> must take the frequency as first parameter.</li>
 </ul>
 </td>
 </tr>
@@ -839,8 +828,8 @@ compute the line broadening due to a radiation field <span class="math">\(I_{\nu
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.I_broken_plaw">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">I_broken_plaw</tt><big>(</big><em>nu</em>, <em>Tr</em>, <em>nu0</em>, <em>alpha1</em>, <em>alpha2</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_broken_plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_broken_plaw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the blackbody function evaluated at nu. 
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_broken_plaw</code><span class="sig-paren">(</span><em>nu</em>, <em>Tr</em>, <em>nu0</em>, <em>alpha1</em>, <em>alpha2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_broken_plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_broken_plaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the blackbody function evaluated at nu.
 As temperature a broken power law is used.
 The power law shape has parameters: Tr, nu0, alpha1 and alpha2.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -868,8 +857,8 @@ The power law shape has parameters: Tr, nu0, alpha1 and alpha2.</p>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.I_cont">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">I_cont</tt><big>(</big><em>nu</em>, <em>Te</em>, <em>tau</em>, <em>I0</em>, <em>unitless=False</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_cont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_cont" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the specific intensity due to a blackbody at temperature <span class="math">\(T_{e}\)</span> and optical depth <span class="math">\(\tau\)</span>. It considers that there is 
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_cont</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>tau</em>, <em>I0</em>, <em>unitless=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_cont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_cont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the specific intensity due to a blackbody at temperature <span class="math">\(T_{e}\)</span> and optical depth <span class="math">\(\tau\)</span>. It considers that there is
 background radiation with <span class="math">\(I_{0}\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -879,7 +868,7 @@ background radiation with <span class="math">\(I_{0}\)</span>.</p>
 <li><span class="target" id="crrlpy.models.rrlmod.I_cont.params.nu"></span><strong>nu</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_cont.params.nu">¶</a> &#8211; Frequency.</li>
 <li><span class="target" id="crrlpy.models.rrlmod.I_cont.params.Te"></span><strong>Te</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_cont.params.Te">¶</a> &#8211; Temperature of the source function. (K) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a></li>
 <li><span class="target" id="crrlpy.models.rrlmod.I_cont.params.tau"></span><strong>tau</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_cont.params.tau">¶</a> &#8211; Optical depth of the medium.</li>
-<li><span class="target" id="crrlpy.models.rrlmod.I_cont.params.I0"></span><strong>I0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_cont.params.I0">¶</a> &#8211; Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see <tt class="xref py py-paramref docutils literal"><span class="pre">unitless</span></tt>.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.I_cont.params.I0"></span><strong>I0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_cont.params.I0">¶</a> &#8211; Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see <code class="xref py py-paramref docutils literal"><span class="pre">unitless</span></code>.</li>
 <li><span class="target" id="crrlpy.models.rrlmod.I_cont.params.unitless"></span><strong>unitless</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.I_cont.params.unitless">¶</a> &#8211; If True the return</li>
 </ul>
 </td>
@@ -893,7 +882,7 @@ background radiation with <span class="math">\(I_{0}\)</span>.</p>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.I_external">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">I_external</tt><big>(</big><em>nu</em>, <em>Tbkg</em>, <em>Tff</em>, <em>tau_ff</em>, <em>Tr</em>, <em>nu0=&lt;Quantity 100000000.0 MHz&gt;</em>, <em>alpha=-2.6</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_external"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_external" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_external</code><span class="sig-paren">(</span><em>nu</em>, <em>Tbkg</em>, <em>Tff</em>, <em>tau_ff</em>, <em>Tr</em>, <em>nu0=&lt;Quantity 100000000.0 MHz&gt;</em>, <em>alpha=-2.6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_external"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_external" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method is equivalent to the IDL routine</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -907,12 +896,12 @@ background radiation with <span class="math">\(I_{0}\)</span>.</p>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.I_total">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">I_total</tt><big>(</big><em>nu</em>, <em>Te</em>, <em>tau</em>, <em>I0</em>, <em>eta</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_total" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_total</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>tau</em>, <em>I0</em>, <em>eta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_total" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.Mdn">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">Mdn</tt><big>(</big><em>dn</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#Mdn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.Mdn" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">Mdn</code><span class="sig-paren">(</span><em>dn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#Mdn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.Mdn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives the <span class="math">\(M(\Delta n)\)</span> factor for a given <span class="math">\(\Delta n\)</span>.
 ref. Menzel (1968)</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -923,7 +912,7 @@ ref. Menzel (1968)</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><span class="math">\(M(\Delta n)\)</span></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>
@@ -939,7 +928,7 @@ ref. Menzel (1968)</p>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.broken_plaw">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">broken_plaw</tt><big>(</big><em>nu</em>, <em>nu0</em>, <em>T0</em>, <em>alpha1</em>, <em>alpha2</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#broken_plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.broken_plaw" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">broken_plaw</code><span class="sig-paren">(</span><em>nu</em>, <em>nu0</em>, <em>T0</em>, <em>alpha1</em>, <em>alpha2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#broken_plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.broken_plaw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines a broken power law.</p>
 <div class="math">
 \[\begin{split}T(\nu) = T_{0}\left(\dfrac{\nu}{\nu_{0}}\right)^{\alpha_1}\mbox{ if }\nu&lt;\nu_{0}\end{split}\]\[T(\nu) = T_{0}\left(\dfrac{\nu}{\nu_{0}}\right)^{\alpha_2}\mbox{ if }\nu\geq\nu_{0}\]</div>
@@ -965,14 +954,14 @@ ref. Menzel (1968)</p>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.eta">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">eta</tt><big>(</big><em>freq</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>trans</em>, <em>n_max=1500</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#eta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.eta" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">eta</code><span class="sig-paren">(</span><em>freq</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>trans</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#eta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.eta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the correction factor for the Planck function.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.itau">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">itau</tt><big>(</big><em>temp</em>, <em>dens</em>, <em>line</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gives the integrated optical depth for a given temperature and density. 
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">itau</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>line</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the integrated optical depth for a given temperature and density.
 The emission measure is unity. The output units are Hz.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -998,159 +987,228 @@ The emission measure is unity. The output units are Hz.</p>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.itau_h">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">itau_h</tt><big>(</big><em>temp</em>, <em>dens</em>, <em>trans</em>, <em>n_max=1000</em>, <em>other=''</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau_h" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gives the integrated optical depth for a given temperature and density. 
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">itau_h</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>trans</em>, <em>n_max=1000</em>, <em>other=''</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau_h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the integrated optical depth for a given temperature and density.
 The emission measure is unity. The output units are Hz.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.itau_norad">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">itau_norad</tt><big>(</big><em>n</em>, <em>te</em>, <em>b</em>, <em>dn</em>, <em>mdn</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau_norad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau_norad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the optical depth with only the approximate solution to the 
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">itau_norad</code><span class="sig-paren">(</span><em>n</em>, <em>te</em>, <em>b</em>, <em>dn</em>, <em>mdn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau_norad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau_norad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the optical depth with only the approximate solution to the
 radiative transfer problem.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.j_line_lte">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">j_line_lte</tt><big>(</big><em>n</em>, <em>ne</em>, <em>nion</em>, <em>Te</em>, <em>Z</em>, <em>trans</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#j_line_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.j_line_lte" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">j_line_lte</code><span class="sig-paren">(</span><em>n</em>, <em>ne</em>, <em>nion</em>, <em>Te</em>, <em>Z</em>, <em>trans</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#j_line_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.j_line_lte" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.kappa_cont">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">kappa_cont</tt><big>(</big><em>freq</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_cont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_cont" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_cont</code><span class="sig-paren">(</span><em>freq</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_cont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_cont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the absorption coefficient for the free-free process.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.kappa_cont_base">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">kappa_cont_base</tt><big>(</big><em>nu</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_cont_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_cont_base" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_cont_base</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_cont_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_cont_base" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.kappa_line">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">kappa_line</tt><big>(</big><em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>trans</em>, <em>n_max=1500</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the line absorption coefficient between levels ni and nf, ni&gt;nf.
-This can only go up to n_max 1500 because of the tables used for the
-Einstein Anm coefficients.</p>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_line</code><span class="sig-paren">(</span><em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>trans</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the line absorption coefficient for CRRLs between levels <a href="#id7"><span class="problematic" id="id8">:mat:`n_{i}`</span></a> and <span class="math">\(n_{f}\)</span>, <span class="math">\(n_{i}&gt;n_{f}\)</span>.
+This can only go up to <span class="math">\(n_{\rm{max}}\)</span> 1500 because of the tables used for the Einstein Anm coefficients.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line.params.Te"></span><strong>Te</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line.params.Te">¶</a> &#8211; Electron temperature of the gas. (K)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line.params.ne"></span><strong>ne</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line.params.ne">¶</a> &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line.params.nion"></span><strong>nion</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line.params.nion">¶</a> &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line.params.Z"></span><strong>Z</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line.params.Z">¶</a> &#8211; Electric charge of the atoms being considered.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line.params.Tr"></span><strong>Tr</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line.params.Tr">¶</a> &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line.params.trans"></span><strong>trans</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line.params.trans">¶</a> &#8211; Transition for which to compute the absorption coefficient.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line.params.n_max"></span><strong>n_max</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line.params.n_max">¶</a> &#8211; Maximum principal quantum number to include in the output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.kappa_line_lte">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">kappa_line_lte</tt><big>(</big><em>nu</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_line_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_line_lte" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the line absorption coefficient.</p>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_line_lte</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_line_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_line_lte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the line absorption coefficient under LTE conditions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.nu"></span><strong>nu</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.nu">¶</a> &#8211; Frequency. (Hz)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.Te"></span><strong>Te</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.Te">¶</a> &#8211; Electron temperature of the gas. (K)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.ne"></span><strong>ne</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.ne">¶</a> &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.nion"></span><strong>nion</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.nion">¶</a> &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.Z"></span><strong>Z</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.Z">¶</a> &#8211; Electric charge of the atoms being considered.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.Tr"></span><strong>Tr</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.Tr">¶</a> &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.trans"></span><strong>trans</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.trans">¶</a> &#8211; Transition for which to compute the absorption coefficient.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.kappa_line_lte.params.n_max"></span><strong>n_max</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.kappa_line_lte.params.n_max">¶</a> &#8211; Maximum principal quantum number to include in the output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.level_pop_lte">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">level_pop_lte</tt><big>(</big><em>n</em>, <em>ne</em>, <em>nion</em>, <em>Te</em>, <em>Z</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#level_pop_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.level_pop_lte" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">level_pop_lte</code><span class="sig-paren">(</span><em>n</em>, <em>ne</em>, <em>nion</em>, <em>Te</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#level_pop_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.level_pop_lte" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the level population of level n.
-The return has units of cm-3.</p>
+The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_betabn">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_betabn</tt><big>(</big><em>temp</em>, <em>dens</em>, <em>other=''</em>, <em>trans='CIalpha'</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_betabn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_betabn" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_betabn</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>other=''</em>, <em>trans='CIalpha'</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_betabn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_betabn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a model for the CRRL emission.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_betabn_h">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_betabn_h</tt><big>(</big><em>temp</em>, <em>dens</em>, <em>other=''</em>, <em>trans='alpha'</em>, <em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_betabn_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_betabn_h" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_betabn_h</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>other=''</em>, <em>trans='alpha'</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_betabn_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_betabn_h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a model for the HRRL emission.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_bn">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_bn</tt><big>(</big><em>temp</em>, <em>dens</em>, <em>other=''</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_bn</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>other=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the bn values from the CRRL models.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_bn2">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_bn2</tt><big>(</big><em>temp</em>, <em>dens</em>, <em>other=''</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_bn2</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>other=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the bn values from the CRRL models.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_itau_all">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_itau_all</tt><big>(</big><em>trans='CIalpha'</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads all the available models.</p>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all</code><span class="sig-paren">(</span><em>trans='CIalpha'</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the available models for Carbon.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_itau_all_hydrogen">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_itau_all_hydrogen</tt><big>(</big><em>trans='alpha'</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_hydrogen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads all the available models.</p>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all_hydrogen</code><span class="sig-paren">(</span><em>trans='alpha'</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_hydrogen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the available models for Hydrogen.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_itau_all_match">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_itau_all_match</tt><big>(</big><em>trans_out='alpha'</em>, <em>trans_tin='beta'</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_match" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads all trans_out models that can be found in trans_tin.</p>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all_match</code><span class="sig-paren">(</span><em>trans_out='alpha'</em>, <em>trans_tin='beta'</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all trans_out models that can be found in trans_tin. This is useful when analyzing line ratios.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_itau_all_norad">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_itau_all_norad</tt><big>(</big><em>trans='alpha'</em>, <em>n_max=1000</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_norad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_norad" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all_norad</code><span class="sig-paren">(</span><em>trans='alpha'</em>, <em>n_max=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_norad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_norad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads all the available models.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_itau_dict">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_itau_dict</tt><big>(</big><em>dict</em>, <em>trans</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_dict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_dict</code><span class="sig-paren">(</span><em>dict</em>, <em>trans</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the models defined by dict.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_itau_nelim">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_itau_nelim</tt><big>(</big><em>temp</em>, <em>dens</em>, <em>trad</em>, <em>trans</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_nelim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_nelim" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads models given a temperature, radiation field and an 
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_nelim</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>trad</em>, <em>trans</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_nelim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_nelim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads models given a temperature, radiation field and an
 upper limit for the electron density.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.load_models">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">load_models</tt><big>(</big><em>models</em>, <em>trans</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_models" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_models</code><span class="sig-paren">(</span><em>models</em>, <em>trans</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_models" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads the models in backwards compatible mode.
 It will sort the models by Te, ne and Tr.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.make_betabn">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">make_betabn</tt><big>(</big><em>line</em>, <em>temp</em>, <em>dens</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#make_betabn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.make_betabn" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">make_betabn</code><span class="sig-paren">(</span><em>line</em>, <em>temp</em>, <em>dens</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#make_betabn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.make_betabn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.make_betabn2">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">make_betabn2</tt><big>(</big><em>line</em>, <em>temp</em>, <em>dens</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#make_betabn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.make_betabn2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">make_betabn2</code><span class="sig-paren">(</span><em>line</em>, <em>temp</em>, <em>dens</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#make_betabn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.make_betabn2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.plaw">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">plaw</tt><big>(</big><em>x</em>, <em>x0</em>, <em>y0</em>, <em>alpha</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.plaw" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">plaw</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>y0</em>, <em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.plaw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a power law.</p>
+<div class="math">
+\[y(x)=y_0\left(\frac{x}{x_0}\right)^{alpha}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><span class="target" id="crrlpy.models.rrlmod.plaw.params.x"></span><strong>x</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.plaw.params.x">¶</a> &#8211; x values for which to compute the power law.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.plaw.params.x0"></span><strong>x0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.plaw.params.x0">¶</a> &#8211; x value for which the power law has amplitude <code class="xref py py-paramref docutils literal"><span class="pre">y0</span></code>.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.plaw.params.y0"></span><strong>y0</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.plaw.params.y0">¶</a> &#8211; Amplitude of the power law at <code class="xref py py-paramref docutils literal"><span class="pre">x0</span></code>.</li>
+<li><span class="target" id="crrlpy.models.rrlmod.plaw.params.alpha"></span><strong>alpha</strong><a class="paramlink headerlink reference internal" href="#crrlpy.models.rrlmod.plaw.params.alpha">¶</a> &#8211; Index of the power law.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A power law of index <code class="xref py py-paramref docutils literal"><span class="pre">alpha</span></code> evaluated at <code class="xref py py-paramref docutils literal"><span class="pre">x</span></code>, with amplitude <code class="xref py py-paramref docutils literal"><span class="pre">y0</span></code> at <code class="xref py py-paramref docutils literal"><span class="pre">x0</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float or array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.str2val">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">str2val</tt><big>(</big><em>str</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#str2val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.str2val" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">str2val</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#str2val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.str2val" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.val2str">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">val2str</tt><big>(</big><em>val</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#val2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.val2str" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">val2str</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#val2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.val2str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a float to the str format required for loading the
 CRRL models. E.g., a temperature of 70 K is 7d1.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.valid_ne">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">valid_ne</tt><big>(</big><em>trans</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#valid_ne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.valid_ne" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">valid_ne</code><span class="sig-paren">(</span><em>trans</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#valid_ne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.valid_ne" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks all the available models and lists the available ne values.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.models.rrlmod.xi">
-<tt class="descclassname">crrlpy.models.rrlmod.</tt><tt class="descname">xi</tt><big>(</big><em>n</em>, <em>Te</em>, <em>Z</em><big>)</big><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#xi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.xi" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">xi</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#xi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.xi" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1158,7 +1216,7 @@ CRRL models. E.g., a temperature of 70 K is 7d1.</p>
 <span id="crrlpy-crrls-frec-calc-module"></span><h2>crrlpy.crrls.frec_calc module<a class="headerlink" href="#module-crrlpy.frec_calc" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="crrlpy.frec_calc.line_freq">
-<tt class="descclassname">crrlpy.frec_calc.</tt><tt class="descname">line_freq</tt><big>(</big><em>Z</em>, <em>R_X</em>, <em>n</em>, <em>dn</em><big>)</big><a class="reference internal" href="_modules/crrlpy/frec_calc.html#line_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.line_freq" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.frec_calc.</code><code class="descname">line_freq</code><span class="sig-paren">(</span><em>Z</em>, <em>R_X</em>, <em>n</em>, <em>dn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/frec_calc.html#line_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.line_freq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Uses the Rydberg formula to get the frequency
 of a transition to quantum number n for a given atom.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1176,7 +1234,7 @@ of a transition to quantum number n for a given atom.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The frequency of the transition in MHz.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -1185,13 +1243,13 @@ of a transition to quantum number n for a given atom.</p>
 
 <dl class="function">
 <dt id="crrlpy.frec_calc.main">
-<tt class="descclassname">crrlpy.frec_calc.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/crrlpy/frec_calc.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.frec_calc.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/frec_calc.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main body of the program. Useful for calling as a script.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.frec_calc.make_line_list">
-<tt class="descclassname">crrlpy.frec_calc.</tt><tt class="descname">make_line_list</tt><big>(</big><em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em>, <em>unitless=True</em><big>)</big><a class="reference internal" href="_modules/crrlpy/frec_calc.html#make_line_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.make_line_list" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.frec_calc.</code><code class="descname">make_line_list</code><span class="sig-paren">(</span><em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em>, <em>unitless=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/frec_calc.html#make_line_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.make_line_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a list of frequencies for the
 corresponding line. The frequencies
 are in MHz.</p>
@@ -1216,8 +1274,8 @@ are in MHz.</p>
 
 <dl class="function">
 <dt id="crrlpy.frec_calc.set_dn">
-<tt class="descclassname">crrlpy.frec_calc.</tt><tt class="descname">set_dn</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/crrlpy/frec_calc.html#set_dn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.set_dn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the value of Delta n depending on 
+<code class="descclassname">crrlpy.frec_calc.</code><code class="descname">set_dn</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/frec_calc.html#set_dn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.set_dn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the value of Delta n depending on
 the transition name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1227,7 +1285,7 @@ the transition name.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><span class="math">\(\Delta n\)</span> for the given transition.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)">int</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>
@@ -1243,7 +1301,7 @@ the transition name.</p>
 
 <dl class="function">
 <dt id="crrlpy.frec_calc.set_specie">
-<tt class="descclassname">crrlpy.frec_calc.</tt><tt class="descname">set_specie</tt><big>(</big><em>specie</em><big>)</big><a class="reference internal" href="_modules/crrlpy/frec_calc.html#set_specie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.set_specie" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.frec_calc.</code><code class="descname">set_specie</code><span class="sig-paren">(</span><em>specie</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/frec_calc.html#set_specie"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.set_specie" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets atomic constants based on the atomic specie.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1265,7 +1323,7 @@ the transition name.</p>
 
 <dl class="function">
 <dt id="crrlpy.frec_calc.set_trans">
-<tt class="descclassname">crrlpy.frec_calc.</tt><tt class="descname">set_trans</tt><big>(</big><em>dn</em><big>)</big><a class="reference internal" href="_modules/crrlpy/frec_calc.html#set_trans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.set_trans" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.frec_calc.</code><code class="descname">set_trans</code><span class="sig-paren">(</span><em>dn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/frec_calc.html#set_trans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.frec_calc.set_trans" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets a name depending on the difference between
 atomic levels.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1274,9 +1332,9 @@ atomic levels.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><span class="target" id="crrlpy.frec_calc.set_trans.params.dn"></span><strong>dn</strong><a class="paramlink headerlink reference internal" href="#crrlpy.frec_calc.set_trans.params.dn">¶</a> &#8211; Separation between <span class="math">\(n_{i}\)</span> and <span class="math">\(n_{f}\)</span>, <span class="math">\(\Delta n=n_{i}-n_{f}\)</span>.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">alpha, beta, gamma, delta or epsilon depending on <tt class="xref py py-paramref docutils literal"><span class="pre">dn</span></tt>.</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">alpha, beta, gamma, delta or epsilon depending on <code class="xref py py-paramref docutils literal"><span class="pre">dn</span></code>.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)">string</a></td>
 </tr>
 </tbody>
 </table>
@@ -1287,9 +1345,9 @@ atomic levels.</p>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
 </ul>
 </div>
 
@@ -1297,7 +1355,7 @@ atomic levels.</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
@@ -1309,16 +1367,22 @@ atomic levels.</p>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
-
-  <h4>Next topic</h4>
-  <p class="topless"><a href="includeme.html"
-                        title="next chapter">CRRLpy</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="includeme.html" title="next chapter">CRRLpy</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -1335,24 +1399,20 @@ atomic levels.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="includeme.html" title="CRRLpy"
-             >next</a> |</li>
-        <li><a href="#">CRRLpy 0.1 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2015, Pedro Salas.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      &copy;2015, Pedro Salas.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
     </div>
+
+    
+
+    
   </body>
 </html>
