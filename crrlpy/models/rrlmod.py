@@ -822,7 +822,7 @@ def plaw(x, x0, y0, alpha):
     
     .. math::
     
-       y(x)=y_0\\left(\\frac{x}{x_0}\\right)^{alpha}
+       y(x)=y_0\\left(\\frac{x}{x_0}\\right)^{\\alpha}
        
     :param x: x values for which to compute the power law.
     :type x: float or array like

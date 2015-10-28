@@ -902,7 +902,7 @@ def get_rms(data, axis=None):
     :returns: The rms of data.
     .. math::
     
-        \\mbox{\\it rms}=\\sqrt{\\langle\\mbox{data}\\rangle^{2}+V[\\mbox{data}]}
+        \\mbox{rms}=\\sqrt{\\langle\\mbox{data}\\rangle^{2}+V[\\mbox{data}]}
         
     where :math:`V` is the variance of the data.
     """
