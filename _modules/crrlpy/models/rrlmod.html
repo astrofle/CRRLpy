@@ -118,19 +118,34 @@
 <span class="sd">    compute the line broadening due to a radiation field :math:`I_{\\nu}`.</span>
 <span class="sd">    </span>
 <span class="sd">    :param specie: Atomic specie to calculate for.</span>
-<span class="sd">    :param n: Principal quantum number at which to evaluate :math:`\\frac{2}{\\pi}\\sum_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.</span>
+<span class="sd">    :type specie: str</span>
+<span class="sd">    :param n: Principal quantum number at which to evaluate :math:`\\dfrac{2}{\\pi}\\sum\limits_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.</span>
+<span class="sd">    :type n: int or list</span>
 <span class="sd">    :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It&#39;s first argument must be the frequency.</span>
-<span class="sd">    :param *args: Arguments to Inu_funct. The frequency must be left out. \</span>
+<span class="sd">    :type Inu_funct: function</span>
+<span class="sd">    :param *args: Arguments to `Inu_funct`. The frequency must be left out. \</span>
 <span class="sd">    The frequency will be passed internally in units of MHz. Use the same \</span>
 <span class="sd">    unit when required. `Inu_funct` must take the frequency as first parameter.</span>
+<span class="sd">    :returns: </span>
+<span class="sd">    :rtype: array, Hz</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; I_Bnu(&#39;CI&#39;, 1.,  500, I_broken_plaw, 800, 26*u.MHz.to(&#39;Hz&#39;), -1., -2.6)</span>
+<span class="sd">    array([ 6.65540582])</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">cte</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">e</span><span class="o">.</span><span class="n">gauss</span><span class="o">**</span><span class="mf">2.</span><span class="o">/</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">m_e</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">c</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">**</span><span class="mf">2.</span><span class="o">*</span><span class="n">Ryd</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;1/cm&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">Z</span><span class="o">**</span><span class="mf">2.</span><span class="p">)</span>
 
-    <span class="n">Inu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
-    <span class="n">BninfInu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
-    <span class="n">nu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">Inu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">BninfInu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">Inu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">BninfInu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">nu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
     
     <span class="k">for</span> <span class="n">dn</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">6</span><span class="p">):</span>
         <span class="n">nu</span><span class="p">[:,</span><span class="n">dn</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">n2f</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">specie</span><span class="o">+</span><span class="n">fc</span><span class="o">.</span><span class="n">set_trans</span><span class="p">(</span><span class="n">dn</span><span class="p">))</span>
