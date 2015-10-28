@@ -68,19 +68,34 @@ def I_Bnu(specie, Z, n, Inu_funct, *args):
     compute the line broadening due to a radiation field :math:`I_{\\nu}`.
     
     :param specie: Atomic specie to calculate for.
-    :param n: Principal quantum number at which to evaluate :math:`\\frac{2}{\\pi}\\sum_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.
+    :type specie: str
+    :param n: Principal quantum number at which to evaluate :math:`\\dfrac{2}{\\pi}\\sum\limits_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.
+    :type n: int or list
     :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It's first argument must be the frequency.
-    :param *args: Arguments to Inu_funct. The frequency must be left out. \
+    :type Inu_funct: function
+    :param *args: Arguments to `Inu_funct`. The frequency must be left out. \
     The frequency will be passed internally in units of MHz. Use the same \
     unit when required. `Inu_funct` must take the frequency as first parameter.
+    :returns: 
+    :rtype: array, Hz
+    
+    :Example:
+    
+    >>> I_Bnu('CI', 1.,  500, I_broken_plaw, 800, 26*u.MHz.to('Hz'), -1., -2.6)
+    array([ 6.65540582])
     
     """
     
     cte = 2.*np.pi**2.*e.gauss**2./(h.cgs.value*m_e.cgs.value*c.cgs.value**2.*Ryd.to('1/cm')*Z**2.)
 
-    Inu = np.empty((len(n), 5))
-    BninfInu = np.empty((len(n), 5))
-    nu = np.empty((len(n), 5))
+    try:
+        Inu = np.empty((len(n), 5))
+        BninfInu = np.empty((len(n), 5))
+        nu = np.empty((len(n), 5))
+    except TypeError:
+        Inu = np.empty((1, 5))
+        BninfInu = np.empty((1, 5))
+        nu = np.empty((1, 5))
     
     for dn in range(1,6):
         nu[:,dn-1] = n2f(n, specie+fc.set_trans(dn))
