@@ -844,11 +844,11 @@ def get_line_mask(freq, reffreq, v0, dv0):
     :type freq: numpy array or list
     :param reffreq: Reference frequency for the line.
     :type reffreq: float
-    :param v0: Velocity of the line. (km/s)
-    :type v0: float
-    :param dv0: Velocity range to mask. (km/s)
-    :type dv0: float
-    :returns: Mask centered at the line center and width dv0 referenced to the input :paramref:`freq`.
+    :param v0: Velocity of the line.
+    :type v0: float, km/s
+    :param dv0: Velocity range to mask.
+    :type dv0: float, km/s
+    :returns: Mask centered at the line center and width `dv0` referenced to the input `freq`.
     """
     
     #print v0

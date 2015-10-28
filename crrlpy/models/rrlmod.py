@@ -72,7 +72,7 @@ def I_Bnu(specie, Z, n, Inu_funct, *args):
     :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It's first argument must be the frequency.
     :param *args: Arguments to Inu_funct. The frequency must be left out. \
     The frequency will be passed internally in units of MHz. Use the same \
-    unit when required. :paramref:`Inu_funct` must take the frequency as first parameter.
+    unit when required. `Inu_funct` must take the frequency as first parameter.
     
     """
     
@@ -124,7 +124,7 @@ def I_cont(nu, Te, tau, I0, unitless=False):
     :type nu: (Hz) or astropy.units.Quantity_
     :param Te: Temperature of the source function. (K) or astropy.units.Quantity_
     :param tau: Optical depth of the medium.
-    :param I0: Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see :paramref:`unitless`.
+    :param I0: Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see `unitless`.
     :param unitless: If True the return 
     :returns: The specific intensity of a ray of light after traveling in an LTE \
     medium with source function :math:`B_{\\nu}(T_{e})` after crossing an optical \
@@ -826,13 +826,13 @@ def plaw(x, x0, y0, alpha):
        
     :param x: x values for which to compute the power law.
     :type x: float or array like
-    :param x0: x value for which the power law has amplitude :paramref:`y0`.
+    :param x0: x value for which the power law has amplitude `y0`.
     :type x0: float
-    :param y0: Amplitude of the power law at :paramref:`x0`.
+    :param y0: Amplitude of the power law at `x0`.
     :type y0: float
     :param alpha: Index of the power law.
     :type alpha: float
-    :returns: A power law of index :paramref:`alpha` evaluated at :paramref:`x`, with amplitude :paramref:`y0` at :paramref:`x0`.
+    :returns: A power law of index `alpha` evaluated at `x`, with amplitude `y0` at `x0`.
     :rtype: float or array
     """
     
