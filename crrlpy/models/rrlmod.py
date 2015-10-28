@@ -210,7 +210,6 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     b = bbn[nimin:nimax,1]
     
     if value == 'itau':
-        #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
         i = itau_norad(n, t, b, dn, mdn)
     elif value == 'bbnMdn':
         i = b*dn*mdn
@@ -263,6 +262,7 @@ def j_line_lte(n, ne, nion, Te, Z, trans):
 
 def kappa_cont(freq, Te, ne, nion, Z):
     """
+    Computes the absorption coefficient for the free-free process.
     """
     
     nu = freq.to('GHz').value
@@ -313,9 +313,25 @@ def kappa_cont_base(nu, Te, ne, nion, Z):
 
 def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     """
-    Computes the line absorption coefficient between levels ni and nf, ni>nf.
-    This can only go up to n_max 1500 because of the tables used for the
-    Einstein Anm coefficients.
+    Computes the line absorption coefficient for CRRLs between levels :mat:`n_{i}` and :math:`n_{f}`, :math:`n_{i}>n_{f}`.
+    This can only go up to :math:`n_{\\rm{max}}` 1500 because of the tables used for the Einstein Anm coefficients.
+    
+    :param Te: Electron temperature of the gas. (K)
+    :type Te: float
+    :param ne: Electron density. (:math:`\\mbox{cm}^{-3}`)
+    :type ne: float
+    :param nion: Ion density. (:math:`\\mbox{cm}^{-3}`)
+    :type nion: float
+    :param Z: Electric charge of the atoms being considered.
+    :type Z: int
+    :param Tr: Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)
+    :type Tr: float
+    :param trans: Transition for which to compute the absorption coefficient.
+    :type trans: string
+    :param n_max: Maximum principal quantum number to include in the output.
+    :type n_max: int<1500
+    :returns: 
+    :rtype: array
     """
     
     cte = np.power(c, 2.)/(16.*np.pi)*np.power(np.power(h, 2)/(2.*np.pi*m_e*k_B), 3./2.)
@@ -348,7 +364,26 @@ def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
 
 def kappa_line_lte(nu, Te, ne, nion, Z, Tr, line, n_min=1, n_max=1500):
     """
-    Returns the line absorption coefficient.
+    Returns the line absorption coefficient under LTE conditions.
+    
+    :param nu: Frequency. (Hz)
+    :type nu: array
+    :param Te: Electron temperature of the gas. (K)
+    :type Te: float
+    :param ne: Electron density. (:math:`\\mbox{cm}^{-3}`)
+    :type ne: float
+    :param nion: Ion density. (:math:`\\mbox{cm}^{-3}`)
+    :type nion: float
+    :param Z: Electric charge of the atoms being considered.
+    :type Z: int
+    :param Tr: Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)
+    :type Tr: float
+    :param trans: Transition for which to compute the absorption coefficient.
+    :type trans: string
+    :param n_max: Maximum principal quantum number to include in the output.
+    :type n_max: int<1500
+    :returns: 
+    :rtype: array
     """
     
     ni = f2n(nu.to('MHz').value, line, n_max) + 1.
@@ -368,7 +403,7 @@ def kappa_line_lte(nu, Te, ne, nion, Z, Tr, line, n_min=1, n_max=1500):
 def level_pop_lte(n, ne, nion, Te, Z):
     """
     Returns the level population of level n.
-    The return has units of cm-3.
+    The return has units of :math:`\\mbox{cm}^{-3}`.
     """
     
     omega_ni = 2*np.power(n, 2)
@@ -411,7 +446,7 @@ def load_itau_dict(dict, trans, n_min=5, n_max=1000, verbose=False, value='itau'
 
 def load_itau_all(trans='CIalpha', n_min=5, n_max=1000, verbose=False, value='itau'):
     """
-    Loads all the available models.
+    Loads all the available models for Carbon.
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
@@ -454,7 +489,7 @@ def load_itau_all(trans='CIalpha', n_min=5, n_max=1000, verbose=False, value='it
 
 def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau'):
     """
-    Loads all the available models.
+    Loads all the available models for Hydrogen.
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
@@ -468,7 +503,7 @@ def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau
                                            str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
     
     Te = np.zeros(len(models))
-    ne = np.zeros(len(models))#, dtype='|S20')
+    ne = np.zeros(len(models))
     other = np.zeros(len(models), dtype='|S20')
     data = np.zeros((len(models), 2, n_max))
     
@@ -493,15 +528,13 @@ def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau
 
 def load_itau_all_match(trans_out='alpha', trans_tin='beta', n_max=1000, verbose=False, value='itau'):
     """
-    Loads all trans_out models that can be found in trans_tin.
+    Loads all trans_out models that can be found in trans_tin. This is useful when analyzing line ratios.
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     target = [f.split('/')[-1] for f in glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans_tin))]
-    #print target[0]
     models = ['bbn2_{0}/'.format(trans_out) + f for f in target]
-    #print models[0]
     
     [Te, ne, other, data] = load_models(models, trans_out, n_max, verbose, value)
     
@@ -786,6 +819,21 @@ def Mdn(dn):
 def plaw(x, x0, y0, alpha):
     """
     Returns a power law.
+    
+    .. math::
+    
+       y(x)=y_0\\left(\\frac{x}{x_0}\\right)^{alpha}
+       
+    :param x: x values for which to compute the power law.
+    :type x: float or array like
+    :param x0: x value for which the power law has amplitude :paramref:`y0`.
+    :type x0: float
+    :param y0: Amplitude of the power law at :paramref:`x0`.
+    :type y0: float
+    :param alpha: Index of the power law.
+    :type alpha: float
+    :returns: A power law of index :paramref:`alpha` evaluated at :paramref:`x`, with amplitude :paramref:`y0` at :paramref:`x0`.
+    :rtype: float or array
     """
     
     return y0*np.power(x/x0, alpha)
