@@ -85,12 +85,22 @@
 <dl class="function">
 <dt id="crrlpy.crrls.Voigt">
 <code class="descclassname">crrlpy.crrls.</code><code class="descname">Voigt</code><span class="sig-paren">(</span><em>x</em>, <em>sigma</em>, <em>gamma</em>, <em>center</em>, <em>amplitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#Voigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.Voigt" title="Permalink to this definition">¶</a></dt>
-<dd><p>The Voigt line shape in terms of its physical parameters
-x: independent variable
-sigma: HWHM of the Gaussian
-gamma: HWHM of the Lorentzian
-center: the line center
-amplitude: the line area</p>
+<dd><p>The Voigt line shape in terms of its physical parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; independent variable</li>
+<li><strong>sigma</strong> &#8211; HWHM of the Gaussian</li>
+<li><strong>gamma</strong> &#8211; HWHM of the Lorentzian</li>
+<li><strong>center</strong> &#8211; the line center</li>
+<li><strong>amplitude</strong> &#8211; the line area</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -674,7 +684,21 @@ Shaver (1975)</p>
 <dl class="function">
 <dt id="crrlpy.crrls.pressure_broad_coefs">
 <code class="descclassname">crrlpy.crrls.</code><code class="descname">pressure_broad_coefs</code><span class="sig-paren">(</span><em>Te</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_coefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_coefs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Defines the values of the constants <span class="math">\(a\)</span> and <span class="math">\(\gamma\)</span> that go into the collisional broadening formula
+of Salgado et al. (2015).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The values of <span class="math">\(a\)</span> and <span class="math">\(\gamma\)</span>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="crrlpy.crrls.pressure_broad_salgado">
@@ -682,6 +706,26 @@ Shaver (1975)</p>
 <dd><p>Pressure induced broadening in Hz.
 This gives the FWHM of a Lorentzian line.
 Salgado et al. (2015)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<em>float or array</em>) &#8211; Principal quantum number for which to compute the line broadening.</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature to use when computing the collisional line width.</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density to use when computing the collisional line width.</li>
+<li><strong>dn</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Difference between the upper and lower level for which the line width is computed. (default 1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The collisional broadening FWHM in Hz using Salgado et al. (2015) formulas.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float or array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -718,8 +762,19 @@ Returns: tb/model - 1</p>
 <dl class="function">
 <dt id="crrlpy.crrls.sigma2FWHM">
 <code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2FWHM</code><span class="sig-paren">(</span><em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2FWHM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2FWHM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the sigma parameter of a Gaussian distribution
-to its FWHM.</p>
+<dd><p>Converts the <span class="math">\(\sigma\)</span> parameter of a Gaussian distribution to its FWHM.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sigma</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; <span class="math">\(\sigma\)</span> value of the Gaussian distribution.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The FWHM of a Gaussian with a standard deviation <span class="math">\(\sigma\)</span>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -765,10 +820,26 @@ from a reference level.</p>
 <dl class="function">
 <dt id="crrlpy.crrls.vel2freq">
 <code class="descclassname">crrlpy.crrls.</code><code class="descname">vel2freq</code><span class="sig-paren">(</span><em>f0</em>, <em>vel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#vel2freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.vel2freq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a velocity axis
-to a frequency axis given
-a central frequency.
-Uses the radio definition.</p>
+<dd><p>Convert a velocity axis to a frequency axis given a central frequency.
+Uses the radio definition, <span class="math">\(\nu=f_{0}(1-v/c)\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Rest frequency in Hz.</li>
+<li><strong>vel</strong> (<em>float or array</em>) &#8211; Velocity to convert in m/s.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The frequency which is equivalent to vel.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float or array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
