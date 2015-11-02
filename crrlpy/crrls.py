@@ -759,14 +759,14 @@ def freq2vel(f0, f):
     
     return c*(1. - f/f0)
 
-def FWHM2sigma(fwhm):
+def fwhm2sigma(fwhm):
     """
     Converts a FWHM to the standard deviation of a Gaussian distribution.
     """
     
     return fwhm/(2.*np.sqrt(2.*np.log(2.)))
 
-def Gauss(y, **kwargs):
+def gauss_filter(y, **kwargs):
     """
     Applies a Gaussian filter to y.
     """
@@ -791,7 +791,7 @@ def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     
     return np.sqrt(err1 + err2)
 
-def Gaussian(x, sigma, center, amplitude):
+def gaussian(x, sigma, center, amplitude):
     """
     1-d Gaussian with no amplitude offset.
     """
@@ -1460,13 +1460,13 @@ def remove_baseline(freq, tb, model, p0, mask):
     
     return tbcsub
 
-def SavGol(y, **kwargs):
+def savgol(y, **kwargs):
     #window_length, polyorder = args
     sgf = savgol_filter(y, window_length=kwargs['window_length'], 
                         polyorder=kwargs['polyorder'])
     return sgf
 
-def sigma2FWHM(sigma):
+def sigma2fwhm(sigma):
     """
     Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.
     
@@ -1478,7 +1478,7 @@ def sigma2FWHM(sigma):
     
     return sigma*2*np.sqrt(2*np.log(2))
 
-def sigma2FWHM_err(dsigma):
+def sigma2fwhm_err(dsigma):
     """
     Converts the error on the sigma parameter of a Gaussian distribution
     to the error on the FWHM.
@@ -1763,7 +1763,7 @@ def vel2freq(f0, vel):
     
     return f0*(1. - vel/c)
 
-def voigt(x, y):
+def voigt_(x, y):
     # The Voigt function is also the real part of 
     # w(z) = exp(-z^2) erfc(iz), the complex probability function,
     # which is also known as the Faddeeva function. Scipy has 
@@ -1774,7 +1774,7 @@ def voigt(x, y):
 
     return I
 
-def Voigt(x, sigma, gamma, center, amplitude):
+def voigt(x, sigma, gamma, center, amplitude):
     """
     The Voigt line shape in terms of its physical parameters.
     
@@ -1790,7 +1790,7 @@ def Voigt(x, sigma, gamma, center, amplitude):
     rx = (x - center)/sigma * f
     ry = gamma/sigma * f
 
-    V = amplitude*f/(sigma*np.sqrt(np.pi)) * voigt(rx, ry)
+    V = amplitude*f/(sigma*np.sqrt(np.pi)) * voigt_(rx, ry)
 
     return V
 
@@ -1866,7 +1866,7 @@ def voigt_peak_err(peak, A, dA, alphaD, dalphaD):
     
     return dpeak
 
-def Wiener(y, **kwargs):
+def wiener(y, **kwargs):
     #size, noise = args
     wi = wiener(y, mysize=kwargs['mysize'], noise=kwargs['noise'])
     return wi

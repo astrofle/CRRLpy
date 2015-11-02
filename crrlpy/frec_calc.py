@@ -80,7 +80,7 @@ def set_trans(dn):
     
     :param dn: Separation between :math:`n_{i}` and :math:`n_{f}`, :math:`\\Delta n=n_{i}-n_{f}`.
     :type dn: int
-    :returns: alpha, beta, gamma, delta or epsilon depending on :paramref:`dn`.
+    :returns: alpha, beta, gamma, delta or epsilon depending on :math:`\\Delta n`.
     :rtype: string
     """
     if dn == 1:
