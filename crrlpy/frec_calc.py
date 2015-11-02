@@ -15,13 +15,13 @@ def line_freq(Z, R_X, n, dn):
     of a transition to quantum number n for a given atom.
     
     :param Z: Charge of the atom.
-    :param R_X: 
+    :type Z: int
+    :param R_X:
+    :type R_X: float
     :param n: Principal quantum number of the transition. :math:`n+\\Delta n\\rightarrow n`.
+    :type n: int
     :param dn: Difference between the principal quantum number of the initial state \
     and the final state. :math:`\\Delta n=n_{f}-n_{i}`.
-    :type Z: int
-    :type R_X: float
-    :type n: int
     :type dn: int
     :returns: The frequency of the transition in MHz.
     :rtype: float
@@ -75,14 +75,19 @@ def set_specie(specie):
 
 def set_trans(dn):
     """
-    Sets a name depending on the difference between
-    atomic levels.
+    Sets a name depending on the difference between atomic levels.
     
     :param dn: Separation between :math:`n_{i}` and :math:`n_{f}`, :math:`\\Delta n=n_{i}-n_{f}`.
     :type dn: int
     :returns: alpha, beta, gamma, delta or epsilon depending on :math:`\\Delta n`.
     :rtype: string
+    
+    :Example:
+    
+    >>> set_trans(5)
+    'epsilon'
     """
+    
     if dn == 1:
         name = 'alpha'
     if dn == 2:
@@ -98,8 +103,7 @@ def set_trans(dn):
 
 def set_dn(name):
     """
-    Sets the value of Delta n depending on 
-    the transition name.
+    Sets the value of Delta n depending on the transition name.
     
     :param name: Name of the transition.
     :type name: string
@@ -129,15 +133,18 @@ def set_dn(name):
 
 def make_line_list(line, n_min=1, n_max=1500, unitless=True):
     """
-    Creates a list of frequencies for the
-    corresponding line. The frequencies
-    are in MHz.
+    Creates a list of frequencies for the corresponding line. The frequencies are in MHz.
     
     :param line: Line to compute the frequencies for.
+    :type line: string
     :param n_min: Minimum n number to include in the list.
+    :type n_min: int
     :param n_max: Maximum n number to include in the list.
+    :type n_max: int
     :param unitless: If True the list will have no units. If not the list will be of astropy.units.Quantity_ objects.
-    :returns: List with the frequency of the transitions for the line.
+    :type unitless: bool
+    :returns: 3 lists with the line name, principal quantum number and frequency of the transitions.
+    :rtype: list
     
     .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity
     """
