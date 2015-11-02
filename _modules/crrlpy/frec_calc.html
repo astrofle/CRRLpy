@@ -65,13 +65,13 @@
 <span class="sd">    of a transition to quantum number n for a given atom.</span>
 <span class="sd">    </span>
 <span class="sd">    :param Z: Charge of the atom.</span>
-<span class="sd">    :param R_X: </span>
+<span class="sd">    :type Z: int</span>
+<span class="sd">    :param R_X:</span>
+<span class="sd">    :type R_X: float</span>
 <span class="sd">    :param n: Principal quantum number of the transition. :math:`n+\\Delta n\\rightarrow n`.</span>
+<span class="sd">    :type n: int</span>
 <span class="sd">    :param dn: Difference between the principal quantum number of the initial state \</span>
 <span class="sd">    and the final state. :math:`\\Delta n=n_{f}-n_{i}`.</span>
-<span class="sd">    :type Z: int</span>
-<span class="sd">    :type R_X: float</span>
-<span class="sd">    :type n: int</span>
 <span class="sd">    :type dn: int</span>
 <span class="sd">    :returns: The frequency of the transition in MHz.</span>
 <span class="sd">    :rtype: float</span>
@@ -125,14 +125,19 @@
 </div>
 <div class="viewcode-block" id="set_trans"><a class="viewcode-back" href="../../index.html#crrlpy.frec_calc.set_trans">[docs]</a><span class="k">def</span> <span class="nf">set_trans</span><span class="p">(</span><span class="n">dn</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets a name depending on the difference between</span>
-<span class="sd">    atomic levels.</span>
+<span class="sd">    Sets a name depending on the difference between atomic levels.</span>
 <span class="sd">    </span>
 <span class="sd">    :param dn: Separation between :math:`n_{i}` and :math:`n_{f}`, :math:`\\Delta n=n_{i}-n_{f}`.</span>
 <span class="sd">    :type dn: int</span>
 <span class="sd">    :returns: alpha, beta, gamma, delta or epsilon depending on :math:`\\Delta n`.</span>
 <span class="sd">    :rtype: string</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; set_trans(5)</span>
+<span class="sd">    &#39;epsilon&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;alpha&#39;</span>
     <span class="k">if</span> <span class="n">dn</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -148,8 +153,7 @@
 </div>
 <div class="viewcode-block" id="set_dn"><a class="viewcode-back" href="../../index.html#crrlpy.frec_calc.set_dn">[docs]</a><span class="k">def</span> <span class="nf">set_dn</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Sets the value of Delta n depending on </span>
-<span class="sd">    the transition name.</span>
+<span class="sd">    Sets the value of Delta n depending on the transition name.</span>
 <span class="sd">    </span>
 <span class="sd">    :param name: Name of the transition.</span>
 <span class="sd">    :type name: string</span>
@@ -179,15 +183,18 @@
 </div>
 <div class="viewcode-block" id="make_line_list"><a class="viewcode-back" href="../../index.html#crrlpy.frec_calc.make_line_list">[docs]</a><span class="k">def</span> <span class="nf">make_line_list</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span> <span class="n">unitless</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Creates a list of frequencies for the</span>
-<span class="sd">    corresponding line. The frequencies</span>
-<span class="sd">    are in MHz.</span>
+<span class="sd">    Creates a list of frequencies for the corresponding line. The frequencies are in MHz.</span>
 <span class="sd">    </span>
 <span class="sd">    :param line: Line to compute the frequencies for.</span>
+<span class="sd">    :type line: string</span>
 <span class="sd">    :param n_min: Minimum n number to include in the list.</span>
+<span class="sd">    :type n_min: int</span>
 <span class="sd">    :param n_max: Maximum n number to include in the list.</span>
+<span class="sd">    :type n_max: int</span>
 <span class="sd">    :param unitless: If True the list will have no units. If not the list will be of astropy.units.Quantity_ objects.</span>
-<span class="sd">    :returns: List with the frequency of the transitions for the line.</span>
+<span class="sd">    :type unitless: bool</span>
+<span class="sd">    :returns: 3 lists with the line name, principal quantum number and frequency of the transitions.</span>
+<span class="sd">    :rtype: list</span>
 <span class="sd">    </span>
 <span class="sd">    .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity</span>
 <span class="sd">    &quot;&quot;&quot;</span>
