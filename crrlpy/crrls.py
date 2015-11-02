@@ -1300,17 +1300,39 @@ def pressure_broad_salgado(n, Te, ne, dn=1):
     Pressure induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
     Salgado et al. (2015)
+    
+    :param n: Principal quantum number for which to compute the line broadening.
+    :type n: float or array
+    :param Te: Electron temperature to use when computing the collisional line width.
+    :type Te: float
+    :param ne: Electron density to use when computing the collisional line width.
+    :type ne: float
+    :param dn: Difference between the upper and lower level for which the line width is computed. (default 1)
+    :type dn: int
+    :returns: The collisional broadening FWHM in Hz using Salgado et al. (2015) formulas.
+    :rtype: float or array
     """
+    
     a, g = pressure_broad_coefs(Te)
     
     return ne*np.power(10., a)*(np.power(n, g) + np.power(n + dn, g))/2./np.pi
 
 def pressure_broad_coefs(Te):
+    """
+    Defines the values of the constants :math:`a` and :math:`\\gamma` that go into the collisional broadening formula
+    of Salgado et al. (2015).
+    
+    :param Te: Electron temperature.
+    :type Te: float
+    :returns: The values of :math:`a` and :math:`\\gamma`.
+    :rtype: list
+    """
     
     te = [10, 20, 30, 40, 50, 60, 70, 80, 90,
           100, 200, 300, 400, 500, 600, 700,
           800, 900, 1000, 2000, 3000, 4000, 5000,
           6000, 7000, 8000, 9000, 10000, 20000, 30000]
+    
     te_indx = best_match_indx2(Te, te)
     
     a = [-10.974098,           
@@ -1422,6 +1444,7 @@ def remove_baseline(freq, tb, model, p0, mask):
     and starting parameters p0.
     Returns: tb/model - 1
     """
+    
     # Divide by linear baseline
     mod = Model(model)
     params = mod.make_params()
@@ -1433,7 +1456,6 @@ def remove_baseline(freq, tb, model, p0, mask):
             params[param].set(value=p0[param])
 
     fit = mod.fit(tb[~mask], x=freq[~mask], params=params)
-    #best_fit = mod.eval(x=freq, amp=10, cen=6.2, wid=0.75)
     tbcsub = tb/fit.eval(x=freq) - 1
     
     return tbcsub
@@ -1446,9 +1468,14 @@ def SavGol(y, **kwargs):
 
 def sigma2FWHM(sigma):
     """
-    Converts the sigma parameter of a Gaussian distribution
-    to its FWHM.
+    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.
+    
+    :param sigma: :math:`\\sigma` value of the Gaussian distribution.
+    :type sigma: float
+    :returns: The FWHM of a Gaussian with a standard deviation :math:`\\sigma`.
+    :rtype: float
     """
+    
     return sigma*2*np.sqrt(2*np.log(2))
 
 def sigma2FWHM_err(dsigma):
@@ -1723,11 +1750,17 @@ def tryint(s):
 
 def vel2freq(f0, vel):
     """
-    Convert a velocity axis
-    to a frequency axis given
-    a central frequency.
-    Uses the radio definition.
+    Convert a velocity axis to a frequency axis given a central frequency.
+    Uses the radio definition, :math:`\\nu=f_{0}(1-v/c)`.
+    
+    :param f0: Rest frequency in Hz.
+    :type f0: float
+    :param vel: Velocity to convert in m/s.
+    :type vel: float or array
+    :returns: The frequency which is equivalent to vel.
+    :rtype: float or array
     """
+    
     return f0*(1. - vel/c)
 
 def voigt(x, y):
@@ -1743,12 +1776,13 @@ def voigt(x, y):
 
 def Voigt(x, sigma, gamma, center, amplitude):
     """
-    The Voigt line shape in terms of its physical parameters
-    x: independent variable
-    sigma: HWHM of the Gaussian
-    gamma: HWHM of the Lorentzian
-    center: the line center
-    amplitude: the line area
+    The Voigt line shape in terms of its physical parameters.
+    
+    :param x: independent variable
+    :param sigma: HWHM of the Gaussian
+    :param gamma: HWHM of the Lorentzian
+    :param center: the line center
+    :param amplitude: the line area
     """
 
     ln2 = np.log(2)
