@@ -447,7 +447,7 @@
     
     <span class="k">return</span> <span class="n">fit</span>
 </div>
-<div class="viewcode-block" id="fit_model"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.fit_model">[docs]</a><span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">wy</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="fit_model"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.fit_model">[docs]</a><span class="k">def</span> <span class="nf">fit_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">wy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Fits a model to the data defined by `x` and `y`.</span>
 <span class="sd">    It uses `p0` as starting values.</span>
@@ -462,6 +462,8 @@
 <span class="sd">    :type p0: dict</span>
 <span class="sd">    :param wy: Weights of the ordinate values. (Optional)</span>
 <span class="sd">    :type wy: array</span>
+<span class="sd">    :param mask: Mask to apply to the `x` and `y` values. (Optional)</span>
+<span class="sd">    :type mask: array</span>
 <span class="sd">    :returns: An object containing the results of the fit.</span>
 <span class="sd">    :rtype: lmfit.model.ModelResult_</span>
 <span class="sd">    </span>
@@ -477,12 +479,16 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
             <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">p0</span><span class="p">[</span><span class="n">param</span><span class="p">])</span>
-            
-    <span class="k">if</span> <span class="n">wtb</span><span class="p">:</span>
-        <span class="n">fit</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tb</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">wtb</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">fit</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tb</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-
+    
+    <span class="k">if</span> <span class="n">mask</span><span class="p">:</span>
+        <span class="n">mx</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">my</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">wy</span><span class="p">:</span>
+        <span class="n">wy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mx</span><span class="p">))</span>
+        
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">my</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">mx</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">wy</span><span class="p">)</span>
+    
     <span class="k">return</span> <span class="n">fit</span>
 </div>
 <div class="viewcode-block" id="freq2vel"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.freq2vel">[docs]</a><span class="k">def</span> <span class="nf">freq2vel</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
@@ -765,25 +771,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">x</span> <span class="o">+</span> <span class="n">b</span>
-</div>
-<div class="viewcode-block" id="line_width_err"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.line_width_err">[docs]</a><span class="k">def</span> <span class="nf">line_width_err</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">dL</span><span class="p">,</span> <span class="n">ddD</span><span class="p">,</span> <span class="n">ddL</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the error in the FWHM of</span>
-<span class="sd">    a Voigt profile.</span>
-<span class="sd">    http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="n">f</span> <span class="o">=</span> <span class="mf">0.02</span><span class="o">/</span><span class="mf">100.</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="mf">0.5346</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="mf">0.2166</span>
-    
-    <span class="n">dT1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dL</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dL</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">ddL</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">dT2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">ddD</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dL</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">dT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dT1</span> <span class="o">+</span> <span class="n">dT2</span><span class="p">)</span>
-    
-    <span class="n">dT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dT</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">f</span><span class="o">*</span><span class="n">line_width</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">dL</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
-    
-    <span class="k">return</span> <span class="n">dT</span>
 </div>
 <div class="viewcode-block" id="load_model"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.load_model">[docs]</a><span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">specie</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1301,28 +1288,6 @@
     
     <span class="k">return</span> <span class="n">W</span><span class="o">*</span><span class="n">cte</span><span class="o">*</span><span class="n">Tr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">alpha</span> <span class="o">-</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dnexp</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">dnexp</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="remove_baseline"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.remove_baseline">[docs]</a><span class="k">def</span> <span class="nf">remove_baseline</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Divide tb by given a model</span>
-<span class="sd">    and starting parameters p0.</span>
-<span class="sd">    Returns: tb/model - 1</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="c"># Divide by linear baseline</span>
-    <span class="n">mod</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s">&quot;Insuficient starting parameter values.&quot;</span>
-        <span class="k">return</span> <span class="mi">0</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
-            <span class="n">params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">p0</span><span class="p">[</span><span class="n">param</span><span class="p">])</span>
-
-    <span class="n">fit</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tb</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">],</span> <span class="n">x</span><span class="o">=</span><span class="n">freq</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">],</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
-    <span class="n">tbcsub</span> <span class="o">=</span> <span class="n">tb</span><span class="o">/</span><span class="n">fit</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">freq</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-    
-    <span class="k">return</span> <span class="n">tbcsub</span>
-</div>
 <div class="viewcode-block" id="sigma2fwhm"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.sigma2fwhm">[docs]</a><span class="k">def</span> <span class="nf">sigma2fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.</span>
@@ -1337,9 +1302,15 @@
 </div>
 <div class="viewcode-block" id="sigma2fwhm_err"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.sigma2fwhm_err">[docs]</a><span class="k">def</span> <span class="nf">sigma2fwhm_err</span><span class="p">(</span><span class="n">dsigma</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts the error on the sigma parameter of a Gaussian distribution</span>
+<span class="sd">    Converts the error on the sigma parameter of a Gaussian distribution \</span>
 <span class="sd">    to the error on the FWHM.</span>
+<span class="sd">    </span>
+<span class="sd">    :param dsigma: Error on sigma of the Gaussian distribution.</span>
+<span class="sd">    :type sigma: float</span>
+<span class="sd">    :returns: The error on the FWHM of a Gaussian with a standard deviation :math:`\\sigma`.</span>
+<span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">return</span> <span class="n">dsigma</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="stack_irregular"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.stack_irregular">[docs]</a><span class="k">def</span> <span class="nf">stack_irregular</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
@@ -1512,6 +1483,32 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">vgrid</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">tgrid</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">ngrid</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 </div>
+<div class="viewcode-block" id="temp2tau"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.temp2tau">[docs]</a><span class="k">def</span> <span class="nf">temp2tau</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">wy</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a temperature to optical depth. It will fit the continuum \</span>
+<span class="sd">    using model and then subtract it and divide by it.</span>
+<span class="sd">    </span>
+<span class="sd">    :param x: x values.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param y: y values to be converted into optical depths.</span>
+<span class="sd">    :type y: array</span>
+<span class="sd">    :param model: Model to fit to the continuum.</span>
+<span class="sd">    :type model: callable</span>
+<span class="sd">    :param p0: Starting values for the model to be fit to the continuum.</span>
+<span class="sd">    :type p0: </span>
+<span class="sd">    :param wy: Weights for the y values. (Optional)</span>
+<span class="sd">    :type wy: array</span>
+<span class="sd">    :param mask: Mask to apply to the `x` and `y` values.</span>
+<span class="sd">    :type mask: array</span>
+<span class="sd">    :returns: y/model - 1.</span>
+<span class="sd">    :rtype: array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+        
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">fit_model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">p0</span><span class="p">,</span> <span class="n">wy</span><span class="o">=</span><span class="n">wy</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">mask</span><span class="p">)</span>
+    <span class="n">tau</span> <span class="o">=</span> <span class="n">y</span><span class="o">/</span><span class="n">fit</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span>
+    
+    <span class="k">return</span> <span class="n">tau</span>
+</div>
 <div class="viewcode-block" id="tryint"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.tryint">[docs]</a><span class="k">def</span> <span class="nf">tryint</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns True if `str` is an integer.</span>
@@ -1623,6 +1620,35 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.5346</span><span class="p">,</span> <span class="n">dL</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="mf">0.2166</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dL</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="voigt_fwhm_err"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.voigt_fwhm_err">[docs]</a><span class="k">def</span> <span class="nf">voigt_fwhm_err</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">dL</span><span class="p">,</span> <span class="n">ddD</span><span class="p">,</span> <span class="n">ddL</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the error in the FWHM of a Voigt profile. \</span>
+<span class="sd">    http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</span>
+<span class="sd">    </span>
+<span class="sd">    :param dD: FWHM of the Gaussian core.</span>
+<span class="sd">    :type dD: array</span>
+<span class="sd">    :param dL: FWHM of the Lorentz wings.</span>
+<span class="sd">    :type dL: array</span>
+<span class="sd">    :param ddD: Error on the FWHM of the Gaussian.</span>
+<span class="sd">    :type ddD: array</span>
+<span class="sd">    :param ddL: Error on the FWHM of the Lorentzian.</span>
+<span class="sd">    :type ddL: array</span>
+<span class="sd">    :returns: The FWHM of a Voigt profile.</span>
+<span class="sd">    :rtype: array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">f</span> <span class="o">=</span> <span class="mf">0.02</span><span class="o">/</span><span class="mf">100.</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">0.5346</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="mf">0.2166</span>
+    
+    <span class="n">dT1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dL</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dL</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">ddL</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">dT2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">ddD</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dL</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">dT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dT1</span> <span class="o">+</span> <span class="n">dT2</span><span class="p">)</span>
+    
+    <span class="n">dT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dT</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">f</span><span class="o">*</span><span class="n">line_width</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">dL</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+    
+    <span class="k">return</span> <span class="n">dT</span>
 </div>
 <div class="viewcode-block" id="voigt_peak"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.voigt_peak">[docs]</a><span class="k">def</span> <span class="nf">voigt_peak</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">alphaD</span><span class="p">,</span> <span class="n">alphaL</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

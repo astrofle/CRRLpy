@@ -407,7 +407,7 @@ Returns: tb/model - 1</p>
 
 <dl class="function">
 <dt id="crrlpy.crrls.fit_model">
-<code class="descclassname">crrlpy.crrls.</code><code class="descname">fit_model</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>model</em>, <em>p0</em>, <em>wy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">fit_model</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>model</em>, <em>p0</em>, <em>wy=None</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fits a model to the data defined by <cite>x</cite> and <cite>y</cite>.
 It uses <cite>p0</cite> as starting values.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -420,6 +420,7 @@ It uses <cite>p0</cite> as starting values.</p>
 <li><strong>model</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#callable" title="(in Python v2.7)"><em>callable</em></a>) &#8211; Model to be fit.</li>
 <li><strong>p0</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary with the starting values for the fit.</li>
 <li><strong>wy</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Weights of the ordinate values. (Optional)</li>
+<li><strong>mask</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Mask to apply to the <cite>x</cite> and <cite>y</cite> values. (Optional)</li>
 </ul>
 </td>
 </tr>
@@ -717,14 +718,6 @@ Uses the radio definition of velocity.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="crrlpy.crrls.line_width_err">
-<code class="descclassname">crrlpy.crrls.</code><code class="descname">line_width_err</code><span class="sig-paren">(</span><em>dD</em>, <em>dL</em>, <em>ddD</em>, <em>ddL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#line_width_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.line_width_err" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the error in the FWHM of
-a Voigt profile.
-<a class="reference external" href="http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile">http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</a></p>
-</dd></dl>
-
-<dl class="function">
 <dt id="crrlpy.crrls.linear">
 <code class="descclassname">crrlpy.crrls.</code><code class="descname">linear</code><span class="sig-paren">(</span><em>x</em>, <em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear model.</p>
@@ -979,14 +972,6 @@ Salgado et al. (2015)</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="crrlpy.crrls.remove_baseline">
-<code class="descclassname">crrlpy.crrls.</code><code class="descname">remove_baseline</code><span class="sig-paren">(</span><em>freq</em>, <em>tb</em>, <em>model</em>, <em>p0</em>, <em>mask</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#remove_baseline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.remove_baseline" title="Permalink to this definition">¶</a></dt>
-<dd><p>Divide tb by given a model
-and starting parameters p0.
-Returns: tb/model - 1</p>
-</dd></dl>
-
-<dl class="function">
 <dt id="crrlpy.crrls.sigma2fwhm">
 <code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2fwhm</code><span class="sig-paren">(</span><em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2fwhm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts the <span class="math">\(\sigma\)</span> parameter of a Gaussian distribution to its FWHM.</p>
@@ -1007,8 +992,19 @@ Returns: tb/model - 1</p>
 <dl class="function">
 <dt id="crrlpy.crrls.sigma2fwhm_err">
 <code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2fwhm_err</code><span class="sig-paren">(</span><em>dsigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2fwhm_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2fwhm_err" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts the error on the sigma parameter of a Gaussian distribution
-to the error on the FWHM.</p>
+<dd><p>Converts the error on the sigma parameter of a Gaussian distribution     to the error on the FWHM.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dsigma</strong> &#8211; Error on sigma of the Gaussian distribution.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The error on the FWHM of a Gaussian with a standard deviation <span class="math">\(\sigma\)</span>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -1024,6 +1020,34 @@ then convolving with a window to reduce
 the noise.
 Available window functions:
 Gaussian, Savitzky-Golay and Wiener.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.temp2tau">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">temp2tau</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>model</em>, <em>p0</em>, <em>wy=None</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#temp2tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.temp2tau" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a temperature to optical depth. It will fit the continuum     using model and then subtract it and divide by it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; x values.</li>
+<li><strong>y</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; y values to be converted into optical depths.</li>
+<li><strong>model</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#callable" title="(in Python v2.7)"><em>callable</em></a>) &#8211; Model to fit to the continuum.</li>
+<li><strong>p0</strong> &#8211; Starting values for the model to be fit to the continuum.</li>
+<li><strong>wy</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Weights for the y values. (Optional)</li>
+<li><strong>mask</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Mask to apply to the <cite>x</cite> and <cite>y</cite> values.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">y/model - 1.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -1120,6 +1144,32 @@ Uses the radio definition, <span class="math">\(\nu=f_{0}(1-v/c)\)</span>.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>dD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Gaussian core.</li>
 <li><strong>dL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Lorentz wings.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The FWHM of a Voigt profile.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_fwhm_err">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_fwhm_err</code><span class="sig-paren">(</span><em>dD</em>, <em>dL</em>, <em>ddD</em>, <em>ddL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_fwhm_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_fwhm_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the error in the FWHM of a Voigt profile.     <a class="reference external" href="http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile">http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Gaussian core.</li>
+<li><strong>dL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Lorentz wings.</li>
+<li><strong>ddD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Error on the FWHM of the Gaussian.</li>
+<li><strong>ddL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Error on the FWHM of the Lorentzian.</li>
 </ul>
 </td>
 </tr>
