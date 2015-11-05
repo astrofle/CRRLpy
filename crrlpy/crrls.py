@@ -397,7 +397,7 @@ def fit_continuum(x, y, degree, p0):
     
     return fit
 
-def fit_model(x, y, model, p0, wy=None):
+def fit_model(x, y, model, p0, wy=None, mask=None):
     """
     Fits a model to the data defined by `x` and `y`.
     It uses `p0` as starting values.
@@ -412,6 +412,8 @@ def fit_model(x, y, model, p0, wy=None):
     :type p0: dict
     :param wy: Weights of the ordinate values. (Optional)
     :type wy: array
+    :param mask: Mask to apply to the `x` and `y` values. (Optional)
+    :type mask: array
     :returns: An object containing the results of the fit.
     :rtype: lmfit.model.ModelResult_
     
@@ -427,12 +429,16 @@ def fit_model(x, y, model, p0, wy=None):
     else:
         for param in params:
             params[param].set(value=p0[param])
-            
-    if wtb:
-        fit = mod.fit(tb, x=freq, params=params, weight=wtb)
-    else:
-        fit = mod.fit(tb, x=freq, params=params)
-
+    
+    if mask:
+        mx = x[~mask]
+        my = y[~mask]
+    
+    if not wy:
+        wy = np.ones(len(mx))
+        
+    fit = mod.fit(my, x=mx, params=params, weights=wy)
+    
     return fit
 
 def freq2vel(f0, f):
@@ -715,25 +721,6 @@ def linear(x, a, b):
     """
     
     return a*x + b
-
-def line_width_err(dD, dL, ddD, ddL):
-    """
-    Computes the error in the FWHM of
-    a Voigt profile.
-    http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile
-    """
-    
-    f = 0.02/100.
-    a = 0.5346
-    b = 0.2166
-    
-    dT1 = np.power(a + np.multiply(np.multiply(b, dL)/np.sqrt(b*np.power(dL, 2) + np.power(dD, 2)), ddL), 2)
-    dT2 = np.power(np.multiply(dD, ddD)/np.sqrt(b*np.power(dL, 2) + np.power(dD, 2)), 2)
-    dT = np.sqrt(dT1 + dT2)
-    
-    dT = np.sqrt(np.power(dT, 2) + np.power(f*line_width(dD, dL), 2))
-    
-    return dT
 
 def load_model(prop, specie, temp, dens, other=None):
     """
@@ -1251,28 +1238,6 @@ def radiation_broad_salgado_general(n, W, Tr, nu0, alpha):
     
     return W*cte*Tr*np.power(n, -3*alpha - 2.)*(1 + np.power(2., dnexp) + np.power(3., dnexp))
 
-def remove_baseline(freq, tb, model, p0, mask):
-    """
-    Divide tb by given a model
-    and starting parameters p0.
-    Returns: tb/model - 1
-    """
-    
-    # Divide by linear baseline
-    mod = Model(model)
-    params = mod.make_params()
-    if len(p0) != len(params):
-        print "Insuficient starting parameter values."
-        return 0
-    else:
-        for param in params:
-            params[param].set(value=p0[param])
-
-    fit = mod.fit(tb[~mask], x=freq[~mask], params=params)
-    tbcsub = tb/fit.eval(x=freq) - 1
-    
-    return tbcsub
-
 def sigma2fwhm(sigma):
     """
     Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.
@@ -1287,9 +1252,15 @@ def sigma2fwhm(sigma):
 
 def sigma2fwhm_err(dsigma):
     """
-    Converts the error on the sigma parameter of a Gaussian distribution
+    Converts the error on the sigma parameter of a Gaussian distribution \
     to the error on the FWHM.
+    
+    :param dsigma: Error on sigma of the Gaussian distribution.
+    :type sigma: float
+    :returns: The error on the FWHM of a Gaussian with a standard deviation :math:`\\sigma`.
+    :rtype: float
     """
+    
     return dsigma*2*np.sqrt(2*np.log(2))
 
 def stack_irregular(lines, window='', **kargs):
@@ -1462,6 +1433,32 @@ def stack_interpol(spectra, vmin, vmax, dv, show=True, rmsvec=False):
     else:
         return vgrid[1:-1], tgrid[1:-1], ngrid[1:-1]
 
+def temp2tau(x, y, model, p0, wy=None, mask=None):
+    """
+    Converts a temperature to optical depth. It will fit the continuum \
+    using model and then subtract it and divide by it.
+    
+    :param x: x values.
+    :type x: array
+    :param y: y values to be converted into optical depths.
+    :type y: array
+    :param model: Model to fit to the continuum.
+    :type model: callable
+    :param p0: Starting values for the model to be fit to the continuum.
+    :type p0: 
+    :param wy: Weights for the y values. (Optional)
+    :type wy: array
+    :param mask: Mask to apply to the `x` and `y` values.
+    :type mask: array
+    :returns: y/model - 1.
+    :rtype: array
+    """
+        
+    fit = fit_model(x, y, model, p0, wy=wy, mask=mask)
+    tau = y/fit.eval(x=x) - 1.
+    
+    return tau
+
 def tryint(str):
     """
     Returns True if `str` is an integer.
@@ -1573,6 +1570,35 @@ def voigt_fwhm(dD, dL):
     """
     
     return np.multiply(0.5346, dL) + np.sqrt(np.multiply(0.2166, np.power(dL, 2)) + np.power(dD, 2))
+
+def voigt_fwhm_err(dD, dL, ddD, ddL):
+    """
+    Computes the error in the FWHM of a Voigt profile. \
+    http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile
+    
+    :param dD: FWHM of the Gaussian core.
+    :type dD: array
+    :param dL: FWHM of the Lorentz wings.
+    :type dL: array
+    :param ddD: Error on the FWHM of the Gaussian.
+    :type ddD: array
+    :param ddL: Error on the FWHM of the Lorentzian.
+    :type ddL: array
+    :returns: The FWHM of a Voigt profile.
+    :rtype: array
+    """
+    
+    f = 0.02/100.
+    a = 0.5346
+    b = 0.2166
+    
+    dT1 = np.power(a + np.multiply(np.multiply(b, dL)/np.sqrt(b*np.power(dL, 2) + np.power(dD, 2)), ddL), 2)
+    dT2 = np.power(np.multiply(dD, ddD)/np.sqrt(b*np.power(dL, 2) + np.power(dD, 2)), 2)
+    dT = np.sqrt(dT1 + dT2)
+    
+    dT = np.sqrt(np.power(dT, 2) + np.power(f*line_width(dD, dL), 2))
+    
+    return dT
 
 def voigt_peak(A, alphaD, alphaL):
     """
