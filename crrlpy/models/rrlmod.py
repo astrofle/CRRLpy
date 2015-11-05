@@ -64,20 +64,20 @@ def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
 
 def I_Bnu(specie, Z, n, Inu_funct, *args):
     """
-    Calculates the product :math:`B_{n+\\Delta n,n}I_{\\nu}` to 
+    Calculates the product :math:`B_{n+\\Delta n,n}I_{\\nu}` to \
     compute the line broadening due to a radiation field :math:`I_{\\nu}`.
     
     :param specie: Atomic specie to calculate for.
-    :type specie: str
-    :param n: Principal quantum number at which to evaluate :math:`\\dfrac{2}{\\pi}\\sum\limits_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.
+    :type specie: string
+    :param n: Principal quantum number at which to evaluate :math:`\\dfrac{2}{\\pi}\\sum\\limits_{\\Delta n}B_{n+\\Delta n,n}I_{n+\\Delta n,n}(\\nu)`.
     :type n: int or list
     :param Inu_funct: Function to call and evaluate :math:`I_{n+\\Delta n,n}(\\nu)`. It's first argument must be the frequency.
     :type Inu_funct: function
-    :param *args: Arguments to `Inu_funct`. The frequency must be left out. \
+    :param args: Arguments to `Inu_funct`. The frequency must be left out. \
     The frequency will be passed internally in units of MHz. Use the same \
     unit when required. `Inu_funct` must take the frequency as first parameter.
-    :returns: 
-    :rtype: array, Hz
+    :returns: (Hz)
+    :rtype: array
     
     :Example:
     
@@ -201,14 +201,22 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     The emission measure is unity. The output units are Hz.
     
     :param temp: Electron temperature. Must be a string of the form '8d1'.
-    :param dens: Electron density. Float
+    :type temp: string
+    :param dens: Electron density.
+    :type dens: float
     :param line: Line to load models for.
-    :param n_min: Minimum n value to include in the output. Int Default 1
-    :param n_max: Maximum n value to include in the output. Int Default 1500, Maximum allowed value 9900
+    :type line: string
+    :param n_min: Minimum n value to include in the output. Default 1
+    :type n_min: int
+    :param n_max: Maximum n value to include in the output. Default 1500, Maximum allowed value 9900
+    :type n_max: int
     :param other: String to search for different radiation fields and others.
-    :param verbose: Verbose output? Bool
-    :param value: ['itau'|'bbnMdn'|none] Value to output. itau will output the integrated optical depth.
+    :type other: string
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :param value: ['itau'|'bbnMdn'|'None'] Value to output. itau will output the integrated optical depth. \
     bbnMdn will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` times the oscillator strenght :math:`M(\\Delta n)`.
+    :type value: string
     :returns: The principal quantum number and its asociated value.
     """
 
@@ -328,7 +336,7 @@ def kappa_cont_base(nu, Te, ne, nion, Z):
 
 def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     """
-    Computes the line absorption coefficient for CRRLs between levels :mat:`n_{i}` and :math:`n_{f}`, :math:`n_{i}>n_{f}`.
+    Computes the line absorption coefficient for CRRLs between levels :math:`n_{i}` and :math:`n_{f}`, :math:`n_{i}>n_{f}`.
     This can only go up to :math:`n_{\\rm{max}}` 1500 because of the tables used for the Einstein Anm coefficients.
     
     :param Te: Electron temperature of the gas. (K)
@@ -855,6 +863,18 @@ def plaw(x, x0, y0, alpha):
 
 def str2val(str):
     """
+    Converts a string representing a number to a float.
+    The string must follow the IDL convention for floats.
+    
+    :param str: String to convert.
+    :type str: string
+    :returns: The equivalent number.
+    :rtype: float
+    
+    :Example:
+    
+    >>> str2val('2d2')
+    200
     """
     
     try:
@@ -867,8 +887,17 @@ def str2val(str):
 
 def val2str(val):
     """
-    Converts a float to the str format required for loading the
-    CRRL models. E.g., a temperature of 70 K is 7d1.
+    Converts a float to the string format required for loading the CRRL models.
+    
+    :param val: Value to convert to a string.
+    :type val: float
+    :returns: The value of val represented as a string in IDL double format.
+    :rtype: string
+    
+    :Example:
+    
+    >>> val2str(200)
+    '2d2'
     """
     
     d = np.floor(np.log10(val))

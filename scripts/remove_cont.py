@@ -14,12 +14,6 @@ from crrlpy import crrls
 import pylab as plt
 import numpy as np
 
-def linear(x, a, b):
-    """
-    Linear model.
-    """
-    return a*x + b
-
 def nan_mask(freq, tb):
     """
     Find a mask for NaN values
@@ -30,17 +24,22 @@ def nan_mask(freq, tb):
     
     return mask
 
-def fit_baseline(freq, tb, model, p0):
+def fit_baseline(freq, tb, model, p0, wtb=None):
     """
     """
+    
     mod = Model(model)
     params = mod.make_params()
+    
     if len(p0) != len(params):
         print "Insuficient starting parameter values."
         return 0
     else:
         for param in params:
             params[param].set(value=p0[param])
+            
+    if wtb:
+        mod.fit(tb, x=freq, params=params, weight=wtb)
 
     return mod.fit(tb, x=freq, params=params)
     
@@ -51,6 +50,7 @@ def remove_baseline(freq, tb, model, p0):
     and starting parameters p0.
     Returns: tb/model - 1
     """
+    
     # Divide by linear baseline
     mod = Model(model)
     params = mod.make_params()
@@ -100,8 +100,7 @@ def main(spec_in, spec_out, edge, xcol, ycol, transitions, z, dv, plot, plot_out
     p0 = {'a':a, 'b':b}
     
     # Remove the continuum
-    #tbcsub = remove_baseline(freq[~mask], tb[~mask], linear, p0)
-    baseline = fit_baseline(x_lf, y_lf, linear, p0)
+    baseline = crrls.fit_model(x_lf, y_lf, crrls.linear, p0)
     tbcsub = tb/baseline.eval(x=freq) - 1
     
     if plot:

@@ -79,7 +79,7 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
             
             for j,f in enumerate(f_l):
                 itau = a_itau[np.where(n_itau==n_l[j])[0]][0]/1e6
-                line = crrls.Voigt(freq, dD_f[j]/2., dL[j]/2., f, itau*EM)
+                line = crrls.voigt(freq, dD_f[j]/2., dL[j]/2., f, itau*EM)
                 if verbose:
                     print "Line properties:"
                     print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \

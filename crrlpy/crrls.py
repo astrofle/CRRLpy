@@ -12,7 +12,6 @@ if not havedisplay:
     mpl.use('Agg')
 import pylab as plt
 import numpy as np
-import scipy.integrate as sint
 
 from astropy.constants import k_B
 from lmfit import Model
@@ -20,8 +19,6 @@ from lmfit.models import VoigtModel, ConstantModel, GaussianModel, PolynomialMod
 from scipy.special import wofz
 from scipy import interpolate
 from scipy.constants import c
-from scipy.signal import wiener#, savgol_filter
-from scipy.ndimage.filters import gaussian_filter
 from frec_calc import set_dn, make_line_list
 
 def alphanum_key(s):
@@ -147,13 +144,20 @@ def best_match_value(value, array):
     
     return array[np.where(subarr == subarrmin)[0][0]]
     
-def blank_lines(freq, tau, reffreqs, v0, dv0):
+def blank_lines(freq, tau, reffreqs, v0, dv):
     """
     Blanks the lines in a spectra.
     
     :param freq: Frequency axis of the spectra.
-    :type freq: array
-    :
+    :type freq: array, MHz
+    :param tau: Optical depth axis of the spectra.
+    :type tau: array
+    :param reffreqs: List with the reference frequency of the lines. Should be the rest frequency.
+    :type reffreqs: list
+    :param v0: Velocity shift to apply to the lines defined by `reffreq`. (km/s)
+    :type v0: float
+    :param dv: Velocity range to blank around the lines. (km/s)
+    :type dv: float
     """
     
     try:
@@ -171,6 +175,16 @@ def blank_lines(freq, tau, reffreqs, v0, dv0):
 
 def blank_lines2(freq, tau, reffreqs, dv):
     """
+    Blanks the lines in a spectra. 
+    
+    :param freq: Frequency axis of the spectra. (MHz)
+    :type freq: array
+    :param tau: Optical depth axis of the spectra.
+    :type tau: array
+    :param reffreqs: List with the reference frequency of the lines. Should be the rest frequency.
+    :type reffreqs: list
+    :param dv: Velocity range to blank around the lines. (km/s)
+    :type dv: float
     """
     try:
         for ref in reffreqs:
@@ -297,7 +311,17 @@ def dv_minus_doppler2(dV, ddV, dD, ddD):
 
 def f2n(f, line, n_max=1500):
     """
-    Converts a given frequency to a principal quantum number n for a given line.
+    Converts a given frequency to a principal quantum number :math:`n` for a given line.
+    
+    :param f: Frequency to convert. (MHz)
+    :type f: array
+    :param line: The equivalent :math:`n` will be referenced to this line.
+    :type line: string
+    :param n_max: Maximum n number to include in the search. (optional, Default 1)
+    :type n_max: int
+    :returns: Corresponding :math:`n` for a given frequency and line. \
+    If the frequency is not an exact match, then it will return an empty array.
+    :rtype: array
     """
     
     line, nn, freq = make_line_list(line, n_max=n_max)
@@ -305,62 +329,47 @@ def f2n(f, line, n_max=1500):
     
     return nn[fii]
 
-def find_lines_in_band(freq, species='CI', transition='alpha', z=0, verbose=False):
+def find_lines_sb(freq, line, z=0, verbose=False):
     """
-    Finds if there are any lines corresponding to transitions of the given species in the frequency range. \
-    The line transition frequencies are corrected for redshift.
+    Finds if there are any lines of a given type in the frequency range.
+    The line frequencies are corrected for redshift.
     
-    :param freq:
-    :param species:
+    :param freq: Frequency axis in which to search for lines.
+    :type freq: array
+    :param line: Line type to search for.
+    :type line: string
     :param z: Redshift to apply to the rest frequencies.
+    :type z: float
     :param verbose: Verbose output?
     :type verbose: bool
-    :returns:
-    :rtype: List of principal quantum numbers and list of reference frequencies.
+    :returns: Lists with the princpipal quantum number and the reference \
+    frequency of the line. The frequencies are redshift corrected in MHz.
+    :rtype: array.
+    
+    :Example:
+    
+    >>> freq = [10, 11]
+    >>> ns, rf = crrls.find_lines_sb(freq, 'CIalpha')
+    >>> ns
+    array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,
+        852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,
+        861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])
     """
     
-    # Load the reference frequencies
-    qn, restfreq = load_ref(species, transition)
+    # Load the reference frequencies.
+    qn, restfreq = load_ref2(line)
     
-    # Correct rest frequencies for redshift
+    # Correct rest frequencies for redshift.
     reffreq = restfreq/(1.0 + z)
     
-    # Check which lines lie within the subband
+    # Check which lines lie within the sub band.
     mask_ref = (freq[0] < reffreq) & (freq[-1] > reffreq)
     reffreqs = reffreq[mask_ref]
     refqns = qn[mask_ref]
     
     nlin = len(reffreqs)
     if verbose:
-        print "Found {0} {1} lines within the subband.".format(nlin, transition)
-        if nlin > 1:
-            print "Corresponding to n values: {0}--{1}".format(refqns[0], refqns[-1])
-        elif nlin == 1:
-            print "Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0])
-    
-    return refqns, reffreqs
-
-def find_lines_sb(freq, transition, z=0, verbose=False):
-    """
-    Finds if there are any lines corresponding to 
-    transitions of the given species in the frequency range.
-    The line transition frequencies are corrected for redshift.
-    """
-    
-    # Load the reference frequencies
-    qn, restfreq = load_ref2(transition)
-    
-    # Correct rest frequencies for redshift
-    reffreq = restfreq/(1.0 + z)
-    
-    # Check which lines lie within the subband
-    mask_ref = (freq[0] < reffreq) & (freq[-1] > reffreq)
-    reffreqs = reffreq[mask_ref]
-    refqns = qn[mask_ref]
-    
-    nlin = len(reffreqs)
-    if verbose:
-        print "Found {0} {1} lines within the subband.".format(nlin, transition)
+        print "Found {0} {1} lines within the subband.".format(nlin, line)
         if nlin > 1:
             print "Corresponding to n values: {0}--{1}".format(refqns[0], refqns[-1])
         elif nlin == 1:
@@ -388,359 +397,41 @@ def fit_continuum(x, y, degree, p0):
     
     return fit
 
-def fit_line(sb, n, ref, vel, tau, rms, model, v0=None, verbose=True):
-    
-    # Set the model used to fit the line
-    #mod, nparams = set_fit_model(model)
-    
-    # Set up dictionary with fit results
-    params = fit_storage()
-    
-    params['n'] = n
-    params['sb'] = sb
-    params['reffreq'] = ref
-    params['rms'] = rms
-    
-    # Setup initial fit parameters
-    # Peak
-    tmin = tau.min() 
-    peak_indx = np.where(tau == tmin)[0]
-    if len(peak_indx) > 1:
-        peak_indx = peak_indx[0]
-        
-    # Peak velocity
-    if v0:
-        vel0 = v0
-    else:
-        vel0 = vel[peak_indx] 
-    # Line width
-    # Choose the minimum between 2 options for the line width
-    if peak_indx != 0:
-        dv1 = abs(vel[peak_indx] - vel[peak_indx-1])
-    else:
-        dv1 = 10
-    if peak_indx != len(vel) - 1:
-        dv2 = abs(vel[peak_indx] - vel[peak_indx+1])
-    else:
-        dv2 = 10
-    sx0 = min(dv1, dv2)
-    # Use the rms as optical depth offset from 0
-    A0 = np.std(tau, ddof=1)
-    #np.mean([tbl[fit['ch0'][i]:fit['ch0'][i]+10].mean(), tbl[fit['chf'][i]-10:fit['chf'][i]].mean()])
-    
-    npts = len(tau)
-    if verbose:
-        print "p0: ", tmin,vel0,sx0,A0
-        print "# unmasked points to fit: {0}".format(npts)
-        
-    #try:
-    #if npts > nparams:
-    if model == 'gauss':
-        gmod = GaussianModel()
-        cmod = ConstantModel()
-        pars = cmod.guess(tau, x=vel)
-        pars += gmod.make_params(amplitude=tmin, center=vel0, sigma=sx0)
-        pars['center'].set(min=-60, max=-40)
-        pars['amplitude'].set(value=tmin, max=0, min=-0.1)
-        mod = gmod + cmod
-        fit = mod.fit(tau, pars, x=vel)
-    elif model == 'gauss0':
-        mod = GaussianModel()
-        pars = mod.guess(tau, x=vel)
-        pars['center'].set(value=vel0, min=-60, max=-40)
-        pars['amplitude'].set(value=tmin, max=0, min=-0.1)
-        fit = mod.fit(tau, pars, x=vel)
-    elif model == '2gauss':
-        gmod1 = GaussianModel(prefix='g1_')
-        gmod2 = GaussianModel(prefix='g2_')
-        cmod = ConstantModel()
-        pars = cmod.guess(tau, x=vel)
-        pars += gmod1.make_params()
-        pars += gmod2.make_params()
-        mod = gmod1 + gmod2 + cmod
-        pars['g1_center'].set(value=vel0, min=-60, max=-40)
-        pars['g2_center'].set(value= vel0+9.4, min=-60, max=-40, expr='g1_center+9.4')
-        pars['g1_amplitude'].set(value=tmin, max=0)
-        pars['g2_amplitude'].set(value=tmin, max=0)
-        fit = mod.fit(tau, pars, x=vel)
-    elif model == 'voigt0':
-        vmod = VoigtModel()
-        pars = vmod.make_params(amplitude=tmin, center=vel0, sigma=3)
-        mod = vmod
-        pars['gamma'].set(value=3, vary=True, expr='', min=0.0)
-        pars['center'].set(value=vel0, vary=False)
-        pars['amplitude'].set(max=0.0)
-        pars['sigma'].set(value=FWHM2sigma(3), vary=False)
-        fit = mod.fit(tau, pars, x=vel)
-    elif model == 'voigt':
-        vmod = VoigtModel()
-        cmod = ConstantModel()
-        pars = cmod.guess(tau, x=vel)
-        pars += vmod.make_params(amplitude=tmin, center=vel0, sigma=3)
-        mod = vmod + cmod
-        pars['gamma'].set(value=100, vary=True, expr='', min=0.0)
-        #pars['gamma'].set(min=0.001, max=10000)
-        #pars['center'].set(min=-60., max=-35.)
-        pars['center'].set(value=vel0, vary=True)
-        pars['amplitude'].set(max=0.0)
-        pars['sigma'].set(value=FWHM2sigma(3), vary=False)
-        fit = mod.fit(tau, pars, x=vel)
-    elif model == 'voigt2':
-        vmod1 = VoigtModel(prefix='v1_')
-        vmod2 = VoigtModel(prefix='v2_')
-        cmod = ConstantModel()
-        pars = cmod.guess(tau, x=vel)
-        pars += vmod1.make_params()
-        pars += vmod2.make_params()
-        mod = vmod1 + vmod2 + cmod
-        pars['v1_gamma'].set(value=3, vary=True, expr='', min=0.0)
-        pars['v2_gamma'].set(value=3, vary=True, expr='', min=0.0)
-        pars['v1_center'].set(value=vel0, vary=True)
-        pars['v2_center'].set(value=vel0+9.4, expr='v1_center+9.4', vary=False)
-        pars['v1_amplitude'].set(max=0.0, value=tmin)
-        pars['v2_amplitude'].set(max=0.0, value=0.5*tmin)
-        pars['v1_sigma'].set(value=FWHM2sigma(3), vary=False)
-        pars['v2_sigma'].set(value=FWHM2sigma(3), vary=False)
-        fit = mod.fit(tau, pars, x=vel)
-        
-    best_fit = fit.best_fit
-    
-    # Correct LMfit model definitions
-    if model == 'gauss':
-        # Line center
-        params['vp1'] = fit.params['center'].value   # Velocity of the peak
-        params['dvp1'] = fit.params['center'].stderr
-        # Line width
-        params['dv1'] = fit.params['fwhm'].value     # Line width in velocity
-        params['ddv1'] = fit.params['fwhm'].stderr
-        # Peak optical depth
-        params['tau1'] = fit.params['amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['sigma'].value)
-        params['dtau1'] = fit.params['amplitude'].stderr / \
-                            (np.sqrt(2*np.pi) * fit.params['sigma'].value)
-        # Assume Gaussian profile for integrated optical depth
-        params['itau1'] = params['tau1']*params['dv1']*np.sqrt(np.pi/np.log(16)) 
-        ditau1 = np.power(params['itau1']/params['tau1']*params['dtau1'], 2)
-        ditau2 = np.power(params['itau1']/params['dv1']*params['ddv1'], 2)
-        params['ditau1'] = np.sqrt(ditau1 + ditau2)
-    
-    elif model == 'voigt' or model == 'voigt0':
-        # Line center
-        params['vp1'] = fit.params['center'].value   # Velocity of the peak
-        params['dvp1'] = fit.params['center'].stderr
-        # Line width
-        #params['dv1'] = fit.params['fwhm'].value     # Line width in velocity
-        #params['ddv1'] = fit.params['fwhm'].stderr
-        sigma = fit.params['sigma'].value
-        dsigma = fit.params['sigma'].stderr
-        dD = sigma2FWHM(sigma)
-        ddD = sigma2FWHM(dsigma)
-        gamma = fit.params['gamma'].value
-        dgamma = fit.params['gamma'].stderr
-        dL = 2*gamma
-        ddL = 2*dgamma
-        params['dv1'] = line_width(dD, dL)
-        params['ddv1'] = line_width_err(dD, dL, ddD, ddL)
-        
-        # Line amplitude
-        params['ptau'] = min(best_fit)
-        params['tau1'] = fit.params['amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['sigma'].value)
-        params['dtau1'] = fit.params['amplitude'].stderr / \
-                         (np.sqrt(2*np.pi) * fit.params['sigma'].value)
-        # Line area
-        params['itau1'] = voigt_area(params['ptau'], params['dv1'], 
-                                     fit.params['gamma'].value, 
-                                     fit.params['sigma'].value)
-        params['ditau1'] = voigt_area_err(params['itau1'], 
-                                          params['ptau'], 
-                                          params['dtau1'], 
-                                          params['dv1'], 
-                                          params['ddv1'], 
-                                          fit.params['gamma'].value, 
-                                          fit.params['sigma'].value)
-        params['dL'] = fit.params['gamma'].value
-        params['ddL'] = fit.params['gamma'].stderr
-        params['dD'] = fit.params['sigma'].value
-        params['ddD'] = fit.params['sigma'].stderr
-    elif model == 'voigt2':
-        # Line center
-        params['vp1'] = fit.params['v1_center'].value   # Velocity of the peak
-        params['dvp1'] = fit.params['v1_center'].stderr
-        params['vp2'] = fit.params['v2_center'].value   # Velocity of the peak
-        params['dvp2'] = fit.params['v2_center'].stderr
-        # Line width
-        #params['dv1'] = fit.params['fwhm'].value     # Line width in velocity
-        #params['ddv1'] = fit.params['fwhm'].stderr
-        # Line width
-        sigma = fit.params['v1_sigma'].value
-        dsigma = fit.params['v1_sigma'].stderr
-        dD = sigma2FWHM(sigma)
-        ddD = sigma2FWHM(dsigma)
-        gamma = fit.params['v1_gamma'].value
-        dgamma = fit.params['v1_gamma'].stderr
-        dL = 2*gamma
-        ddL = 2*dgamma
-        params['dv1'] = line_width(dD, dL)
-        params['ddv1'] = line_width_err(dD, dL, ddD, ddL)
-        
-        # Line width
-        sigma = fit.params['v2_sigma'].value
-        dsigma = fit.params['v2_sigma'].stderr
-        dD = sigma2FWHM(sigma)
-        ddD = sigma2FWHM(dsigma)
-        gamma = fit.params['v2_gamma'].value
-        dgamma = fit.params['v2_gamma'].stderr
-        dL = 2*gamma
-        ddL = 2*dgamma
-        params['dv2'] = line_width(dD, dL)
-        params['ddv2'] = line_width_err(dD, dL, ddD, ddL)
-        
-        # Line amplitude
-        params['ptau'] = min(best_fit)
-        params['tau1'] = fit.params['v1_amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['v1_sigma'].value)
-        params['dtau1'] = fit.params['v1_amplitude'].stderr / \
-                         (np.sqrt(2*np.pi) * fit.params['v1_sigma'].value)
-        params['tau2'] = fit.params['v2_amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['v2_sigma'].value)
-        params['dtau2'] = fit.params['v2_amplitude'].stderr / \
-                         (np.sqrt(2*np.pi) * fit.params['v2_sigma'].value)
-        # Line area
-        params['itau1'] = voigt_area(params['tau1'], params['dv1'], 
-                                     fit.params['v1_gamma'].value, 
-                                     fit.params['v1_sigma'].value)
-        params['ditau1'] = voigt_area_err(params['itau1'], 
-                                          params['tau1'], 
-                                          params['dtau1'], 
-                                          params['dv1'], 
-                                          params['ddv1'], 
-                                          fit.params['v1_gamma'].value, 
-                                          fit.params['v1_sigma'].value)
-        params['itau2'] = voigt_area(params['tau2'], params['dv2'], 
-                                     fit.params['v2_gamma'].value, 
-                                     fit.params['v2_sigma'].value)
-        params['ditau2'] = voigt_area_err(params['itau2'], 
-                                          params['tau2'], 
-                                          params['dtau2'], 
-                                          params['dv2'], 
-                                          params['ddv2'], 
-                                          fit.params['v2_gamma'].value, 
-                                          fit.params['v2_sigma'].value)
-        params['dL'] = fit.params['v1_gamma'].value
-        params['ddL'] = fit.params['v1_gamma'].stderr
-        params['dD'] = fit.params['v1_sigma'].value
-        params['ddD'] = fit.params['v1_sigma'].stderr
-        params['dL2'] = fit.params['v2_gamma'].value
-        params['ddL2'] = fit.params['v2_gamma'].stderr
-        params['dD2'] = fit.params['v2_sigma'].value
-        params['ddD2'] = fit.params['v2_sigma'].stderr
-        
-    elif model == '2gauss':
-        # Peak optical depth
-        params['tau1'] = fit.params['g1_amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['g1_sigma'].value)
-        params['dtau1'] = fit.params['g1_amplitude'].stderr / \
-                            (np.sqrt(2*np.pi) * fit.params['g1_sigma'].value)
-        params['tau2'] = fit.params['g2_amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['g2_sigma'].value)
-        params['dtau2'] = fit.params['g2_amplitude'].stderr / \
-                            (np.sqrt(2*np.pi) * fit.params['g2_sigma'].value)
-        params['vp1'] = fit.params['g1_center'].value   # Velocity of the peak
-        params['dvp1'] = fit.params['g1_center'].stderr
-        params['dv1'] = fit.params['g1_fwhm'].value     # Line width in velocity
-        params['ddv1'] = fit.params['g1_fwhm'].stderr
-        params['vp2'] = fit.params['g2_center'].value   # Velocity of the peak
-        params['dvp2'] = fit.params['g2_center'].stderr
-        params['dv2'] = fit.params['g2_fwhm'].value     # Line width in velocity
-        params['ddv2'] = fit.params['g2_fwhm'].stderr
-        params['tau1'] = fit.params['g1_amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['g1_sigma'].value)
-        params['dtau1'] = fit.params['g1_amplitude'].stderr / \
-                            (np.sqrt(2*np.pi) * fit.params['g1_sigma'].value)
-        params['tau2'] = fit.params['g2_amplitude'].value / \
-                        (np.sqrt(2*np.pi) * fit.params['g2_sigma'].value)
-        params['dtau2'] = fit.params['g2_amplitude'].stderr / \
-                            (np.sqrt(2*np.pi) * fit.params['g2_sigma'].value)
-        params['itau1'] = params['tau1']*params['dv1']*np.sqrt(np.pi/np.log(16)) 
-        ditau1 = np.power(params['itau1']/params['tau1']*params['dtau1'], 2)
-        ditau2 = np.power(params['itau1']/params['dv1']*params['ddv1'], 2)
-        params['ditau1'] = np.sqrt(ditau1 + ditau2)
-        params['itau2'] = params['tau2']*params['dv2']*np.sqrt(np.pi/np.log(16)) 
-        ditau1 = np.power(params['itau2']/params['tau2']*params['dtau2'], 2)
-        ditau2 = np.power(params['itau2']/params['dv2']*params['ddv2'], 2)
-        params['ditau2'] = np.sqrt(ditau1 + ditau2)
-    #print model
-    if '0' not in model:
-        params['tau0'] = fit.params['c'].value      # Spectrum constant offset from 0
-        params['dtau0'] = fit.params['c'].stderr
-    
-    else:
-        params['tau0'] = 0
-        params['dtau0'] = rms
-    
-        
-    # Godness of fit
-    params['chi2'] = fit.chisqr
-    params['chiv2'] = fit.redchi
-    params['res'] = np.mean(fit.residual)
-        
-    
-    if verbose:
-        print "Velocity fit results"
-        print fit.fit_report()
-        print ("Integrated optical depth:"),
-        print ("{0} +/- {1} km/s".format(params['itau1'],
-                                            params['ditau1']))
-    
-    return best_fit, params, fit.residual, fit
-
-def fit_storage():
+def fit_model(x, y, model, p0, wy=None):
     """
-    Returns a dictionary with the 
-    entries for the parameters to 
-    be fitted.
-    """
-    # Fit results
-    #if model == gaussian
-    blankval = -99
-    fit = collections.OrderedDict((('sb',blankval),       #0 Sub Band number
-                                   ('n',blankval),        #1 Principal quantum number
-                                   ('reffreq',blankval),  #2 Reference frequency
-                                   ('tau1',blankval),     #3 Peak optical depth
-                                   ('vp1',blankval),      #4 Velocity of peak optical depth
-                                   ('dv1',blankval),      #5 Line width
-                                   ('itau1',blankval),    #6 Integrated optical depth
-                                   ('tau0',blankval),     #7 Optical depth offset
-                                   ('dtau1',blankval),    #8 Peak optical depth error
-                                   ('dvp1',blankval),     #9 Velocity of peak optical depth error
-                                   ('ddv1',blankval),     #10 Line width error
-                                   ('ditau1',blankval),   #11 Integrated optical depth error
-                                   ('dtau0',blankval),    #12 Optical depth offset error
-                                   ('dD',blankval),       #13
-                                   ('ddD',blankval),      #14
-                                   ('dL',blankval),       #15
-                                   ('ddL',blankval),      #16
-                                   ('chiv2',blankval),    #17 Reduced Chi squared
-                                   ('chi2',blankval),     #18 Chi squared
-                                   ('res',blankval),      #19 Fit residuals
-                                   ('rms',blankval),      #20 Continuum rms
-                                   ('pres',blankval),     #21 Peak residual
-                                   ('flag',blankval),     #22 Fit result flag
-                                   ('tau2',blankval),     #23
-                                   ('vp2',blankval),      #24
-                                   ('dv2',blankval),      #25
-                                   ('itau2',blankval),    #26
-                                   ('dtau2',blankval),    #27
-                                   ('dvp2',blankval),     #28
-                                   ('ddv2',blankval),     #29
-                                   ('ditau2',blankval),   #30
-                                   ('dD2',blankval),      #31
-                                   ('ddD2',blankval),     #32
-                                   ('dL2',blankval),      #33
-                                   ('ddL2',blankval),     #34
-                                   ('ptau',blankval)))    #35
+    Fits a model to the data defined by `x` and `y`.
+    It uses `p0` as starting values.
     
+    :param x: Abscissa values of the data to be fit.
+    :type x: array
+    :param y: Ordinate values of the data to be fit.
+    :type y: array
+    :param model: Model to be fit.
+    :type model: callable
+    :param p0: Dictionary with the starting values for the fit.
+    :type p0: dict
+    :param wy: Weights of the ordinate values. (Optional)
+    :type wy: array
+    :returns: An object containing the results of the fit.
+    :rtype: lmfit.model.ModelResult_
+    
+    .. _lmfit.model.ModelResult: http://lmfit.github.io/lmfit-py/model.html?highlight=modelresult#model.ModelResult
+    """
+    
+    mod = Model(model)
+    params = mod.make_params()
+    
+    if len(p0) != len(params):
+        print "Insuficient starting parameter values."
+        return 0
+    else:
+        for param in params:
+            params[param].set(value=p0[param])
+            
+    if wtb:
+        fit = mod.fit(tb, x=freq, params=params, weight=wtb)
+    else:
+        fit = mod.fit(tb, x=freq, params=params)
 
     return fit
 
@@ -761,29 +452,57 @@ def freq2vel(f0, f):
 
 def fwhm2sigma(fwhm):
     """
-    Converts a FWHM to the standard deviation of a Gaussian distribution.
+    Converts a FWHM to the standard deviation, :math:`\\sigma` of a Gaussian distribution.
+    
+    .. math:
+       
+       FWHM=2\\sqrt{2\\ln2}\\sigma
+       
+    :param fwhm: FWHM of the Gaussian.
+    :type fwhm: array
+    :returns: Equivalent standard deviation of a Gausian with a Full Width at Half Maximum `fwhm`.
+    :rtype: array
+    
+    :Example:
+    
+    >>> 1/fwhm2sigma(1)
+    2.3548200450309493
     """
     
     return fwhm/(2.*np.sqrt(2.*np.log(2.)))
 
-def gauss_filter(y, **kwargs):
-    """
-    Applies a Gaussian filter to y.
-    """
-    
-    gauss = gaussian_filter(y, sigma=kwargs['sigma'], order=kwargs['order'])
-    
-    return gauss
-
 def gauss_area(amplitude, sigma):
     """
     Returns the area under a Gaussian of a given amplitude and sigma.
+    
+    .. math:
+    
+        Area=\\sqrt(2\\pi)A\\sigma
+        
+    :param amplitude: Amplitude of the Gaussian, :math:`A`.
+    :type A: array
+    :param sigma: Standard deviation fo the Gaussian, :math:`\\sigma`.
+    :type sigma: array
+    :returns: The area under a Gaussian of a given amplitude and standard deviation.
+    :rtype: array
     """
     
     return amplitude*sigma*np.sqrt(2*np.pi)
 
 def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     """
+    Returns the error on the area of a Gaussian of a given `amplitude` and `sigma` \
+    with their corresponding errors. It assumes no correlation between `amplitude` and 
+    `sigma`.
+    
+    :param amplitude: Amplitude of the Gaussian.
+    :type amplitude: array
+    :param amplitude_err: Error on the amplitude.
+    :type amplitude_err: array
+    :param sigma: Standard deviation of the Gaussian.
+    :param sigma_err: Error on sigma.
+    :returns: The error on the area.
+    :rtype: array
     """
     
     err1 = np.power(amplitude_err*sigma*np.sqrt(2*np.pi), 2)
@@ -793,21 +512,25 @@ def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
 
 def gaussian(x, sigma, center, amplitude):
     """
-    1-d Gaussian with no amplitude offset.
+    Gaussian function in one dimension.
+    
+    :param x: x values for which to evaluate the Gaussian.
+    :type x: array
+    :param sigma: Standard deviation of the Gaussian.
+    :type sigma: float
+    :param center: Center of the Gaussian.
+    :type center: float
+    :param amplitude: Amplitude of the Gaussian.
+    :type amplitude: float
+    :returns: Gaussian function of the given amplitude and standard deviation evalueated at x.
+    :rtype: array
     """
     
     return amplitude*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
 
-def gaussian_off(x, amplitude, center, sigma, c):
-    """
-    1-d Gaussian with a constant amplitude offset.
-    """
-    
-    return amplitude*np.exp(-np.power((x - center), 2.)/(2.*sigma**2.)) + c
-
 def get_axis(header, axis):
     """
-    Constructs a cube axis
+    Constructs a cube axis.
     
     :param header: Fits cube header.
     :type header: pyfits header
@@ -835,7 +558,32 @@ def get_axis(header, axis):
     
     return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
 
-def get_line_mask(freq, reffreq, v0, dv0):
+def get_rchi2(x_obs, x_mod, y_obs, y_mod, dy_obs, dof):
+    """
+    Computes the reduced :math:`\\chi` squared, :math:`\\chi_{\\nu}^{2}=\\chi^{2}/dof`.
+    
+    :param x_obs: Abscissa values of the observations.
+    :type x_obs: array
+    :param x_mod: Abscissa values of the model.
+    :type x_mod: array
+    :param y_obs: Ordinate values of the observations.
+    :type y_obs: array
+    :param y_mod: Ordinate values of the model.
+    :type y_mod: array
+    :param dy_obs: Error on the ordinate values of the observations.
+    :type dy_obs: array
+    :param dof: Degrees of freedom.
+    :type dof: float
+    """
+        
+    # Find the equivalent model points
+    n_indx_mod = []
+    for i,n in enumerate(x_obs):
+        n_indx_mod.append(np.where(x_mod == n)[0][0])
+        
+    return np.sum(np.power(y_obs - y_mod[n_indx_mod], 2.)/np.power(dy_obs, 2))/(len(x_obs) - dof)
+
+def get_line_mask(freq, reffreq, v0, dv):
     """
     Return a mask with ranges where a line is expected in the given frequency range for \
     a line with a given reference frequency at expected velocity v0 and line width dv0.
@@ -846,8 +594,8 @@ def get_line_mask(freq, reffreq, v0, dv0):
     :type reffreq: float
     :param v0: Velocity of the line.
     :type v0: float, km/s
-    :param dv0: Velocity range to mask.
-    :type dv0: float, km/s
+    :param dv: Velocity range to mask.
+    :type dv: float, km/s
     :returns: Mask centered at the line center and width `dv0` referenced to the input `freq`.
     """
     
@@ -877,7 +625,13 @@ def get_line_mask2(freq, reffreq, dv):
     Return a mask with ranges where a line is expected in the given frequency range for \
     a line with a given reference frequency and line width dv.
     
-    
+    :param freq: Frequency axis where the line is located.
+    :type freq: numpy array or list
+    :param reffreq: Reference frequency for the line.
+    :type reffreq: float
+    :param dv: Velocity range to mask.
+    :type dv: float, km/s
+    :returns: Mask centered at the line center and width `dv0` referenced to the input `freq`.
     """
     
     df = dv2df(reffreq, dv*1e3)
@@ -900,12 +654,14 @@ def get_rms(data, axis=None):
     :param axis: Axis over which to compute the rms. Default: None
     :type axis: int
     :returns: The rms of data.
+    
     .. math::
     
         \\mbox{rms}=\\sqrt{\\langle\\mbox{data}\\rangle^{2}+V[\\mbox{data}]}
         
     where :math:`V` is the variance of the data.
     """
+    
     rms = np.sqrt(np.power(np.std(data, axis=axis), 2) \
            + np.power(np.mean(data, axis=axis), 2))
     rms = np.sqrt(np.average(np.power(data, 2)))
@@ -913,19 +669,33 @@ def get_rms(data, axis=None):
 
 def get_min_sep(array):
     """
-    Get the minimum element separation in
-    an array.
+    Get the minimum element separation in an array.
+    
+    :param array: Array where the minimum separation is wanted.
+    :type array: array
+    :returns: The minimum separation between the elements in `array`.
+    :rtype: float
     """
 
-    da = min(abs(array[0:-1:2] - array[1::2]))
-    return da
+    return min(abs(array[0:-1:2] - array[1::2]))
 
-def is_number(s):
+def is_number(str):
     """
     Checks wether a string is a number or not.
+    
+    :param str: String.
+    :type str: string
+    :returns: True if `str` can be converted to a float.
+    :rtype: bool
+    
+    :Example:
+    
+    >>> is_number('10')
+    True
     """
+    
     try:
-        float(s)
+        float(str)
         return True
     except ValueError:
         return False
@@ -933,15 +703,18 @@ def is_number(s):
 def linear(x, a, b):
     """
     Linear model.
-    """
-    return a*x + b
-
-def line_width(dD, dL):
-    """
-    http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile
+    
+    :param x: x values where to evalueate the line.
+    :type x: array
+    :param a: Slope of the line.
+    :type a: float
+    :param b: y value for x equals 0.
+    :type b: float
+    :returns: A line defined by :math:`ax+b`.
+    :rtype: array
     """
     
-    return np.multiply(0.5346, dL) + np.sqrt(np.multiply(0.2166, np.power(dL, 2)) + np.power(dD, 2))
+    return a*x + b
 
 def line_width_err(dD, dL, ddD, ddL):
     """
@@ -1080,9 +853,24 @@ def lookup_freq(n, specie, trans):
 
 def lorentz_width(n, ne, Te, Tr, W, dn=1):
     """
-    Gives the Lorentzian line width due to a combination
-    of radiation and collisional broadening. The width
-    is the FWHM in Hz. It uses the models of Salgado et al. (2015).
+    Gives the Lorentzian line width due to a combination of radiation and \
+    collisional broadening. The width is the FWHM in Hz. \
+    It uses the models of Salgado et al. (2015).
+    
+    :param n: Principal quantum number for which to evaluate the Lorentz widths.
+    :type n: array
+    :param ne: Electron density to use in the collisional broadening term.
+    :type ne: float
+    :param Te: Electron temperature to use in the collisional broadening term.
+    :type Te: float
+    :param Tr: Radiation field temperature.
+    :type Tr: float
+    :param W: Cloud covering factor used in the radiation broadening term.
+    :type W: float
+    :param dn: Separation between the levels of the transition. e.g., `dn=1` for CIalpha.
+    :type dn: int
+    :returns: The Lorentz width of a line due to radiation and collisional broadening.
+    :rtype: array
     """
     
     dL_r = radiation_broad_salgado(n, W, Tr)
@@ -1092,16 +880,41 @@ def lorentz_width(n, ne, Te, Tr, W, dn=1):
 
 def mask_outliers(data, m=2):
     """
-    Masks values larger than m times the data median.
+    Masks values larger than m times the data median. \
+    This is similar to sigma clipping.
+    
+    :param data: Data to mask.
+    :type data: array
+    :returns: An array of the same shape as data with True where the data \
+    should be flagged.
+    :rtype: array
+    
+    :Example:
+    
+    >>> data = [1,2,3,4,5,6]
+    >>> mask_outliers(data, m=1)
+    array([ True, False, False, False, False,  True], dtype=bool)    
     """
+    
     return abs(data - np.median(data)) > m*np.std(data)
 
-def natural_sort(l):
+def natural_sort(list):
     """ 
-    Sort the given list in the way that humans expect.
+    Sort the given list in the way that humans expect. \
     Sorting is done in place.
+    
+    :param list: List to sort.
+    :type list: list
+    
+    :Example:
+    
+    >>> my_list = ['spec_3', 'spec_4', 'spec_1']
+    >>> natural_sort(my_list)
+    >>> my_list
+    ['spec_1', 'spec_3', 'spec_4']
     """
-    l.sort(key=alphanum_key)
+    
+    list.sort(key=alphanum_key)
 
 def n2f(n, line, n_min=1, n_max=1500, unitless=True):
     """
@@ -1460,12 +1273,6 @@ def remove_baseline(freq, tb, model, p0, mask):
     
     return tbcsub
 
-def savgol(y, **kwargs):
-    #window_length, polyorder = args
-    sgf = savgol_filter(y, window_length=kwargs['window_length'], 
-                        polyorder=kwargs['polyorder'])
-    return sgf
-
 def sigma2fwhm(sigma):
     """
     Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.
@@ -1655,96 +1462,18 @@ def stack_interpol(spectra, vmin, vmax, dv, show=True, rmsvec=False):
     else:
         return vgrid[1:-1], tgrid[1:-1], ngrid[1:-1]
 
-def sum_line(sb, n, ref, vel, tau, v0, tau0, dtau0, thr, rms):
+def tryint(str):
     """
-    Integrate the spectrum near a given velocity v0.
-    It stops when the channels are within a threshold
-    from a reference level.
+    Returns True if `str` is an integer.
+    
+    :param str: String to check.
+    :type str: string
+    :returns: True is str can be cast to an int.
+    :rtype: bool
     """
     
-    results = sum_storage()
-    
-    results['n'] = n
-    results['sb'] = sb
-    results['reffreq'] = ref
-    results['rms'] = rms
-    
-    # The integrated optical depth starts at a value of 0
-    itau = 0
-    
-    # Find where we start counting channels
-    dv = min(abs(vel[0:-1:2] - vel[1::2]))
-    v0_indx = best_match_indx2(v0, vel)
-    #print "v0_indx: {0}".format(v0_indx)
-    
-    # Start adding to negative velocities
-    ch0 = 0
-    for i in range(v0_indx):
-        if not (v0_indx-i < 0):
-            if tau[v0_indx-i] <= tau0 - thr*dtau0:
-                itau += tau[v0_indx-i]*dv
-            else:
-                ch0 = v0_indx-i
-                break
-        else:
-            ch0 = 0
-            break
-    # Now to positive velocities
-    chf = 0
-    for i in range(len(vel)):
-        if not (v0_indx+i > len(vel) - 1):
-            if tau[v0_indx+i] <= tau0 - thr*dtau0:
-                itau += tau[v0_indx+i]*dv
-            else:
-                chf = v0_indx+i
-                break
-        else:
-            chf = len(vel) - 1
-            break
-        
-    print "ch0: {0} chf: {1}".format(ch0, chf)
-    
-    if ch0 != chf:
-        results['tau'] = min(tau[ch0:chf])
-        results['vp'] = vel[np.where(tau == results['tau'])[0]][0]
-    results['dtau'] = dtau0
-    
-    #print "Sum vp: {0}".format(results['vp'])
-    results['dvp'] = dv
-    results['dv'] = abs(vel[chf] - vel[ch0])
-    results['ddv'] = dv # Bad assumption
-    results['itau'] = itau
-    results['ditau'] = abs(ch0 - chf)*rms
-    results['ch0'] = ch0
-    results['chf'] = chf
-    results['tau0'] = tau0 - thr*dtau0
-        
-    return results
-
-def sum_storage():
-    blankval = -99
-    results = collections.OrderedDict((('sb',blankval),      #0 Sub Band number
-                                       ('n',blankval),       #1 Principal quantum number
-                                       ('reffreq',blankval), #2 Reference frequency
-                                       ('tau',blankval),     #3 Peak optical depth
-                                       ('vp',blankval),      #4 Velocity of peak optical depth
-                                       ('dv',blankval),      #5 Line width
-                                       ('itau',blankval),    #6 Integrated optical depth
-                                       ('tau0',blankval),    #7 Optical depth cutoff
-                                       ('dtau',blankval),    #8 Peak optical depth error
-                                       ('dvp',blankval),     #9 Velocity of peak optical depth error
-                                       ('ddv',blankval),     #10 Line width error
-                                       ('ditau',blankval),   #11 Integrated optical depth error
-                                       ('dtau0',blankval),   #12 Optical depth offset error
-                                       ('ch0',blankval),     #13
-                                       ('chf',blankval),     #14
-                                       ('rms',blankval)))    #15 Continuum rms
-                                       
-    return results
-
-def tryint(s):
     try:
-        return int(s)
+        return int(str)
     except:
         return s
 
@@ -1796,7 +1525,7 @@ def voigt(x, sigma, gamma, center, amplitude):
 
 def voigt_area(amp, fwhm, gamma, sigma):
     """
-    Returns the area under a Voigt profile.
+    Returns the area under a Voigt profile. \
     This approximation has an error of less than 0.5%
     """
     
@@ -1809,7 +1538,7 @@ def voigt_area(amp, fwhm, gamma, sigma):
 
 def voigt_area_err(area, amp, damp, fwhm, dfwhm, gamma, sigma):
     """
-    Returns the error of the area under a Voigt profile.
+    Returns the error of the area under a Voigt profile. \
     Assumes that the parameter c has an error of 0.5%.
     """
     
@@ -1826,25 +1555,61 @@ def voigt_area_err(area, amp, damp, fwhm, dfwhm, gamma, sigma):
     
     return err
 
+def voigt_fwhm(dD, dL):
+    """
+    Computes the FWHM of a Voigt profile. \
+    http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile
+    
+    .. math::
+    
+        FWHM_{\\rm{V}}=0.5346dL+\\sqrt{0.2166dL^{2}+dD^{2}}
+    
+    :param dD: FWHM of the Gaussian core.
+    :type dD: array
+    :param dL: FWHM of the Lorentz wings.
+    :type dL: array
+    :returns: The FWHM of a Voigt profile.
+    :rtype: array
+    """
+    
+    return np.multiply(0.5346, dL) + np.sqrt(np.multiply(0.2166, np.power(dL, 2)) + np.power(dD, 2))
+
 def voigt_peak(A, alphaD, alphaL):
     """
-    Gives the peak of a Voigt profile given
-    its Area and the HWHM of the Gaussian and
-    Lorentz profiles.
+    Gives the peak of a Voigt profile given its Area and the \
+    Half Width at Half Maximum of the Gaussian and Lorentz profiles.
+    
+    :param A: Area of the Voigt profile.
+    :type A: array
+    :param alphaD: HWHM of the Gaussian core.
+    :type alphaD: array
+    :param alphaL: HWHM of the Lorentz wings.
+    :type alphaL: array
+    :returns: The peak of the Voigt profile.
+    :rtype: array
     """
     
-    y = alphaL/alphaD*np.sqrt(np.log(2))
-    z = 0 + 1j*y
+    y = alphaL/alphaD*np.sqrt(np.log(2.))
+    z = 0. + 1j*y
     K = wofz(z).real
     
-    peak = A/alphaD*np.sqrt(np.log(2)/np.pi)*K
+    peak = A/alphaD*np.sqrt(np.log(2.)/np.pi)*K
     
     return peak
 
 def voigt_peak2area(peak, alphaD, alphaL):
     """
-    Converts the peak of a Voigt profile into the area under the profile
-    given the HWHM of the profile.
+    Converts the peak of a Voigt profile into the area under the profile \
+    given the Half Width at Half Maximum of the profile components.
+    
+    :param peak: Peak of the Voigt profile.
+    :type peak: array
+    :param alphaD: HWHM of the Gaussian core.
+    :type alphaD: array
+    :param alphaL: HWHM of the Lorentz wings.
+    :type alphaL: array
+    :returns: The area under the Voigt profile.
+    :rtype: array
     """
     
     y = alphaL/alphaD*np.sqrt(np.log(2))
@@ -1858,15 +1623,19 @@ def voigt_peak2area(peak, alphaD, alphaL):
 
 def voigt_peak_err(peak, A, dA, alphaD, dalphaD):
     """
-    Gives the error on the peak of
-    the Voigt profile.
+    Gives the error on the peak of the Voigt profile. \
+    It assumes no correlation between the parameters and that they are \
+    normally distributed.
+    
+    :param peak: Peak of the Voigt profile.
+    :type peak: array
+    :param A: Area under the Voigt profile.
+    :param dA: Error on the area `A`.
+    :type dA: array
+    :param alphaD: HWHM of the Gaussian core.
+    :type alphaD: array
     """
     
-    dpeak = abs(peak)*np.sqrt(np.power(dalphaD/alphaD ,2) + np.power(dA/A ,2))
+    dpeak = abs(peak)*np.sqrt(np.power(dalphaD/alphaD, 2.) + np.power(dA/A, 2.))
     
     return dpeak
-
-def wiener(y, **kwargs):
-    #size, noise = args
-    wi = wiener(y, mysize=kwargs['mysize'], noise=kwargs['noise'])
-    return wi
