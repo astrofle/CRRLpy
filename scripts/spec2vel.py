@@ -15,7 +15,7 @@ import re
 import argparse
 from crrlpy import crrls
 
-def spec2vel(spec, basename, transition, z, f_col):
+def spec2vel(spec, basename, transition, z, f_col, sb_id):
     """
     """
     
@@ -28,7 +28,7 @@ def spec2vel(spec, basename, transition, z, f_col):
         
         # Determine the subband name
         try:
-            sb = re.findall('SB\d+', s)[0]
+            sb = re.findall('{0}\d+'.format(sb_id), s)[0]
         except IndexError:
             print "Could not find SB number."
             print "Will use SB???"
@@ -69,6 +69,9 @@ if __name__ == '__main__':
     parser.add_argument('--f_col', type=int, default=0,
                         help="Column with frequency values.\n" \
                              "This will be converted to velocity. Default: 0")
+    parser.add_argument('--sb_id', type=str, default='SB',
+                        help="Column with frequency values.\n" \
+                             "This will be converted to velocity. Default: 0")
     args = parser.parse_args()
     
-    spec2vel(args.spec, args.basename, args.transition, args.z, args.f_col)
+    spec2vel(args.spec, args.basename, args.transition, args.z, args.f_col, args.sb_id)

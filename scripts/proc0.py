@@ -9,7 +9,7 @@ from astropy.table import Table
 from astropy.io import ascii
 from crrlpy import crrls
 
-def main(spec, basename, freqf):
+def main(spec, out, freqf):
     """
     """
     
@@ -20,13 +20,13 @@ def main(spec, basename, freqf):
     
     for s in specs:
         
-        # Determine the subband name
-        try:
-            sb = re.findall('SB\d+', s)[0]
-        except IndexError:
-            print "Could not find SB number."
-            print "Will use SB???"
-            sb = 'SB???'
+        ## Determine the subband name
+        #try:
+            #sb = re.findall('SB\d+', s)[0]
+        #except IndexError:
+            #print "Could not find SB number."
+            #print "Will use SB???"
+            #sb = 'SB???'
         
         data = np.loadtxt(s, comments='#')
         
@@ -43,9 +43,7 @@ def main(spec, basename, freqf):
                         names=['FREQ MHz',
                                'Tb Jy/BEAM'])
                         
-        out = '{0}_{1}.ascii'.format(basename, sb)
-
-        ascii.write(tbtable, out, format='commented_header')
+    ascii.write(tbtable, out, format='commented_header')
     
 if __name__ == '__main__':
     

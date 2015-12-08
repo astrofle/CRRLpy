@@ -66,7 +66,7 @@ def average(data, axis, n):
         
         return avg_tmp
 
-def best_match_indx(value, array, tol):
+def best_match_indx_tol(value, array, tol):
     """
     Searchs for the best match to a value inside an array given a tolerance.
     
@@ -94,7 +94,7 @@ def best_match_indx(value, array, tol):
         #return upp[0]
     return out
     
-def best_match_indx2(value, array):
+def best_match_indx(value, array):
     """
     Searchs for the index of the closest entry to value inside an array.
     
@@ -108,7 +108,7 @@ def best_match_indx2(value, array):
     :Example:
     
     >>> a = [1,2,3,4]
-    >>> best_match_indx2(3, a)
+    >>> best_match_indx(3, a)
     2
     
     """
@@ -433,7 +433,10 @@ def fit_model(x, y, model, p0, wy=None, mask=None):
     if mask:
         mx = x[~mask]
         my = y[~mask]
-    
+    else:
+        mx = x
+        my = y
+        
     if not wy:
         wy = np.ones(len(mx))
         
@@ -642,7 +645,7 @@ def get_line_mask2(freq, reffreq, dv):
     
     df = dv2df(reffreq, dv*1e3)
     df_chan = get_min_sep(freq)
-    f0_indx = best_match_indx2(reffreq, freq)
+    f0_indx = best_match_indx(reffreq, freq)
 
     f_mini = f0_indx - df/df_chan
     if f_mini < 0:
@@ -834,7 +837,7 @@ def lookup_freq(n, specie, trans):
     """
     
     qns, freqs = load_ref(specie, trans)
-    indx = best_match_indx2(n, qns)
+    indx = best_match_indx(n, qns)
     
     return freqs[indx]
 
@@ -1133,7 +1136,7 @@ def pressure_broad_coefs(Te):
           800, 900, 1000, 2000, 3000, 4000, 5000,
           6000, 7000, 8000, 9000, 10000, 20000, 30000]
     
-    te_indx = best_match_indx2(Te, te)
+    te_indx = best_match_indx(Te, te)
     
     a = [-10.974098,           
          -10.669695,
@@ -1212,6 +1215,7 @@ def pressure_broad_coefs(Te):
 def radiation_broad(n, W, Tr):
     """
     Radiation induced broadening in Hz.
+    Shaver (1975)
     """
     
     return 8e-17*W*Tr*np.power(n, 5.8)
@@ -1383,11 +1387,11 @@ def stack_interpol(spectra, vmin, vmax, dv, show=True, rmsvec=False):
         sspec = np.divide(tgrid, ngrid)
         svel = vgrid[~np.isnan(sspec)]
         sspec = sspec[~np.isnan(sspec)]
-        vii = best_match_indx2(vmin, svel)
-        vfi = best_match_indx2(-200, svel)
+        vii = best_match_indx(vmin, svel)
+        vfi = best_match_indx(-200, svel)
         rmsl = get_rms(sspec[vii+1:vfi])
-        vii = best_match_indx2(150, svel)
-        vfi = best_match_indx2(vmax, svel)
+        vii = best_match_indx(150, svel)
+        vfi = best_match_indx(vmax, svel)
         rmsr = get_rms(sspec[vii:vfi-1])
         crms[s] = min(rmsl, rmsr)
         snr[s] = -min(sspec[5:-5])/crms[s]
@@ -1461,18 +1465,18 @@ def temp2tau(x, y, model, p0, wy=None, mask=None):
 
 def tryint(str):
     """
-    Returns True if `str` is an integer.
+    Returns an integer if `str` can be represented as one.
     
     :param str: String to check.
     :type str: string
     :returns: True is str can be cast to an int.
-    :rtype: bool
+    :rtype: int
     """
     
     try:
         return int(str)
     except:
-        return s
+        return str
 
 def vel2freq(f0, vel):
     """
@@ -1596,7 +1600,7 @@ def voigt_fwhm_err(dD, dL, ddD, ddL):
     dT2 = np.power(np.multiply(dD, ddD)/np.sqrt(b*np.power(dL, 2) + np.power(dD, 2)), 2)
     dT = np.sqrt(dT1 + dT2)
     
-    dT = np.sqrt(np.power(dT, 2) + np.power(f*line_width(dD, dL), 2))
+    dT = np.sqrt(np.power(dT, 2) + np.power(f*voigt_fwhm(dD, dL), 2))
     
     return dT
 

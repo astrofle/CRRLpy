@@ -22,29 +22,7 @@ def nan_mask(freq, tb):
     tnan = np.isnan(tb)
     mask = reduce(np.logical_or, [fnan, tnan])
     
-    return mask    
-
-def remove_baseline(freq, tb, model, p0):
-    """
-    Divide tb by given a model
-    and starting parameters p0.
-    Returns: tb/model - 1
-    """
-    
-    # Divide by linear baseline
-    mod = Model(model)
-    params = mod.make_params()
-    if len(p0) != len(params):
-        print "Insuficient starting parameter values."
-        return 0
-    else:
-        for param in params:
-            params[param].set(value=p0[param])
-
-    fit = mod.fit(tb, x=freq, params=params)
-    tbcsub = tb/fit.eval(x=freq) - 1
-    
-    return tbcsub
+    return mask
 
 def main(spec_in, spec_out, edge, xcol, ycol, transitions, z, dv, plot, plot_out):
     """ main """

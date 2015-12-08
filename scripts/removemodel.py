@@ -69,7 +69,7 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
         if not freq:
             for i,n in enumerate(qns):
                 # Convert the model velocity axis to frequency
-                fm = crrls.vel2freq(freqs[i]*(1.+z), xm*1e3)
+                fm = crrls.vel2freq(freqs[i]*(1. + z), xm*1e3)
                 p = fm.argsort()
                 ymod = ym[p]
                 fm = fm[p]

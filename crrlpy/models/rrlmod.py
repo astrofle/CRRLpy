@@ -23,11 +23,30 @@ import astropy.units as u
 from crrlpy import frec_calc as fc
 from astropy.constants import h, k_B, c, m_e, Ryd, e
 from astropy.analytic_functions import blackbody_nu
-from crrlpy.crrls import natural_sort, best_match_indx2, f2n, n2f
+from crrlpy.crrls import natural_sort, best_match_indx, f2n, n2f
 from mpmath import mp
 mp.dps = 50 
 
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+
+def alpha_CII(Te, R):
+    """
+    Computes the value of :math:`\\alpha_{1/2}`. 
+    Sorochenko \\& Tsivilev (2000).
+    
+    
+    """
+    
+    return 1./(1. + 2.*np.exp(-92./Te)*R)
+
+def beta_CII(Te, R):
+    """
+    Computes the value of :math:`\\beta_{158}`. 
+    Sorochenko \\& Tsivilev (2000).
+    
+    """
+    
+    return 1./(1. - np.exp(-92./Te)*R)
 
 def broken_plaw(nu, nu0, T0, alpha1, alpha2):
     """
@@ -61,6 +80,30 @@ def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     kc = kappa_cont(freq, Te, ne, nion, Z)
     
     return (kc + kl*bni)/(kc + kl*bnf*bnfni)
+
+def gamma_e_CII(Te):
+    """
+    Computes the de-excitation rate of the CII atom due to collisions with electrons.
+    
+    :param Te: Electron temperature.
+    :type Te: float
+    :returns: The collisional de-excitation rate in units of cm-3 s-1.
+    :rtype: float
+    """
+    
+    return 4.51e-6*np.power(Te, -0.5)
+
+def gamma_h_CII(Te):
+    """
+    Computes the de-excitation rate of the CII atom due to collisions with hydrogen atoms.
+    
+    :param Te: Electron temperature.
+    :type Te: float
+    :returns: The collisional de-excitation rate in units of cm-3 s-1.
+    :rtype: float
+    """
+    
+    return 5.8e-10*np.power(Te, 0.02)
 
 def I_Bnu(specie, Z, n, Inu_funct, *args):
     """
@@ -129,6 +172,34 @@ def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
     bnu_bpl = blackbody_nu(nu, Tbpl)
     
     return bnu_bpl
+
+def I_CII(Te, R, NCII):
+    """
+    Frequency integrated line intensity.
+    Optically thin limit without radiative transfer.
+    
+    :returns: The frequency integrated line intensity in units of Jy Hz or g s-3
+    """
+    
+    nu0 = 1900.53690*u.GHz
+    A = 2.4e-6*u.s**-1
+    
+    cte = h*nu0/(4.*np.pi)*A*2.
+    
+    return cte*np.exp(-91.21/Te)*R*NCII/(1. + 2.*np.exp(-91.21/Te)*R)
+
+def I_CII_rt(wav, dnu, T158):
+    """
+    Frequency integrated line intensity.
+    Optically thin limit with radiative transfer.
+    
+    :returns: The frequency integrated line intensity in units of Jy Hz or g s-3
+    """
+    
+    nu0 = 1900.53690*u.GHz
+    cte = 2*h*nu0*1.06
+    
+    return cte/np.power(wav, 2.)*dnu/(np.exp(92./T158) - 1.)
 
 def I_cont(nu, Te, tau, I0, unitless=False):
     """
@@ -215,7 +286,8 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     :param verbose: Verbose output?
     :type verbose: bool
     :param value: ['itau'|'bbnMdn'|'None'] Value to output. itau will output the integrated optical depth. \
-    bbnMdn will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` times the oscillator strenght :math:`M(\\Delta n)`.
+    bbnMdn will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` times the oscillator strenght :math:`M(\\Delta n)`. \
+    None will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` values.
     :type value: string
     :returns: The principal quantum number and its asociated value.
     """
@@ -227,8 +299,8 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     mdn = Mdn(dn)
     
     bbn = load_betabn(temp, dens, other, line, verbose)
-    nimin = best_match_indx2(n_min, bbn[:,0])
-    nimax = best_match_indx2(n_max, bbn[:,0])
+    nimin = best_match_indx(n_min, bbn[:,0])
+    nimax = best_match_indx(n_max, bbn[:,0])
     n = bbn[nimin:nimax,0]
     b = bbn[nimin:nimax,1]
     
@@ -269,6 +341,15 @@ def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau')
         i = b
         
     return n, i
+  
+def itau_norad(n, te, b, dn, mdn):
+    """
+    Returns the optical depth with only the approximate solution to the 
+    radiative transfer problem.
+    """
+    
+    return -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*te))/np.power(te, 5./2.)
+
 
 def j_line_lte(n, ne, nion, Te, Z, trans):
     """
@@ -364,8 +445,8 @@ def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     Anfni = np.loadtxt('{0}/rates/einstein_Anm_{1}.txt'.format(LOCALDIR, trans))
     
     # Cut the Einstein Amn coefficients table to match the bn values
-    i_bn_i = best_match_indx2(bn[0,0], Anfni[:,1])
-    i_bn_f = best_match_indx2(bn[-1,0], Anfni[:,0])
+    i_bn_i = best_match_indx(bn[0,0], Anfni[:,1])
+    i_bn_f = best_match_indx(bn[-1,0], Anfni[:,0])
     Anfni = Anfni[i_bn_i:i_bn_f+1]
     
     ni = Anfni[:,0]
@@ -429,52 +510,207 @@ def level_pop_lte(n, ne, nion, Te, Z):
     The return has units of :math:`\\mbox{cm}^{-3}`.
     """
     
-    omega_ni = 2*np.power(n, 2)
+    omega_ni = 2.*np.power(n, 2.)
     omega_i = 1.
     
     xi_n = xi(n, Te, Z)
     
     exp_xi_n = np.exp(xi_n.value)
     
-    Nn = ne*nion*np.power(np.power(h, 2.)/(2*np.pi*m_e*k_B*Te), 1.5)*omega_ni/omega_i/2.*exp_xi_n
+    Nn = ne*nion*np.power(np.power(h, 2.)/(2.*np.pi*m_e*k_B*Te), 1.5)*omega_ni/omega_i/2.*exp_xi_n
     
     return Nn
 
-def load_itau_dict(dict, trans, n_min=5, n_max=1000, verbose=False, value='itau'):
+def load_bn_all(n_min=5, n_max=1000, verbose=False):
     """
-    Loads the models defined by dict.
-    """
-    
-    data = np.zeros((len(dict['Te']),2,n_max-n_min))
-    
-    for i,t in enumerate(dict['Te']):
-        
-        if verbose:
-            print "Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i])
-        n, int_tau = itau(t, 
-                          dict['ne'][i], 
-                          trans,
-                          n_min=n_min,
-                          n_max=n_max, 
-                          other=dict['Tr'][i], 
-                          verbose=verbose, 
-                          value=value)
-        
-        data[i,0] = n
-        data[i,1] = int_tau
-    
-    te = np.asarray(map(str2val, dict['Te']))
-    
-    return [te, dict['ne'], dict['Tr'], data]
-
-def load_itau_all(trans='CIalpha', n_min=5, n_max=1000, verbose=False, value='itau'):
-    """
-    Loads all the available models for Carbon.
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans))
+    models = glob.glob('{0}/bn2/*'.format(LOCALDIR))
+    natural_sort(models)
+    models = np.asarray(models)
+    
+    models_tr = sorted(models, key=lambda x: (str2val(x.split('_')[3]), 
+                                              float(x.split('_')[5]),
+                                              str2val(x.split('_')[10]) if len(x.split('_')) > 17 else 0))
+    models = models_tr
+    
+    Te = np.zeros(len(models))
+    ne = np.zeros(len(models))
+    Tr = np.zeros(len(models), dtype='|S20')
+    data = np.zeros((len(models), 5, n_max-n_min))
+    
+    for i,model in enumerate(models):
+        if verbose:
+            print model
+        st = model.split('_')[3]
+        Te[i] = str2val(st)
+        sn = model.split('_')[5].rstrip('0')
+        ne[i] = float(sn)
+        if len(model.split('_')) <= 17:
+            Tr[i] = '-'
+        else:
+            Tr[i] = '_'.join(model.split('_')[8:11])
+        if verbose:
+            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], Tr[i])
+        bn = load_bn2(st, sn, Tr=Tr[i], n_min=n_min, n_max=n_max, verbose=verbose)
+        data[i,0] = bn[:,0]
+        data[i,1] = bn[:,1]
+        data[i,2] = bn[:,2]
+        data[i,3] = bn[:,3]
+        data[i,4] = bn[:,4]
+        
+    return [Te, ne, Tr, data]
+  
+def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
+    """
+    Loads the :math:`b_{n}` values defined by dict.
+    
+    :param dict: Dictionary containing a list with values for Te, ne and Tr.
+    :type dict: dict
+    :param line: Which models should be loaded.
+    :type line: string
+    :param n_min: Minimum n number to include in the output.
+    :type n_min: int
+    :param n_max: Maximum n number to include in the output.
+    :type n_max: int
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :returns: List with the :math:`b_{n}` values for the conditions defined by dict.
+    :rtype: numpy.array
+    
+    :Example:
+    
+    First define the range of parameters
+    
+    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1', 
+                       '6d1', '7d1', '8d1', '9d1', '1d2', 
+                       '1.2d2', '1.5d2', '2d2', '3d2', 
+                       '4d2', '5d2', '6d2', '7d2', '8d2', 
+                       '1d3', '2d3'])
+    >>> ne = np.arange(0.01,0.105,0.01)
+    >>> Tr = np.array([800, 1200, 1600, 2000])
+    
+    Put them in a dictionary
+    
+    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr],
+                  'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],
+                  'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_)) 
+                        for t_ in Te for n_ in ne for tr_ in Tr]}
+    
+    Load the models
+    
+    >>> bn = rrlmod.load_bn_dict(models, n_min=n_min, n_max=n_max, verbose=False)
+                                                       
+    Plot the first model
+    
+    >>> import pylab as plt
+    >>> plt.plot(bn[0,0], bn[0,-1])
+    >>> plt.show()
+    """
+    
+    data = np.zeros((len(dict['Te']), 5, n_max-n_min))
+    
+    for i,t in enumerate(dict['Te']):
+        
+        if verbose:
+            print "Trying to load model: ",
+            print "ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i])
+        bn = load_bn2(t, dict['ne'][i], n_min=n_min, n_max=n_max, Tr=dict['Tr'][i], 
+                      verbose=verbose)
+        
+        data[i,0] = bn[:,0]
+        data[i,1] = bn[:,1]
+        data[i,2] = bn[:,2]
+        data[i,3] = bn[:,3]
+        data[i,4] = bn[:,4]
+        
+    return data
+
+def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau'):
+    """
+    Loads the models defined by dict.
+    
+    :param dict: Dictionary containing a list with values for Te, ne and Tr.
+    :type dict: dict
+    :param line: Which models should be loaded.
+    :type line: string
+    :param n_min: Minimum n number to include in the output.
+    :type n_min: int
+    :param n_max: Maximum n number to include in the output.
+    :type n_max: int
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :param value: ['itau'|'bbnMdn'|None] Which value should be in the output.
+    :type value: string
+    
+    :Example:
+    
+    First define the range of parameters
+    
+    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1', 
+                       '6d1', '7d1', '8d1', '9d1', '1d2', 
+                       '1.2d2', '1.5d2', '2d2', '3d2', 
+                       '4d2', '5d2', '6d2', '7d2', '8d2', 
+                       '1d3', '2d3'])
+    >>> ne = np.arange(0.01,0.105,0.01)
+    >>> Tr = np.array([800, 1200, 1600, 2000])
+    
+    Put them in a dictionary
+    
+    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr],
+                  'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],
+                  'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_)) 
+                        for t_ in Te for n_ in ne for tr_ in Tr]}
+    
+    Load the models
+    
+    >>> itau_mod = rrlmod.load_itau_dict(models, 'CIalpha', n_min=n_min, n_max=n_max, 
+                                         verbose=False, value='itau')
+                                                       
+    Plot the first model
+    
+    >>> import pylab as plt
+    >>> plt.plot(itau_mod[0,0], itau_mod[0,1])
+    >>> plt.show()
+    """
+    
+    data = np.zeros((len(dict['Te']), 2, n_max-n_min))
+    
+    for i,t in enumerate(dict['Te']):
+        
+        if verbose:
+            print "Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], 
+                                                                        t, 
+                                                                        dict['Tr'][i])
+        n, int_tau = itau(t, dict['ne'][i], line, n_min=n_min, n_max=n_max, 
+                          other=dict['Tr'][i], verbose=verbose, value=value)
+        
+        data[i,0] = n
+        data[i,1] = int_tau
+        
+    return data
+
+def load_itau_all(line='CIalpha', n_min=5, n_max=1000, verbose=False, value='itau'):
+    """
+    Loads all the available models for Carbon.
+    
+    :param line: Which models should be loaded.
+    :type line: string
+    :param n_min: Minimum n number to include in the output.
+    :type n_min: int
+    :param n_max: Maximum n number to include in the output.
+    :type n_max: int
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :param value: ['itau'|'bbnMdn'|None] Which value should be in the output.
+    :type value: string
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, line))
     natural_sort(models)
     models = np.asarray(models)
     
@@ -502,7 +738,7 @@ def load_itau_all(trans='CIalpha', n_min=5, n_max=1000, verbose=False, value='it
             other[i] = '_'.join(model.split('_')[9:12])
         if verbose:
             print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
-        n, int_tau = itau(st, ne[i], trans, n_min=n_min, n_max=n_max, 
+        n, int_tau = itau(st, ne[i], line, n_min=n_min, n_max=n_max, 
                           other=other[i], verbose=verbose, 
                           value=value)
         data[i,0] = n
@@ -623,14 +859,6 @@ def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='i
     
     return load_models(models, trans, n_max=n_max, verbose=verbose, value=value)
 
-def itau_norad(n, te, b, dn, mdn):
-    """
-    Returns the optical depth with only the approximate solution to the 
-    radiative transfer problem.
-    """
-    
-    return -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*te))/np.power(te, 5./2.)
-
 def load_betabn(temp, dens, other='', trans='CIalpha', verbose=False):
     """
     Loads a model for the CRRL emission.
@@ -692,33 +920,44 @@ def load_bn(temp, dens, other=''):
     
     return data
 
-def load_bn2(temp, dens, other=''):
+def load_bn2(Te, ne, Tr='', n_min=5, n_max=1000, verbose=False):
     """
     Loads the bn values from the CRRL models.
+    
+    :param Te: Electron temperature of the model.
+    :type Te: string
+    :param ne: Electron density of the model.
+    :type ne: string
+    :param Tr: Radiation field of the model.
+    :type Tr: string
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :returns: The :math:`b_{n}` value for the given model conditions.
+    :rtype: array
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    if other == '-' or other == '':
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens)
-        print "Loading {0}".format(mod_file)
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens))[0]
+    if Tr == '-' or Tr == '':
+        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne)
+        if verbose:
+            print "Loading {0}".format(mod_file)
+        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne))[0]
     else:
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens, other)
-        print "Loading {0}".format(mod_file)
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, temp, dens, other))[0]
+        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr)
+        if verbose:
+            print "Loading {0}".format(mod_file)
+        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr))[0]
     
-    print "Loaded {0}".format(mod_file)
-    data = np.loadtxt(mod_file)
+    if verbose:
+        print "Loaded {0}".format(mod_file)
+    bn = np.loadtxt(mod_file)
     
-    return data
+    nimin = best_match_indx(n_min, bn[:,0])
+    nimax = best_match_indx(n_max, bn[:,0])
+    bn = bn[nimin:nimax]
     
-    
-    #mod_file = '{0}/bn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat{3}'.format(LOCALDIR, temp, dens, other)
-    
-    #data = np.loadtxt(mod_file)
-    
-    #return data
+    return bn
     
 def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
     """
@@ -861,6 +1100,20 @@ def plaw(x, x0, y0, alpha):
     
     return y0*np.power(x/x0, alpha)
 
+def R_CII(ne, nh, gamma_e, gamma_h):
+    """
+    Ratio between the fine structure level population of CII, and
+    the level population in LTE. It ignores the effect of collisions
+    with molecular hydrogen.
+    """
+    
+    A = 2.4e-6*u.s**-1
+    
+    neg = ne*gamma_e
+    nhg = nh*gamma_h
+    
+    return (neg + nhg)/(neg + nhg + A)
+
 def str2val(str):
     """
     Converts a string representing a number to a float.
@@ -885,6 +1138,39 @@ def str2val(str):
     
     return val
 
+def T_CII(Te, tau, R):
+    """
+    """
+    
+    return 92./(np.log( (np.exp(92./Te + tau)/R - 1.)/(np.exp(tau) - 1.) ))
+
+def tau_CII(Te, R, nc, L, dnu):
+    """
+    Computes the optical depth of the far infrared line of CII. Crawford et al. (1985).
+    
+    :param Te: Electron temperature.
+    :type Te: float
+    :param R: Ratio of collisional excitation to spontaneous emission.
+    :type R: float
+    :param nc: Ionized carbon number density.
+    :type nc: float
+    :param L: Path lenght.
+    :type L: float
+    :param dnu: Line width FWHM in Hz.
+    :type dnu: float
+    :returns:
+    :rtype: float
+    """
+    
+    A = 2.4e-6*u.s**-1
+    nu = 1900.53690*u.GHz
+    cte = np.power(c, 2.)/(8.*np.pi*np.power(nu, 2.))*A*2./1.06
+    
+    alpha = alpha_CII(Te, R)
+    beta = beta_CII(Te, R)
+    
+    return cte*alpha*beta*nc*L/dnu
+
 def val2str(val):
     """
     Converts a float to the string format required for loading the CRRL models.
@@ -908,14 +1194,14 @@ def val2str(val):
     else:
         return "{0}d{1:.0f}".format(u, d)
     
-def valid_ne(trans):
+def valid_ne(line):
     """
     Checks all the available models and lists the available ne values.
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans))
+    models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, line))
     natural_sort(models)
     models = np.asarray(models)
     
@@ -929,8 +1215,9 @@ def valid_ne(trans):
     
     return np.unique(ne)
 
-def xi(n, Te, Z):
+def chi(n, Te, Z):
     """
+    Computes the :math:`\\chi_{n}` value as defined by Salgado et al. (2015).
     """
     
     return np.power(Z, 2.)*h*c*Ryd/(k_B*np.power(n, 2)*Te)
