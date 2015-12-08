@@ -8,8 +8,8 @@ before_install:
   
 # command to install dependencies
 install:
-  - pip install .
   - travis_wait pip install -r requirements.txt
+  - travis_wait pip install .
   
 script: python crrlpy/crrls.py
 script: python crrlpy/models/rrlmod.py
