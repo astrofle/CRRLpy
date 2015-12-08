@@ -582,32 +582,25 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
     
     :Example:
     
+    >>> from crrlpy.models import rrlmod
+    
     First define the range of parameters
     
-    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1', 
-                       '6d1', '7d1', '8d1', '9d1', '1d2', 
-                       '1.2d2', '1.5d2', '2d2', '3d2', 
-                       '4d2', '5d2', '6d2', '7d2', '8d2', 
-                       '1d3', '2d3'])
+    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1'])
     >>> ne = np.arange(0.01,0.105,0.01)
-    >>> Tr = np.array([800, 1200, 1600, 2000])
+    >>> Tr = np.array([800])
     
     Put them in a dictionary
     
-    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr],
-                  'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],
-                  'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_)) 
+    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr], \
+                  'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr], \
+                  'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_)) \
                         for t_ in Te for n_ in ne for tr_ in Tr]}
     
     Load the models
     
-    >>> bn = rrlmod.load_bn_dict(models, n_min=n_min, n_max=n_max, verbose=False)
+    >>> bn = rrlmod.load_bn_dict(models, n_min=200, n_max=500, verbose=False)
                                                        
-    Plot the first model
-    
-    >>> import pylab as plt
-    >>> plt.plot(bn[0,0], bn[0,-1])
-    >>> plt.show()
     """
     
     data = np.zeros((len(dict['Te']), 5, n_max-n_min))
@@ -647,33 +640,27 @@ def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau')
     
     :Example:
     
+    >>> from crrlpy.models import rrlmod
+    
     First define the range of parameters
     
-    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1', 
-                       '6d1', '7d1', '8d1', '9d1', '1d2', 
-                       '1.2d2', '1.5d2', '2d2', '3d2', 
-                       '4d2', '5d2', '6d2', '7d2', '8d2', 
-                       '1d3', '2d3'])
+    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1'])
     >>> ne = np.arange(0.01,0.105,0.01)
-    >>> Tr = np.array([800, 1200, 1600, 2000])
+    >>> Tr = np.array([2000])
     
     Put them in a dictionary
     
-    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr],
-                  'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],
-                  'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_)) 
+    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr], \
+                  'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr], \
+                  'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_)) \
                         for t_ in Te for n_ in ne for tr_ in Tr]}
     
-    Load the models
+    # Load the models
     
-    >>> itau_mod = rrlmod.load_itau_dict(models, 'CIalpha', n_min=n_min, n_max=n_max, 
+    >>> itau_mod = rrlmod.load_itau_dict(models, 'CIalpha', n_min=250, n_max=300, \
                                          verbose=False, value='itau')
                                                        
-    Plot the first model
     
-    >>> import pylab as plt
-    >>> plt.plot(itau_mod[0,0], itau_mod[0,1])
-    >>> plt.show()
     """
     
     data = np.zeros((len(dict['Te']), 2, n_max-n_min))
@@ -1127,7 +1114,7 @@ def str2val(str):
     :Example:
     
     >>> str2val('2d2')
-    200
+    200.0
     """
     
     try:
