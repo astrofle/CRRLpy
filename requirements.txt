@@ -1,3 +1,4 @@
 astropy
 lmfit==0.8.0
 scipy==0.13.3
+matplotlib==1.4.2
