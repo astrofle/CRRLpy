@@ -77,8 +77,8 @@
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alphanum_key</span><span class="p">(</span><span class="s">&quot;z23a&quot;</span><span class="p">)</span>
-<span class="go">[&quot;z&quot;, 23, &quot;a&quot;]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alphanum_key</span><span class="p">(</span><span class="s">&#39;z23a&#39;</span><span class="p">)</span>
+<span class="go">[&#39;z&#39;, 23, &#39;a&#39;]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -388,12 +388,13 @@ The line frequencies are corrected for redshift.</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">freq</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">crrlpy</span> <span class="kn">import</span> <span class="n">crrls</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">freq</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ns</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">crrls</span><span class="o">.</span><span class="n">find_lines_sb</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="s">&#39;CIalpha&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ns</span>
 <span class="go">array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,</span>
-<span class="go">    852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,</span>
-<span class="go">    861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])</span>
+<span class="go">        852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,</span>
+<span class="go">        861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -840,7 +841,7 @@ SIbeta</p>
 </table>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mask_outliers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">array([ True, False, False, False, False,  True], dtype=bool)    </span>
+<span class="go">array([ True, False, False, False, False,  True], dtype=bool)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1721,31 +1722,21 @@ The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">crrlpy.models</span> <span class="kn">import</span> <span class="n">rrlmod</span>
+</pre></div>
+</div>
 <p>First define the range of parameters</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s">&#39;1d1&#39;</span><span class="p">,</span> <span class="s">&#39;2d1&#39;</span><span class="p">,</span> <span class="s">&#39;3d1&#39;</span><span class="p">,</span> <span class="s">&#39;4d1&#39;</span><span class="p">,</span> <span class="s">&#39;5d1&#39;</span><span class="p">,</span> 
-<span class="go">                   &#39;6d1&#39;, &#39;7d1&#39;, &#39;8d1&#39;, &#39;9d1&#39;, &#39;1d2&#39;, </span>
-<span class="go">                   &#39;1.2d2&#39;, &#39;1.5d2&#39;, &#39;2d2&#39;, &#39;3d2&#39;, </span>
-<span class="go">                   &#39;4d2&#39;, &#39;5d2&#39;, &#39;6d2&#39;, &#39;7d2&#39;, &#39;8d2&#39;, </span>
-<span class="go">                   &#39;1d3&#39;, &#39;2d3&#39;])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s">&#39;1d1&#39;</span><span class="p">,</span> <span class="s">&#39;2d1&#39;</span><span class="p">,</span> <span class="s">&#39;3d1&#39;</span><span class="p">,</span> <span class="s">&#39;4d1&#39;</span><span class="p">,</span> <span class="s">&#39;5d1&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.105</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">800</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">800</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Put them in a dictionary</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Te&#39;</span><span class="p">:[</span><span class="n">t_</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>
-<span class="go">              &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],</span>
-<span class="go">              &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) </span>
-<span class="go">                    for t_ in Te for n_ in ne for tr_ in Tr]}</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Te&#39;</span><span class="p">:[</span><span class="n">t_</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>                   <span class="s">&#39;ne&#39;</span><span class="p">:[</span><span class="nb">round</span><span class="p">(</span><span class="n">n_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>                   <span class="s">&#39;Tr&#39;</span><span class="p">:[</span><span class="s">&#39;case_diffuse_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rrlmod</span><span class="o">.</span><span class="n">val2str</span><span class="p">(</span><span class="n">tr_</span><span class="p">))</span>                         <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">]}</span>
 </pre></div>
 </div>
 <p>Load the models</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bn</span> <span class="o">=</span> <span class="n">rrlmod</span><span class="o">.</span><span class="n">load_bn_dict</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Plot the first model</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bn</span> <span class="o">=</span> <span class="n">rrlmod</span><span class="o">.</span><span class="n">load_bn_dict</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1811,32 +1802,21 @@ The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">crrlpy.models</span> <span class="kn">import</span> <span class="n">rrlmod</span>
+</pre></div>
+</div>
 <p>First define the range of parameters</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s">&#39;1d1&#39;</span><span class="p">,</span> <span class="s">&#39;2d1&#39;</span><span class="p">,</span> <span class="s">&#39;3d1&#39;</span><span class="p">,</span> <span class="s">&#39;4d1&#39;</span><span class="p">,</span> <span class="s">&#39;5d1&#39;</span><span class="p">,</span> 
-<span class="go">                   &#39;6d1&#39;, &#39;7d1&#39;, &#39;8d1&#39;, &#39;9d1&#39;, &#39;1d2&#39;, </span>
-<span class="go">                   &#39;1.2d2&#39;, &#39;1.5d2&#39;, &#39;2d2&#39;, &#39;3d2&#39;, </span>
-<span class="go">                   &#39;4d2&#39;, &#39;5d2&#39;, &#39;6d2&#39;, &#39;7d2&#39;, &#39;8d2&#39;, </span>
-<span class="go">                   &#39;1d3&#39;, &#39;2d3&#39;])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s">&#39;1d1&#39;</span><span class="p">,</span> <span class="s">&#39;2d1&#39;</span><span class="p">,</span> <span class="s">&#39;3d1&#39;</span><span class="p">,</span> <span class="s">&#39;4d1&#39;</span><span class="p">,</span> <span class="s">&#39;5d1&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.105</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">Tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">800</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2000</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Put them in a dictionary</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Te&#39;</span><span class="p">:[</span><span class="n">t_</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>
-<span class="go">              &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],</span>
-<span class="go">              &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) </span>
-<span class="go">                    for t_ in Te for n_ in ne for tr_ in Tr]}</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Te&#39;</span><span class="p">:[</span><span class="n">t_</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>                   <span class="s">&#39;ne&#39;</span><span class="p">:[</span><span class="nb">round</span><span class="p">(</span><span class="n">n_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>                   <span class="s">&#39;Tr&#39;</span><span class="p">:[</span><span class="s">&#39;case_diffuse_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rrlmod</span><span class="o">.</span><span class="n">val2str</span><span class="p">(</span><span class="n">tr_</span><span class="p">))</span>                         <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">]}</span>
 </pre></div>
 </div>
-<p>Load the models</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">itau_mod</span> <span class="o">=</span> <span class="n">rrlmod</span><span class="o">.</span><span class="n">load_itau_dict</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> 
-<span class="go">                                     verbose=False, value=&#39;itau&#39;)</span>
-</pre></div>
-</div>
-<p>Plot the first model</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pylab</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">itau_mod</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">itau_mod</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<p># Load the models</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">itau_mod</span> <span class="o">=</span> <span class="n">rrlmod</span><span class="o">.</span><span class="n">load_itau_dict</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>                                          <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1913,7 +1893,7 @@ The string must follow the IDL convention for floats.</p>
 </tbody>
 </table>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">str2val</span><span class="p">(</span><span class="s">&#39;2d2&#39;</span><span class="p">)</span>
-<span class="go">200</span>
+<span class="go">200.0</span>
 </pre></div>
 </div>
 </dd></dl>

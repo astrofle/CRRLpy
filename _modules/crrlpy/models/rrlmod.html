@@ -632,32 +632,25 @@
 <span class="sd">    </span>
 <span class="sd">    :Example:</span>
 <span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from crrlpy.models import rrlmod</span>
+<span class="sd">    </span>
 <span class="sd">    First define the range of parameters</span>
 <span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; Te = np.array([&#39;1d1&#39;, &#39;2d1&#39;, &#39;3d1&#39;, &#39;4d1&#39;, &#39;5d1&#39;, </span>
-<span class="sd">                       &#39;6d1&#39;, &#39;7d1&#39;, &#39;8d1&#39;, &#39;9d1&#39;, &#39;1d2&#39;, </span>
-<span class="sd">                       &#39;1.2d2&#39;, &#39;1.5d2&#39;, &#39;2d2&#39;, &#39;3d2&#39;, </span>
-<span class="sd">                       &#39;4d2&#39;, &#39;5d2&#39;, &#39;6d2&#39;, &#39;7d2&#39;, &#39;8d2&#39;, </span>
-<span class="sd">                       &#39;1d3&#39;, &#39;2d3&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; Te = np.array([&#39;1d1&#39;, &#39;2d1&#39;, &#39;3d1&#39;, &#39;4d1&#39;, &#39;5d1&#39;])</span>
 <span class="sd">    &gt;&gt;&gt; ne = np.arange(0.01,0.105,0.01)</span>
-<span class="sd">    &gt;&gt;&gt; Tr = np.array([800, 1200, 1600, 2000])</span>
+<span class="sd">    &gt;&gt;&gt; Tr = np.array([800])</span>
 <span class="sd">    </span>
 <span class="sd">    Put them in a dictionary</span>
 <span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; models = {&#39;Te&#39;:[t_ for t_ in Te for n_ in ne for tr_ in Tr],</span>
-<span class="sd">                  &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],</span>
-<span class="sd">                  &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) </span>
+<span class="sd">    &gt;&gt;&gt; models = {&#39;Te&#39;:[t_ for t_ in Te for n_ in ne for tr_ in Tr], \</span>
+<span class="sd">                  &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr], \</span>
+<span class="sd">                  &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) \</span>
 <span class="sd">                        for t_ in Te for n_ in ne for tr_ in Tr]}</span>
 <span class="sd">    </span>
 <span class="sd">    Load the models</span>
 <span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; bn = rrlmod.load_bn_dict(models, n_min=n_min, n_max=n_max, verbose=False)</span>
+<span class="sd">    &gt;&gt;&gt; bn = rrlmod.load_bn_dict(models, n_min=200, n_max=500, verbose=False)</span>
 <span class="sd">                                                       </span>
-<span class="sd">    Plot the first model</span>
-<span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; import pylab as plt</span>
-<span class="sd">    &gt;&gt;&gt; plt.plot(bn[0,0], bn[0,-1])</span>
-<span class="sd">    &gt;&gt;&gt; plt.show()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]),</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
@@ -697,33 +690,27 @@
 <span class="sd">    </span>
 <span class="sd">    :Example:</span>
 <span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; from crrlpy.models import rrlmod</span>
+<span class="sd">    </span>
 <span class="sd">    First define the range of parameters</span>
 <span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; Te = np.array([&#39;1d1&#39;, &#39;2d1&#39;, &#39;3d1&#39;, &#39;4d1&#39;, &#39;5d1&#39;, </span>
-<span class="sd">                       &#39;6d1&#39;, &#39;7d1&#39;, &#39;8d1&#39;, &#39;9d1&#39;, &#39;1d2&#39;, </span>
-<span class="sd">                       &#39;1.2d2&#39;, &#39;1.5d2&#39;, &#39;2d2&#39;, &#39;3d2&#39;, </span>
-<span class="sd">                       &#39;4d2&#39;, &#39;5d2&#39;, &#39;6d2&#39;, &#39;7d2&#39;, &#39;8d2&#39;, </span>
-<span class="sd">                       &#39;1d3&#39;, &#39;2d3&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; Te = np.array([&#39;1d1&#39;, &#39;2d1&#39;, &#39;3d1&#39;, &#39;4d1&#39;, &#39;5d1&#39;])</span>
 <span class="sd">    &gt;&gt;&gt; ne = np.arange(0.01,0.105,0.01)</span>
-<span class="sd">    &gt;&gt;&gt; Tr = np.array([800, 1200, 1600, 2000])</span>
+<span class="sd">    &gt;&gt;&gt; Tr = np.array([2000])</span>
 <span class="sd">    </span>
 <span class="sd">    Put them in a dictionary</span>
 <span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; models = {&#39;Te&#39;:[t_ for t_ in Te for n_ in ne for tr_ in Tr],</span>
-<span class="sd">                  &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],</span>
-<span class="sd">                  &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) </span>
+<span class="sd">    &gt;&gt;&gt; models = {&#39;Te&#39;:[t_ for t_ in Te for n_ in ne for tr_ in Tr], \</span>
+<span class="sd">                  &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr], \</span>
+<span class="sd">                  &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) \</span>
 <span class="sd">                        for t_ in Te for n_ in ne for tr_ in Tr]}</span>
 <span class="sd">    </span>
-<span class="sd">    Load the models</span>
+<span class="sd">    # Load the models</span>
 <span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; itau_mod = rrlmod.load_itau_dict(models, &#39;CIalpha&#39;, n_min=n_min, n_max=n_max, </span>
+<span class="sd">    &gt;&gt;&gt; itau_mod = rrlmod.load_itau_dict(models, &#39;CIalpha&#39;, n_min=250, n_max=300, \</span>
 <span class="sd">                                         verbose=False, value=&#39;itau&#39;)</span>
 <span class="sd">                                                       </span>
-<span class="sd">    Plot the first model</span>
 <span class="sd">    </span>
-<span class="sd">    &gt;&gt;&gt; import pylab as plt</span>
-<span class="sd">    &gt;&gt;&gt; plt.plot(itau_mod[0,0], itau_mod[0,1])</span>
-<span class="sd">    &gt;&gt;&gt; plt.show()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
@@ -1177,7 +1164,7 @@
 <span class="sd">    :Example:</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; str2val(&#39;2d2&#39;)</span>
-<span class="sd">    200</span>
+<span class="sd">    200.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">try</span><span class="p">:</span>
@@ -1270,7 +1257,11 @@
 <span class="sd">    Computes the :math:`\\chi_{n}` value as defined by Salgado et al. (2015).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">Ryd</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">Te</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">Ryd</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">Te</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
 </pre></div>
 
           </div>
