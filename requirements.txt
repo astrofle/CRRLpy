@@ -1,2 +1,2 @@
 astropy
-lmfit
+lmfit==0.8.0
