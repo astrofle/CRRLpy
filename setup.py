@@ -19,13 +19,13 @@ with open('requirements.txt') as f:
     reqs = f.read().splitlines()
 
 setup(name='CRRLpy',
-      version='0.1',
+      version='0.1.0b',
       description='Carbon Radio Recombination Line analysis',
       #url='http://github.com/storborg/funniest',
       author='Pedro Salas',
       author_email='psalas@strw.leidenuniv.nl',
       license='MIT',
-      packages=['crrlpy'],
+      packages=['crrlpy', 'crrlpy/models'],
       zip_safe=False,
       install_requires=reqs,
       cmdclass={'clean':CleanCommand})
