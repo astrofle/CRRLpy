@@ -24,8 +24,6 @@ from crrlpy import frec_calc as fc
 from astropy.constants import h, k_B, c, m_e, Ryd, e
 from astropy.analytic_functions import blackbody_nu
 from crrlpy.crrls import natural_sort, best_match_indx, f2n, n2f
-from mpmath import mp
-mp.dps = 50 
 
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
