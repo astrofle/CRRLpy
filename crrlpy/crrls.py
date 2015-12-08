@@ -1669,3 +1669,7 @@ def voigt_peak_err(peak, A, dA, alphaD, dalphaD):
     dpeak = abs(peak)*np.sqrt(np.power(dalphaD/alphaD, 2.) + np.power(dA/A, 2.))
     
     return dpeak
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

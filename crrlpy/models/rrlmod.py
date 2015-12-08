@@ -1221,3 +1221,7 @@ def chi(n, Te, Z):
     """
     
     return np.power(Z, 2.)*h*c*Ryd/(k_B*np.power(n, 2)*Te)
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
