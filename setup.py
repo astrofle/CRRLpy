@@ -1,6 +1,5 @@
 from setuptools import setup, Command
 import os
-from pip.req import parse_requirements
 
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
@@ -16,8 +15,8 @@ class CleanCommand(Command):
     #with open('README.rst') as f:
         #return f.read()
 
-install_reqs = parse_requirements('requirements.txt')
-reqs = [str(ir.req) for ir in install_reqs]
+with open('requirements.txt') as f:
+    reqs = f.read().splitlines()
 
 setup(name='CRRLpy',
       version='0.1',
