@@ -73,12 +73,31 @@
 <span class="kn">from</span> <span class="nn">crrlpy</span> <span class="kn">import</span> <span class="n">frec_calc</span> <span class="k">as</span> <span class="n">fc</span>
 <span class="kn">from</span> <span class="nn">astropy.constants</span> <span class="kn">import</span> <span class="n">h</span><span class="p">,</span> <span class="n">k_B</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">m_e</span><span class="p">,</span> <span class="n">Ryd</span><span class="p">,</span> <span class="n">e</span>
 <span class="kn">from</span> <span class="nn">astropy.analytic_functions</span> <span class="kn">import</span> <span class="n">blackbody_nu</span>
-<span class="kn">from</span> <span class="nn">crrlpy.crrls</span> <span class="kn">import</span> <span class="n">natural_sort</span><span class="p">,</span> <span class="n">best_match_indx2</span><span class="p">,</span> <span class="n">f2n</span><span class="p">,</span> <span class="n">n2f</span>
+<span class="kn">from</span> <span class="nn">crrlpy.crrls</span> <span class="kn">import</span> <span class="n">natural_sort</span><span class="p">,</span> <span class="n">best_match_indx</span><span class="p">,</span> <span class="n">f2n</span><span class="p">,</span> <span class="n">n2f</span>
 <span class="kn">from</span> <span class="nn">mpmath</span> <span class="kn">import</span> <span class="n">mp</span>
 <span class="n">mp</span><span class="o">.</span><span class="n">dps</span> <span class="o">=</span> <span class="mi">50</span> 
 
 <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
 
+<div class="viewcode-block" id="alpha_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.alpha_CII">[docs]</a><span class="k">def</span> <span class="nf">alpha_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the value of :math:`\\alpha_{1/2}`. </span>
+<span class="sd">    Sorochenko \\&amp; Tsivilev (2000).</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">92.</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span><span class="o">*</span><span class="n">R</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="beta_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.beta_CII">[docs]</a><span class="k">def</span> <span class="nf">beta_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the value of :math:`\\beta_{158}`. </span>
+<span class="sd">    Sorochenko \\&amp; Tsivilev (2000).</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">92.</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span><span class="o">*</span><span class="n">R</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="broken_plaw"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.broken_plaw">[docs]</a><span class="k">def</span> <span class="nf">broken_plaw</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">nu0</span><span class="p">,</span> <span class="n">T0</span><span class="p">,</span> <span class="n">alpha1</span><span class="p">,</span> <span class="n">alpha2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines a broken power law.</span>
@@ -111,6 +130,30 @@
     <span class="n">kc</span> <span class="o">=</span> <span class="n">kappa_cont</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="p">(</span><span class="n">kc</span> <span class="o">+</span> <span class="n">kl</span><span class="o">*</span><span class="n">bni</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">kc</span> <span class="o">+</span> <span class="n">kl</span><span class="o">*</span><span class="n">bnf</span><span class="o">*</span><span class="n">bnfni</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="gamma_e_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.gamma_e_CII">[docs]</a><span class="k">def</span> <span class="nf">gamma_e_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the de-excitation rate of the CII atom due to collisions with electrons.</span>
+<span class="sd">    </span>
+<span class="sd">    :param Te: Electron temperature.</span>
+<span class="sd">    :type Te: float</span>
+<span class="sd">    :returns: The collisional de-excitation rate in units of cm-3 s-1.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="mf">4.51e-6</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="gamma_h_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.gamma_h_CII">[docs]</a><span class="k">def</span> <span class="nf">gamma_h_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the de-excitation rate of the CII atom due to collisions with hydrogen atoms.</span>
+<span class="sd">    </span>
+<span class="sd">    :param Te: Electron temperature.</span>
+<span class="sd">    :type Te: float</span>
+<span class="sd">    :returns: The collisional de-excitation rate in units of cm-3 s-1.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="mf">5.8e-10</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="I_Bnu"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.I_Bnu">[docs]</a><span class="k">def</span> <span class="nf">I_Bnu</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">Inu_funct</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -179,6 +222,34 @@
     <span class="n">bnu_bpl</span> <span class="o">=</span> <span class="n">blackbody_nu</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Tbpl</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">bnu_bpl</span>
+</div>
+<div class="viewcode-block" id="I_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.I_CII">[docs]</a><span class="k">def</span> <span class="nf">I_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">NCII</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Frequency integrated line intensity.</span>
+<span class="sd">    Optically thin limit without radiative transfer.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: The frequency integrated line intensity in units of Jy Hz or g s-3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">nu0</span> <span class="o">=</span> <span class="mf">1900.53690</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">GHz</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="mf">2.4e-6</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**-</span><span class="mi">1</span>
+    
+    <span class="n">cte</span> <span class="o">=</span> <span class="n">h</span><span class="o">*</span><span class="n">nu0</span><span class="o">/</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="mf">2.</span>
+    
+    <span class="k">return</span> <span class="n">cte</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">91.21</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span><span class="o">*</span><span class="n">R</span><span class="o">*</span><span class="n">NCII</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">91.21</span><span class="o">/</span><span class="n">Te</span><span class="p">)</span><span class="o">*</span><span class="n">R</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="I_CII_rt"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.I_CII_rt">[docs]</a><span class="k">def</span> <span class="nf">I_CII_rt</span><span class="p">(</span><span class="n">wav</span><span class="p">,</span> <span class="n">dnu</span><span class="p">,</span> <span class="n">T158</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Frequency integrated line intensity.</span>
+<span class="sd">    Optically thin limit with radiative transfer.</span>
+<span class="sd">    </span>
+<span class="sd">    :returns: The frequency integrated line intensity in units of Jy Hz or g s-3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">nu0</span> <span class="o">=</span> <span class="mf">1900.53690</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">GHz</span>
+    <span class="n">cte</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">nu0</span><span class="o">*</span><span class="mf">1.06</span>
+    
+    <span class="k">return</span> <span class="n">cte</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">wav</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">dnu</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">92.</span><span class="o">/</span><span class="n">T158</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="I_cont"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.I_cont">[docs]</a><span class="k">def</span> <span class="nf">I_cont</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">I0</span><span class="p">,</span> <span class="n">unitless</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -265,7 +336,8 @@
 <span class="sd">    :param verbose: Verbose output?</span>
 <span class="sd">    :type verbose: bool</span>
 <span class="sd">    :param value: [&#39;itau&#39;|&#39;bbnMdn&#39;|&#39;None&#39;] Value to output. itau will output the integrated optical depth. \</span>
-<span class="sd">    bbnMdn will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` times the oscillator strenght :math:`M(\\Delta n)`.</span>
+<span class="sd">    bbnMdn will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` times the oscillator strenght :math:`M(\\Delta n)`. \</span>
+<span class="sd">    None will output the :math:`\\beta_{n,n^{\\prime}}b_{n}` values.</span>
 <span class="sd">    :type value: string</span>
 <span class="sd">    :returns: The principal quantum number and its asociated value.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -277,8 +349,8 @@
     <span class="n">mdn</span> <span class="o">=</span> <span class="n">Mdn</span><span class="p">(</span><span class="n">dn</span><span class="p">)</span>
     
     <span class="n">bbn</span> <span class="o">=</span> <span class="n">load_betabn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">verbose</span><span class="p">)</span>
-    <span class="n">nimin</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">n_min</span><span class="p">,</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">nimax</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">nimin</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">n_min</span><span class="p">,</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">nimax</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">bbn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">n</span> <span class="o">=</span> <span class="n">bbn</span><span class="p">[</span><span class="n">nimin</span><span class="p">:</span><span class="n">nimax</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">bbn</span><span class="p">[</span><span class="n">nimin</span><span class="p">:</span><span class="n">nimax</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
     
@@ -319,6 +391,15 @@
         <span class="n">i</span> <span class="o">=</span> <span class="n">b</span>
         
     <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="n">i</span>
+  </div>
+<div class="viewcode-block" id="itau_norad"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.itau_norad">[docs]</a><span class="k">def</span> <span class="nf">itau_norad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">te</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">mdn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the optical depth with only the approximate solution to the </span>
+<span class="sd">    radiative transfer problem.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="o">-</span><span class="mf">1.069e7</span><span class="o">*</span><span class="n">dn</span><span class="o">*</span><span class="n">mdn</span><span class="o">*</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.58e5</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">te</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">te</span><span class="p">,</span> <span class="mf">5.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="j_line_lte"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.j_line_lte">[docs]</a><span class="k">def</span> <span class="nf">j_line_lte</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">nion</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -414,8 +495,8 @@
     <span class="n">Anfni</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/rates/einstein_Anm_{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
     
     <span class="c"># Cut the Einstein Amn coefficients table to match the bn values</span>
-    <span class="n">i_bn_i</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">i_bn_f</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">i_bn_i</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">i_bn_f</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">bn</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">Anfni</span> <span class="o">=</span> <span class="n">Anfni</span><span class="p">[</span><span class="n">i_bn_i</span><span class="p">:</span><span class="n">i_bn_f</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
     
     <span class="n">ni</span> <span class="o">=</span> <span class="n">Anfni</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
@@ -479,52 +560,207 @@
 <span class="sd">    The return has units of :math:`\\mbox{cm}^{-3}`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="n">omega_ni</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">omega_ni</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span>
     <span class="n">omega_i</span> <span class="o">=</span> <span class="mf">1.</span>
     
     <span class="n">xi_n</span> <span class="o">=</span> <span class="n">xi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">)</span>
     
     <span class="n">exp_xi_n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">xi_n</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
     
-    <span class="n">Nn</span> <span class="o">=</span> <span class="n">ne</span><span class="o">*</span><span class="n">nion</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">m_e</span><span class="o">*</span><span class="n">k_B</span><span class="o">*</span><span class="n">Te</span><span class="p">),</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">*</span><span class="n">omega_ni</span><span class="o">/</span><span class="n">omega_i</span><span class="o">/</span><span class="mf">2.</span><span class="o">*</span><span class="n">exp_xi_n</span>
+    <span class="n">Nn</span> <span class="o">=</span> <span class="n">ne</span><span class="o">*</span><span class="n">nion</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">m_e</span><span class="o">*</span><span class="n">k_B</span><span class="o">*</span><span class="n">Te</span><span class="p">),</span> <span class="mf">1.5</span><span class="p">)</span><span class="o">*</span><span class="n">omega_ni</span><span class="o">/</span><span class="n">omega_i</span><span class="o">/</span><span class="mf">2.</span><span class="o">*</span><span class="n">exp_xi_n</span>
     
     <span class="k">return</span> <span class="n">Nn</span>
 </div>
-<div class="viewcode-block" id="load_itau_dict"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_itau_dict">[docs]</a><span class="k">def</span> <span class="nf">load_itau_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="load_bn_all"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_bn_all">[docs]</a><span class="k">def</span> <span class="nf">load_bn_all</span><span class="p">(</span><span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loads the models defined by dict.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]),</span><span class="mi">2</span><span class="p">,</span><span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
-    
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]):</span>
-        
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, Te={1}, Tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">t</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> 
-                          <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> 
-                          <span class="n">trans</span><span class="p">,</span>
-                          <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span>
-                          <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> 
-                          <span class="n">other</span><span class="o">=</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> 
-                          <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> 
-                          <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
-        
-        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
-        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
-    
-    <span class="n">te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">str2val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]))</span>
-    
-    <span class="k">return</span> <span class="p">[</span><span class="n">te</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">],</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">]</span>
-</div>
-<div class="viewcode-block" id="load_itau_all"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_itau_all">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all</span><span class="p">(</span><span class="n">trans</span><span class="o">=</span><span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loads all the available models for Carbon.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
     
-    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bn2/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">))</span>
+    <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
+    
+    <span class="n">models_tr</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]),</span> 
+                                              <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">5</span><span class="p">]),</span>
+                                              <span class="n">str2val</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">10</span><span class="p">])</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">17</span> <span class="k">else</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">models_tr</span>
+    
+    <span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">))</span>
+    <span class="n">Tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;|S20&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="p">),</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">models</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">model</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">str2val</span><span class="p">(</span><span class="n">st</span><span class="p">)</span>
+        <span class="n">sn</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">)</span>
+        <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">sn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">17</span><span class="p">:</span>
+            <span class="n">Tr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Tr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">8</span><span class="p">:</span><span class="mi">11</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, te={1}, tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Tr</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn2</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">sn</span><span class="p">,</span> <span class="n">Tr</span><span class="o">=</span><span class="n">Tr</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>
+        
+    <span class="k">return</span> <span class="p">[</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">Tr</span><span class="p">,</span> <span class="n">data</span><span class="p">]</span>
+  </div>
+<div class="viewcode-block" id="load_bn_dict"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_bn_dict">[docs]</a><span class="k">def</span> <span class="nf">load_bn_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the :math:`b_{n}` values defined by dict.</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict: Dictionary containing a list with values for Te, ne and Tr.</span>
+<span class="sd">    :type dict: dict</span>
+<span class="sd">    :param line: Which models should be loaded.</span>
+<span class="sd">    :type line: string</span>
+<span class="sd">    :param n_min: Minimum n number to include in the output.</span>
+<span class="sd">    :type n_min: int</span>
+<span class="sd">    :param n_max: Maximum n number to include in the output.</span>
+<span class="sd">    :type n_max: int</span>
+<span class="sd">    :param verbose: Verbose output?</span>
+<span class="sd">    :type verbose: bool</span>
+<span class="sd">    :returns: List with the :math:`b_{n}` values for the conditions defined by dict.</span>
+<span class="sd">    :rtype: numpy.array</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    First define the range of parameters</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; Te = np.array([&#39;1d1&#39;, &#39;2d1&#39;, &#39;3d1&#39;, &#39;4d1&#39;, &#39;5d1&#39;, </span>
+<span class="sd">                       &#39;6d1&#39;, &#39;7d1&#39;, &#39;8d1&#39;, &#39;9d1&#39;, &#39;1d2&#39;, </span>
+<span class="sd">                       &#39;1.2d2&#39;, &#39;1.5d2&#39;, &#39;2d2&#39;, &#39;3d2&#39;, </span>
+<span class="sd">                       &#39;4d2&#39;, &#39;5d2&#39;, &#39;6d2&#39;, &#39;7d2&#39;, &#39;8d2&#39;, </span>
+<span class="sd">                       &#39;1d3&#39;, &#39;2d3&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; ne = np.arange(0.01,0.105,0.01)</span>
+<span class="sd">    &gt;&gt;&gt; Tr = np.array([800, 1200, 1600, 2000])</span>
+<span class="sd">    </span>
+<span class="sd">    Put them in a dictionary</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; models = {&#39;Te&#39;:[t_ for t_ in Te for n_ in ne for tr_ in Tr],</span>
+<span class="sd">                  &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],</span>
+<span class="sd">                  &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) </span>
+<span class="sd">                        for t_ in Te for n_ in ne for tr_ in Tr]}</span>
+<span class="sd">    </span>
+<span class="sd">    Load the models</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; bn = rrlmod.load_bn_dict(models, n_min=n_min, n_max=n_max, verbose=False)</span>
+<span class="sd">                                                       </span>
+<span class="sd">    Plot the first model</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import pylab as plt</span>
+<span class="sd">    &gt;&gt;&gt; plt.plot(bn[0,0], bn[0,-1])</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]),</span> <span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]):</span>
+        
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Trying to load model: &quot;</span><span class="p">,</span>
+            <span class="k">print</span> <span class="s">&quot;ne={0}, Te={1}, Tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">t</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">bn</span> <span class="o">=</span> <span class="n">load_bn2</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> <span class="n">Tr</span><span class="o">=</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> 
+                      <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">4</span><span class="p">]</span>
+        
+    <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="load_itau_dict"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_itau_dict">[docs]</a><span class="k">def</span> <span class="nf">load_itau_dict</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads the models defined by dict.</span>
+<span class="sd">    </span>
+<span class="sd">    :param dict: Dictionary containing a list with values for Te, ne and Tr.</span>
+<span class="sd">    :type dict: dict</span>
+<span class="sd">    :param line: Which models should be loaded.</span>
+<span class="sd">    :type line: string</span>
+<span class="sd">    :param n_min: Minimum n number to include in the output.</span>
+<span class="sd">    :type n_min: int</span>
+<span class="sd">    :param n_max: Maximum n number to include in the output.</span>
+<span class="sd">    :type n_max: int</span>
+<span class="sd">    :param verbose: Verbose output?</span>
+<span class="sd">    :type verbose: bool</span>
+<span class="sd">    :param value: [&#39;itau&#39;|&#39;bbnMdn&#39;|None] Which value should be in the output.</span>
+<span class="sd">    :type value: string</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    First define the range of parameters</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; Te = np.array([&#39;1d1&#39;, &#39;2d1&#39;, &#39;3d1&#39;, &#39;4d1&#39;, &#39;5d1&#39;, </span>
+<span class="sd">                       &#39;6d1&#39;, &#39;7d1&#39;, &#39;8d1&#39;, &#39;9d1&#39;, &#39;1d2&#39;, </span>
+<span class="sd">                       &#39;1.2d2&#39;, &#39;1.5d2&#39;, &#39;2d2&#39;, &#39;3d2&#39;, </span>
+<span class="sd">                       &#39;4d2&#39;, &#39;5d2&#39;, &#39;6d2&#39;, &#39;7d2&#39;, &#39;8d2&#39;, </span>
+<span class="sd">                       &#39;1d3&#39;, &#39;2d3&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; ne = np.arange(0.01,0.105,0.01)</span>
+<span class="sd">    &gt;&gt;&gt; Tr = np.array([800, 1200, 1600, 2000])</span>
+<span class="sd">    </span>
+<span class="sd">    Put them in a dictionary</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; models = {&#39;Te&#39;:[t_ for t_ in Te for n_ in ne for tr_ in Tr],</span>
+<span class="sd">                  &#39;ne&#39;:[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],</span>
+<span class="sd">                  &#39;Tr&#39;:[&#39;case_diffuse_{0}&#39;.format(rrlmod.val2str(tr_)) </span>
+<span class="sd">                        for t_ in Te for n_ in ne for tr_ in Tr]}</span>
+<span class="sd">    </span>
+<span class="sd">    Load the models</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; itau_mod = rrlmod.load_itau_dict(models, &#39;CIalpha&#39;, n_min=n_min, n_max=n_max, </span>
+<span class="sd">                                         verbose=False, value=&#39;itau&#39;)</span>
+<span class="sd">                                                       </span>
+<span class="sd">    Plot the first model</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; import pylab as plt</span>
+<span class="sd">    &gt;&gt;&gt; plt.plot(itau_mod[0,0], itau_mod[0,1])</span>
+<span class="sd">    &gt;&gt;&gt; plt.show()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]),</span> <span class="mi">2</span><span class="p">,</span> <span class="n">n_max</span><span class="o">-</span><span class="n">n_min</span><span class="p">))</span>
+    
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Te&#39;</span><span class="p">]):</span>
+        
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, Te={1}, Tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> 
+                                                                        <span class="n">t</span><span class="p">,</span> 
+                                                                        <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="s">&#39;ne&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> 
+                          <span class="n">other</span><span class="o">=</span><span class="nb">dict</span><span class="p">[</span><span class="s">&#39;Tr&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+        
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">int_tau</span>
+        
+    <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="load_itau_all"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_itau_all">[docs]</a><span class="k">def</span> <span class="nf">load_itau_all</span><span class="p">(</span><span class="n">line</span><span class="o">=</span><span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Loads all the available models for Carbon.</span>
+<span class="sd">    </span>
+<span class="sd">    :param line: Which models should be loaded.</span>
+<span class="sd">    :type line: string</span>
+<span class="sd">    :param n_min: Minimum n number to include in the output.</span>
+<span class="sd">    :type n_min: int</span>
+<span class="sd">    :param n_max: Maximum n number to include in the output.</span>
+<span class="sd">    :type n_max: int</span>
+<span class="sd">    :param verbose: Verbose output?</span>
+<span class="sd">    :type verbose: bool</span>
+<span class="sd">    :param value: [&#39;itau&#39;|&#39;bbnMdn&#39;|None] Which value should be in the output.</span>
+<span class="sd">    :type value: string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
     <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
     <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
     
@@ -552,7 +788,7 @@
             <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)[</span><span class="mi">9</span><span class="p">:</span><span class="mi">12</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="k">print</span> <span class="s">&quot;Trying to load model: ne={0}, te={1}, tr={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Te</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> 
+        <span class="n">n</span><span class="p">,</span> <span class="n">int_tau</span> <span class="o">=</span> <span class="n">itau</span><span class="p">(</span><span class="n">st</span><span class="p">,</span> <span class="n">ne</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">line</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="n">n_min</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> 
                           <span class="n">other</span><span class="o">=</span><span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> 
                           <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
         <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
@@ -673,14 +909,6 @@
     
     <span class="k">return</span> <span class="n">load_models</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="n">n_max</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="itau_norad"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.itau_norad">[docs]</a><span class="k">def</span> <span class="nf">itau_norad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">te</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">mdn</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the optical depth with only the approximate solution to the </span>
-<span class="sd">    radiative transfer problem.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">return</span> <span class="o">-</span><span class="mf">1.069e7</span><span class="o">*</span><span class="n">dn</span><span class="o">*</span><span class="n">mdn</span><span class="o">*</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">1.58e5</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">te</span><span class="p">))</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">te</span><span class="p">,</span> <span class="mf">5.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
-</div>
 <div class="viewcode-block" id="load_betabn"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_betabn">[docs]</a><span class="k">def</span> <span class="nf">load_betabn</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">trans</span><span class="o">=</span><span class="s">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads a model for the CRRL emission.</span>
@@ -742,33 +970,44 @@
     
     <span class="k">return</span> <span class="n">data</span>
 </div>
-<div class="viewcode-block" id="load_bn2"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_bn2">[docs]</a><span class="k">def</span> <span class="nf">load_bn2</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="load_bn2"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_bn2">[docs]</a><span class="k">def</span> <span class="nf">load_bn2</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">Tr</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Loads the bn values from the CRRL models.</span>
+<span class="sd">    </span>
+<span class="sd">    :param Te: Electron temperature of the model.</span>
+<span class="sd">    :type Te: string</span>
+<span class="sd">    :param ne: Electron density of the model.</span>
+<span class="sd">    :type ne: string</span>
+<span class="sd">    :param Tr: Radiation field of the model.</span>
+<span class="sd">    :type Tr: string</span>
+<span class="sd">    :param verbose: Verbose output?</span>
+<span class="sd">    :type verbose: bool</span>
+<span class="sd">    :returns: The :math:`b_{n}` value for the given model conditions.</span>
+<span class="sd">    :rtype: array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
     
-    <span class="k">if</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">other</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
-        <span class="n">mod_file</span> <span class="o">=</span> <span class="s">&#39;bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">)</span>
-        <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
-        <span class="n">mod_file</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">Tr</span> <span class="o">==</span> <span class="s">&#39;-&#39;</span> <span class="ow">or</span> <span class="n">Tr</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="s">&#39;bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">mod_file</span> <span class="o">=</span> <span class="s">&#39;bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
-        <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
-        <span class="n">mod_file</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">temp</span><span class="p">,</span> <span class="n">dens</span><span class="p">,</span> <span class="n">other</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="s">&#39;bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">Tr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Loading {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+        <span class="n">mod_file</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">Tr</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
     
-    <span class="k">print</span> <span class="s">&quot;Loaded {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&quot;Loaded {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">mod_file</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">data</span>
+    <span class="n">nimin</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">n_min</span><span class="p">,</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">nimax</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">n_max</span><span class="p">,</span> <span class="n">bn</span><span class="p">[:,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">bn</span> <span class="o">=</span> <span class="n">bn</span><span class="p">[</span><span class="n">nimin</span><span class="p">:</span><span class="n">nimax</span><span class="p">]</span>
     
-    
-    <span class="c">#mod_file = &#39;{0}/bn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat{3}&#39;.format(LOCALDIR, temp, dens, other)</span>
-    
-    <span class="c">#data = np.loadtxt(mod_file)</span>
-    
-    <span class="c">#return data</span>
+    <span class="k">return</span> <span class="n">bn</span>
     </div>
 <div class="viewcode-block" id="load_models"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.load_models">[docs]</a><span class="k">def</span> <span class="nf">load_models</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s">&#39;itau&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -911,6 +1150,20 @@
     
     <span class="k">return</span> <span class="n">y0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="n">x0</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="R_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.R_CII">[docs]</a><span class="k">def</span> <span class="nf">R_CII</span><span class="p">(</span><span class="n">ne</span><span class="p">,</span> <span class="n">nh</span><span class="p">,</span> <span class="n">gamma_e</span><span class="p">,</span> <span class="n">gamma_h</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ratio between the fine structure level population of CII, and</span>
+<span class="sd">    the level population in LTE. It ignores the effect of collisions</span>
+<span class="sd">    with molecular hydrogen.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">A</span> <span class="o">=</span> <span class="mf">2.4e-6</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**-</span><span class="mi">1</span>
+    
+    <span class="n">neg</span> <span class="o">=</span> <span class="n">ne</span><span class="o">*</span><span class="n">gamma_e</span>
+    <span class="n">nhg</span> <span class="o">=</span> <span class="n">nh</span><span class="o">*</span><span class="n">gamma_h</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">neg</span> <span class="o">+</span> <span class="n">nhg</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">neg</span> <span class="o">+</span> <span class="n">nhg</span> <span class="o">+</span> <span class="n">A</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="str2val"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.str2val">[docs]</a><span class="k">def</span> <span class="nf">str2val</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a string representing a number to a float.</span>
@@ -935,6 +1188,39 @@
     
     <span class="k">return</span> <span class="n">val</span>
 </div>
+<div class="viewcode-block" id="T_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.T_CII">[docs]</a><span class="k">def</span> <span class="nf">T_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="mf">92.</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mf">92.</span><span class="o">/</span><span class="n">Te</span> <span class="o">+</span> <span class="n">tau</span><span class="p">)</span><span class="o">/</span><span class="n">R</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">tau</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span> <span class="p">))</span>
+</div>
+<div class="viewcode-block" id="tau_CII"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.tau_CII">[docs]</a><span class="k">def</span> <span class="nf">tau_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">nc</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">dnu</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the optical depth of the far infrared line of CII. Crawford et al. (1985).</span>
+<span class="sd">    </span>
+<span class="sd">    :param Te: Electron temperature.</span>
+<span class="sd">    :type Te: float</span>
+<span class="sd">    :param R: Ratio of collisional excitation to spontaneous emission.</span>
+<span class="sd">    :type R: float</span>
+<span class="sd">    :param nc: Ionized carbon number density.</span>
+<span class="sd">    :type nc: float</span>
+<span class="sd">    :param L: Path lenght.</span>
+<span class="sd">    :type L: float</span>
+<span class="sd">    :param dnu: Line width FWHM in Hz.</span>
+<span class="sd">    :type dnu: float</span>
+<span class="sd">    :returns:</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">A</span> <span class="o">=</span> <span class="mf">2.4e-6</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">**-</span><span class="mi">1</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="mf">1900.53690</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">GHz</span>
+    <span class="n">cte</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">8.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="mf">2.</span><span class="o">/</span><span class="mf">1.06</span>
+    
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">alpha_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="n">beta_CII</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">cte</span><span class="o">*</span><span class="n">alpha</span><span class="o">*</span><span class="n">beta</span><span class="o">*</span><span class="n">nc</span><span class="o">*</span><span class="n">L</span><span class="o">/</span><span class="n">dnu</span>
+</div>
 <div class="viewcode-block" id="val2str"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.val2str">[docs]</a><span class="k">def</span> <span class="nf">val2str</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Converts a float to the string format required for loading the CRRL models.</span>
@@ -958,14 +1244,14 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="s">&quot;{0}d{1:.0f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
     </div>
-<div class="viewcode-block" id="valid_ne"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.valid_ne">[docs]</a><span class="k">def</span> <span class="nf">valid_ne</span><span class="p">(</span><span class="n">trans</span><span class="p">):</span>
+<div class="viewcode-block" id="valid_ne"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.valid_ne">[docs]</a><span class="k">def</span> <span class="nf">valid_ne</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Checks all the available models and lists the available ne values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
     
-    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">trans</span><span class="p">))</span>
+    <span class="n">models</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s">&#39;{0}/bbn2_{1}/*&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
     <span class="n">natural_sort</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
     <span class="n">models</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">models</span><span class="p">)</span>
     
@@ -979,8 +1265,9 @@
     
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">ne</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="xi"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.xi">[docs]</a><span class="k">def</span> <span class="nf">xi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
+<div class="viewcode-block" id="chi"><a class="viewcode-back" href="../../../index.html#crrlpy.models.rrlmod.chi">[docs]</a><span class="k">def</span> <span class="nf">chi</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">Z</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the :math:`\\chi_{n}` value as defined by Salgado et al. (2015).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">h</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">Ryd</span><span class="o">/</span><span class="p">(</span><span class="n">k_B</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">Te</span><span class="p">)</span></div>

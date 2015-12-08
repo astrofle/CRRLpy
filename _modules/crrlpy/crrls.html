@@ -116,7 +116,7 @@
         
         <span class="k">return</span> <span class="n">avg_tmp</span>
 </div>
-<div class="viewcode-block" id="best_match_indx"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_indx">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
+<div class="viewcode-block" id="best_match_indx_tol"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_indx_tol">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx_tol</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Searchs for the best match to a value inside an array given a tolerance.</span>
 <span class="sd">    </span>
@@ -144,7 +144,7 @@
         <span class="c">#return upp[0]</span>
     <span class="k">return</span> <span class="n">out</span>
     </div>
-<div class="viewcode-block" id="best_match_indx2"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_indx2">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx2</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+<div class="viewcode-block" id="best_match_indx"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_indx">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Searchs for the index of the closest entry to value inside an array.</span>
 <span class="sd">    </span>
@@ -158,7 +158,7 @@
 <span class="sd">    :Example:</span>
 <span class="sd">    </span>
 <span class="sd">    &gt;&gt;&gt; a = [1,2,3,4]</span>
-<span class="sd">    &gt;&gt;&gt; best_match_indx2(3, a)</span>
+<span class="sd">    &gt;&gt;&gt; best_match_indx(3, a)</span>
 <span class="sd">    2</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -483,7 +483,10 @@
     <span class="k">if</span> <span class="n">mask</span><span class="p">:</span>
         <span class="n">mx</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
         <span class="n">my</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="o">~</span><span class="n">mask</span><span class="p">]</span>
-    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mx</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">my</span> <span class="o">=</span> <span class="n">y</span>
+        
     <span class="k">if</span> <span class="ow">not</span> <span class="n">wy</span><span class="p">:</span>
         <span class="n">wy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">mx</span><span class="p">))</span>
         
@@ -692,7 +695,7 @@
     
     <span class="n">df</span> <span class="o">=</span> <span class="n">dv2df</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="n">dv</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span>
     <span class="n">df_chan</span> <span class="o">=</span> <span class="n">get_min_sep</span><span class="p">(</span><span class="n">freq</span><span class="p">)</span>
-    <span class="n">f0_indx</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
+    <span class="n">f0_indx</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="n">freq</span><span class="p">)</span>
 
     <span class="n">f_mini</span> <span class="o">=</span> <span class="n">f0_indx</span> <span class="o">-</span> <span class="n">df</span><span class="o">/</span><span class="n">df_chan</span>
     <span class="k">if</span> <span class="n">f_mini</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -884,7 +887,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">qns</span><span class="p">,</span> <span class="n">freqs</span> <span class="o">=</span> <span class="n">load_ref</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span>
-    <span class="n">indx</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">qns</span><span class="p">)</span>
+    <span class="n">indx</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">qns</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">freqs</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
 </div>
@@ -1183,7 +1186,7 @@
           <span class="mi">800</span><span class="p">,</span> <span class="mi">900</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span>
           <span class="mi">6000</span><span class="p">,</span> <span class="mi">7000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">9000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">,</span> <span class="mi">20000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">]</span>
     
-    <span class="n">te_indx</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">te</span><span class="p">)</span>
+    <span class="n">te_indx</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="n">te</span><span class="p">)</span>
     
     <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">10.974098</span><span class="p">,</span>           
          <span class="o">-</span><span class="mf">10.669695</span><span class="p">,</span>
@@ -1262,6 +1265,7 @@
 <div class="viewcode-block" id="radiation_broad"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.radiation_broad">[docs]</a><span class="k">def</span> <span class="nf">radiation_broad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">Tr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Radiation induced broadening in Hz.</span>
+<span class="sd">    Shaver (1975)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="mf">8e-17</span><span class="o">*</span><span class="n">W</span><span class="o">*</span><span class="n">Tr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">5.8</span><span class="p">)</span>
@@ -1433,11 +1437,11 @@
         <span class="n">sspec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">tgrid</span><span class="p">,</span> <span class="n">ngrid</span><span class="p">)</span>
         <span class="n">svel</span> <span class="o">=</span> <span class="n">vgrid</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sspec</span><span class="p">)]</span>
         <span class="n">sspec</span> <span class="o">=</span> <span class="n">sspec</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sspec</span><span class="p">)]</span>
-        <span class="n">vii</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
-        <span class="n">vfi</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
+        <span class="n">vii</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
+        <span class="n">vfi</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
         <span class="n">rmsl</span> <span class="o">=</span> <span class="n">get_rms</span><span class="p">(</span><span class="n">sspec</span><span class="p">[</span><span class="n">vii</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">vfi</span><span class="p">])</span>
-        <span class="n">vii</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
-        <span class="n">vfi</span> <span class="o">=</span> <span class="n">best_match_indx2</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
+        <span class="n">vii</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
+        <span class="n">vfi</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">vmax</span><span class="p">,</span> <span class="n">svel</span><span class="p">)</span>
         <span class="n">rmsr</span> <span class="o">=</span> <span class="n">get_rms</span><span class="p">(</span><span class="n">sspec</span><span class="p">[</span><span class="n">vii</span><span class="p">:</span><span class="n">vfi</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">crms</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">rmsl</span><span class="p">,</span> <span class="n">rmsr</span><span class="p">)</span>
         <span class="n">snr</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">sspec</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span><span class="o">/</span><span class="n">crms</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
@@ -1511,18 +1515,18 @@
 </div>
 <div class="viewcode-block" id="tryint"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.tryint">[docs]</a><span class="k">def</span> <span class="nf">tryint</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns True if `str` is an integer.</span>
+<span class="sd">    Returns an integer if `str` can be represented as one.</span>
 <span class="sd">    </span>
 <span class="sd">    :param str: String to check.</span>
 <span class="sd">    :type str: string</span>
 <span class="sd">    :returns: True is str can be cast to an int.</span>
-<span class="sd">    :rtype: bool</span>
+<span class="sd">    :rtype: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">s</span>
+        <span class="k">return</span> <span class="nb">str</span>
 </div>
 <div class="viewcode-block" id="vel2freq"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.vel2freq">[docs]</a><span class="k">def</span> <span class="nf">vel2freq</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">vel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1646,7 +1650,7 @@
     <span class="n">dT2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">ddD</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dL</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="mi">2</span><span class="p">)),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">dT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dT1</span> <span class="o">+</span> <span class="n">dT2</span><span class="p">)</span>
     
-    <span class="n">dT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dT</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">f</span><span class="o">*</span><span class="n">line_width</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">dL</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
+    <span class="n">dT</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dT</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">f</span><span class="o">*</span><span class="n">voigt_fwhm</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="n">dL</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
     
     <span class="k">return</span> <span class="n">dT</span>
 </div>
