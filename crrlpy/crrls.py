@@ -31,8 +31,8 @@ def alphanum_key(s):
     
     :Example:
     
-    >>> alphanum_key("z23a")
-    ["z", 23, "a"]
+    >>> alphanum_key('z23a')
+    ['z', 23, 'a']
     
     """
     return [ tryint(c) for c in re.split('([0-9]+)', s) ]
@@ -348,12 +348,13 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     
     :Example:
     
+    >>> from crrlpy import crrls
     >>> freq = [10, 11]
     >>> ns, rf = crrls.find_lines_sb(freq, 'CIalpha')
     >>> ns
     array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,
-        852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,
-        861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])
+            852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,
+            861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])
     """
     
     # Load the reference frequencies.
@@ -883,7 +884,7 @@ def mask_outliers(data, m=2):
     
     >>> data = [1,2,3,4,5,6]
     >>> mask_outliers(data, m=1)
-    array([ True, False, False, False, False,  True], dtype=bool)    
+    array([ True, False, False, False, False,  True], dtype=bool)
     """
     
     return abs(data - np.median(data)) > m*np.std(data)
