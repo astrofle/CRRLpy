@@ -13,12 +13,11 @@ if not havedisplay:
 import pylab as plt
 import numpy as np
 
-from astropy.constants import k_B
 from lmfit import Model
 from lmfit.models import VoigtModel, ConstantModel, GaussianModel, PolynomialModel, PowerLawModel
 from scipy.special import wofz
 from scipy import interpolate
-from scipy.constants import c
+from astropy.constants import c, k_B
 from frec_calc import set_dn, make_line_list
 
 def alphanum_key(s):
@@ -211,7 +210,7 @@ def df2dv(f0, df):
     :rtype: float in Hz
     """
     
-    return c*(df/f0)
+    return c.to('m/s').value*(df/f0)
 
 def dv2df(f0, dv):
     """
@@ -225,7 +224,7 @@ def dv2df(f0, dv):
     :rtype: float in :math:`\mbox{m s}^{-1}`
     """
     
-    return dv*f0/c
+    return dv*f0/c.to('m/s').value
 
 def dv_minus_doppler(dV, ddV, dD, ddD):
     """
@@ -458,7 +457,7 @@ def freq2vel(f0, f):
     :rtype: numpy array
     """
     
-    return c*(1. - f/f0)
+    return c.to('m/s').value*(1. - f/f0)
 
 def fwhm2sigma(fwhm):
     """
@@ -709,6 +708,21 @@ def is_number(str):
         return True
     except ValueError:
         return False
+
+def lambda2vel(wav0, wav):
+    """
+    Convert a wavelength axis to a velocity axis given a rest wavelength.
+    Uses the optical definition of velocity.
+    
+    :param wav0: Rest frequency for the conversion.)
+    :type wav0: float
+    :param wav: Frequencies to be converted to velocity.
+    :type wav: numpy array
+    :returns: Velocity. (Default: m/s)
+    :rtype: numpy array
+    """
+    
+    return c*(wav/wav0 - 1.)
 
 def linear(x, a, b):
     """
@@ -1492,7 +1506,7 @@ def vel2freq(f0, vel):
     :rtype: float or array
     """
     
-    return f0*(1. - vel/c)
+    return f0*(1. - vel/c.to('m/s').value)
 
 def voigt_(x, y):
     # The Voigt function is also the real part of 

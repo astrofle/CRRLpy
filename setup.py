@@ -2,7 +2,10 @@ from setuptools import setup, Command
 import os
 
 class CleanCommand(Command):
-    """Custom clean command to tidy up the project root."""
+    """
+    Custom clean command to tidy up the project root.
+    """
+    
     user_options = []
     def initialize_options(self):
         pass

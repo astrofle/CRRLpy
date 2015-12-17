@@ -35,7 +35,17 @@ def alpha_CII(Te, R):
     
     """
     
-    return 1./(1. + 2.*np.exp(-92./Te)*R)
+    return (1. + R)/(1. + R + 2.*np.exp(-91.21/Te))
+  
+def alpha_CII_mod(Te, R):
+    """
+    Computes the value of :math:`\\alpha_{1/2}`. 
+    Sorochenko \\& Tsivilev (2000).
+    
+    
+    """
+    
+    return R/(R + 2.*np.exp(-91.21/Te))
 
 def beta_CII(Te, R):
     """
@@ -44,7 +54,16 @@ def beta_CII(Te, R):
     
     """
     
-    return 1./(1. - np.exp(-92./Te)*R)
+    return 1. - np.exp(-91.21/Te)/(1. + R)
+
+def beta_CII_mod(Te, R):
+    """
+    Computes the value of :math:`\\beta_{158}`. 
+    Sorochenko \\& Tsivilev (2000).
+    
+    """
+    
+    return 1. - np.exp(-91.21/Te)/R
 
 def broken_plaw(nu, nu0, T0, alpha1, alpha2):
     """
@@ -171,7 +190,7 @@ def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
     
     return bnu_bpl
 
-def I_CII(Te, R, NCII):
+def I_CII(T158, R, NCII):
     """
     Frequency integrated line intensity.
     Optically thin limit without radiative transfer.
@@ -184,7 +203,7 @@ def I_CII(Te, R, NCII):
     
     cte = h*nu0/(4.*np.pi)*A*2.
     
-    return cte*np.exp(-91.21/Te)*R*NCII/(1. + 2.*np.exp(-91.21/Te)*R)
+    return cte*np.exp(-91.21/T158)*R*NCII/(1. + 2.*np.exp(-91.21/T158)*R)
 
 def I_CII_rt(wav, dnu, T158):
     """
@@ -197,7 +216,7 @@ def I_CII_rt(wav, dnu, T158):
     nu0 = 1900.53690*u.GHz
     cte = 2*h*nu0*1.06
     
-    return cte/np.power(wav, 2.)*dnu/(np.exp(92./T158) - 1.)
+    return cte/np.power(wav, 2.)*dnu/(np.exp(91.21/T158) - 1.)
 
 def I_cont(nu, Te, tau, I0, unitless=False):
     """
@@ -1097,7 +1116,21 @@ def R_CII(ne, nh, gamma_e, gamma_h):
     neg = ne*gamma_e
     nhg = nh*gamma_h
     
-    return (neg + nhg)/(neg + nhg + A)
+    return A/(neg + nhg)
+
+def R_CII_mod(ne, nh, gamma_e, gamma_h):
+    """
+    Ratio between the fine structure level population of CII, and
+    the level population in LTE. It ignores the effect of collisions
+    with molecular hydrogen.
+    """
+    
+    A = 2.4e-6*u.s**-1
+    
+    neg = ne*gamma_e
+    nhg = nh*gamma_h
+    
+    return (A + neg + nhg)/(neg + nhg)
 
 def str2val(str):
     """
@@ -1123,13 +1156,25 @@ def str2val(str):
     
     return val
 
-def T_CII(Te, tau, R):
+def T_CII(Tex, tau, R):
     """
     """
     
-    return 92./(np.log( (np.exp(92./Te + tau)/R - 1.)/(np.exp(tau) - 1.) ))
+    return 91.21/(np.log( (np.exp(91.21/Tex)*np.exp(tau) - 1.)/(np.exp(tau) - 1.) ))
 
-def tau_CII(Te, R, nc, L, dnu):
+def T_CII_mod(Te, tau, R):
+    """
+    """
+    
+    return 91.21/(np.log( (np.exp(91.21/Te)*np.exp(tau)*R - 1.)/(np.exp(tau) - 1.) ))
+
+def T_ex_CII(Te, R):
+    """
+    """
+    
+    return 91.21*Te/(91.21 + Te*np.log(1. + R))
+
+def tau_CII(Te, R, nc, L, dnu, alpha, beta):
     """
     Computes the optical depth of the far infrared line of CII. Crawford et al. (1985).
     
@@ -1150,9 +1195,6 @@ def tau_CII(Te, R, nc, L, dnu):
     A = 2.4e-6*u.s**-1
     nu = 1900.53690*u.GHz
     cte = np.power(c, 2.)/(8.*np.pi*np.power(nu, 2.))*A*2./1.06
-    
-    alpha = alpha_CII(Te, R)
-    beta = beta_CII(Te, R)
     
     return cte*alpha*beta*nc*L/dnu
 
