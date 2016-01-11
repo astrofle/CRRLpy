@@ -37,31 +37,36 @@ def make_rms_list(spec, output, transitions, z, dv, mode, f_col, y_col):
             y = data[:,y_col]
             
             # Catch NaNs and invalid values:
-            mask_x = np.ma.masked_equal(x, 1.0).mask
+            mask_x0 = np.ma.masked_equal(x, 1.0).mask
+            mask_x1 = np.isnan(x)
             mask_y = np.isnan(y)
-            mask = np.array(reduce(np.logical_or, [mask_x, mask_y]))
+            mask = np.array(reduce(np.logical_or, [mask_x0, mask_x1, mask_y]))
             
             # Remove NaNs and invalid values
-            x = x[~mask]
-            y = y[~mask]
+            mx = x[~mask]
+            my = y[~mask]
             
-            trans = transitions.split(',')
-            bf = []
-            for o,t in enumerate(trans):
-                n, f = crrls.find_lines_sb(x, t, z)
-                bf.append(list(f))
-            if len(bf) > 0:
-                bf = np.array(list(_f for _bf in bf for _f in _bf))
-                x_lf, y_lf = crrls.blank_lines2(x, y, bf, dv)
+            if len(x) > 0:
+            
+                trans = transitions.split(',')
+                bf = []
+                for o,t in enumerate(trans):
+                    n, f = crrls.find_lines_sb(mx, t, z)
+                    bf.append(list(f))
+                if len(bf) > 0:
+                    bf = np.array(list(_f for _bf in bf for _f in _bf))
+                    x_lf, y_lf = crrls.blank_lines2(mx, my, bf, dv)
+                else:
+                    x_lf, y_lf = mx,my
+            
             else:
-                x_lf, y_lf = x,y
-            
+                pass
             rms = crrls.get_rms(y_lf)
             
             mrms = set_weight(mode, rms)
             
             # Get the SB frequency
-            freq = np.mean(x)
+            freq = np.mean(mx)
                 
             log.write("{0}  {1}   {2}\n".format(s, mrms, freq))  
         

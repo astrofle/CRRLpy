@@ -63,8 +63,9 @@ def stack_interpol(spec, output, vmax, vmin, dv, x_col, y_col, weight, weight_li
                                                     bounds_error=False,
                                                     fill_value=0.0)
                     y_aux += interp_y(xgrid)
-                else:
-                    y_aux[crrls.best_match_indx(x[rng], xgrid, dv/2.0)] += y[rng]
+                elif not np.isnan(x[rng]):
+                    #print x[rng]
+                    y_aux[crrls.best_match_indx(x[rng], xgrid)] += y[rng]                    
         else:
             #print "slice: {0}".format(valid)
             interp_y = interpolate.interp1d(x[valid], y[valid],

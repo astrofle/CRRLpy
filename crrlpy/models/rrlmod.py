@@ -669,7 +669,7 @@ def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau')
     :type n_max: int
     :param verbose: Verbose output?
     :type verbose: bool
-    :param value: ['itau'|'bbnMdn'|None] Which value should be in the output.
+    :param value: ['itau'\|'bbnMdn'\|None] Which value should be in the output.
     :type value: string
     
     :Example:
@@ -725,7 +725,7 @@ def load_itau_all(line='CIalpha', n_min=5, n_max=1000, verbose=False, value='ita
     :type n_max: int
     :param verbose: Verbose output?
     :type verbose: bool
-    :param value: ['itau'|'bbnMdn'|None] Which value should be in the output.
+    :param value: ['itau'\|'bbnMdn'\|None] Which value should be in the output.
     :type value: string
     """
     

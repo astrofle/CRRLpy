@@ -115,7 +115,7 @@ def best_match_indx(value, array):
     array = np.array(array)
     subarr = abs(array - value)
     subarrmin = subarr.min()
-    
+        
     return np.where(subarr == subarrmin)[0][0]
 
 def best_match_value(value, array):
@@ -185,9 +185,11 @@ def blank_lines2(freq, tau, reffreqs, dv):
     :param dv: Velocity range to blank around the lines. (km/s)
     :type dv: float
     """
+    
     try:
         for ref in reffreqs:
             #print "#freq: {0} #tau: {1}".format(len(freq), len(tau))
+            #print "reffreq: {0}".format(ref)
             lm0, lmf = get_line_mask2(freq, ref, dv)
             freq = np.concatenate((freq[:lm0], freq[lmf:]))
             tau = np.concatenate((tau[:lm0], tau[lmf:]))
@@ -645,7 +647,7 @@ def get_line_mask2(freq, reffreq, dv):
     
     df = dv2df(reffreq, dv*1e3)
     df_chan = get_min_sep(freq)
-    f0_indx = best_match_indx(reffreq, freq)
+    f0_indx = best_match_indx(reffreq, np.asarray(freq))
 
     f_mini = f0_indx - df/df_chan
     if f_mini < 0:

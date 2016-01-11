@@ -34,21 +34,30 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         # Turn NaNs to zeros
         my = np.ma.masked_invalid(y)
         mx = np.ma.masked_where(np.ma.getmask(my), x)
-        np.ma.set_fill_value(my, 0)
-        np.ma.set_fill_value(mx, 0)
-        gx = mx.compressed()
-        gy = my.compressed()
+        mmx = np.ma.masked_invalid(mx)
+        mmy = np.ma.masked_where(np.ma.getmask(mmx), my)
+        np.ma.set_fill_value(mmy, 0)
+        np.ma.set_fill_value(mmx, 0)
+        gx = mmx.compressed()
+        gy = mmy.compressed()
         
         # Use a polynomial to remove the baseline
+        #print gx
+        #print gy
         bp = np.polynomial.polynomial.polyfit(gx, gy, order)
         # Interpolate and extrapolate to the original x axis
         b = np.polynomial.polynomial.polyval(x, bp)
         
+        # Flag NaN values in the baseline
+        mb = np.ma.masked_invalid(b)
+        mb.fill_value = 0.0
+        
         if median:
             # Only keep the baseline shape
-            gb = b - np.median(b)
+            gb = mb - np.median(mb.compressed())
+            #print np.median(mb.compressed())
         else:
-            gb = b
+            gb = mb
 
         if save:
             np.savetxt('{0}_{1}.ascii'.format(baseline, sb), 

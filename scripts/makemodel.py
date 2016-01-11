@@ -100,18 +100,43 @@ def main(spec, output, plot):
     pars['V2_alphaL'].set(value=1, vary=True, min=0)
     
     # Fit the model using a weight
-    fit = mod.fit(my, pars, nu=mx, weights=mw)
-    
-    fit1 = Voigt(mx, fit.params['V1_alphaD'].value, fit.params['V1_alphaL'].value, 
-                 fit.params['V1_nu_0'].value, fit.params['V1_A'].value, fit.params['V1_a'].value, 0)
-    fit2 = Voigt(mx, fit.params['V2_alphaD'].value, fit.params['V2_alphaL'].value, 
-                 fit.params['V2_nu_0'].value, fit.params['V2_A'].value, 0, 0)
-    fit3 = fit.best_fit
-    mody = np.array([fit1, fit2, fit3])
+    #print len(my), len(mx)
     modx = np.array([mx, mx, mx])
+    
+    try:
+        fit = mod.fit(my, pars, nu=mx, weights=mw)
+        fit1 = Voigt(mx, fit.params['V1_alphaD'].value, fit.params['V1_alphaL'].value, 
+                     fit.params['V1_nu_0'].value, fit.params['V1_A'].value, 
+                     fit.params['V1_a'].value, 0)
+        fit2 = Voigt(mx, fit.params['V2_alphaD'].value, fit.params['V2_alphaL'].value, 
+                     fit.params['V2_nu_0'].value, fit.params['V2_A'].value, 0, 0)
+        fit3 = fit.best_fit
+        mody = np.array([fit1, fit2, fit3])
+        bfit = fit.best_fit
+    except TypeError:
+        bfit = np.zeros(mx.shape)
+        mody = np.zeros(modx.shape)
+        
+    
+    
+    #fit1 = Voigt(mx, fit.params['V1_alphaD'].value, fit.params['V1_alphaL'].value, 
+                 #fit.params['V1_nu_0'].value, fit.params['V1_A'].value, fit.params['V1_a'].value, 0)
+    #fit2 = Voigt(mx, fit.params['V2_alphaD'].value, fit.params['V2_alphaL'].value, 
+                 #fit.params['V2_nu_0'].value, fit.params['V2_A'].value, 0, 0)
+    #fit3 = fit.best_fit
+    #mody = np.array([fit1, fit2, fit3])
+    #modx = np.array([mx, mx, mx])
+    
+    if len(mx) == 0:
+        mx = np.zeros(10)
+        my = np.zeros(10)
+        bfit = np.zeros(10)
+        modx = np.array([mx, mx, mx])
+        mody = np.zeros(modx.shape)
+    
     crrls.plot_model(mx, my, modx, mody, plot)
     
-    np.savetxt(output, np.c_[mx, fit.best_fit])
+    np.savetxt(output, np.c_[mx, bfit])
 
 if __name__ == '__main__':
     
