@@ -8,4 +8,7 @@ The documentation can be found in: `http://astrofle.github.io/CRRLpy/ <http://as
 
 .. image:: https://travis-ci.org/astrofle/CRRLpy.svg?branch=master
     :target: https://travis-ci.org/astrofle/CRRLpy
+    
+.. image:: https://zenodo.org/badge/19820/astrofle/CRRLpy.svg
+   :target: https://zenodo.org/badge/latestdoi/19820/astrofle/CRRLpy
 
