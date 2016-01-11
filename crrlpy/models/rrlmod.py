@@ -47,6 +47,23 @@ def alpha_CII_mod(Te, R):
     
     return R/(R + 2.*np.exp(-91.21/Te))
 
+def betabn_approx(Te, ne, Tr, coefs):
+    """
+    Approximates :math:`b_{n}\\beta_{n^{\\prime}n}` given a set of coefficients.
+    Uses Equations (5) and (B1)-(B5) of Salas et al. (2016).
+    """
+    
+    a0 = coefs[0] + coefs[1]*Tr + coefs[2]*np.power(Tr, 2.)
+    a1 = coefs[3] + coefs[4]*Tr
+    b0 = coefs[5] + coefs[6]*Tr + coefs[7]*np.power(Tr, 2.)
+    b1 = coefs[8] + coefs[9]*Tr + coefs[10]*np.power(Tr, 2.)
+    c0 = coefs[11] + coefs[12]*Tr + coefs[13]*np.power(Tr, 2.)
+    c1 = coefs[14] + coefs[15]*Tr + coefs[16]*np.power(Tr, 2.)
+    
+    bnbeta = (a0 + a1*Te)/np.power((b0 + b1*Te)/ne + 1., c0 + c1*Te)
+    
+    return bnbeta
+    
 def beta_CII(Te, R):
     """
     Computes the value of :math:`\\beta_{158}`. 
@@ -1131,6 +1148,20 @@ def R_CII_mod(ne, nh, gamma_e, gamma_h):
     nhg = nh*gamma_h
     
     return (A + neg + nhg)/(neg + nhg)
+
+def models_dict(Te, ne, Tr):
+    """
+    Creates a dict for loading models given arrays with ne, Te and Tr.
+    """
+    
+    models = {'Te':np.array([t for t in Te for n in ne for tr in Tr]),
+              'Te_v':np.array([round(str2val(t)) for t in Te for n in ne for tr in Tr]),
+              'ne':np.array([round(n,3) for t in Te for n in ne for tr in Tr]),
+              'Tr':np.array(['case_diffuse_{0}'.format(val2str(tr)) \
+                             if tr!= 0 else '-' for t in Te for n in ne for tr in Tr]),
+              'Tr_v':np.array([tr if tr!= 0 else '-' for t in Te for n in ne for tr in Tr])}
+              
+    return models
 
 def str2val(str):
     """

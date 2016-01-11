@@ -13,6 +13,12 @@ def sci_notation(number, sig_fig=2):
 
 def str2bool(str):
     """
+    Converts a string to a boolean value. The conversion is case insensitive.
+    
+    :param str: string to convert.
+    :type str: string
+    :returns: True if str is one of: "yes", "y", "true", "t" or "1".
+    :rtype: bool
     """
     
-    return str.lower() in ("yes", "true", "t", "1")
+    return str.lower() in ("yes", "y", "true", "t", "1")
