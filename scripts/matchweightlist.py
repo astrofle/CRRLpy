@@ -26,7 +26,7 @@ def match_weights(weights, lines, output, dup=False):
     """
     """
     
-    wl = np.loadtxt(weights, dtype='|S99,<f10')
+    wl = np.loadtxt(weights, dtype='|S99,f8')
     ll = np.loadtxt(lines, dtype='|S99')
     
     with open(output, 'w') as log:
