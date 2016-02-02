@@ -214,6 +214,13 @@ def df2dv(f0, df):
     
     return c.to('m/s').value*(df/f0)
 
+def dsigma2dfwtm(dsigma):
+    """
+    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWTM.
+    """
+    
+    return dsigma*2.*np.sqrt(2.*np.log(10.))
+
 def dv2df(f0, dv):
     """
     Convert a velocity delta to a frequency delta given a central frequency.
@@ -521,6 +528,27 @@ def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     
     return np.sqrt(err1 + err2)
 
+def gauss_area2peak(amplitude, sigma):
+    """
+    Returns the maximum value of a Gaussian function given its
+    amplitude and standard deviation "math:`\\sigma`.
+    
+    """
+    
+    return amplitude/sigma/np.sqrt(2.*np.pi)
+
+def gauss_area2peak_err(peak, amplitude, damplitude, sigma, dsigma):
+    """
+    Returns the maximum value of a Gaussian function given its
+    amplitude and standard deviation "math:`\\sigma`.
+    
+    """
+    
+    err1 = peak/amplitude*damplitude
+    err2 = peak/sigma*dsigma
+    
+    return np.sqrt(np.power(err1, 2.) + np.power(err2, 2.))
+
 def gaussian(x, sigma, center, amplitude):
     """
     Gaussian function in one dimension.
@@ -537,7 +565,7 @@ def gaussian(x, sigma, center, amplitude):
     :rtype: array
     """
     
-    return amplitude*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
+    return amplitude/(sigma*np.sqrt(2.*np.pi))*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
 
 def get_axis(header, axis):
     """
@@ -1257,7 +1285,7 @@ def radiation_broad_salgado_general(n, W, Tr, nu0, alpha):
     cte = 2./np.pi*2.14e4*np.power(6.578e15/nu0, alpha + 1.)*k_B.cgs.value*nu0
     dnexp = alpha - 2.
     
-    return W*cte*Tr*np.power(n, -3*alpha - 2.)*(1 + np.power(2., dnexp) + np.power(3., dnexp))
+    return W*cte*Tr*np.power(n, -3.*alpha - 2.)*(1. + np.power(2., dnexp) + np.power(3., dnexp))
 
 def sigma2fwhm(sigma):
     """
@@ -1269,7 +1297,7 @@ def sigma2fwhm(sigma):
     :rtype: float
     """
     
-    return sigma*2*np.sqrt(2*np.log(2))
+    return sigma*2.*np.sqrt(2.*np.log(2.))
 
 def sigma2fwhm_err(dsigma):
     """
@@ -1282,7 +1310,14 @@ def sigma2fwhm_err(dsigma):
     :rtype: float
     """
     
-    return dsigma*2*np.sqrt(2*np.log(2))
+    return dsigma*2.*np.sqrt(2.*np.log(2.))
+
+def sigma2fwtm(sigma):
+    """
+    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWTM.
+    """
+    
+    return sigma*2.*np.sqrt(2.*np.log(10.))
 
 def stack_irregular(lines, window='', **kargs):
     """

@@ -46,23 +46,6 @@ def alpha_CII_mod(Te, R):
     """
     
     return R/(R + 2.*np.exp(-91.21/Te))
-
-def betabn_approx(Te, ne, Tr, coefs):
-    """
-    Approximates :math:`b_{n}\\beta_{n^{\\prime}n}` given a set of coefficients.
-    Uses Equations (5) and (B1)-(B5) of Salas et al. (2016).
-    """
-    
-    a0 = coefs[0] + coefs[1]*Tr + coefs[2]*np.power(Tr, 2.)
-    a1 = coefs[3] + coefs[4]*Tr
-    b0 = coefs[5] + coefs[6]*Tr + coefs[7]*np.power(Tr, 2.)
-    b1 = coefs[8] + coefs[9]*Tr + coefs[10]*np.power(Tr, 2.)
-    c0 = coefs[11] + coefs[12]*Tr + coefs[13]*np.power(Tr, 2.)
-    c1 = coefs[14] + coefs[15]*Tr + coefs[16]*np.power(Tr, 2.)
-    
-    bnbeta = (a0 + a1*Te)/np.power((b0 + b1*Te)/ne + 1., c0 + c1*Te)
-    
-    return bnbeta
     
 def beta_CII(Te, R):
     """
@@ -81,6 +64,49 @@ def beta_CII_mod(Te, R):
     """
     
     return 1. - np.exp(-91.21/Te)/R
+
+def bnbeta_approx(n, Te, ne, Tr):
+    """
+    Approximates :math:`b_{n}\\beta_{n^{\\prime}n}` 
+    for a particular set of conditions.
+    Uses Equation (B1) of Salas et al. (2016).
+    
+    :param n: Principal quantum number
+    :type n: int
+    :param Te: Electron temperature in K.
+    :type Te: float
+    :param ne: Electron density per cubic centimeters.
+    :type ne: float
+    :param Tr: Temperature of the radiation field in K at 100 MHz.
+    :type Tr: float
+    :returns: The value of :math:`b_{n}\\beta_{n^{\\prime}n}` given an approximate expression.
+    :rtype: float
+    """
+    
+    bnbeta0 = load_betabn('5d1', 0.05, 
+                          other='case_diffuse_2d3')
+    bnbeta0 = bnbeta0[np.where(bnbeta0[:,0] == n), -1]
+    
+    bnbeta = bnbeta0*(Te/50.)*np.power(ne/0.05, 0.5)*np.power(Tr/2000., -0.1)
+    
+    return bnbeta
+
+def bnbeta_approx_full(Te, ne, Tr, coefs):
+    """
+    Approximates :math:`b_{n}\\beta_{n^{\\prime}n}` given a set of coefficients.
+    Uses Equations (5) and (B1)-(B5) of Salas et al. (2016).
+    """
+    
+    a0 = coefs[0] + coefs[1]*Tr + coefs[2]*np.power(Tr, 2.)
+    a1 = coefs[3] + coefs[4]*Tr
+    b0 = coefs[5] + coefs[6]*Tr + coefs[7]*np.power(Tr, 2.)
+    b1 = coefs[8] + coefs[9]*Tr + coefs[10]*np.power(Tr, 2.)
+    c0 = coefs[11] + coefs[12]*Tr + coefs[13]*np.power(Tr, 2.)
+    c1 = coefs[14] + coefs[15]*Tr + coefs[16]*np.power(Tr, 2.)
+    
+    bnbeta = (a0 + a1*Te)/np.power((b0 + b1*Te)/ne + 1., c0 + c1*Te)
+    
+    return bnbeta
 
 def broken_plaw(nu, nu0, T0, alpha1, alpha2):
     """
@@ -177,7 +203,7 @@ def I_Bnu(specie, Z, n, Inu_funct, *args):
     for dn in range(1,6):
         nu[:,dn-1] = n2f(n, specie+fc.set_trans(dn))
         Inu[:,dn-1] = Inu_funct(nu[:,dn-1]*1e6, *args).cgs.value
-        BninfInu[:,dn-1] = cte.cgs.value*n**6./(dn*(n + dn)**2.)*Mdn(dn)*Inu[:,dn-1]
+        BninfInu[:,dn-1] = cte.cgs.value*n**6./(dn*(n + dn)**2.)*mdn(dn)*Inu[:,dn-1]
     
     return 2./np.pi*BninfInu.sum(axis=1)
 
@@ -330,7 +356,7 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     d = dens
     
     dn = fc.set_dn(line)
-    mdn = Mdn(dn)
+    mdn_ = mdn(dn)
     
     bbn = load_betabn(temp, dens, other, line, verbose)
     nimin = best_match_indx(n_min, bbn[:,0])
@@ -339,9 +365,9 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     b = bbn[nimin:nimax,1]
     
     if value == 'itau':
-        i = itau_norad(n, t, b, dn, mdn)
+        i = itau_norad(n, t, b, dn, mdn_)
     elif value == 'bbnMdn':
-        i = b*dn*mdn
+        i = b*dn*mdn_
     else:
         i = b
         
@@ -357,7 +383,7 @@ def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau')
     d = dens
     
     dn = fc.set_dn(trans)
-    mdn = Mdn(dn)
+    mdn_ = mdn(dn)
     
     bbn = load_betabn_h(temp, dens, other, trans, verbose)
     n = bbn[:,0]
@@ -368,22 +394,21 @@ def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau')
     
     if value == 'itau':
         #i = -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*t))/np.power(t, 5./2.)
-        i = itau_norad(n, t, b, dn, mdn)
+        i = itau_norad(n, t, b, dn, mdn_)
     elif value == 'bbnMdn':
-        i = b*dn*mdn
+        i = b*dn*mdn_
     else:
         i = b
         
     return n, i
   
-def itau_norad(n, te, b, dn, mdn):
+def itau_norad(n, Te, b, dn, mdn_):
     """
-    Returns the optical depth with only the approximate solution to the 
+    Returns the optical depth using the approximate solution to the 
     radiative transfer problem.
     """
     
-    return -1.069e7*dn*mdn*b*np.exp(1.58e5/(np.power(n, 2)*te))/np.power(te, 5./2.)
-
+    return -1.069e7*dn*mdn_*b*np.exp(1.58e5/(np.power(n, 2.)*Te))/np.power(Te, 5./2.)
 
 def j_line_lte(n, ne, nion, Te, Z, trans):
     """
@@ -1069,7 +1094,7 @@ def make_betabn2(line, temp, dens, n_min=5, n_max=1000, other=''):
         
     return np.array([bn[:-1,0], beta*bn[:-1,1]])
     
-def Mdn(dn):
+def mdn(dn):
     """
     Gives the :math:`M(\\Delta n)` factor for a given :math:`\\Delta n`.
     ref. Menzel (1968)
@@ -1080,24 +1105,38 @@ def Mdn(dn):
     
     :Example:
     
-    >>> Mdn(1)
+    >>> mdn(1)
     0.1908
-    >>> Mdn(5)
+    >>> mdn(5)
     0.001812
     """
     
     if dn == 1:
-        mdn = 0.1908
+        mdn_ = 0.1908
     if dn == 2:
-        mdn = 0.02633
+        mdn_ = 0.02633
     if dn == 3:
-        mdn = 0.008106
+        mdn_ = 0.008106
     if dn == 4:
-        mdn = 0.003492
+        mdn_ = 0.003492
     if dn == 5:
-        mdn = 0.001812
+        mdn_ = 0.001812
         
-    return mdn
+    return mdn_
+
+def models_dict(Te, ne, Tr):
+    """
+    Creates a dict for loading models given arrays with ne, Te and Tr.
+    """
+    
+    models = {'Te':np.array([t for t in Te for n in ne for tr in Tr]),
+              'Te_v':np.array([round(str2val(t)) for t in Te for n in ne for tr in Tr]),
+              'ne':np.array([round(n,3) for t in Te for n in ne for tr in Tr]),
+              'Tr':np.array(['case_diffuse_{0}'.format(val2str(tr)) \
+                             if tr!= 0 else '-' for t in Te for n in ne for tr in Tr]),
+              'Tr_v':np.array([tr if tr!= 0 else '-' for t in Te for n in ne for tr in Tr])}
+              
+    return models
 
 def plaw(x, x0, y0, alpha):
     """
@@ -1148,20 +1187,6 @@ def R_CII_mod(ne, nh, gamma_e, gamma_h):
     nhg = nh*gamma_h
     
     return (A + neg + nhg)/(neg + nhg)
-
-def models_dict(Te, ne, Tr):
-    """
-    Creates a dict for loading models given arrays with ne, Te and Tr.
-    """
-    
-    models = {'Te':np.array([t for t in Te for n in ne for tr in Tr]),
-              'Te_v':np.array([round(str2val(t)) for t in Te for n in ne for tr in Tr]),
-              'ne':np.array([round(n,3) for t in Te for n in ne for tr in Tr]),
-              'Tr':np.array(['case_diffuse_{0}'.format(val2str(tr)) \
-                             if tr!= 0 else '-' for t in Te for n in ne for tr in Tr]),
-              'Tr_v':np.array([tr if tr!= 0 else '-' for t in Te for n in ne for tr in Tr])}
-              
-    return models
 
 def str2val(str):
     """
