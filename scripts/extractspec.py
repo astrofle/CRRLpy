@@ -268,7 +268,7 @@ def split_str(str):
     Splits text from digits in a string.
     """
     
-    match = re.match(r"([0-9]+)([a-z]+)", str, re.I)
+    match = re.match(r"([0-9]+?.[0-9]+)(d|m|s)", str)
     
     if match:
         items = match.groups()

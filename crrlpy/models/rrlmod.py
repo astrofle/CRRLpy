@@ -912,13 +912,20 @@ def load_betabn(temp, dens, other='', trans='CIalpha', verbose=False):
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
+    if trans[0] == 'C':
+        atom = 'Carbon'
+        ncrit = '1.5d3'
+    elif trans[0] == 'H':
+        atom = 'Hydrogen'
+        ncrit = '8d2'
+    
     if other == '-' or other == '':
-        model_file = 'bbn2_{0}/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
+        model_file = 'bbn2_{0}/{3}_opt_T_{1}_ne_{2}_ncrit_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, atom, ncrit)
         if verbose:
             print 'Will try to locate: {0}'.format(model_file)
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     else:
-        model_file = 'bbn2_{0}/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
+        model_file = 'bbn2_{0}/{4}_opt_T_{1}_ne_{2}_ncrit_{5}_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other, atom, ncrit)
         if verbose:
             print 'Will try to locate: {0}'.format(model_file)
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]

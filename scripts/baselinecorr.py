@@ -92,7 +92,7 @@ if __name__ == '__main__':
                         help="Save the baseline model?. Default: False")
     parser.add_argument('-b', '--baseline', type=str, default=None,
                         help="Basename for the baseline models. (string)\n" \
-                             "Will be of the form: <basename>_SB121.ascii\n" \
+                             "Will be of the form: <baselinename>_SB121.ascii\n" \
                              "Default: None")
     args = parser.parse_args()
     
