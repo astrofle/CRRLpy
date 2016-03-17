@@ -51,11 +51,12 @@ def update_header(header, fitslist):
     #header.append('EQUINOX', head['EQUINOX'])
     #header.append('EQUINOX', head['LONPOLE'])
 
-def main(outfits, fitslist, stokeslast=True, chan_id='chan'):
+def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4):
     
     # Get cube dimensions from first image
     nx, ny, nv, ch0 = get_cube_dims(fitslist, chan_id)
-    print nv
+    print "Starting channel: {0}".format(ch0)
+    print "Number of channels: {0}".format(nv)
     # Create the cube, only stokes I
     cube = np.empty([1, nv, ny, nx], dtype=float)
     
@@ -64,7 +65,8 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan'):
     #pch = ch0
     
     for i in range(nv):
-        fitsch = filter(lambda x: '{0}{1:d}.'.format(chan_id, i+ch0) in x, fitslist)
+        print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
+        fitsch = filter(lambda x: '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros)) in x, fitslist)
         if fitsch:
             print fitsch
             hdulist = fits.open(fitsch[0])
