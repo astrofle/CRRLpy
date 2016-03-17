@@ -184,7 +184,7 @@ def extract_spec(data, region, naxis, mode):
             spec = data[:,:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
             if mode == 'sum':
-                spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/area
+                spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)#/area
             elif mode == 'avg':
                 spec = spec.mean(axis=3).mean(axis=2).mean(axis=0)#/area
         else:

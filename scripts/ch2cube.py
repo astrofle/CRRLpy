@@ -65,7 +65,7 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4):
     #pch = ch0
     
     for i in range(nv):
-        print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
+        #print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
         fitsch = filter(lambda x: '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros)) in x, fitslist)
         if fitsch:
             print fitsch

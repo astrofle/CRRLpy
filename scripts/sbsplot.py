@@ -68,7 +68,14 @@ def sbsplot(spec, output, show_lines, transitions, z,
         if show_lines:
             trans = transitions.split(',')
             for o,t in enumerate(trans):
-                qns, freqs = crrls.find_lines_sb(x[~np.isnan(x)], t, z)
+                
+                if x[~np.isnan(x)][0] > x[~np.isnan(x)][1]:
+                    r = -1
+                else:
+                    r = 1
+                    
+                qns, freqs = crrls.find_lines_sb(x[~np.isnan(x)][::r], t, z)
+                #print x[~np.isnan(x)]
                 for label, i, j in zip(qns, freqs, [ylbl]*len(freqs)):
                     plt.annotate(label, xy=(i, j), xytext=(-10, 15*o+5), 
                                  size='x-small', textcoords='offset points', 

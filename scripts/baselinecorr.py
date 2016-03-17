@@ -13,8 +13,10 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
     specs = glob.glob(spec)
     
     # If only one file is passed, it probably contains the list
-    if len(specs) == 1:
-        specs = np.genfromtxt(specs[0], dtype=str)
+    #if len(specs) == 1:
+        #specs = np.genfromtxt(specs[0], dtype=str)
+    
+    #print specs
     
     for s in specs:
         
