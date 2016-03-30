@@ -191,7 +191,7 @@ def extract_spec(data, region, naxis, mode):
             spec = data[:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
             if mode == 'sum':
-                spec = spec.sum(axis=2).sum(axis=1)/area
+                spec = spec.sum(axis=2).sum(axis=1)#/area
             elif mode == 'avg':
                 spec = spec.mean(axis=2).mean(axis=1)#/area
                 
@@ -206,6 +206,7 @@ def extract_spec(data, region, naxis, mode):
             elif mode == 'avg':
                 mdata = data.mean(axis=0)[:,mask]
         else:
+            print region['params']['cx'], region['params']['cy'], region['params']['r']
             mask = sector_mask(data[0].shape,
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
@@ -219,7 +220,7 @@ def extract_spec(data, region, naxis, mode):
         #spec = mdata.sum(axis=2).sum(axis=1)/(mdata.count()/len(mdata))
        
         if mode == 'sum':
-            spec = mdata.sum(axis=1)/len(np.where(mask.flatten()==1)[0])
+            spec = mdata.sum(axis=1)/len(np.where(mask.flatten() == 1)[0])
         else:
             spec = mdata.mean(axis=1)#/len(np.where(mask.flatten()==1)[0])
         
@@ -268,11 +269,11 @@ def split_str(str):
     Splits text from digits in a string.
     """
     
-    match = re.match(r"([0-9]+?.[0-9]+)(d|m|s)", str)
+    match = re.match(r"([0-9]+.?\d{0,4}?)(d|m|s)", str)
     
     if match:
         items = match.groups()
-        
+            
     return items[0], items[1]
     
     

@@ -50,20 +50,22 @@ def average(data, axis, n):
     :rtype: numpy array
     """
     
+    swpdata = np.swapaxes(data, 0, axis)
+    
     if n < 1:
         print "Will not work"
-        avg_tmp = data
+        avg_tmp = swpdata
     else:
         avg_tmp = 0
         for i in xrange(n):
             si = (n - 1) - i
             if si <= 0:
-                avg_tmp += data[i::n]
+                avg_tmp += swpdata[i::n]
             else:
-                avg_tmp += data[i:-si:n]
+                avg_tmp += swpdata[i:-si:n]
         avg_tmp = avg_tmp/n
         
-        return avg_tmp
+        return np.swapaxes(avg_tmp, axis, 0)
 
 def best_match_indx_tol(value, array, tol):
     """
@@ -701,9 +703,9 @@ def get_rms(data, axis=None):
     where :math:`V` is the variance of the data.
     """
     
-    rms = np.sqrt(np.power(np.std(data, axis=axis), 2) \
-           + np.power(np.mean(data, axis=axis), 2))
-    rms = np.sqrt(np.average(np.power(data, 2)))
+    rms = np.sqrt(np.power(data.std(axis=axis), 2.) +
+                  np.power(data.mean(axis=axis), 2.))
+
     return rms
 
 def get_min_sep(array):
