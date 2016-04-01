@@ -57,7 +57,7 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
     z = v0/3e5
     for i,trans in enumerate(transitions.split(',')):
         if trans != '':
-            n_l, f_l = crrls.find_lines_sb(freq, trans, z)
+            n_l, f_l = crrls.find_lines_sb(freq, trans, z, verbose)
             
             # Generate the line properties as a function of n
             dL_r = crrls.radiation_broad_salgado(n_l, W, Tr)/1e6

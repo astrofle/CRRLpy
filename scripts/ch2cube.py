@@ -51,7 +51,7 @@ def update_header(header, fitslist):
     #header.append('EQUINOX', head['EQUINOX'])
     #header.append('EQUINOX', head['LONPOLE'])
 
-def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4):
+def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4, clobber=False):
     
     # Get cube dimensions from first image
     nx, ny, nv, ch0 = get_cube_dims(fitslist, chan_id)
@@ -65,7 +65,7 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4):
     #pch = ch0
     
     for i in range(nv):
-        #print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
+        print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
         fitsch = filter(lambda x: '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros)) in x, fitslist)
         if fitsch:
             print fitsch
@@ -114,7 +114,7 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4):
     
     #hdulist.header.append(('BLANK', blankval))
     # Write to a fits file
-    hdulist.writeto(outfits)
+    hdulist.writeto(outfits, clobber=clobber)
     
 if __name__ == '__main__':
     
@@ -129,6 +129,12 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--chan_id', 
                         help="String before the channel number. (string, Default: chan)",
                         type=str, default='chan')
+    parser.add_argument('-n', '--nzeros', 
+                        help="Number of zeros to the right of the channel number. (int, Default: 4)",
+                        type=int, default=4)
+    parser.add_argument('--clobber', 
+                        help="Overwrite existing fits files?",
+                        action='store_true')
     args = parser.parse_args()
     
     outfits = args.outfits
@@ -136,4 +142,4 @@ if __name__ == '__main__':
     
     natural_sort(fitslist)
 
-    main(outfits, fitslist, args.stokeslast, args.chan_id)
+    main(outfits, fitslist, args.stokeslast, args.chan_id, args.nzeros, args.clobber)
