@@ -59,7 +59,7 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
         ym = ym[~np.isnan(xm)]
         xm = xm[~np.isnan(xm)]
         
-        qns, freqs = crrls.find_lines_sb(x, transition, z)
+        qns, freqs = crrls.find_lines_sb(x[~np.isnan(x)], transition, z)
         #print qns
         
         y_mod = np.zeros(len(y))

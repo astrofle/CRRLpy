@@ -344,7 +344,8 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     Finds if there are any lines of a given type in the frequency range.
     The line frequencies are corrected for redshift.
     
-    :param freq: Frequency axis in which to search for lines.
+    :param freq: Frequency axis in which to search for lines. It should not contain \
+    NaN or inf values.
     :type freq: array
     :param line: Line type to search for.
     :type line: string
@@ -567,7 +568,8 @@ def gaussian(x, sigma, center, amplitude):
     :rtype: array
     """
     
-    return amplitude/(sigma*np.sqrt(2.*np.pi))*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
+    #return amplitude/(sigma*np.sqrt(2.*np.pi))*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
+    return amplitude*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
 
 def get_axis(header, axis):
     """

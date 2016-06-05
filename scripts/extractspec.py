@@ -4,13 +4,13 @@
 Extracts a spectrum from a region in a spectral cube.
 The pixels will be averaged spatially inside the given region.
 The region must be specified as shape,coords,parameters
-Region can be, point, box or circle.
+Region can be, point, box or circle. Also, CASA region files are supported.
 Coords can be pix or sky.
 Parameters, for point the coordinates of the point, e.g. point,pix,512,256.
 For box the bottom left corner and top right corner coordinates, e.g. box,pix,256,256,512,512.
 For circle the center of the circle and the radius, e.g. circle,pix,512,256,10.
 If the coordinates are given in sky values, then the units must included, e.g. 
-point,pix,12h,2d will extract the spectrum for the pixel located at RA 12 hours and DEC 2 degrees.
+point,sky,12h,2d will extract the spectrum for the pixel located at RA 12 hours and DEC 2 degrees.
 For circle the radius units in sky coordinates can be either d for degrees, m for arcminutes or 
 s for arcseconds. The conversion will use the scale in the RA direction of the cube, i.e. will 
 use CDELT1 to convert from angular units to pixels.
@@ -19,6 +19,7 @@ use CDELT1 to convert from angular units to pixels.
 import sys
 import re
 import argparse
+import logging
 
 from astropy.io import fits
 from astropy.table import Table
@@ -26,6 +27,7 @@ from astropy.io import ascii
 from astropy import wcs
 from astropy.coordinates import SkyCoord
 
+import crrlpy.imtools as ci 
 import astropy.units as u
 import matplotlib.patches as mpatches
 import numpy as np
@@ -60,24 +62,35 @@ def sector_mask(shape, centre, radius, angle_range):
 
     return circmask*anglemask
 
-def parse_region(region, w):
+def parse_region(region, w, frame='fk5'):
     """
     Parses a region description to a dict
     """
     
+    logger = logging.getLogger(__name__)
+    
     shape = region.split(',')[0]
     #print shape
     coord = region.split(',')[1]
-    params = region.split(',')[2:]
+    try:
+        params = region.split(',')[2:]
+    except IndexError:
+        logger.error('No coordinates given.')
+        logger.error('Will exit now.')
+        sys.exit(1)
     
     if shape == 'point':
         # Convert sky coordinates to pixels if required
         if 'sky' in coord.lower():
             
-            coo_sky = SkyCoord(params[0], params[1], frame='fk5')
+            coo_sky = SkyCoord(params[0], params[1], frame=frame)
             
-            params[0:2] = w.all_world2pix([[coo_sky.ra.value, 
-                                            coo_sky.dec.value]], 0)[0]
+            if frame in ['fk5', 'fk4']:
+                params[0:2] = w.all_world2pix([[coo_sky.ra.value, 
+                                                coo_sky.dec.value]], 0)[0]
+            elif frame == 'galactic':
+                params[0:2] = w.all_world2pix([[coo_sky.l.value, 
+                                                coo_sky.b.value]], 0)[0]
 
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'point',
@@ -87,14 +100,20 @@ def parse_region(region, w):
         # Convert sky coordinates to pixels if required
         if 'sky' in coord.lower():
             
-            blc_sky = SkyCoord(params[0], params[1], frame='fk5')
-            trc_sky = SkyCoord(params[2], params[3], frame='fk5')
+            blc_sky = SkyCoord(params[0], params[1], frame=frame)
+            trc_sky = SkyCoord(params[2], params[3], frame=frame)
             
-            params[0:2] = w.all_world2pix([[blc_sky.ra.value, 
-                                            blc_sky.dec.value]], 0)[0]
-            params[2:] = w.all_world2pix([[trc_sky.ra.value, 
-                                           trc_sky.dec.value]], 0)[0]
-        
+            if frame in ['fk5', 'fk4']:
+                params[0:2] = w.all_world2pix([[blc_sky.ra.value, 
+                                                blc_sky.dec.value]], 0)[0]
+                params[2:] = w.all_world2pix([[trc_sky.ra.value, 
+                                               trc_sky.dec.value]], 0)[0]
+            elif frame == 'galactic':
+                params[0:2] = w.all_world2pix([[blc_sky.l.value, 
+                                                blc_sky.b.value]], 0)[0]
+                params[2:] = w.all_world2pix([[trc_sky.l.value, 
+                                               trc_sky.b.value]], 0)[0]
+                
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'box',
                'params':{'blcx':params[0], 'blcy':params[1], 
@@ -104,10 +123,14 @@ def parse_region(region, w):
         # Convert sky coordinates to pixels if required
         if 'sky' in coord.lower():
             
-            coo_sky = SkyCoord(params[0], params[1], frame='fk5')
+            coo_sky = SkyCoord(params[0], params[1], frame=frame)
             
-            params[0:2] = w.all_world2pix([[coo_sky.ra.value, 
-                                            coo_sky.dec.value]], 0)[0]
+            if frame in ['fk5', 'fk4']:
+                params[0:2] = w.all_world2pix([[coo_sky.ra.value, 
+                                                coo_sky.dec.value]], 0)[0]
+            elif frame == 'galactic':
+                params[0:2] = w.all_world2pix([[coo_sky.l.value, 
+                                                coo_sky.b.value]], 0)[0]
             
             lscale = abs(w.to_fits()[0].header['CDELT1'])*u.deg
             val, uni = split_str(params[2])
@@ -126,12 +149,43 @@ def parse_region(region, w):
         rgn = {'shape':'circle',
                'params':{'cx':params[0], 'cy':params[1], 'r':params[2]}}
         
+    elif shape == 'crf':
+        # CASA region files are always in sky coordinates
+        polys = ci.read_casa_polys(params[0], wcs=w)
+        rgn = {'shape':'polygon',
+               'params':{'Polygons':polys}}
+        
+    elif shape == 'all':
+        rgn = {'shape':'all',
+               'params':'all'}
+        
     else:
         print 'region description not supported.'
         print 'Will exit now.'
-        sys.exit()
+        logger.error('Region description not supported.')
+        logger.error('Will exit now.')
+        sys.exit(1)
         
     return rgn
+
+def plotspec(faxis, taxis, ftype, funit, tunit, out):
+    """
+    """
+    
+    logger = logging.getLogger(__name__)
+    logger.info("Plotting extracted spectrum to {0}".format(out))
+    
+    fig = plt.figure(frameon=False)
+    ax = fig.add_subplot(1, 1, 1)
+    
+    ax.plot(faxis, taxis, 'k-', drawstyle='steps')
+    
+    ax.set_xlabel('{0} axis ({1})'.format(ftype, funit))
+    ax.set_ylabel('Temperature axis ({0})'.format(tunit))
+    
+    plt.savefig('{0}'.format(out), 
+                bbox_inches='tight', pad_inches=0.3)
+    plt.close()
 
 def get_axis(header, axis):
     """
@@ -143,6 +197,8 @@ def get_axis(header, axis):
     @return - cube axis
     @rtype - numpy array
     """
+    
+    logger = logging.getLogger(__name__)
     
     axis = str(axis)
     dx = header.get("CDELT" + axis)
@@ -158,7 +214,8 @@ def get_axis(header, axis):
         x0 = 1
 
     n = header.get("NAXIS" + axis)
-    print "Number channels in extracted spectrum: {0}".format(n)
+    #print "Number channels in extracted spectrum: {0}".format(n)
+    logger.info("Number channels in extracted spectrum: {0}".format(n))
     
     return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
 
@@ -167,6 +224,8 @@ def extract_spec(data, region, naxis, mode):
     Sums the pixels inside a region preserving the spectral axis.
     """
     
+    logger = logging.getLogger(__name__)
+    
     if region['shape'] == 'point':
         if naxis > 3:
             spec = data[:,:,region['params']['cy'],region['params']['cx']]
@@ -174,56 +233,192 @@ def extract_spec(data, region, naxis, mode):
                 spec = spec.sum(axis=0)
             elif mode == 'avg':
                 spec = spec.mean(axis=0)
-        else:
+            elif 'flux' in mode.lower():
+                spec = spec.sum(axis=0)/region['barea']
+            else:
+                logger.error('Mode not supported.')
+                logger.error('Will exit now.')
+                sys.exit(1)
+        elif naxis == 3:
             spec = data[:,region['params']['cy'],region['params']['cx']]
+        else:
+            spec = data[region['params']['cy'],region['params']['cx']]
             
     elif region['shape'] == 'box':
         area = (region['params']['trcy'] - region['params']['blcy']) * \
                 (region['params']['trcx'] - region['params']['blcx'])
+            
         if naxis > 3:
-            spec = data[:,:,region['params']['blcy']:region['params']['trcy'],
+            spec = data[0,:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
             if mode == 'sum':
                 spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)#/area
             elif mode == 'avg':
                 spec = spec.mean(axis=3).mean(axis=2).mean(axis=0)#/area
-        else:
+            elif 'flux' in mode.lower():
+                spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/region['barea']
+            else:
+                logger.error('Mode not supported.')
+                logger.error('Will exit now.')
+                sys.exit(1)
+                
+        elif naxis == 3:
             spec = data[:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
             if mode == 'sum':
                 spec = spec.sum(axis=2).sum(axis=1)#/area
             elif mode == 'avg':
                 spec = spec.mean(axis=2).mean(axis=1)#/area
+            elif 'flux' in mode.lower():
+                spec = spec.sum(axis=2).sum(axis=1)/region['barea']
+            else:
+                logger.error('Mode not supported.')
+                logger.error('Will exit now.')
+                sys.exit(1)
+                
+        else:
+            spec = data[region['params']['blcy']:region['params']['trcy'],
+                        region['params']['blcx']:region['params']['trcx']]
+            if mode == 'sum':
+                spec = spec.sum()
+            elif mode == 'avg':
+                spec = spec.mean()
+            elif 'flux' in mode.lower():
+                spec = spec.sum()/region['barea']
+            else:
+                logger.error('Mode not supported.')
+                logger.error('Will exit now.')
+                sys.exit(1)
                 
     elif region['shape'] == 'circle':
+        
         if naxis > 3:
             mask = sector_mask(data[0,0].shape,
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
                                (0, 360))
-            if mode == 'sum':
+            if 'sum' in mode.lower():
                 mdata = data.sum(axis=0)[:,mask]
-            elif mode == 'avg':
+            elif 'avg' in mode.lower():
                 mdata = data.mean(axis=0)[:,mask]
-        else:
-            print region['params']['cx'], region['params']['cy'], region['params']['r']
+            elif 'flux' in mode.lower():
+                spec = data.sum(axis=0)[:,mask]/region['barea']
+                
+        elif naxis == 3:
+            logger.info("Circular region has a center" \
+                        "at pixel ({0},{1}) with radius " \
+                        "{2}".format(region['params']['cx'], 
+                                     region['params']['cy'], 
+                                     region['params']['r']))
             mask = sector_mask(data[0].shape,
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
                                (0, 360))
             mdata = data[:,mask]
-        # Mask the data ouside the circle
-        # This method is too slow
-        #mdata = np.ma.empty((data.sum(axis=0).shape))
-        #for c in xrange(len(mdata)):
-            #mdata[c] = np.ma.masked_where(~mask, data.sum(axis=0)[c])
-        #spec = mdata.sum(axis=2).sum(axis=1)/(mdata.count()/len(mdata))
-       
-        if mode == 'sum':
-            spec = mdata.sum(axis=1)/len(np.where(mask.flatten() == 1)[0])
-        else:
-            spec = mdata.mean(axis=1)#/len(np.where(mask.flatten()==1)[0])
+            
+            if 'sum' in mode.lower():
+                spec = mdata.sum(axis=1)#/len(np.where(mask.flatten() == 1)[0])
+            elif 'avg' in mode.lower():
+                spec = mdata.mean(axis=1)
+            elif 'flux' in mode.lower():
+                spec = mdata.sum(axis=1)/region['barea']
+            else:
+                logger.error('Mode not supported.')
+                logger.error('Will exit now.')
+                sys.exit(1)
         
+        else:
+            logger.info("Circular region has a center" \
+                        "at pixel ({0},{1}) with radius " \
+                        "{2}".format(region['params']['cx'], 
+                                     region['params']['cy'], 
+                                     region['params']['r']))
+            mask = sector_mask(data.shape,
+                               (region['params']['cy'], region['params']['cx']),
+                               region['params']['r'],
+                               (0, 360))
+            mdata = data[mask]
+       
+            if 'sum' in mode.lower():
+                spec = mdata.sum()#/len(np.where(mask.flatten() == 1)[0])
+            elif 'avg' in mode.lower():
+                spec = mdata.mean()
+            elif 'flux' in mode.lower():
+                spec = mdata.sum()/region['barea']
+            else:
+                logger.error('Mode not supported.')
+                logger.error('Will exit now.')
+                sys.exit(1)
+            
+    elif 'poly' in region['shape']:
+        npolys = len(region['params']['Polygons'])
+        
+        if naxis > 3:
+            shape = data[0][0].shape
+            npix3 = data[0].shape[0]
+        elif naxis == 3:
+            shape = data[0].shape
+            npix3 = data.shape[0]
+        else:
+            shape = data.shape
+            npix3 = 0
+            
+        mask = np.zeros(shape)
+        
+        for poly in region['params']['Polygons']:
+            # Add all the polygons together
+            logger.info("Adding polygons to the mask.")
+            mask += poly.make_mask(shape)
+            
+        logger.info("Normalizing the mask to unity.")
+        mask = np.ceil(mask/npolys)
+        
+        if naxis > 3:
+            mdata = data[0]*np.tile(mask, (npix3,1,1))
+        else:
+            mdata = data*np.tile(mask, (npix3,1,1))
+            
+        if mode == 'sum':
+            spec = mdata.sum(axis=1).sum(axis=1)
+        elif 'avg' in mode.lower():
+            spec = mdata.mean(axis=1).mean(axis=1)
+        elif 'flux' in mode.lower():
+            spec = mdata.sum(axis=1).sum(axis=1)/region['barea']
+        else:
+            logger.error('Mode not supported.')
+            logger.error('Will exit now.')
+            sys.exit(1)
+            
+    elif 'all' in region['shape']:
+        
+        if naxis > 3:
+            data = data[0]
+            spec = proc_data(data, mode, region)
+        elif naxis == 3:
+            data = data
+            spec = proc_data(data, mode, region)
+        else:
+            spec = proc_data(data, mode, region)
+        
+    return spec
+
+def proc_data(data, mode, region):
+    """
+    """
+    
+    logger = logging.getLogger(__name__)
+    
+    if 'sum' in mode.lower():
+            spec = data.sum(axis=1).sum(axis=1)
+    elif 'avg' in mode.lower():
+        spec = data.mean(axis=1).mean(axis=1)
+    elif 'flux' in mode.lower():
+        spec = data.sum(axis=1).sum(axis=1)/region['barea']
+    else:
+        logger.error('Mode not supported.')
+        logger.error('Will exit now.')
+        sys.exit(1)
+    
     return spec
 
 def set_wcs(head):
@@ -232,8 +427,8 @@ def set_wcs(head):
     spatial header parameters.
     """
     
-    # Create a new WCS object.  The number of axes must be set
-    # from the start.
+    # Create a new WCS object. 
+    # The number of axes must be set from the start.
     w = wcs.WCS(naxis=2)
     
     w.wcs.crpix = [head['CRPIX1'], head['CRPIX2']]
@@ -243,53 +438,72 @@ def set_wcs(head):
     
     return w
 
-def show_rgn(ax, rgn):
+def show_rgn(ax, rgn, **kwargs):
     """
     Plots the extraction region.
     """
     
+    alpha = 0.1
+    #lw = 0.1
+    
     if rgn['shape'] == 'box':
         ax.plot([rgn['params']['blcx']]*2, 
-                 [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
+                 [rgn['params']['blcy'],rgn['params']['trcy']], 'r-', **kwargs)
         ax.plot([rgn['params']['blcx'],rgn['params']['trcx']], 
-                 [rgn['params']['blcy']]*2, 'r-')
+                 [rgn['params']['blcy']]*2, 'r-', **kwargs)
         ax.plot([rgn['params']['blcx'],rgn['params']['trcx']], 
-                 [rgn['params']['trcy']]*2, 'r-')
+                 [rgn['params']['trcy']]*2, 'r-', **kwargs)
         ax.plot([rgn['params']['trcx']]*2, 
-                 [rgn['params']['blcy'],rgn['params']['trcy']], 'r-')
+                 [rgn['params']['blcy'],rgn['params']['trcy']], 'r-', **kwargs)
     
     elif rgn['shape'] == 'circle':
         patch = mpatches.Circle((rgn['params']['cx'], rgn['params']['cy']), 
-                                rgn['params']['r'], alpha=0.5, transform=ax.transData)
+                                rgn['params']['r'], alpha=alpha, transform=ax.transData)
         #plt.figure().artists.append(patch)
         ax.add_patch(patch)
+        
+    elif rgn['shape'] == 'polygon':
+        for poly in rgn['params']['Polygons']:
+            patch = mpatches.Polygon(poly.get_vertices(), closed=True, 
+                                     alpha=alpha, transform=ax.transData)
+        ax.add_patch(patch)
+        
+    elif rgn['shape'] == 'pixel':
+        ax.plot(region['params']['cy'], region['params']['cx'], 'rs', ms=5)
 
 def split_str(str):
     """
     Splits text from digits in a string.
     """
     
-    match = re.match(r"([0-9]+.?\d{0,4}?)(d|m|s)", str)
+    logger = logging.getLogger(__name__)
+    
+    logger.debug('{0}'.format(str))
+    
+    match = re.match(r"([0-9]+.?\d{0,32}?)(d|m|s)", str)
     
     if match:
         items = match.groups()
             
     return items[0], items[1]
     
+def main(out, cube, region, mode, plot_spec):
+    """
+    """
     
-def main(out, cube, region, mode):
-    """
-    """
+    logger = logging.getLogger(__name__)
     
     hdulist = fits.open(cube)
     head = hdulist[0].header
     data = hdulist[0].data
     
     naxis = head['NAXIS']
+    logger.debug('NAXIS: {0}'.format(naxis))
     
     #blank = head['BLANK']
     
     data = np.ma.masked_invalid(data)
+    data.fill_value = np.nan
     
     # Build a WCS object to handle sky coordinates
     if not 'pix' in region:
@@ -299,24 +513,45 @@ def main(out, cube, region, mode):
     
     rgn = parse_region(region, w)
     
+    # Add beam area info to the region. Used when the requested units are flux units.
+    if 'flux' in mode.lower():
+        rgn['barea'] = ci.beam_area(head)
+    
     # Get the frequency axis
     freq = get_axis(head, 3)
-
+    freq = np.ma.masked_invalid(freq)
+    logger.debug(freq.fill_value)
+    #freq.fill_value = np.nan
+    
+    logger.info("Will now extract the spectra.")
+        
     spec = extract_spec(data, rgn, naxis, mode)
+    spec.fill_value = np.nan
     
     #spec.set_fill_value(blank)
     #print "nspec {0}".format(len(spec))
     try:
-        freqvvel = head['CUNIT3']
+        funit = head['CUNIT3']
         ftype = head['CTYPE3']
-        bunit = head['CTYPE3']
+        if 'avg' in mode.lower():
+            bunit = head['BUNIT']
+        elif 'sum' in mode.lower():
+            bunit = 'sum of {0}'.format(head['BUNIT'])
+        elif 'flux' in mode.lower():
+            bunit = head['BUNIT'].split('/')[0]
     except KeyError:
+        funit = '(unitless)'
         ftype = 'None'
-        freqvvel = '(unitless)'
         bunit = 'Only God knows'
     
+    logger.debug('Brightness unit: {0}'.format(bunit))
+    logger.debug('Frequency unit: {0}'.format(funit))
+    logger.debug('ftype: {0}'.format(ftype))
+    logger.debug('len freq: {0}'.format(len(freq)))
+    logger.debug('len spec: {0}'.format(len(spec.filled())))
+    
     tbtable = Table([freq, spec.filled()], 
-                    names=['{0} {1}'.format(ftype, freqvvel),
+                    names=['{0} {1}'.format(ftype, funit),
                            'Tb {0}'.format(bunit)])
 
     ascii.write(tbtable, out, format='commented_header')
@@ -328,9 +563,14 @@ def main(out, cube, region, mode):
     except TypeError:
         ax.imshow(data.sum(axis=0), interpolation='none', origin='lower')
     show_rgn(ax, rgn)
-
+    #ci.draw_beam(head, ax) # This requires a pywcsgrid2 object to work
+    ax.autoscale(False)
+    
     plt.savefig('{0}_extract_region_{1}.png'.format(cube, region), 
                 bbox_inches='tight', pad_inches=0.3)
+    
+    if plot_spec:
+        plotspec(freq, spec, ftype, funit, bunit, plot_spec)
 
 if __name__ == '__main__':
     
@@ -344,8 +584,28 @@ if __name__ == '__main__':
     parser.add_argument('out', type=str,
                         help="Output file name.")
     parser.add_argument('-m', '--mode', type=str, default='sum',
-                        help="Mode of extraction. Can be sum or avg.")
+                        help="Mode of extraction. Can be sum, avg or flux.")
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help="Verbose output?")
+    parser.add_argument('-l', '--logfile', type=str, default=None,
+                        help="Where to store the logs.\n" \
+                             "(string, Default: output to console)")
+    parser.add_argument('-p', '--plot_spec', type=str, default=None,
+                        help="Plot the extracted spectrum to the given file.")
     args = parser.parse_args()
+            
+    if args.verbose:
+        loglev = logging.DEBUG
+    else:
+        loglev = logging.ERROR
+        
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(filename=args.logfile, level=loglev, format=formatter)
     
-    main(args.out, args.cube, args.region, args.mode)
+    logger = logging.getLogger(__name__)
+    logger.info('Will extract a spectrum from cube: {0}'.format(args.cube))
+    logger.info('Will extract region: {0}'.format(args.region))
+    
+    main(args.out, args.cube, args.region, args.mode, args.plot_spec)
     

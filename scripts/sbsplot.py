@@ -110,8 +110,8 @@ if __name__ == '__main__':
     parser.add_argument('-l', '--show_lines', action='store_true',
                         help="Show lines in the spectra? Default: False")
     parser.add_argument('-t', '--transitions', type=str, default='CIalpha',
-                        help="Transitions to show in the spectra." \
-                             "E.g., CIalpha,CI13beta,HIalpha" \
+                        help="Transitions to show in the spectra.\n" \
+                             "E.g., CIalpha,CI13beta,HIalpha\n" \
                              "Default: CIalpha")
     parser.add_argument('--z', type=float, default=0.0, dest='z',
                         help="Redshift to apply to the transition rest frequency." \

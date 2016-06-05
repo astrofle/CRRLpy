@@ -2,6 +2,31 @@
 
 import numpy as np
 
+def best_match_indx(value, array):
+    """
+    Searchs for the index of the closest entry to value inside an array.
+    
+    :param value: Value to find inside the array.
+    :type value: float
+    :param array: List to search for the given value.
+    :type array: list or numpy.array
+    :return: Best match index for the value inside array.
+    :rtype: float
+    
+    :Example:
+    
+    >>> a = [1,2,3,4]
+    >>> best_match_indx(3, a)
+    2
+    
+    """
+    
+    array = np.array(array)
+    subarr = abs(array - value)
+    subarrmin = subarr.min()
+        
+    return np.where(subarr == subarrmin)[0][0]
+
 def sci_notation(number, sig_fig=2):
     """
     Converts a number to scientific notation keeping sig_fig signitifcant figures.
