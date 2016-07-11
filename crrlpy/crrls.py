@@ -599,7 +599,12 @@ def get_axis(header, axis):
     
     p0 -= 1 # Fits files index start at 1, not for python.
     
-    return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+    axis = np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+    
+    if len(axis) > n:
+        axis = axis[:-1]
+    
+    return axis
 
 def get_rchi2(x_obs, x_mod, y_obs, y_mod, dy_obs, dof):
     """

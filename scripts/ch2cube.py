@@ -135,7 +135,26 @@ if __name__ == '__main__':
     parser.add_argument('--clobber', 
                         help="Overwrite existing fits files?",
                         action='store_true')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help="Verbose output?")
+    parser.add_argument('-l', '--logfile', type=str, default=None,
+                        help="Where to store the logs.\n" \
+                             "(string, Default: output to console)")
     args = parser.parse_args()
+    
+    if args.verbose:
+        loglev = logging.DEBUG
+    else:
+        loglev = logging.ERROR
+    
+    # Prepare the logger
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(filename=args.logfile, level=loglev, format=formatter)
+    
+    logger = logging.getLogger(__name__)
+    logger.info('Will extract a spectrum from cube: {0}'.format(args.cube))
+    logger.info('Will extract region: {0}'.format(args.region))
     
     outfits = args.outfits
     fitslist = args.fitslist

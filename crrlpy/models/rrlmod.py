@@ -328,7 +328,8 @@ def I_total(nu, Te, tau, I0, eta):
 
 def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='itau'):
     """
-    Gives the integrated optical depth for a given temperature and density. 
+    Gives the integrated optical depth for a given temperature and density.
+    It assumes that the background radiation field dominates the continuum emission.
     The emission measure is unity. The output units are Hz.
     
     :param temp: Electron temperature. Must be a string of the form '8d1'.

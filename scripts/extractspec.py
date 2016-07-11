@@ -202,6 +202,7 @@ def get_axis(header, axis):
     
     axis = str(axis)
     dx = header.get("CDELT" + axis)
+    logger.debug('dx: {0}'.format(dx))
     try:
         dx = int(dx)
         p0 = header.get("CRPIX" + axis)
@@ -226,6 +227,8 @@ def extract_spec(data, region, naxis, mode):
     
     logger = logging.getLogger(__name__)
     
+    logger.debug('Data shape: {0}'.format(data.shape))
+    
     if region['shape'] == 'point':
         if naxis > 3:
             spec = data[:,:,region['params']['cy'],region['params']['cx']]
@@ -247,16 +250,17 @@ def extract_spec(data, region, naxis, mode):
     elif region['shape'] == 'box':
         area = (region['params']['trcy'] - region['params']['blcy']) * \
                 (region['params']['trcx'] - region['params']['blcx'])
-            
+        
         if naxis > 3:
             spec = data[0,:,region['params']['blcy']:region['params']['trcy'],
                         region['params']['blcx']:region['params']['trcx']]
+            
             if mode == 'sum':
-                spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)#/area
+                spec = spec.sum(axis=2).sum(axis=1)
             elif mode == 'avg':
-                spec = spec.mean(axis=3).mean(axis=2).mean(axis=0)#/area
+                spec = spec.mean(axis=2).mean(axis=1)
             elif 'flux' in mode.lower():
-                spec = spec.sum(axis=3).sum(axis=2).sum(axis=0)/region['barea']
+                spec = spec.sum(axis=2).sum(axis=1)/region['barea']
             else:
                 logger.error('Mode not supported.')
                 logger.error('Will exit now.')
@@ -270,7 +274,9 @@ def extract_spec(data, region, naxis, mode):
             elif mode == 'avg':
                 spec = spec.mean(axis=2).mean(axis=1)#/area
             elif 'flux' in mode.lower():
-                spec = spec.sum(axis=2).sum(axis=1)/region['barea']
+                summ = spec.sum(axis=2).sum(axis=1)
+                logger.info('Sum of pixels: {0}'.format(summ))
+                spec = summ/region['barea']
             else:
                 logger.error('Mode not supported.')
                 logger.error('Will exit now.')
@@ -291,25 +297,29 @@ def extract_spec(data, region, naxis, mode):
                 sys.exit(1)
                 
     elif region['shape'] == 'circle':
-        
+        logger.info("Circular region has a center" \
+                    "at pixel ({0},{1}) with radius " \
+                    "{2}".format(region['params']['cx'], 
+                                    region['params']['cy'], 
+                                    region['params']['r']))
+                    
         if naxis > 3:
+            logger.debug("The image has more than 3 axes.")
             mask = sector_mask(data[0,0].shape,
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
                                (0, 360))
+            mdata = data[0][:,mask]
+            logger.debug("Masked data shape: {0}".format(mdata.shape))
             if 'sum' in mode.lower():
-                mdata = data.sum(axis=0)[:,mask]
+                spec = mdata.sum(axis=1)
             elif 'avg' in mode.lower():
-                mdata = data.mean(axis=0)[:,mask]
+                spec = mdata.mean(axis=1)
             elif 'flux' in mode.lower():
-                spec = data.sum(axis=0)[:,mask]/region['barea']
+                spec = mdata.sum(axis=1)/region['barea']
                 
         elif naxis == 3:
-            logger.info("Circular region has a center" \
-                        "at pixel ({0},{1}) with radius " \
-                        "{2}".format(region['params']['cx'], 
-                                     region['params']['cy'], 
-                                     region['params']['r']))
+            
             mask = sector_mask(data[0].shape,
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
@@ -328,11 +338,7 @@ def extract_spec(data, region, naxis, mode):
                 sys.exit(1)
         
         else:
-            logger.info("Circular region has a center" \
-                        "at pixel ({0},{1}) with radius " \
-                        "{2}".format(region['params']['cx'], 
-                                     region['params']['cy'], 
-                                     region['params']['r']))
+   
             mask = sector_mask(data.shape,
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
@@ -487,7 +493,7 @@ def split_str(str):
             
     return items[0], items[1]
     
-def main(out, cube, region, mode, plot_spec):
+def main(out, cube, region, mode, plot_spec, faxis, stokes):
     """
     """
     
@@ -495,15 +501,17 @@ def main(out, cube, region, mode, plot_spec):
     
     hdulist = fits.open(cube)
     head = hdulist[0].header
-    data = hdulist[0].data
+    data = np.ma.masked_invalid(hdulist[0].data)
+    data.fill_value = np.nan
     
     naxis = head['NAXIS']
     logger.debug('NAXIS: {0}'.format(naxis))
     
-    #blank = head['BLANK']
-    
-    data = np.ma.masked_invalid(data)
-    data.fill_value = np.nan
+    if stokes:
+        logger.info("Will now swap axis {0} with {1}".format(0, 1))
+        logger.info("to leave stokes as last axes.")
+        data = np.swapaxes(data, 0, 1)
+        logger.info("New data shape: {0}.".format(data.shape))
     
     # Build a WCS object to handle sky coordinates
     if not 'pix' in region:
@@ -516,17 +524,20 @@ def main(out, cube, region, mode, plot_spec):
     # Add beam area info to the region. Used when the requested units are flux units.
     if 'flux' in mode.lower():
         rgn['barea'] = ci.beam_area(head)
+        logger.debug('Conversion to flux: {0}'.format(rgn['barea']))
     
     # Get the frequency axis
-    freq = get_axis(head, 3)
+    freq = get_axis(head, faxis)
     freq = np.ma.masked_invalid(freq)
-    logger.debug(freq.fill_value)
+    logger.debug('Invalid values will be replaced with: {0}'.format(freq.fill_value))
     #freq.fill_value = np.nan
     
-    logger.info("Will now extract the spectra.")
-        
+    logger.info("Will now extract the spectra,",)
+    logger.info("using mode: {0}.".format(mode))
+    
     spec = extract_spec(data, rgn, naxis, mode)
     spec.fill_value = np.nan
+    logger.info("Extracted spec has shape: {0}.".format(spec.shape))
     
     #spec.set_fill_value(blank)
     #print "nspec {0}".format(len(spec))
@@ -550,9 +561,10 @@ def main(out, cube, region, mode, plot_spec):
     logger.debug('len freq: {0}'.format(len(freq)))
     logger.debug('len spec: {0}'.format(len(spec.filled())))
     
-    tbtable = Table([freq, spec.filled()], 
+    tbtable = Table(np.array([freq, spec.filled()]).T, 
                     names=['{0} {1}'.format(ftype, funit),
-                           'Tb {0}'.format(bunit)])
+                           'Tb {0}'.format(bunit)],
+                    dtype=[np.float64, np.float64])
 
     ascii.write(tbtable, out, format='commented_header')
     
@@ -592,6 +604,10 @@ if __name__ == '__main__':
                              "(string, Default: output to console)")
     parser.add_argument('-p', '--plot_spec', type=str, default=None,
                         help="Plot the extracted spectrum to the given file.")
+    parser.add_argument('-f', '--faxis', type=int, default=3,
+                        help="Axis to use as spectral axis.")
+    parser.add_argument('-s', '--stokes_last', action='store_true',
+                        help="Stokes axis is last?")
     args = parser.parse_args()
             
     if args.verbose:
@@ -607,5 +623,5 @@ if __name__ == '__main__':
     logger.info('Will extract a spectrum from cube: {0}'.format(args.cube))
     logger.info('Will extract region: {0}'.format(args.region))
     
-    main(args.out, args.cube, args.region, args.mode, args.plot_spec)
+    main(args.out, args.cube, args.region, args.mode, args.plot_spec, args.faxis, args.stokes_last)
     
