@@ -18,18 +18,22 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
     cubel = glob.glob(cubes)
     
     if dv == 0:
+        logger.info('Velocity width not specified.'), 
+        logger.info('Will try to determine from input data.')
         for i,cube in enumerate(cubel):
             hdu = fits.open(cube)
             head = hdu[0].header
             x = crrls.get_axis(head, v_axis)
             if i == 0:
                 dv = crrls.get_min_sep(x)
+                
             else:
                 dv = max(dv, crrls.get_min_sep(x))
+        logger.info('Will use a velocity width of {0}'.format(dv))
     
     shape = hdu[0].shape
     if len(shape) > 3:
-        logger.info('Will drop first axes.')
+        logger.info('Will drop first axis.')
         s = 1
     else:
         s = 0
@@ -46,7 +50,7 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
         data = np.ma.masked_invalid(hdu[0].data)
         
         if len(data.shape) > 3:
-            logger.info('Will drop first axes.')
+            logger.info('Will drop first axis.')
             data = data[0]
         
         # Get the cube axes
@@ -55,7 +59,7 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
         ve = crrls.get_axis(head, v_axis)
         
         # Check that the axes are in ascending order
-        if v[0] > v[1]: 
+        if ve[0] > ve[1]: 
             vs = -1
         else:
             vs = 1
@@ -69,7 +73,11 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
         interp = RegularGridInterpolator((ve[::vs], de, ra[::vr]), data[::vs,:,::vr])
         
         # Add the data to the stack
-        stack += interp([nvaxis, de, ra])
+        #spts = np.array([de[j], ra[i] for j in range(len(de)) for i in range(len(ra[::vr]))])
+        for k in range(len(nvaxis)):
+            pts = np.array([[nvaxis[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra[::vr]))])
+            print pts
+            stack[k] += interp(pts).reshape(1, shape[s+1:])
     
     # Divide by the number of input cubes to get the mean
     stack = stack/len(cubel)
