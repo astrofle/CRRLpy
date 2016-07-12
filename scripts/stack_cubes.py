@@ -8,8 +8,10 @@ import logging
 from astropy.io import fits
 from crrlpy import crrls
 from scipy.interpolate import RegularGridInterpolator
+from datetime import datetime
+startTime = datetime.now()
 
-def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=3, clobber=False):
+def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis=3, clobber=False, algo='channel'):
     """
     """
     
@@ -26,11 +28,26 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
             x = crrls.get_axis(head, v_axis)
             if i == 0:
                 dv = crrls.get_min_sep(x)
-                
+                vmax_min = max(x)
+                vmin_max = min(x)
             else:
                 dv = max(dv, crrls.get_min_sep(x))
+                vmax_min = min(vmax_min, max(x))
+                vmin_max = max(vmin_max, min(x))
         logger.info('Will use a velocity width of {0}'.format(dv))
-    
+        
+        # Check velocity ranges to avoid latter crashes.
+        if vmax_min < vmax:
+            logger.info('Requested maximum velocity is larger than one of the cubes velocity axis.')
+            logger.info('v_max={0}, v_max_min={1}'.format(vmax, vmax_min))
+            logger.info('Will now exit')
+            sys.exit(1)
+        if vmin_max > vmin:
+            logger.info('Requested minimum velocity is smaller than one of the cubes velocity axis.')
+            logger.info('v_min={0}, v_min_min={1}'.format(vmin, vmin_min))
+            logger.info('Will now exit')
+            sys.exit(1)
+
     shape = hdu[0].shape
     if len(shape) > 3:
         logger.info('Will drop first axis.')
@@ -39,11 +56,13 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
         s = 0
     
     nvaxis = np.arange(vmin, vmax, dv)
-    stack = np.zeros(shape[s+1:] + (len(nvaxis),))
+    stack = np.zeros((len(nvaxis),) + shape[s+1:])
     logger.info('Output stack will have dimensions: {0}'.format(stack.shape))
     
     for i,cube in enumerate(cubel):
         
+        logger.info('Adding cube {0}/{1}'.format(i, len(cubel)-1))
+
         # Load the data
         hdu = fits.open(cube)
         head = hdu[0].header
@@ -57,6 +76,10 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
         ra = crrls.get_axis(head, 1)
         de = crrls.get_axis(head, 2)
         ve = crrls.get_axis(head, v_axis)
+
+        logger.info('RA axis limits: {0} {1}'.format(min(ra), max(ra)))
+        logger.info('DEC axis limits: {0} {1}'.format(min(de), max(de)))
+        logger.info('VEL axis limits: {0} {1}'.format(min(ve), max(ve)))
         
         # Check that the axes are in ascending order
         if ve[0] > ve[1]: 
@@ -71,14 +94,27 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
         
         # Interpolate the data
         interp = RegularGridInterpolator((ve[::vs], de, ra[::vr]), data[::vs,:,::vr])
-        
+
         # Add the data to the stack
-        #spts = np.array([de[j], ra[i] for j in range(len(de)) for i in range(len(ra[::vr]))])
-        for k in range(len(nvaxis)):
-            pts = np.array([[nvaxis[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra[::vr]))])
-            print pts
-            stack[k] += interp(pts).reshape(1, shape[s+1:])
-    
+        if 'vector' in algo.lower():
+            logger.info('Will use one vector to reconstruct the cube')
+            pts = np.array([[nvaxis[k], de[j], ra[i]] for k in range(len(nvaxis)) for j in range(len(de)) for i in range(len(ra))])
+            stack += interp(pts).reshape(stack.shape)
+
+        elif 'channel' in algo.lower():
+            logger.info('Will reconstruct the cube one channel at a time')
+            for k in range(len(nvaxis)):
+                pts = np.array([[nvaxis[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra[::vr]))])
+                newshape = (1,) + shape[s+1:]
+                try:
+                    stack[k] += interp(pts).reshape(newshape)[0]
+                except ValueError:
+                    logger.info('Point outside range: vel={0}, ra={1}..{2}, dec={3}..{4}'.format(pts[0,0], min(pts[:,1]), max(pts[:,1]), min(pts[:,2]), max(pts[:,2])))
+        else:
+            logger.info('Cube reconstruction algorithm unrecognized.')
+            logger.info('Will exit now.')
+            sys.exit(1)
+
     # Divide by the number of input cubes to get the mean
     stack = stack/len(cubel)
     
@@ -92,6 +128,8 @@ def stack_cubes(cubes, output, vmax, vmin, dv, weight, weight_list=None, v_axis=
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
     hdulist.writeto(outfits, clobber=clobber)
+
+    logger.info('Script run time: {0}'.format(datetime.now() - startTime))
 
 if __name__ == '__main__':
     
@@ -140,6 +178,9 @@ if __name__ == '__main__':
     parser.add_argument('--clobber', 
                         help="Overwrite existing fits files?",
                         action='store_true')
+    parser.add_argument('--algo', type=str, default='channel',
+                        help="Which algorithm should be used for reconstructing the cubes?\n" \
+                             "Default: \"channel\". [vector|channel]")
     args = parser.parse_args()
     
     if args.verbose:
@@ -154,4 +195,4 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
 
     stack_cubes(args.cubes, args.stack, args.v_max, args.v_min, args.dv, 
-                args.weight, args.weight_list, args.v_axis, args.clobber)
+                args.weight, args.weight_list, args.v_axis, args.clobber, args.algo)
