@@ -249,6 +249,41 @@ def beam_area(head):
     
     return 1.133*float(head['BMAJ'])*float(head['BMIN'])/(abs(head['CDELT1'])*abs(head['CDELT2']))
 
+def check_ascending(ra, dec, vel, verbose=False):
+    """
+    Check if the RA, DEC and VELO axes of a cube are in ascending order.
+    It returns a step for every axes which will make it go in ascending order.
+    
+    :param ra: RA axis.
+    :param dec: DEC axis.
+    :param vel: Velocity axis.
+    :returns: Step for RA, DEC and velocity.
+    :rtype: int,int,int
+    """
+    
+    if vel[0] > vel[1]: 
+        vs = -1
+        if verbose:
+            print "Velocity axis is inverted."
+    else:
+        vs = 1
+            
+    if ra[0] > ra[1]:
+        rs = -1
+        if verbose:
+            print "RA axis is inverted."
+    else:
+        rs = 1
+        
+    if dec[0] > dec[1]:
+        ds = -1
+        if verbose:
+            print "DEC axis is inverted."
+    else:
+        ds = 1
+        
+    return rs, ds, vs
+
 def draw_beam(header, ax, **kwargs):
     """
     Draws an elliptical beam in a pywcsgrid2 axes object.
