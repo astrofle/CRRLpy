@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+
 import pylab as plt
 import numpy as np
 import glob
@@ -31,7 +32,7 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         # Load the data
         data = np.loadtxt(s)
         x = data[:,x_col]
-        y = data[:,y_col]        
+        y = data[:,y_col] + 10. # add offset to avoid zeros
         
         # Turn NaNs to zeros
         my = np.ma.masked_invalid(y)
@@ -65,7 +66,9 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
             np.savetxt('{0}_{1}.ascii'.format(baseline, sb), 
                        np.c_[x, gb])
         
-        data[:,y_col] = y - gb
+        mgb = np.ma.masked_equal(gb, 0)
+        
+        data[:,y_col] = y/mgb - 1.
                 
         np.savetxt('{0}_{1}.ascii'.format(basename, sb), data)
 
@@ -83,7 +86,7 @@ if __name__ == '__main__':
                              "Will be of the form: <basename>_SB121.ascii\n" \
                              "The output will have the y column baseline corrected.")
     parser.add_argument('-k', '--order', type=int,
-                        help="Spline order. (int<=5)")
+                        help="Spline order. (int)")
     parser.add_argument('-m', '--median', action='store_true',
                         help="Remove the median from the baseline?")
     parser.add_argument('-x', '--x_col', type=int, default=0,

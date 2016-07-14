@@ -295,6 +295,51 @@ def draw_beam(header, ax, **kwargs):
     pixx = header.get("CDELT1")
     pixy = header.get("CDELT2")
     ax.add_beam_size(bmaj/np.abs(pixx), bmin/np.abs(pixy), pa, loc=3, **kwargs)
+
+def get_axis(header, axis):
+    """
+    Constructs a cube axis.
+    
+    :param header: Fits cube header.
+    :type header: pyfits header
+    :param axis: Axis to reconstruct.
+    :type axis: int
+    :returns: cube axis
+    :rtype: numpy array
+    """
+    
+    axis = str(axis)
+    dx = header.get("CDELT" + axis)
+    try:
+        dx = float(dx)
+        p0 = header.get("CRPIX" + axis)
+        x0 = header.get("CRVAL" + axis)
+        
+    except TypeError:
+        dx = 1
+        p0 = 1
+        x0 = 1
+
+    n = header.get("NAXIS" + axis)
+    
+    p0 -= 1 # Fits files index start at 1, not for python.
+    
+    axis = np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+    
+    if len(axis) > n:
+        axis = axis[:-1]
+    
+    return axis
+
+def get_fits3axes(head):
+    """
+    """
+    
+    ra = get_axis(head, 1)
+    de = get_axis(head, 2)
+    ve = get_axis(head, 3)
+    
+    return ra , de, ve
     
 def get_contours(x, y, z, levs, segment=0, verbose=False):
     """

@@ -129,7 +129,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
     hdulist.header['CUNIT3'] = 'm/s'
     hdulist.writeto(outfits, clobber=clobber)
 
-    logger.info('Script run time: {0}'.format(datetime.now() - startTime))
+    #logger.info('Script run time: {0}'.format(datetime.now() - startTime))
 
 if __name__ == '__main__':
     
@@ -196,3 +196,5 @@ if __name__ == '__main__':
 
     stack_cubes(args.cubes, args.stack, args.v_max, args.v_min, args.dv, 
                 args.weight, args.weight_list, args.v_axis, args.clobber, args.algo)
+    
+    logger.info('Script run time: {0}'.format(datetime.now() - startTime))
