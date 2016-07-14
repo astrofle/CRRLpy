@@ -1,5 +1,11 @@
 #!/usr/bin/env python
+"""
+Bandpass correction script for cubes.
+It provides tools for deriving bandpass 
+solutions, masking, applying and smoothing.
 
+TODO: normalize convolution.
+"""
 from __future__ import division
 
 import sys
@@ -24,8 +30,12 @@ def bpcorr(data, bandpass, head):
     logger = logging.getLogger(__name__)
     
     hdu = fits.open(bandpass)
-    bp = np.ma.masked_invalid(hdu[0].data) + 10.
+    bp = np.ma.masked_invalid(hdu[0].data)
     hbp = hdu[0].header
+    
+    if len(bp.shape) > 3:
+        logger.info('Will drop first axis from bandpass solution.')
+        bp = bp[0]
     
     if not ci.compare_headers(hbp, head):
         logger.info('Headers do not match, will interpolate the bandpass solutions.')
@@ -37,7 +47,7 @@ def bpcorr(data, bandpass, head):
                                       bp[::vs,::ds,::rs].filled(), 
                                       bounds_error=False, fill_value=10.)
         
-        bp4c = np.ones(data.shape)*10.
+        bp4c = np.zeros(data.shape)
         for k in range(len(ve)):
             pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
             newshape = (1,) + data.shape[1:]
@@ -57,14 +67,16 @@ def bpcorrmask(data, x, bp, head):
     rs, ds, vs = ci.check_ascending(ra, de, x, True)
     
     ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
-                                    bp[::vs,::ds,::rs], 
-                                    bounds_error=False, fill_value=10.)
+                                  bp[::vs,::ds,::rs], 
+                                  bounds_error=False, fill_value=10.)
     
-    bp4c = np.ones(data.shape)*10.
+    bp4c = np.zeros(data.shape)
     for k in range(len(ve)):
         pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
         newshape = (1,) + data.shape[1:]
         bp4c[k] += ibp(pts).reshape(newshape)[0]
+        
+    save(np.ma.masked_invalid(bp4c), 'bp4c.fits', head, True)
         
     return ((data)/bp4c - 1.)*10.
 
@@ -97,10 +109,22 @@ def mask_cube(vel, data, vel_rngs):
     mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*10.
     logger.info('Masked data shape: {0}'.format(mdata.shape))
 
+    logger.info('Will select the unmasked data.')
     for i in range(len(vel_indx)):
         mdata[nvel_indx[i][0]:nvel_indx[i][1]+1] = data[vel_indx[i][0]:vel_indx[i][1]+1]
         
     return nvel, mdata
+
+def save(data, output, head, clobber=False):
+    """
+    """
+    
+    data.fill_value = np.nan
+    hdulist = fits.PrimaryHDU(data.filled())
+    # Copy the header from original cube
+    hdulist.header = head.copy()
+    # Write the fits file
+    hdulist.writeto(output, clobber=clobber)
 
 def smooth(bp_cube, std):
     """
@@ -109,26 +133,14 @@ def smooth(bp_cube, std):
     logger = logging.getLogger(__name__)
     
     gauss_kernel = Gaussian2DKernel(std)
-    bp_cube_sm = np.empty(bp_cube.shape)
+    bp_cube_sm = np.ma.masked_invalid(np.empty(bp_cube.shape))
     for v in range(bp_cube.shape[0]):
         logger.info('{0:.0f}%'.format(v/bp_cube.shape[0]*100.))
-        bp_cube_sm[v] = convolve(bp_cube[v], gauss_kernel)
+        bp_cube_sm[v] = np.ma.masked_invalid(convolve(bp_cube[v], gauss_kernel))
         
     return bp_cube_sm
 
-def save(data, output, head):
-    """
-    """
-    
-    logger.info('Will write the bandpass corrected cube.')
-    data.fill_value = np.nan
-    hdulist = fits.PrimaryHDU(data.filled())
-    # Copy the header from original cube
-    hdulist.header = head.copy()
-    # Write the fits file
-    hdulist.writeto(output)
-
-def solve(x, data, bandpass, cell, head, order):
+def solve(x, data, bandpass, cell, head, order, oversample=1):
     """
     """
     
@@ -136,21 +148,27 @@ def solve(x, data, bandpass, cell, head, order):
     
     logger.info('Will solve for the bandpass on {0} pixels'.format(cell))
     
-    nx = data.shape[2]//cell[0]
-    cx = cell[0]
+    nx = (data.shape[2]//cell[0] + 1)*oversample
+    cx = cell[0]//oversample
     ny = nx
     cy = cx
     if len(cell) > 1:
-        ny = data.shape[1]//cell[1]
-        cy = cell[1]
+        ny = (data.shape[1]//cell[1] + 1)*oversample
+        cy = cell[1]//oversample
     
-    bp_cube = np.ones(data.shape)*10.
- 
+    bp_cube = np.ma.masked_invalid(np.zeros(data.shape))
+    bp_cube_cov = np.ma.masked_invalid(np.zeros(data.shape))
+    
     for i in range(nx):
         logger.info('{0:.0f}%'.format(i/nx*100.))
         for j in range(ny):
-            
-            y = data[:,j*cy:(j+1)*cy,i*cx:(i+1)*cx].mean(axis=1).mean(axis=1)
+            y0 = j*cy
+            yf = (j+1)*cy
+            x0 = i*cx
+            xf = (i+1)*cx
+            print j, ny
+            print y0, yf, x0, xf
+            y = np.ma.masked_invalid(data[:,y0:yf,x0:xf].mean(axis=1).mean(axis=1))
 
             # Turn NaNs to zeros
             my = np.ma.masked_invalid(y)
@@ -167,19 +185,14 @@ def solve(x, data, bandpass, cell, head, order):
             
             # Interpolate and extrapolate to the original x axis
             xbp = np.polynomial.polynomial.polyval(x, bp)
-            shape = bp_cube[:,j*cy:(j+1)*cy,i*cx:(i+1)*cx].shape
-            bp_cube[:,j*cy:(j+1)*cy,i*cx:(i+1)*cx] = \
-                np.reshape(np.array([xbp]*np.prod(np.array(shape[1:]))).T, 
-                           shape, order='C')
-    
-    logger.info('Will write the bandpass cube with the solutions.')
-    hdulist = fits.PrimaryHDU(bp_cube)
-    hdulist.header = deepcopy(head)
-    hdulist.writeto(bandpass)
+            shape = bp_cube[:,y0:yf,x0:xf].shape
+            bp_cube[:,y0:yf,x0:xf] += np.reshape(np.array([xbp]*np.prod(np.array(shape[1:]))).T, 
+                                                 shape, order='C')
+            bp_cube_cov[:,y0:yf,x0:xf] += np.ones(shape)
 
-    return bp_cube
+    return np.ma.divide(bp_cube, bp_cube_cov)
 
-def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None):
+def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1):
     """
     """
     
@@ -194,32 +207,43 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None):
     data = np.ma.masked_invalid(hdu[0].data) + 10.
     x = crrls.get_axis(head, 3)
     
+    # Remove Stokes axis if present
     if len(data.shape) > 3:
         logger.info('Will drop first axis.')
         data = data[0]
-    
+        
     # Mask
     if mode.lower() in ['mask', 'mask solve', 'mask solve apply', 'mask solve smooth apply']:
         mx, mdata = mask_cube(x, data, vrngs)
+    else:
+        mx = x
+        mdata = data
     # Solve
     if mode.lower() in ['solve', 'mask solve', 'mask solve apply', 'solve apply', 'solve smooth apply', 'mask solve smooth apply']:
-        bp_cube = solve(mx, mdata, bandpass, cell, head, order)
+        bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample)
+    if not 'smooth' in mode.lower() and 'solve' in mode.lower():
+        logger.info('Will write the bandpass cube with the solutions.')
+        save(bp_cube, bandpass, head)
     # Smooth
     if mode.lower() in ['mask solve smooth', 'solve smooth', 'solve smooth apply', 'mask solve smooth apply']:
         logger.info('Will smooth the bandpass solution with a ' \
                     'Gaussian kernel of standard deviation: {0}.'.format(std))
         bp_cube = smooth(bp_cube, std)
+        logger.info('Will write the smoothed bandpass cube with the solutions.')
+        save(bp_cube, bandpass, head)
     # Apply with mask
     if mode.lower() in ['mask solve apply', 'mask solve smooth apply']:
         logger.info('Will apply the bandpass solutions.')
         data_bpc = bpcorrmask(data, mx, bp_cube, head)
         # Only save if applying solutions
+        logger.info('Will write the bandpass corrected cube.')
         save(data_bpc, output, head)
     # Apply without mask
     if mode.lower() in ['apply', 'solve apply', 'solve smooth apply']:
         logger.info('Will apply the bandpass solutions.')
         data_bpc = bpcorr(data, bandpass, head)
         # Only save if applying solutions
+        logger.info('Will write the bandpass corrected cube.')
         save(data_bpc, output, head)
 
 if __name__ == '__main__':
@@ -250,6 +274,9 @@ if __name__ == '__main__':
     parser.add_argument('--std', type=int, default=11,
                         help="Standard deviation of the Gaussian kernel (float).\n" \
                              "Default: 11")
+    parser.add_argument('--oversample', type=int, default=1,
+                        help="Derive bandpass solutions (float).\n" \
+                             "Default: 11")
     parser.add_argument('-v', '--verbose', action='store_true',
                         help="Verbose output?")
     parser.add_argument('-l', '--logfile', type=str, default=None,
@@ -273,12 +300,16 @@ if __name__ == '__main__':
     if len(strcell) > 1:
         cell.append(int(strcell[1]))
     
-    vrngss = args.vrngs[1:-1].split(',')
-    vrngs = np.empty((len(vrngss)//2,2))
-    for i in range(0,len(vrngss),2):
-        vrngs[i//2][0] = float(vrngss[i])
-        vrngs[i//2][1] = float(vrngss[i+1])
+    if args.vrngs:
+        vrngss = args.vrngs[1:-1].split(',')
+        vrngs = np.empty((len(vrngss)//2,2))
+        for i in range(0,len(vrngss),2):
+            vrngs[i//2][0] = float(vrngss[i])
+            vrngs[i//2][1] = float(vrngss[i+1])
+    else:
+        vrngs = None
         
-    main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, args.std, vrngs)
+    main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, 
+         args.std, vrngs, args.oversample)
 
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))

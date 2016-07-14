@@ -39,8 +39,8 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         mx = np.ma.masked_where(np.ma.getmask(my), x)
         mmx = np.ma.masked_invalid(mx)
         mmy = np.ma.masked_where(np.ma.getmask(mmx), my)
-        np.ma.set_fill_value(mmy, 0)
-        np.ma.set_fill_value(mmx, 0)
+        np.ma.set_fill_value(mmy, 10)
+        np.ma.set_fill_value(mmx, 10)
         gx = mmx.compressed()
         gy = mmy.compressed()
         
@@ -53,7 +53,7 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         
         # Flag NaN values in the baseline
         mb = np.ma.masked_invalid(b)
-        mb.fill_value = 0.0
+        mb.fill_value = 10.0
         
         if median:
             # Only keep the baseline shape
@@ -68,7 +68,7 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         
         mgb = np.ma.masked_equal(gb, 0)
         
-        data[:,y_col] = y/mgb - 1.
+        data[:,y_col] = (y/mgb - 1.)*10.
                 
         np.savetxt('{0}_{1}.ascii'.format(basename, sb), data)
 

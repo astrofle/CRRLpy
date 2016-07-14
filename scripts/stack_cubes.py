@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+"""
+TODO: Implement parallelization in velocity.
+"""
 
 import numpy as np
 import glob
@@ -38,12 +41,14 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
         
         # Check velocity ranges to avoid latter crashes.
         if vmax_min < vmax:
-            logger.info('Requested maximum velocity is larger than one of the cubes velocity axis.')
+            logger.info('Requested maximum velocity is larger '\
+                        'than one of the cubes velocity axis.')
             logger.info('v_max={0}, v_max_min={1}'.format(vmax, vmax_min))
             logger.info('Will now exit')
             sys.exit(1)
         if vmin_max > vmin:
-            logger.info('Requested minimum velocity is smaller than one of the cubes velocity axis.')
+            logger.info('Requested minimum velocity is smaller '\
+                        'than one of the cubes velocity axis.')
             logger.info('v_min={0}, v_min_min={1}'.format(vmin, vmin_min))
             logger.info('Will now exit')
             sys.exit(1)
@@ -98,18 +103,28 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
         # Add the data to the stack
         if 'vector' in algo.lower():
             logger.info('Will use one vector to reconstruct the cube')
-            pts = np.array([[nvaxis[k], de[j], ra[i]] for k in range(len(nvaxis)) for j in range(len(de)) for i in range(len(ra))])
+            pts = np.array([[nvaxis[k], de[j], ra[i]] \
+                            for k in range(len(nvaxis)) \
+                            for j in range(len(de)) \
+                            for i in range(len(ra))])
             stack += interp(pts).reshape(stack.shape)
 
         elif 'channel' in algo.lower():
             logger.info('Will reconstruct the cube one channel at a time')
             for k in range(len(nvaxis)):
-                pts = np.array([[nvaxis[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra[::vr]))])
+                pts = np.array([[nvaxis[k], de[j], ra[i]] \
+                                for j in range(len(de)) \
+                                for i in range(len(ra[::vr]))])
                 newshape = (1,) + shape[s+1:]
                 try:
                     stack[k] += interp(pts).reshape(newshape)[0]
                 except ValueError:
-                    logger.info('Point outside range: vel={0}, ra={1}..{2}, dec={3}..{4}'.format(pts[0,0], min(pts[:,1]), max(pts[:,1]), min(pts[:,2]), max(pts[:,2])))
+                    logger.info('Point outside range: ' \
+                                'vel={0}, ra={1}..{2}, dec={3}..{4}'.format(pts[0,0], 
+                                                                            min(pts[:,1]), 
+                                                                            max(pts[:,1]), 
+                                                                            min(pts[:,2]), 
+                                                                            max(pts[:,2])))
         else:
             logger.info('Cube reconstruction algorithm unrecognized.')
             logger.info('Will exit now.')
@@ -128,8 +143,6 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
     hdulist.writeto(outfits, clobber=clobber)
-
-    #logger.info('Script run time: {0}'.format(datetime.now() - startTime))
 
 if __name__ == '__main__':
     
