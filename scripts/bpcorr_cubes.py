@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import division
+
 import sys
 import glob
 import logging
@@ -10,6 +12,7 @@ import scipy.interpolate as si
 import crrlpy.crrls as crrls
 import crrlpy.imtools as ci
 import astropy.io.fits as fits
+from astropy.convolution import convolve, Gaussian2DKernel
 from scipy.interpolate import RegularGridInterpolator
 from datetime import datetime
 startTime = datetime.now()
@@ -24,12 +27,13 @@ def bpcorr(data, bandpass, head):
     bp = np.ma.masked_invalid(hdu[0].data) + 10.
     hbp = hdu[0].header
     
-    if head != hbp:
+    if not ci.compare_headers(hbp, head):
         logger.info('Headers do not match, will interpolate the bandpass solutions.')
         ra, de, ve = ci.get_fits3axes(head)
-        rs, ds, vs = ci.check_ascending(ra, de, ve, True)
+        rabp, debp, vebp = ci.get_fits3axes(hbp)
+        rs, ds, vs = ci.check_ascending(rabp, debp, vebp, True)
         
-        ibp = RegularGridInterpolator((ve[::vs], de[::ds], ra[::rs]), 
+        ibp = RegularGridInterpolator((vebp[::vs], debp[::ds], rabp[::rs]), 
                                       bp[::vs,::ds,::rs].filled(), 
                                       bounds_error=False, fill_value=10.)
         
@@ -41,10 +45,88 @@ def bpcorr(data, bandpass, head):
     else:
         bp4c = bp
         
-    return ((data + 10.)/bp4c - 1.)*10.
+    return ((data)/bp4c - 1.)*10.
+
+def bpcorrmask(data, x, bp, head):
+    """
+    """
     
-    # Make a cube with the bandpass solutions
-    #cbp = np.reshape(np.array([xbp]*np.prod(np.array(data.shape[1:]))).T, data.shape, order='C')
+    logger = logging.getLogger(__name__)
+    
+    ra, de, ve = ci.get_fits3axes(head)
+    rs, ds, vs = ci.check_ascending(ra, de, x, True)
+    
+    ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
+                                    bp[::vs,::ds,::rs], 
+                                    bounds_error=False, fill_value=10.)
+    
+    bp4c = np.ones(data.shape)*10.
+    for k in range(len(ve)):
+        pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
+        newshape = (1,) + data.shape[1:]
+        bp4c[k] += ibp(pts).reshape(newshape)[0]
+        
+    return ((data)/bp4c - 1.)*10.
+
+def mask_cube(vel, data, vel_rngs):
+    """
+    """
+    
+    logger = logging.getLogger(__name__)
+    
+    vel_indx = np.empty(vel_rngs.shape, dtype=int)
+    nvel_indx = np.empty(vel_rngs.shape, dtype=int)
+    chns = np.zeros(len(vel_rngs))
+    nchns = np.zeros(len(vel_rngs))
+    nvel = []
+    extend = nvel.extend
+
+    for i,velrng in enumerate(vel_rngs):
+
+        vel_indx[i][0] = crrls.best_match_indx(velrng[0], vel)
+        vel_indx[i][1] = crrls.best_match_indx(velrng[1], vel)
+        
+        nvel.extend(vel[vel_indx[i][0]:vel_indx[i][1]+1])
+        
+        nvel_indx[i][0] = crrls.best_match_indx(velrng[0], nvel)
+        nvel_indx[i][1] = crrls.best_match_indx(velrng[1], nvel)
+        
+        chns[i] = vel_indx[i][1] - vel_indx[i][0] + 1
+        nchns[i] = nvel_indx[i][1] - nvel_indx[i][0] + 1
+    
+    mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*10.
+    logger.info('Masked data shape: {0}'.format(mdata.shape))
+
+    for i in range(len(vel_indx)):
+        mdata[nvel_indx[i][0]:nvel_indx[i][1]+1] = data[vel_indx[i][0]:vel_indx[i][1]+1]
+        
+    return nvel, mdata
+
+def smooth(bp_cube, std):
+    """
+    """
+    
+    logger = logging.getLogger(__name__)
+    
+    gauss_kernel = Gaussian2DKernel(std)
+    bp_cube_sm = np.empty(bp_cube.shape)
+    for v in range(bp_cube.shape[0]):
+        logger.info('{0:.0f}%'.format(v/bp_cube.shape[0]*100.))
+        bp_cube_sm[v] = convolve(bp_cube[v], gauss_kernel)
+        
+    return bp_cube_sm
+
+def save(data, output, head):
+    """
+    """
+    
+    logger.info('Will write the bandpass corrected cube.')
+    data.fill_value = np.nan
+    hdulist = fits.PrimaryHDU(data.filled())
+    # Copy the header from original cube
+    hdulist.header = head.copy()
+    # Write the fits file
+    hdulist.writeto(output)
 
 def solve(x, data, bandpass, cell, head, order):
     """
@@ -54,20 +136,20 @@ def solve(x, data, bandpass, cell, head, order):
     
     logger.info('Will solve for the bandpass on {0} pixels'.format(cell))
     
-    nx = data.shape[2]/cell[0]
+    nx = data.shape[2]//cell[0]
     cx = cell[0]
     ny = nx
     cy = cx
     if len(cell) > 1:
-        ny = data.shape[1]/cell[1]
+        ny = data.shape[1]//cell[1]
         cy = cell[1]
     
     bp_cube = np.ones(data.shape)*10.
  
     for i in range(nx):
+        logger.info('{0:.0f}%'.format(i/nx*100.))
         for j in range(ny):
             
-            logger.info('{0:.0f}%'.format(i*j/(nx*ny)*100))
             y = data[:,j*cy:(j+1)*cy,i*cx:(i+1)*cx].mean(axis=1).mean(axis=1)
 
             # Turn NaNs to zeros
@@ -80,18 +162,24 @@ def solve(x, data, bandpass, cell, head, order):
             gx = mmx.compressed()
             gy = mmy.compressed()
             
+            # Derive a polynomial to correct the bandpass
             bp = np.polynomial.polynomial.polyfit(gx, gy, order)
+            
             # Interpolate and extrapolate to the original x axis
             xbp = np.polynomial.polynomial.polyval(x, bp)
             shape = bp_cube[:,j*cy:(j+1)*cy,i*cx:(i+1)*cx].shape
-            bp_cube[:,j*cy:(j+1)*cy,i*cx:(i+1)*cx] = np.reshape(np.array([xbp]*np.prod(np.array(shape[1:]))).T, shape, order='C')
-            
+            bp_cube[:,j*cy:(j+1)*cy,i*cx:(i+1)*cx] = \
+                np.reshape(np.array([xbp]*np.prod(np.array(shape[1:]))).T, 
+                           shape, order='C')
+    
     logger.info('Will write the bandpass cube with the solutions.')
     hdulist = fits.PrimaryHDU(bp_cube)
     hdulist.header = deepcopy(head)
     hdulist.writeto(bandpass)
 
-def main(cube, output, bandpass, mode, cell, order):
+    return bp_cube
+
+def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None):
     """
     """
     
@@ -103,26 +191,36 @@ def main(cube, output, bandpass, mode, cell, order):
     # Load the data
     hdu = fits.open(cube)
     head = hdu[0].header
-    data = np.ma.masked_invalid(hdu[0].data)
-    x =  crrls.get_axis(head, 3)
+    data = np.ma.masked_invalid(hdu[0].data) + 10.
+    x = crrls.get_axis(head, 3)
     
     if len(data.shape) > 3:
         logger.info('Will drop first axis.')
         data = data[0]
     
-    if mode.lower() in ['solve', 'solve apply']:
-        data_bpc = solve(x, data, bandpass, cell, head, order)
-    if mode.lower() in ['apply', 'solve apply']:
+    # Mask
+    if mode.lower() in ['mask', 'mask solve', 'mask solve apply', 'mask solve smooth apply']:
+        mx, mdata = mask_cube(x, data, vrngs)
+    # Solve
+    if mode.lower() in ['solve', 'mask solve', 'mask solve apply', 'solve apply', 'solve smooth apply', 'mask solve smooth apply']:
+        bp_cube = solve(mx, mdata, bandpass, cell, head, order)
+    # Smooth
+    if mode.lower() in ['mask solve smooth', 'solve smooth', 'solve smooth apply', 'mask solve smooth apply']:
+        logger.info('Will smooth the bandpass solution with a ' \
+                    'Gaussian kernel of standard deviation: {0}.'.format(std))
+        bp_cube = smooth(bp_cube, std)
+    # Apply with mask
+    if mode.lower() in ['mask solve apply', 'mask solve smooth apply']:
+        logger.info('Will apply the bandpass solutions.')
+        data_bpc = bpcorrmask(data, mx, bp_cube, head)
+        # Only save if applying solutions
+        save(data_bpc, output, head)
+    # Apply without mask
+    if mode.lower() in ['apply', 'solve apply', 'solve smooth apply']:
         logger.info('Will apply the bandpass solutions.')
         data_bpc = bpcorr(data, bandpass, head)
         # Only save if applying solutions
-        logger.info('Will write the bandpass corrected cube.')
-        data_bpc.fill_value = np.nan
-        hdulist = fits.PrimaryHDU(data_bpc.filled())
-        # Copy the header from original cube
-        hdulist.header = head.copy()
-        # Write the fits file
-        hdulist.writeto(output)
+        save(data_bpc, output, head)
 
 if __name__ == '__main__':
     
@@ -137,14 +235,21 @@ if __name__ == '__main__':
                         help="Bandpass to be applied (string).")
     parser.add_argument('-m', '--mode', type=str, default='apply',
                         help="Mode of operation (string).\n" \
-                             "['solve', 'apply', 'solve apply']\n" \
-                             "Default: apply")
+                             "['mask', 'solve', 'smooth', 'apply', 'solve apply',\n" \
+                              "'solve smooth apply', 'mask solve smooth apply']\n" \
+                             "Default: 'apply'")
+    parser.add_argument('--vrngs', type=str, default=None,
+                        help="Velocity ranges to keep while solving for the bandpass (string).\n" \
+                             "Default: None")
     parser.add_argument('-k', '--order', type=int, default=5,
                         help="Polynomial order used for solving (int).\n" \
                              "Default: 5")
     parser.add_argument('--cell', type=str, default='(10,10)',
                         help="Cell size in pixels units used for spatial averaging while solving (string).\n" \
                              "Default=(10,10)")
+    parser.add_argument('--std', type=int, default=11,
+                        help="Standard deviation of the Gaussian kernel (float).\n" \
+                             "Default: 11")
     parser.add_argument('-v', '--verbose', action='store_true',
                         help="Verbose output?")
     parser.add_argument('-l', '--logfile', type=str, default=None,
@@ -168,6 +273,12 @@ if __name__ == '__main__':
     if len(strcell) > 1:
         cell.append(int(strcell[1]))
     
-    main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order)
+    vrngss = args.vrngs[1:-1].split(',')
+    vrngs = np.empty((len(vrngss)//2,2))
+    for i in range(0,len(vrngss),2):
+        vrngs[i//2][0] = float(vrngss[i])
+        vrngs[i//2][1] = float(vrngss[i+1])
+        
+    main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, args.std, vrngs)
 
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))

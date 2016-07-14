@@ -284,6 +284,23 @@ def check_ascending(ra, dec, vel, verbose=False):
         
     return rs, ds, vs
 
+def compare_headers(head1, head2):
+    """
+    Compares the size and element width of 2 fits headers.
+    """
+    
+    axes = np.array([False, False, False])
+    
+    for i in range(3):
+        if head1['CDELT{0}'.format(i+1)] == head2['CDELT{0}'.format(i+1)] \
+           and head1['NAXIS{0}'.format(i+1)] == head2['NAXIS{0}'.format(i+1)]:
+               axes[i] = True
+               
+    if np.prod(axes) == 1:
+        return True
+    else:
+        return False
+
 def draw_beam(header, ax, **kwargs):
     """
     Draws an elliptical beam in a pywcsgrid2 axes object.
