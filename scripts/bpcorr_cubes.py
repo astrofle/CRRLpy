@@ -239,6 +239,7 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
         
     # Mask
     if mode.lower() in ['mask', 'mask solve', 'mask solve apply', 'mask solve smooth apply']:
+        logger.info('Will mask the requested velocity ranges before solving.')
         mx, mdata = mask_cube(x, data, vrngs)
     else:
         mx = x
