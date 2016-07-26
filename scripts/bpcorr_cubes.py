@@ -76,9 +76,30 @@ def bpcorrmask(data, x, bp, head):
         newshape = (1,) + data.shape[1:]
         bp4c[k] += ibp(pts).reshape(newshape)[0]
         
-    save(np.ma.masked_invalid(bp4c), 'bp4c.fits', head, True)
+    #save(np.ma.masked_invalid(bp4c), 'bp4c.fits', head, True)
         
     return ((data)/bp4c - 1.)*10.
+
+def interpolate_bpsol(x, bp, head):
+    """
+    """
+    
+    logger = logging.getLogger(__name__)
+    
+    ra, de, ve = ci.get_fits3axes(head)
+    rs, ds, vs = ci.check_ascending(ra, de, x, True)
+    
+    ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
+                                  bp[::vs,::ds,::rs], 
+                                  bounds_error=False, fill_value=10.)
+    
+    bp4c = np.zeros((len(ve), len(de), len(ra)))
+    for k in range(len(ve)):
+        pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
+        newshape = (1, len(de), len(ra))
+        bp4c[k] += ibp(pts).reshape(newshape)[0]
+        
+    return np.ma.masked_equal(bp4c, 0.0)
 
 def mask_cube(vel, data, vel_rngs):
     """
@@ -148,13 +169,14 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
     
     logger.info('Will solve for the bandpass on {0} pixels'.format(cell))
     
-    nx = (data.shape[2]//cell[0] + 1)*oversample
     cx = cell[0]//oversample
+    nx = (data.shape[2]//cx)
     ny = nx
     cy = cx
     if len(cell) > 1:
-        ny = (data.shape[1]//cell[1] + 1)*oversample
         cy = cell[1]//oversample
+        ny = (data.shape[1]//cy)
+        
     
     bp_cube = np.ma.masked_invalid(np.zeros(data.shape))
     bp_cube_cov = np.ma.masked_invalid(np.zeros(data.shape))
@@ -166,8 +188,8 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
             yf = (j+1)*cy
             x0 = i*cx
             xf = (i+1)*cx
-            print j, ny
-            print y0, yf, x0, xf
+            #print j, ny
+            #print y0, yf, x0, xf
             y = np.ma.masked_invalid(data[:,y0:yf,x0:xf].mean(axis=1).mean(axis=1))
 
             # Turn NaNs to zeros
@@ -189,6 +211,9 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
             bp_cube[:,y0:yf,x0:xf] += np.reshape(np.array([xbp]*np.prod(np.array(shape[1:]))).T, 
                                                  shape, order='C')
             bp_cube_cov[:,y0:yf,x0:xf] += np.ones(shape)
+            
+    logger.info('Bandpass solution is: {0:.0f}/{1:.0f} '\
+                '{2:.0f}/{3:.0f}'.format(i, data.shape[2], j, data.shape[1]))
 
     return np.ma.divide(bp_cube, bp_cube_cov)
 
@@ -221,8 +246,12 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     # Solve
     if mode.lower() in ['solve', 'mask solve', 'mask solve apply', 'solve apply', 'solve smooth apply', 'mask solve smooth apply']:
         bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample)
-    if not 'smooth' in mode.lower() and 'solve' in mode.lower():
+    if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower():
         logger.info('Will write the bandpass cube with the solutions.')
+        save(bp_cube, bandpass, head)
+    if 'mask solve' in mode.lower():
+        logger.info('Will write the bandpass cube with the solutions interpolated to the original axis.')
+        bp_cube = interpolate_bpsol(mx, bp_cube, head)
         save(bp_cube, bandpass, head)
     # Smooth
     if mode.lower() in ['mask solve smooth', 'solve smooth', 'solve smooth apply', 'mask solve smooth apply']:
@@ -234,7 +263,7 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     # Apply with mask
     if mode.lower() in ['mask solve apply', 'mask solve smooth apply']:
         logger.info('Will apply the bandpass solutions.')
-        data_bpc = bpcorrmask(data, mx, bp_cube, head)
+        data_bpc = bpcorr(data, bandpass, head)
         # Only save if applying solutions
         logger.info('Will write the bandpass corrected cube.')
         save(data_bpc, output, head)

@@ -7,6 +7,7 @@ import numpy as np
 
 from matplotlib import _cntr as cntr
 from astropy.coordinates import Angle
+from astropy import constants as c
 
 class Polygon:
     """
@@ -233,7 +234,7 @@ def _det(xvert, yvert):
     y_prev = np.concatenate(([yvert[-1]], yvert[:-1]))
     return np.sum(yvert * x_prev - xvert * y_prev, axis=0)
 
-def beam_area(head):
+def beam_area_pix(head):
     """
     Computes the beam area in pixels.
     It uses an approximation accurate to
@@ -248,6 +249,22 @@ def beam_area(head):
     """
     
     return 1.133*float(head['BMAJ'])*float(head['BMIN'])/(abs(head['CDELT1'])*abs(head['CDELT2']))
+
+def beam_area(head):
+    """
+    Computes the beam area in sterradians.
+    It uses an approximation accurate to
+    within 5%.
+    
+    K. Rohlfs and T.L. Wilson, 'Tools of Radio Astronomy', third revised and enlarged edition, 1996, Springer, page 190-191.
+    
+    :param head: Image header.
+    :type head: Fits header
+    :returns: Beam area in sr.
+    :rtype: float
+    """
+    
+    return np.pi/(4.*np.log(2.))*np.deg2rad(float(head['BMAJ']))*np.deg2rad(float(head['BMIN']))
 
 def check_ascending(ra, dec, vel, verbose=False):
     """
@@ -376,6 +393,21 @@ def get_contours(x, y, z, levs, segment=0, verbose=False):
             pass
                 
     return np.asarray(segments)
+
+def K2Jy(head):
+    """
+    Computes the conversion factor Jy/K.
+    
+    :param head: Image header.
+    :type head: Fits header
+    :returns: Factor to convert K to Jy.
+    :rtype: float
+    """
+    
+    omega = beam_area(head)
+    k2jy = 2.*c.k_B.cgs.value/np.power(c.c.cgs.value/head['RESTFREQ'], 2.)*omega/1e-23
+    
+    return k2jy
 
 def read_casa_polys(filename, image=None, wcs=None):
     """

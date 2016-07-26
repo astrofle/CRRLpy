@@ -523,7 +523,7 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
     
     # Add beam area info to the region. Used when the requested units are flux units.
     if 'flux' in mode.lower():
-        rgn['barea'] = ci.beam_area(head)
+        rgn['barea'] = ci.beam_area_pix(head)
         logger.debug('Conversion to flux: {0}'.format(rgn['barea']))
     
     # Get the frequency axis
