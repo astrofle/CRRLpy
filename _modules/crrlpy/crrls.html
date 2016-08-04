@@ -100,20 +100,22 @@
 <span class="sd">    :rtype: numpy array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
+    <span class="n">swpdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+    
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">print</span> <span class="s">&quot;Will not work&quot;</span>
-        <span class="n">avg_tmp</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">avg_tmp</span> <span class="o">=</span> <span class="n">swpdata</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">avg_tmp</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
             <span class="n">si</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span>
             <span class="k">if</span> <span class="n">si</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">avg_tmp</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">n</span><span class="p">]</span>
+                <span class="n">avg_tmp</span> <span class="o">+=</span> <span class="n">swpdata</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="n">n</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">avg_tmp</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="o">-</span><span class="n">si</span><span class="p">:</span><span class="n">n</span><span class="p">]</span>
+                <span class="n">avg_tmp</span> <span class="o">+=</span> <span class="n">swpdata</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="o">-</span><span class="n">si</span><span class="p">:</span><span class="n">n</span><span class="p">]</span>
         <span class="n">avg_tmp</span> <span class="o">=</span> <span class="n">avg_tmp</span><span class="o">/</span><span class="n">n</span>
         
-        <span class="k">return</span> <span class="n">avg_tmp</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">avg_tmp</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="best_match_indx_tol"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.best_match_indx_tol">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx_tol</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">tol</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -264,6 +266,13 @@
     
     <span class="k">return</span> <span class="n">c</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s">&#39;m/s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="p">(</span><span class="n">df</span><span class="o">/</span><span class="n">f0</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="dsigma2dfwtm"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.dsigma2dfwtm">[docs]</a><span class="k">def</span> <span class="nf">dsigma2dfwtm</span><span class="p">(</span><span class="n">dsigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWTM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">dsigma</span><span class="o">*</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10.</span><span class="p">))</span>
+</div>
 <div class="viewcode-block" id="dv2df"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.dv2df">[docs]</a><span class="k">def</span> <span class="nf">dv2df</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">dv</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert a velocity delta to a frequency delta given a central frequency.</span>
@@ -385,7 +394,10 @@
 <span class="sd">    Finds if there are any lines of a given type in the frequency range.</span>
 <span class="sd">    The line frequencies are corrected for redshift.</span>
 <span class="sd">    </span>
-<span class="sd">    :param freq: Frequency axis in which to search for lines.</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    :param freq: Frequency axis in which to search for lines. It should not contain \</span>
+<span class="sd">    NaN or inf values.</span>
 <span class="sd">    :type freq: array</span>
 <span class="sd">    :param line: Line type to search for.</span>
 <span class="sd">    :type line: string</span>
@@ -397,11 +409,15 @@
 <span class="sd">    frequency of the line. The frequencies are redshift corrected in MHz.</span>
 <span class="sd">    :rtype: array.</span>
 <span class="sd">    </span>
-<span class="sd">    :Example:</span>
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    load_ref : Describes the format of line and the available ones.</span>
 <span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from crrlpy import crrls</span>
 <span class="sd">    &gt;&gt;&gt; freq = [10, 11]</span>
-<span class="sd">    &gt;&gt;&gt; ns, rf = crrls.find_lines_sb(freq, &#39;CIalpha&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ns, rf = crrls.find_lines_sb(freq, &#39;RRL_CIalpha&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; ns</span>
 <span class="sd">    array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,</span>
 <span class="sd">            852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,</span>
@@ -409,7 +425,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c"># Load the reference frequencies.</span>
-    <span class="n">qn</span><span class="p">,</span> <span class="n">restfreq</span> <span class="o">=</span> <span class="n">load_ref2</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">qn</span><span class="p">,</span> <span class="n">restfreq</span> <span class="o">=</span> <span class="n">load_ref</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     
     <span class="c"># Correct rest frequencies for redshift.</span>
     <span class="n">reffreq</span> <span class="o">=</span> <span class="n">restfreq</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
@@ -433,6 +449,11 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Divide tb by given a model and starting parameters p0.</span>
 <span class="sd">    Returns: tb/model - 1</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : x axis.</span>
+<span class="sd">    y : y axis. </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="c"># Divide by linear baseline</span>
@@ -571,6 +592,27 @@
     
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">err1</span> <span class="o">+</span> <span class="n">err2</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="gauss_area2peak"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.gauss_area2peak">[docs]</a><span class="k">def</span> <span class="nf">gauss_area2peak</span><span class="p">(</span><span class="n">amplitude</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the maximum value of a Gaussian function given its</span>
+<span class="sd">    amplitude and standard deviation &quot;math:`\\sigma`.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">amplitude</span><span class="o">/</span><span class="n">sigma</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="gauss_area2peak_err"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.gauss_area2peak_err">[docs]</a><span class="k">def</span> <span class="nf">gauss_area2peak_err</span><span class="p">(</span><span class="n">peak</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">damplitude</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dsigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the maximum value of a Gaussian function given its</span>
+<span class="sd">    amplitude and standard deviation &quot;math:`\\sigma`.</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">err1</span> <span class="o">=</span> <span class="n">peak</span><span class="o">/</span><span class="n">amplitude</span><span class="o">*</span><span class="n">damplitude</span>
+    <span class="n">err2</span> <span class="o">=</span> <span class="n">peak</span><span class="o">/</span><span class="n">sigma</span><span class="o">*</span><span class="n">dsigma</span>
+    
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">err1</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">err2</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span>
+</div>
 <div class="viewcode-block" id="gaussian"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.gaussian">[docs]</a><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gaussian function in one dimension.</span>
@@ -587,6 +629,7 @@
 <span class="sd">    :rtype: array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
+    <span class="c">#return amplitude/(sigma*np.sqrt(2.*np.pi))*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))</span>
     <span class="k">return</span> <span class="n">amplitude</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">center</span><span class="p">),</span> <span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">sigma</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)))</span>
 </div>
 <div class="viewcode-block" id="get_axis"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.get_axis">[docs]</a><span class="k">def</span> <span class="nf">get_axis</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
@@ -617,7 +660,12 @@
     
     <span class="n">p0</span> <span class="o">-=</span> <span class="mi">1</span> <span class="c"># Fits files index start at 1, not for python.</span>
     
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">p0</span><span class="o">*</span><span class="n">dx</span><span class="p">,</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">p0</span><span class="o">*</span><span class="n">dx</span> <span class="o">+</span> <span class="n">n</span><span class="o">*</span><span class="n">dx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+    <span class="n">axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x0</span> <span class="o">-</span> <span class="n">p0</span><span class="o">*</span><span class="n">dx</span><span class="p">,</span> <span class="n">x0</span> <span class="o">-</span> <span class="n">p0</span><span class="o">*</span><span class="n">dx</span> <span class="o">+</span> <span class="n">n</span><span class="o">*</span><span class="n">dx</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">axis</span>
 </div>
 <div class="viewcode-block" id="get_rchi2"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.get_rchi2">[docs]</a><span class="k">def</span> <span class="nf">get_rchi2</span><span class="p">(</span><span class="n">x_obs</span><span class="p">,</span> <span class="n">x_mod</span><span class="p">,</span> <span class="n">y_obs</span><span class="p">,</span> <span class="n">y_mod</span><span class="p">,</span> <span class="n">dy_obs</span><span class="p">,</span> <span class="n">dof</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -723,9 +771,9 @@
 <span class="sd">    where :math:`V` is the variance of the data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> \
-           <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="mi">2</span><span class="p">))</span>
-    <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">+</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">),</span> <span class="mf">2.</span><span class="p">))</span>
+
     <span class="k">return</span> <span class="n">rms</span>
 </div>
 <div class="viewcode-block" id="get_min_sep"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.get_min_sep">[docs]</a><span class="k">def</span> <span class="nf">get_min_sep</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
@@ -846,64 +894,54 @@
         
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">qn</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">Ic</span><span class="p">,</span> <span class="n">tau</span><span class="p">,</span> <span class="n">eta_nu</span><span class="p">])</span>
 </div>
-<div class="viewcode-block" id="load_ref"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.load_ref">[docs]</a><span class="k">def</span> <span class="nf">load_ref</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
+<div class="viewcode-block" id="load_ref"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.load_ref">[docs]</a><span class="k">def</span> <span class="nf">load_ref</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loads the reference spectrum for the</span>
-<span class="sd">    specified atomic specie and transition.</span>
-<span class="sd">    Available species and transitions: </span>
-<span class="sd">    CI alpha</span>
-<span class="sd">    CI beta</span>
-<span class="sd">    CI delta</span>
-<span class="sd">    CI gamma</span>
-<span class="sd">    CI13 alpha</span>
-<span class="sd">    HeI alpha</span>
-<span class="sd">    HeI beta</span>
-<span class="sd">    HI alpha</span>
-<span class="sd">    HI beta</span>
-<span class="sd">    SI alpha</span>
-<span class="sd">    SI beta</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
-    <span class="n">refspec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/linelist/RRL_{1}{2}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">),</span>
-                         <span class="n">usecols</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
-                         <span class="c">#dtype={&#39;formats&#39;: (&#39;S4&#39;, &#39;S5&#39;, &#39;i4&#39;, &#39;f10&#39;)})</span>
-    <span class="n">qn</span> <span class="o">=</span> <span class="n">refspec</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">reffreq</span> <span class="o">=</span> <span class="n">refspec</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
-    
-    <span class="k">return</span> <span class="n">qn</span><span class="p">,</span> <span class="n">reffreq</span>
-</div>
-<div class="viewcode-block" id="load_ref2"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.load_ref2">[docs]</a><span class="k">def</span> <span class="nf">load_ref2</span><span class="p">(</span><span class="n">transition</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Loads the reference spectrum for the</span>
-<span class="sd">    specified atomic specie and transition.</span>
-<span class="sd">    Available transitions: </span>
-<span class="sd">    CIalpha</span>
-<span class="sd">    CIbeta</span>
-<span class="sd">    CIdelta</span>
-<span class="sd">    CIgamma</span>
-<span class="sd">    CI13alpha</span>
-<span class="sd">    HeIalpha</span>
-<span class="sd">    HeIbeta</span>
-<span class="sd">    HIalpha</span>
-<span class="sd">    HIbeta</span>
-<span class="sd">    SIalpha</span>
-<span class="sd">    SIbeta</span>
+<span class="sd">    Loads the reference spectrum for the specified line.</span>
+<span class="sd">    Available lines: </span>
+<span class="sd">    RRL_CIalpha</span>
+<span class="sd">    RRL_CIbeta</span>
+<span class="sd">    RRL_CIdelta</span>
+<span class="sd">    RRL_CIgamma</span>
+<span class="sd">    RRL_CI13alpha</span>
+<span class="sd">    RRL_HeIalpha</span>
+<span class="sd">    RRL_HeIbeta</span>
+<span class="sd">    RRL_HIalpha</span>
+<span class="sd">    RRL_HIbeta</span>
+<span class="sd">    RRL_SIalpha</span>
+<span class="sd">    RRL_SIbeta</span>
+<span class="sd">    </span>
+<span class="sd">    More lines can be added by including a list in the </span>
+<span class="sd">    linelist directory.</span>
+<span class="sd">    </span>
+<span class="sd">    :param line: Line for which the principal quantum number and \</span>
+<span class="sd">    reference frequencies are desired.</span>
+<span class="sd">    :type line: string</span>
+<span class="sd">    :returns: Lists with the principal quantum number and reference \</span>
+<span class="sd">    frequency of the line.</span>
+<span class="sd">    :rtype: list, list</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">LOCALDIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">))</span>
-    <span class="n">refspec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/linelist/RRL_{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">transition</span><span class="p">),</span>
+    <span class="n">refspec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;{0}/linelist/{1}.txt&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">LOCALDIR</span><span class="p">,</span> <span class="n">line</span><span class="p">),</span>
                          <span class="n">usecols</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
     <span class="n">qn</span> <span class="o">=</span> <span class="n">refspec</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">reffreq</span> <span class="o">=</span> <span class="n">refspec</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
     
     <span class="k">return</span> <span class="n">qn</span><span class="p">,</span> <span class="n">reffreq</span>
 </div>
-<div class="viewcode-block" id="lookup_freq"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.lookup_freq">[docs]</a><span class="k">def</span> <span class="nf">lookup_freq</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">):</span>
+<div class="viewcode-block" id="lookup_freq"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.lookup_freq">[docs]</a><span class="k">def</span> <span class="nf">lookup_freq</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the frequency of a given transition.</span>
+<span class="sd">    Returns the frequency of a line given the transition number n.</span>
+<span class="sd">    </span>
+<span class="sd">    :param n: Principal quantum number to look up for.</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :param line: Line for which the frequency is desired.</span>
+<span class="sd">    :type line: string</span>
+<span class="sd">    :returns: Frequency of line(n).</span>
+<span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="n">qns</span><span class="p">,</span> <span class="n">freqs</span> <span class="o">=</span> <span class="n">load_ref</span><span class="p">(</span><span class="n">specie</span><span class="p">,</span> <span class="n">trans</span><span class="p">)</span>
+    <span class="n">qns</span><span class="p">,</span> <span class="n">freqs</span> <span class="o">=</span> <span class="n">load_ref</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
     <span class="n">indx</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">qns</span><span class="p">)</span>
     
     <span class="k">return</span> <span class="n">freqs</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span>
@@ -1307,7 +1345,7 @@
     <span class="n">cte</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">2.14e4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">6.578e15</span><span class="o">/</span><span class="n">nu0</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">k_B</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">nu0</span>
     <span class="n">dnexp</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">-</span> <span class="mf">2.</span>
     
-    <span class="k">return</span> <span class="n">W</span><span class="o">*</span><span class="n">cte</span><span class="o">*</span><span class="n">Tr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="o">*</span><span class="n">alpha</span> <span class="o">-</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dnexp</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">dnexp</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">W</span><span class="o">*</span><span class="n">cte</span><span class="o">*</span><span class="n">Tr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="o">*</span><span class="n">alpha</span> <span class="o">-</span> <span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">2.</span><span class="p">,</span> <span class="n">dnexp</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">3.</span><span class="p">,</span> <span class="n">dnexp</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="sigma2fwhm"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.sigma2fwhm">[docs]</a><span class="k">def</span> <span class="nf">sigma2fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1319,7 +1357,7 @@
 <span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">return</span> <span class="n">sigma</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">sigma</span><span class="o">*</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="sigma2fwhm_err"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.sigma2fwhm_err">[docs]</a><span class="k">def</span> <span class="nf">sigma2fwhm_err</span><span class="p">(</span><span class="n">dsigma</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1332,7 +1370,14 @@
 <span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">return</span> <span class="n">dsigma</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">dsigma</span><span class="o">*</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">2.</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="sigma2fwtm"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.sigma2fwtm">[docs]</a><span class="k">def</span> <span class="nf">sigma2fwtm</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWTM.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">sigma</span><span class="o">*</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10.</span><span class="p">))</span>
 </div>
 <div class="viewcode-block" id="stack_irregular"><a class="viewcode-back" href="../../index.html#crrlpy.crrls.stack_irregular">[docs]</a><span class="k">def</span> <span class="nf">stack_irregular</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
