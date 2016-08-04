@@ -357,6 +357,10 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     frequency of the line. The frequencies are redshift corrected in MHz.
     :rtype: array.
     
+    See Also
+    --------
+    load_ref : Describes the format of line and the available ones.
+    
     :Example:
     
     >>> from crrlpy import crrls
