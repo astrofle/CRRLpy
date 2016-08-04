@@ -344,6 +344,8 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     Finds if there are any lines of a given type in the frequency range.
     The line frequencies are corrected for redshift.
     
+    Parameters
+    ----------
     :param freq: Frequency axis in which to search for lines. It should not contain \
     NaN or inf values.
     :type freq: array
@@ -361,8 +363,8 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     --------
     load_ref : Describes the format of line and the available ones.
     
-    :Example:
-    
+    Examples
+    --------
     >>> from crrlpy import crrls
     >>> freq = [10, 11]
     >>> ns, rf = crrls.find_lines_sb(freq, 'RRL_CIalpha')
@@ -397,6 +399,11 @@ def fit_continuum(x, y, degree, p0):
     """
     Divide tb by given a model and starting parameters p0.
     Returns: tb/model - 1
+    
+    Parameters
+    ----------
+    x : x axis.
+    y : y axis. 
     """
     
     # Divide by linear baseline

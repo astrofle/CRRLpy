@@ -31,6 +31,7 @@ sys.path.insert(0, "/home/pedro/Documents/PhD/scripts/lofar-strw/trunk/CRRLpy")
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'numpydoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.todo',
