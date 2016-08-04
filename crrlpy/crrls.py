@@ -361,7 +361,7 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     
     >>> from crrlpy import crrls
     >>> freq = [10, 11]
-    >>> ns, rf = crrls.find_lines_sb(freq, 'CIalpha')
+    >>> ns, rf = crrls.find_lines_sb(freq, 'RRL_CIalpha')
     >>> ns
     array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,
             852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,
@@ -369,7 +369,7 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     """
     
     # Load the reference frequencies.
-    qn, restfreq = load_ref2(line)
+    qn, restfreq = load_ref(line)
     
     # Correct rest frequencies for redshift.
     reffreq = restfreq/(1.0 + z)
@@ -833,64 +833,54 @@ def load_model(prop, specie, temp, dens, other=None):
         
         return np.array([qn, freq, Ic, tau, eta_nu])
 
-def load_ref(specie, trans):
+def load_ref(line):
     """
-    Loads the reference spectrum for the
-    specified atomic specie and transition.
-    Available species and transitions: 
-    CI alpha
-    CI beta
-    CI delta
-    CI gamma
-    CI13 alpha
-    HeI alpha
-    HeI beta
-    HI alpha
-    HI beta
-    SI alpha
-    SI beta
-    """
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    refspec = np.loadtxt('{0}/linelist/RRL_{1}{2}.txt'.format(LOCALDIR, specie, trans),
-                         usecols=(2,3))
-                         #dtype={'formats': ('S4', 'S5', 'i4', 'f10')})
-    qn = refspec[:,0]
-    reffreq = refspec[:,1]
+    Loads the reference spectrum for the specified line.
+    Available lines: 
+    RRL_CIalpha
+    RRL_CIbeta
+    RRL_CIdelta
+    RRL_CIgamma
+    RRL_CI13alpha
+    RRL_HeIalpha
+    RRL_HeIbeta
+    RRL_HIalpha
+    RRL_HIbeta
+    RRL_SIalpha
+    RRL_SIbeta
     
-    return qn, reffreq
-
-def load_ref2(transition):
-    """
-    Loads the reference spectrum for the
-    specified atomic specie and transition.
-    Available transitions: 
-    CIalpha
-    CIbeta
-    CIdelta
-    CIgamma
-    CI13alpha
-    HeIalpha
-    HeIbeta
-    HIalpha
-    HIbeta
-    SIalpha
-    SIbeta
+    More lines can be added by including a list in the 
+    linelist directory.
+    
+    :param line: Line for which the principal quantum number and \
+    reference frequencies are desired.
+    :type line: string
+    :returns: Lists with the principal quantum number and reference \
+    frequency of the line.
+    :rtype: list, list
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    refspec = np.loadtxt('{0}/linelist/RRL_{1}.txt'.format(LOCALDIR, transition),
+    refspec = np.loadtxt('{0}/linelist/{1}.txt'.format(LOCALDIR, line),
                          usecols=(2,3))
     qn = refspec[:,0]
     reffreq = refspec[:,1]
     
     return qn, reffreq
 
-def lookup_freq(n, specie, trans):
+def lookup_freq(n, line):
     """
-    Returns the frequency of a given transition.
+    Returns the frequency of a line given the transition number n.
+    
+    :param n: Principal quantum number to look up for.
+    :type n: int
+    :param line: Line for which the frequency is desired.
+    :type line: string
+    :returns: Frequency of line(n).
+    :rtype: float
     """
     
-    qns, freqs = load_ref(specie, trans)
+    qns, freqs = load_ref(line)
     indx = best_match_indx(n, qns)
     
     return freqs[indx]

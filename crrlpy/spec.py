@@ -6,82 +6,79 @@ class Spectrum(object):
     """
     """
     
-    def __init__(self, x, y, spw=None, stack=None, is_vel=False, n=None):
+    def __init__(self, x, y, w=None, spw=None, stack=None):
         
         # User provided values
-        self.freq = np.ma.masked_invalid(x)
-        self.amp = np.ma.masked_invalid(y)
-        
-        if is vel:
-            self.has_freq = False
-            self.freq = np.ma.ones(len(x))
-        
+        self.x = np.ma.masked_invalid(x)
+        self.y = np.ma.masked_invalid(y)
+        if not w:
+            self.z = np.ma.masked_invalid(np.ones(len(x)))
+        else:
+            self.z = np.ma.masked_invalid(w)
+        self.z.fill_value = 1.
         self.spw = spw
         self.stack = stack
-        self.has_vel = is_vel
         
-        # Determine the global mask from freq and amp
-        self.mask = self.freq.mask | self.amp.mask
+        # Determine the global mask from x, y and z
+        self.mask = self.x.mask | self.y.mask | self.z.mask
         # Apply the global mask to the data
-        self.freq.mask = self.mask
-        self.amp.mask = self.mask
+        self.x.mask = self.mask
+        self.y.mask = self.mask
+        self.z.mask = self.mask
     
-    def cut_edges(self, redge, ledge=0):
+    def cut_edges(self, redge, ledge=None):
         """
-        Mask the edges of a Spectrum frequency and amplitude
-        """
-    
-    def get_umask_amp(self):
-        """
-        Returns the unmasked elements of amp.
+        Mask the edges of the Spectrum frequency and amplitude.
         """
         
-        umask = self.amp.nonzero()
-        return self.amp[umask]
-    
-    def get_umask_freq(self):
-        """
-        Returns the unmasked elements of freq.
-        """
-        
-        umask = self.freq.nonzero()
-        return self.freq[umask]
-        
-def bandpass_corr(x, y, order, median=False):
-    """
-    """
-    
-    # Turn NaNs to zeros
-    my = np.ma.masked_invalid(y)
-    mx = np.ma.masked_where(np.ma.getmask(my), x)
-    mmx = np.ma.masked_invalid(mx)
-    mmy = np.ma.masked_where(np.ma.getmask(mmx), my)
-    np.ma.set_fill_value(mmy, 0)
-    np.ma.set_fill_value(mmx, 0)
-    gx = mmx.compressed()
-    gy = mmy.compressed()
-    
-    # Use a polynomial to remove the baseline
-    #print gx
-    #print gy
-    bp = np.polynomial.polynomial.polyfit(gx, gy, order)
-    # Interpolate and extrapolate to the original x axis
-    b = np.polynomial.polynomial.polyval(x, bp)
-    
-    # Flag NaN values in the baseline
-    mb = np.ma.masked_invalid(b)
-    mb.fill_value = 0.0
-    
-    if median:
-        # Only keep the baseline shape
-        gb = mb - np.median(mb.compressed())
-        #print np.median(mb.compressed())
-    else:
-        gb = mb
-    
-    ycorr = y - gb
+        if ledge == None:
+            ledge = redge
             
-    return ycorr, gb
-
+        if isinstance(redge, int) and isinstance(ledge, int):
+            self.x.mask[:ledge] = True
+            self.x.mask[-redge:] = True
+            self.y.mask[:ledge] = True
+            self.y.mask[-redge:] = True
+        else:
+            raise ValueError('redge and ledge should be integers')
+    
+    def mask_ranges(self, ranges):
+        """
+        Masks the Spectrum inside the given ranges.
+        
+        :param ranges: Indexes defining the ranges to be masked.
+        :type ranges: list of tuples
+        """
+        
+        for rng in ranges:
+            self.x.mask[rng[0]:rng[1]] = True
+            self.y.mask[rng[0]:rng[1]] = True
+            self.z.mask[rng[0]:rng[1]] = True
+    
+    def split_lines(self):
+        """
+        Splits the spectrum to separate lines.
+        """
+        
+    def bandpass_corr(self, order):
+        """
+        """
+        
+        # Add offset to avoid zeros
+        off = 1000.
+        oy = self.y.compressed() + off
+        
+        # Use a polynomial to remove the baseline
+        bp = np.polynomial.polynomial.polyfit(self.x.compressed(), oy, order, w=self.z)
+        # Interpolate and extrapolate to the original x axis
+        b = np.polynomial.polynomial.polyval(self.x.data, bp)
+        
+        # Flag NaN values in the baseline
+        mb = np.ma.masked_invalid(b)
+        mb.fill_value = 1.
+        self.mb = np.ma.masked_equal(mb, 0)
+        
+        self.ycorr = np.ma.masked_invalid((oy/mb.filled() - 1.)*off)
+                
 if __name__ == '__main__':
     pass

@@ -57,29 +57,6 @@ def bpcorr(data, bandpass, head):
         
     return ((data)/bp4c - 1.)*10.
 
-def bpcorrmask(data, x, bp, head):
-    """
-    """
-    
-    logger = logging.getLogger(__name__)
-    
-    ra, de, ve = ci.get_fits3axes(head)
-    rs, ds, vs = ci.check_ascending(ra, de, x, True)
-    
-    ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
-                                  bp[::vs,::ds,::rs], 
-                                  bounds_error=False, fill_value=10.)
-    
-    bp4c = np.zeros(data.shape)
-    for k in range(len(ve)):
-        pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
-        newshape = (1,) + data.shape[1:]
-        bp4c[k] += ibp(pts).reshape(newshape)[0]
-        
-    #save(np.ma.masked_invalid(bp4c), 'bp4c.fits', head, True)
-        
-    return ((data)/bp4c - 1.)*10.
-
 def interpolate_bpsol(x, bp, head):
     """
     """
@@ -176,7 +153,6 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
     if len(cell) > 1:
         cy = cell[1]//oversample
         ny = (data.shape[1]//cy)
-        
     
     bp_cube = np.ma.masked_invalid(np.zeros(data.shape))
     bp_cube_cov = np.ma.masked_invalid(np.zeros(data.shape))
@@ -212,12 +188,12 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
                                                  shape, order='C')
             bp_cube_cov[:,y0:yf,x0:xf] += np.ones(shape)
             
-    logger.info('Bandpass solution is: {0:.0f}/{1:.0f} '\
-                '{2:.0f}/{3:.0f}'.format(i, data.shape[2], j, data.shape[1]))
+    logger.info('Bandpass solution spatial pixels: {0:.0f}/{1:.0f} '\
+                '{2:.0f}/{3:.0f}'.format((i+1)*cx, data.shape[2], (j+1)*cy, data.shape[1]))
 
     return np.ma.divide(bp_cube, bp_cube_cov)
 
-def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1):
+def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1):
     """
     """
     
@@ -232,25 +208,36 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     data = np.ma.masked_invalid(hdu[0].data) + 10.
     x = crrls.get_axis(head, 3)
     
+    logger.info('Data shape: {0}'.format(data.shape))
+    
     # Remove Stokes axis if present
     if len(data.shape) > 3:
         logger.info('Will drop first axis.')
         data = data[0]
-        
+    
+    # Average
+    if average > 1:
+        logger.info('Will average {0} channels together.'.format(average))
+        avg_x = crrls.average(x, 0, average)
+        avg_data = crrls.average(data, 0, average)
+        logger.info('Averaged data shape: {0}'.format(avg_data.shape))
+    else:
+        avg_x = x
+        avg_data = data
     # Mask
     if mode.lower() in ['mask', 'mask solve', 'mask solve apply', 'mask solve smooth apply']:
         logger.info('Will mask the requested velocity ranges before solving.')
-        mx, mdata = mask_cube(x, data, vrngs)
+        mx, mdata = mask_cube(avg_x, avg_data, vrngs)
     else:
-        mx = x
-        mdata = data
+        mx = avg_x
+        mdata = avg_data
     # Solve
     if mode.lower() in ['solve', 'mask solve', 'mask solve apply', 'solve apply', 'solve smooth apply', 'mask solve smooth apply']:
         bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample)
-    if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower():
+    if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower() and average <= 1:
         logger.info('Will write the bandpass cube with the solutions.')
         save(bp_cube, bandpass, head)
-    if 'mask solve' in mode.lower():
+    if 'mask solve' in mode.lower() or average > 1:
         logger.info('Will write the bandpass cube with the solutions interpolated to the original axis.')
         bp_cube = interpolate_bpsol(mx, bp_cube, head)
         save(bp_cube, bandpass, head)
@@ -262,14 +249,7 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
         logger.info('Will write the smoothed bandpass cube with the solutions.')
         save(bp_cube, bandpass, head)
     # Apply with mask
-    if mode.lower() in ['mask solve apply', 'mask solve smooth apply']:
-        logger.info('Will apply the bandpass solutions.')
-        data_bpc = bpcorr(data, bandpass, head)
-        # Only save if applying solutions
-        logger.info('Will write the bandpass corrected cube.')
-        save(data_bpc, output, head)
-    # Apply without mask
-    if mode.lower() in ['apply', 'solve apply', 'solve smooth apply']:
+    if 'apply' in mode.lower():
         logger.info('Will apply the bandpass solutions.')
         data_bpc = bpcorr(data, bandpass, head)
         # Only save if applying solutions
@@ -307,6 +287,9 @@ if __name__ == '__main__':
     parser.add_argument('--oversample', type=int, default=1,
                         help="Derive bandpass solutions (float).\n" \
                              "Default: 11")
+    parser.add_argument('-a', '--average', type=int, default=1,
+                        help="Average the velocity axis by this amount (int).\n" \
+                             "Default: 1")
     parser.add_argument('-v', '--verbose', action='store_true',
                         help="Verbose output?")
     parser.add_argument('-l', '--logfile', type=str, default=None,
@@ -340,6 +323,6 @@ if __name__ == '__main__':
         vrngs = None
         
     main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, 
-         args.std, vrngs, args.oversample)
+         args.std, vrngs, args.oversample, args.average)
 
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))
