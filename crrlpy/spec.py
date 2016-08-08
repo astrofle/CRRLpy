@@ -25,7 +25,7 @@ class Spectrum(object):
         Spectrum spectral window.
     """
     
-    def __init__(self, x, y, w=[], spw=None):
+    def __init__(self, x, y, w=[], spw=None, stack=None):
         
         # User provided values
         self.x = np.ma.masked_invalid(x)
@@ -37,6 +37,7 @@ class Spectrum(object):
             self.z = np.ma.masked_invalid(np.ones(len(x)))
         self.z.fill_value = 1.
         self.spw = spw
+        self.stack = stack
         
         # Determine the global mask from x, y and z
         self.mask = self.x.mask | self.y.mask | self.z.mask
@@ -294,6 +295,55 @@ class Spectrum(object):
             self.x.mask[rng[0]:rng[1]] = True
             self.y.mask[rng[0]:rng[1]] = True
             self.z.mask[rng[0]:rng[1]] = True
+            
+    def remove_model(self, line, model, is_freq=False):
+        """
+        Subtracts the model from the y axis of the Spectrum.
+        
+        Parameters
+        ----------
+        line : :obj:`str`
+               Line which the model represents.
+        model : array_like
+               Array with the model to be removed. Should have shape (2xN).
+        is_freq : :obj:`bool`
+               Is the model x axis in frequency units?
+        """
+        
+        modx = model[0]
+        mody = model[1]
+        p = np.argsort(modx)
+        
+        qns, freqs = self.find_lines(line, z=0)
+        
+        y_mod = np.zeros(len(self.y))
+        
+        if is_freq:
+            # Interpolate the model axis to the spectrum grid
+            imody = interpolate.interp1d(modx[p], mody[p],
+                                         kind='linear',
+                                         bounds_error=False,
+                                         fill_value=0.0)
+            y_mod += imody(self.x.data)
+            
+        else:
+            for i,n in enumerate(qns):
+                # Convert the model velocity axis to frequency
+                fm = crrls.vel2freq(freqs[i], modx*1e3)
+                p = fm.argsort()
+                
+                # Interpolate the model axis to the spectrum grid
+                imody = interpolate.interp1d(fm[p], mody[p],
+                                             kind='linear',
+                                             bounds_error=False,
+                                             fill_value=0.0)
+                y_mod += imody(self.x.data)
+        
+        # Remove the model
+        self.y_minus_mod = self.y - y_mod
+        
+        # Store the model
+        self.model = y_mod
     
     def save(self, filename):
         """
@@ -437,6 +487,16 @@ class Stack(object):
 
 def distribute_lines(lines, ngroups):
     """
+    Groups a list of lines into ngroups.
+    This is used to make stacks.
+    
+    Parameters
+    ----------
+    lines : array_like
+           List of lines to group.
+    ngroups : :ob:`int`
+           Number of groups to make. If the number of lines is not divisible
+           by the number of groups, then more lines are added to the first groups.
     """
     
     glens = [len(lines)/int(ngroups)]*ngroups
