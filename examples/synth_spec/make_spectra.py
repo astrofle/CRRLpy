@@ -12,7 +12,7 @@ def rms_model(nu, nu_rms, rms):
     """
     """
 
-    return (1/3)*rms[crrls.best_match_indx2(nu, nu_rms)]
+    return (1/3)*rms[crrls.best_match_indx(nu, nu_rms)]
     
 if __name__ == '__main__':
     

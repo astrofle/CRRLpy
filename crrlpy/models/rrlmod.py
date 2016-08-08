@@ -710,10 +710,10 @@ def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau')
     
     Put them in a dictionary
     
-    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr], \
-                  'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr], \
-                  'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_)) \
-                        for t_ in Te for n_ in ne for tr_ in Tr]}
+    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr],
+    ...           'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],
+    ...           'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_))
+    ...                 for t_ in Te for n_ in ne for tr_ in Tr]}
     
     # Load the models
     
@@ -913,10 +913,10 @@ def load_betabn(temp, dens, other='', trans='CIalpha', verbose=False):
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    if trans[0] == 'C':
+    if trans[:5] == 'RRL_C':
         atom = 'Carbon'
         ncrit = '1.5d3'
-    elif trans[0] == 'H':
+    elif trans[:5] == 'RRL_H':
         atom = 'Hydrogen'
         ncrit = '8d2'
     

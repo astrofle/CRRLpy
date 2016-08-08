@@ -211,7 +211,7 @@ def df2dv(f0, df):
     :param df: Frequency delta. (Hz)
     :type df: float
     :returns: The equivalent velocity delta for the given frequency delta.
-    :rtype: float in Hz
+    :rtype: float in :math:`\mbox{m s}^{-1}`
     """
     
     return c.to('m/s').value*(df/f0)
@@ -227,12 +227,12 @@ def dv2df(f0, dv):
     """
     Convert a velocity delta to a frequency delta given a central frequency.
     
-    :param f0: Rest frequency. (Hz)
+    :param f0: Rest frequency in Hz.
     :type f0: float
-    :param dv: Velocity delta. (m/s)
+    :param dv: Velocity delta in m/s.
     :type dv: float
-    :returns: The equivalent frequency delta for the given velocity delta.
-    :rtype: float in :math:`\mbox{m s}^{-1}`
+    :returns: For the given velocity delta, the equivalent frequency delta in Hz.
+    :rtype: float
     """
     
     return dv*f0/c.to('m/s').value
@@ -726,14 +726,50 @@ def get_rms(data, axis=None):
 
     return rms
 
+def get_max_sep(array):
+    """
+    Get the maximum element separation in an array.
+    
+    Parameters
+    ----------
+    array :   array
+              Array where the maximum separation is wanted.
+    
+    Returns
+    -------
+    max_sep : float
+              The maximum separation between the elements in `array`.
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> x = np.array([1,2,3,4,5,7])
+    >>> get_max_sep(x)
+    2
+    """
+
+    return max(abs(array[0:-1:2] - array[1::2]))
+
 def get_min_sep(array):
     """
     Get the minimum element separation in an array.
     
-    :param array: Array where the minimum separation is wanted.
-    :type array: array
-    :returns: The minimum separation between the elements in `array`.
-    :rtype: float
+    Parameters
+    ----------
+    array :   array
+              Array where the minimum separation is wanted.
+    
+    Returns
+    -------
+    max_sep : float
+              The minimum separation between the elements in `array`.
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> x = np.array([1,2,3,4,5,7])
+    >>> get_min_sep(x)
+    1
     """
 
     return min(abs(array[0:-1:2] - array[1::2]))
@@ -847,28 +883,34 @@ def load_model(prop, specie, temp, dens, other=None):
 def load_ref(line):
     """
     Loads the reference spectrum for the specified line.
-    Available lines: 
-    RRL_CIalpha
-    RRL_CIbeta
-    RRL_CIdelta
-    RRL_CIgamma
-    RRL_CI13alpha
-    RRL_HeIalpha
-    RRL_HeIbeta
-    RRL_HIalpha
-    RRL_HIbeta
-    RRL_SIalpha
-    RRL_SIbeta
+    
+    | Available lines:
+    | RRL_CIalpha
+    | RRL_CIbeta
+    | RRL_CIdelta
+    | RRL_CIgamma
+    | RRL_CI13alpha
+    | RRL_HeIalpha
+    | RRL_HeIbeta
+    | RRL_HIalpha
+    | RRL_HIbeta
+    | RRL_SIalpha
+    | RRL_SIbeta
     
     More lines can be added by including a list in the 
     linelist directory.
     
-    :param line: Line for which the principal quantum number and \
-    reference frequencies are desired.
-    :type line: string
-    :returns: Lists with the principal quantum number and reference \
-    frequency of the line.
-    :rtype: list, list
+    Parameters
+    ----------
+    line : string
+           Line for which the principal quantum number and reference frequencies are desired.
+    
+    Returns
+    -------
+    n : array
+            Principal quantum numbers. 
+    reference_frequencies : array
+                            Reference frequencies of the lines inside the spectrum in MHz.
     """
     
     LOCALDIR = os.path.dirname(os.path.realpath(__file__))

@@ -27,6 +27,21 @@ def best_match_indx(value, array):
         
     return np.where(subarr == subarrmin)[0][0]
 
+def flatten_list(list):
+    """
+    | Flattens a list of lists.
+    | Based on:
+    | http://stackoverflow.com/questions/457215/comprehension-for-flattening-a-sequence-of-sequences/5330178#5330178
+    """
+    
+    #print 'List: {0}'.format(list)
+    result = []
+    extend = result.extend
+    for l in list:
+        extend(l)
+        
+    return result
+
 def sci_notation(number, sig_fig=2):
     """
     Converts a number to scientific notation keeping sig_fig signitifcant figures.

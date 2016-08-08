@@ -16,12 +16,12 @@ from matplotlib.backends.backend_pdf import PdfPages
 from crrlpy import crrls
 
 #colors = ['r', 'orange', 'g', 'b']
-tprops = {'CIalpha':[r'C$\alpha$', 'r'],
-          'CIbeta':[r'C$\beta$', 'orange'],
-          'CIgamma':[r'C$\gamma$', 'g'],
-          'CIdelta':[r'C$\delta$', 'b'],
-          'HIalpha':[r'H$\alpha$', 'y'],
-          'NIalpha':[r'N$\alpha$', 'gray']
+tprops = {'RRL_CIalpha':[r'C$\alpha$', 'r'],
+          'RRL_CIbeta':[r'C$\beta$', 'orange'],
+          'RRL_CIgamma':[r'C$\gamma$', 'g'],
+          'RRL_CIdelta':[r'C$\delta$', 'b'],
+          'RRL_HIalpha':[r'H$\alpha$', 'y'],
+          'RRL_NIalpha':[r'N$\alpha$', 'gray']
           }
 ylbl = 1e-4
 
@@ -75,7 +75,7 @@ def sbsplot(spec, output, show_lines, transitions, z,
                     r = 1
                     
                 qns, freqs = crrls.find_lines_sb(x[~np.isnan(x)][::r], t, z)
-                #print x[~np.isnan(x)]
+                ylbl = np.ma.masked_invalid(y).mean()
                 for label, i, j in zip(qns, freqs, [ylbl]*len(freqs)):
                     plt.annotate(label, xy=(i, j), xytext=(-10, 15*o+5), 
                                  size='x-small', textcoords='offset points', 
