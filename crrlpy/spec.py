@@ -70,11 +70,11 @@ class Spectrum(object):
         
         bp = np.ma.masked_invalid(np.interp(self.x.data, bandpass_x, bandpass_y))
         bp.fill_value = offset
+            
+        self.y_bpcorr = np.ma.masked_invalid(((self.y.data + offset)/bp.filled() - 1.)*offset)
         
         if overwrite:
             self.bp = bp
-            
-        self.y_bpcorr = np.ma.masked_invalid(((self.y.data + offset)/self.bp.filled() - 1.)*offset)
     
     def bandpass_corr(self, order, offset=1000.):
         """
@@ -296,7 +296,7 @@ class Spectrum(object):
             self.y.mask[rng[0]:rng[1]] = True
             self.z.mask[rng[0]:rng[1]] = True
             
-    def remove_model(self, line, model, is_freq=False):
+    def remove_model(self, line, model, z=0, is_freq=False):
         """
         Subtracts the model from the y axis of the Spectrum.
         
@@ -314,7 +314,7 @@ class Spectrum(object):
         mody = model[1]
         p = np.argsort(modx)
         
-        qns, freqs = self.find_lines(line, z=0)
+        qns, freqs = self.find_lines(line, z=z)
         
         y_mod = np.zeros(len(self.y))
         
@@ -430,7 +430,19 @@ class Stack(object):
                 dv = max(dv, s.dx)
         
         self.dv = dv
+    
+    def save(self, filename):
+        """
+        Saves the spectrum.
         
+        Parameters
+        ----------
+        filename : :obj:`str`
+                  Output filename.
+        """
+        
+        np.savetxt(filename, np.c_[self.x.data, self.y.data, self.z.data])
+    
     def stack_interpol(self):
         """
         Stack by interpolating to a common grid.
@@ -479,7 +491,7 @@ class Stack(object):
         # Divide by the total weight to preserve optical depth
         self.y = np.ma.masked_invalid(np.divide(self.y, self.z))
         
-        # Apply the mask
+        # Apply a common mask
         self.mask = self.x.mask | self.y.mask | self.z.mask
         self.x.mask = self.mask
         self.y.mask = self.mask
