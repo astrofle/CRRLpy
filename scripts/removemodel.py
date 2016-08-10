@@ -135,10 +135,10 @@ if __name__ == '__main__':
                         help="Output spectra basename (string).\n" \
                              "The resulting spectra will be named: \n" \
                              "<basename>_SBxxx.ascii")
-    parser.add_argument('-t', '--transition', type=str, default='CIalpha',
+    parser.add_argument('-t', '--transition', type=str, default='RRL_CIalpha',
                         help="Transition being removed. (string)\n" \
-                             "E.g., CI13beta\n" \
-                             "Default: CIalpha.")
+                             "E.g., RRL_CI13beta\n" \
+                             "Default: RRL_CIalpha.")
     parser.add_argument('--z', type=float, default=0.0, dest='z',
                         help="Redshift to apply to the transition rest frequency." \
                              "Default: 0")
