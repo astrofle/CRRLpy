@@ -46,10 +46,10 @@ if __name__ == '__main__':
     parser.add_argument('basename', type=str,
                         help="Base name for the output list. \n" \
                              "e.g., <basename>_SB120_n545.ascii")
-    parser.add_argument('-t', '--transitions', type=str, default='CIalpha',
+    parser.add_argument('-t', '--transitions', type=str, default='RRL_CIalpha',
                         help="Transitions to consider in the spectra." \
                              "E.g., CIalpha,CI13beta,HIalpha" \
-                             "Default: CIalpha")
+                             "Default: RRL_CIalpha")
     parser.add_argument('--z', type=float, default=0.0, dest='z',
                         help="Redshift to apply to the transition rest frequency." \
                              "Default: 0")
