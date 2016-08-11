@@ -13,7 +13,7 @@ from scipy import interpolate
 from matplotlib.backends.backend_pdf import PdfPages
 
 def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq, 
-                 plot, plot_file):
+                 plot, plot_file, mode):
     """
     """
     
@@ -90,8 +90,11 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
             y_mod += interp_ym(x)
         
         # Remove the model
-        ys = ys - y_mod
-        
+        if 'sub' in mode.lower():
+            ys = ys - y_mod
+        elif 'div' in mode.lower():
+            ys = (ys/y_mod - 1.)*10.
+            
         # Return the masked values to their NaN values
         ys[mask] = np.nan
         x[mask] = np.nan
@@ -155,6 +158,9 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--interp', type=str, default='linear',
                         help="Kind of interpolation to use with scipy.interpolate.interp1d." \
                              "Default: linear")
+    parser.add_argument('-m', '--mode', type=str, default='subtract',
+                        help="Subtract or divide the model?" \
+                             "Default: subtract")
     args = parser.parse_args()
     
     if args.plot and not args.plot_file:
@@ -163,4 +169,4 @@ if __name__ == '__main__':
         sys.exit()
     
     remove_stack(args.spec, args.model, args.basename, args.transition, args.z,
-                 args.x_col, args.y_col, args.freq, args.plot, args.plot_file)
+                 args.x_col, args.y_col, args.freq, args.plot, args.plot_file, args.mode)
