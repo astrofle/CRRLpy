@@ -33,28 +33,28 @@ rmslog=$3
 
 if [ $trans == 'alpha' ]
 then
-transs=CIalpha,CIbeta,CIgamma,CIdelta
+transs=RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 stackmax=1
 folder0=lines/iter${iter}/sbs
 fi
 
 if [ $trans == 'beta' ]
 then
-transs=CIbeta,CIgamma,CIdelta
+transs=RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 stackmax=1
 folder0=lines/iter${iter}/malpha
 fi
 
 if [ $trans == 'gamma' ]
 then
-transs=CIgamma,CIdelta
+transs=RRL_CIgamma,RRL_CIdelta
 stackmax=1
 folder0=lines/iter${iter}/mbeta
 fi
 
 if [ $trans == 'delta' ]
 then
-transs=CIdelta
+transs=RRL_CIdelta
 stackmax=1
 folder0=lines/iter${iter}/mgamma
 fi
@@ -83,10 +83,10 @@ done
 }
 
 # Plot the raw spectra showing the CI lines at the velocity of -47 km/s
-${SPECPATH}/sbsplot.py 'raw/lba_sim_SB*.ascii' plots/raw_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'raw/lba_sim_SB*.ascii' plots/raw_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 cp mcont/lba_sim_SB*.ascii medges/.
 # Get the rms of each subband
-${SPECPATH}/makeweightlist.py 'medges/lba_sim_SB*.ascii' logs/medges_sbs_rms.log --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/makeweightlist.py 'medges/lba_sim_SB*.ascii' logs/medges_sbs_rms.log --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 
 make_dirs_iter 0
 cp medges/* lines/iter0/sbs
@@ -98,7 +98,7 @@ process_transition delta 0 logs/medges_sbs_rms.log
 
 # Remove the baseline
 ${SPECPATH}/baselinecorr.py 'lines/iter0/mdelta/lba_sim_SB*.ascii' 'lines/iter0/bcorr/lba_sim' -k 1 --x_col=0 --y_col=1 -s -b 'models/lba_sim_b0'
-${SPECPATH}/sbsplot.py 'lines/iter0/bcorr/lba_sim_SB*.ascii' plots/bcorr0_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter0/bcorr/lba_sim_SB*.ascii' plots/bcorr0_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 
 iter=1
 piter=`expr $iter - 1`
@@ -112,14 +112,14 @@ ${SPECPATH}/removemodel.py lines/iter${piter}/sbs/lba_sim_SB${i}.ascii models/lb
                            -p --plot_file=plots/iter${iter}/lba_sim_SB${i}_mbaseline${piter}.pdf
 fi
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 process_transition alpha ${iter} logs/iter${iter}_sbs_rms.log
 process_transition beta  ${iter} logs/iter${iter}_sbs_rms.log
 process_transition gamma ${iter} logs/iter${iter}_sbs_rms.log
 process_transition delta ${iter} logs/iter${iter}_sbs_rms.log
 ${SPECPATH}/baselinecorr.py 'lines/iter'${iter}'/mdelta/lba_sim_SB*.ascii' 'lines/iter'${iter}'/bcorr/lba_sim' -k 2 -m --x_col=0 --y_col=1 -s -b 'models/lba_sim_b'${iter}
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 
 iter=2
 piter=`expr $iter - 1`
@@ -133,14 +133,14 @@ ${SPECPATH}/removemodel.py lines/iter${piter}/sbs/lba_sim_SB${i}.ascii models/lb
                            -p --plot_file=plots/iter${iter}/lba_sim_SB${i}_mbaseline${piter}.pdf
 fi
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 process_transition alpha ${iter} logs/iter${iter}_sbs_rms.log
 process_transition beta  ${iter} logs/iter${iter}_sbs_rms.log
 process_transition gamma ${iter} logs/iter${iter}_sbs_rms.log
 process_transition delta ${iter} logs/iter${iter}_sbs_rms.log
 ${SPECPATH}/baselinecorr.py 'lines/iter'${iter}'/mdelta/lba_sim_SB*.ascii' 'lines/iter'${iter}'/bcorr/lba_sim' -k 3 -m --x_col=0 --y_col=1 -s -b 'models/lba_sim_b'${iter}
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 
 iter=3
 piter=`expr $iter - 1`
@@ -154,14 +154,14 @@ ${SPECPATH}/removemodel.py lines/iter${piter}/sbs/lba_sim_SB${i}.ascii models/lb
                            -p --plot_file=plots/iter${iter}/lba_sim_SB${i}_mbaseline${piter}.pdf
 fi
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 process_transition alpha ${iter} logs/iter${iter}_sbs_rms.log
 process_transition beta  ${iter} logs/iter${iter}_sbs_rms.log
 process_transition gamma ${iter} logs/iter${iter}_sbs_rms.log
 process_transition delta ${iter} logs/iter${iter}_sbs_rms.log
 ${SPECPATH}/baselinecorr.py 'lines/iter'${iter}'/mdelta/lba_sim_SB*.ascii' 'lines/iter'${iter}'/bcorr/lba_sim' -k 4 -m --x_col=0 --y_col=1 -s -b 'models/lba_sim_b'${iter}
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 
 iter=4
 piter=`expr $iter - 1`
@@ -175,14 +175,14 @@ ${SPECPATH}/removemodel.py lines/iter${piter}/sbs/lba_sim_SB${i}.ascii models/lb
                            -p --plot_file=plots/iter${iter}/lba_sim_SB${i}_mbaseline${piter}.pdf
 fi
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 process_transition alpha ${iter} logs/iter${iter}_sbs_rms.log
 process_transition beta  ${iter} logs/iter${iter}_sbs_rms.log
 process_transition gamma ${iter} logs/iter${iter}_sbs_rms.log
 process_transition delta ${iter} logs/iter${iter}_sbs_rms.log
 ${SPECPATH}/baselinecorr.py 'lines/iter'${iter}'/mdelta/lba_sim_SB*.ascii' 'lines/iter'${iter}'/bcorr/lba_sim' -k 5 -m --x_col=0 --y_col=1 -s -b 'models/lba_sim_b'${iter}
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 
 iter=5
 piter=`expr $iter - 1`
@@ -196,14 +196,14 @@ ${SPECPATH}/removemodel.py lines/iter${piter}/sbs/lba_sim_SB${i}.ascii models/lb
                            -p --plot_file=plots/iter${iter}/lba_sim_SB${i}_mbaseline${piter}.pdf
 fi
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' plots/iter${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/sbs/lba_sim_SB*.ascii' logs/iter${iter}_sbs_rms.log --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 process_transition alpha ${iter} logs/iter${iter}_sbs_rms.log
 process_transition beta  ${iter} logs/iter${iter}_sbs_rms.log
 process_transition gamma ${iter} logs/iter${iter}_sbs_rms.log
 process_transition delta ${iter} logs/iter${iter}_sbs_rms.log
 ${SPECPATH}/baselinecorr.py 'lines/iter'${iter}'/mdelta/lba_sim_SB*.ascii' 'lines/iter'${iter}'/bcorr/lba_sim' -k 1 --x_col=0 --y_col=1 -s -b 'models/lba_sim_b'${iter}
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/bcorr/lba_sim_SB*.ascii' plots/bcorr${iter}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 
 # Make the final stacks
 declare -A transs=( ["alpha"]=1 ["beta"]=1 ["gamma"]=1 ["delta"]=1 )
@@ -227,7 +227,7 @@ rmslog=logs/iter${iter}_sbs_rms.log
 mv lines/iter${iter}/malpha lines/iter${iter}/alpha
 mkdir lines/iter${iter}/alpha/sbs
 cp lines/iter${iter}/sbs/lba_sim_SB*.ascii lines/iter${iter}/alpha/sbs
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 ${SPECPATH}/makestacklist.py logs/CIbeta_good_lines.log  ${rmslog} logs/CIbeta  ${transs[alpha]} -p Last --path=lines/iter${iter}/alpha/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIgamma_good_lines.log ${rmslog} logs/CIgamma ${transs[alpha]} -p Last --path=lines/iter${iter}/alpha/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIdelta_good_lines.log ${rmslog} logs/CIdelta ${transs[alpha]} -p Last --path=lines/iter${iter}/alpha/sbs --first=SB000
@@ -242,7 +242,7 @@ ${SPECPATH}/removemodel.py 'logs/CI'${t}'_stack'${i}'_SBs.log' 'models/CI'${t}'_
                             --x_col=0 --y_col=1 --z=-1.567e-4 -p --plot_file=plots/iter${iter}/lba_sim_mstack${i}_CI${t}.pdf
 done
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 ${SPECPATH}/spec2vel.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --z=-1.567e-4 --f_col=0
 ${SPECPATH}/goodlines.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --x_col=0 --z=-1.567e-4 -s 1
 mv CI${trans}_good_lines.log logs/CI${trans}_only_good_lines.log
@@ -266,7 +266,7 @@ rmslog=logs/iter${iter}_sbs_rms.log
 mv lines/iter${iter}/m${trans} lines/iter${iter}/${trans}
 mkdir lines/iter${iter}/${trans}/sbs
 cp lines/iter${iter}/sbs/lba_sim_SB*.ascii lines/iter${iter}/${trans}/sbs
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 ${SPECPATH}/makestacklist.py logs/CIalpha_good_lines.log ${rmslog} logs/CIalpha ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIgamma_good_lines.log ${rmslog} logs/CIgamma ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIdelta_good_lines.log ${rmslog} logs/CIdelta ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
@@ -281,7 +281,7 @@ ${SPECPATH}/removemodel.py 'logs/CI'${t}'_stack'${i}'_SBs.log' 'models/CI'${t}'_
                             --x_col=0 --y_col=1 --z=-1.567e-4 -p --plot_file=plots/iter${iter}/lba_sim_mstack${i}_CI${t}.pdf
 done
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 ${SPECPATH}/spec2vel.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --z=-1.567e-4 --f_col=0
 ${SPECPATH}/goodlines.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --x_col=0 --z=-1.567e-4 -s 1
 mv CI${trans}_good_lines.log logs/CI${trans}_only_good_lines.log
@@ -305,7 +305,7 @@ rmslog=logs/iter${iter}_sbs_rms.log
 mv lines/iter${iter}/m${trans} lines/iter${iter}/${trans}
 mkdir lines/iter${iter}/${trans}/sbs
 cp lines/iter${iter}/sbs/lba_sim_SB*.ascii lines/iter${iter}/${trans}/sbs
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 ${SPECPATH}/makestacklist.py logs/CIalpha_good_lines.log ${rmslog} logs/CIalpha ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIbeta_good_lines.log  ${rmslog} logs/CIbeta  ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIdelta_good_lines.log ${rmslog} logs/CIdelta ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
@@ -320,7 +320,7 @@ ${SPECPATH}/removemodel.py 'logs/CI'${t}'_stack'${i}'_SBs.log' 'models/CI'${t}'_
                             --x_col=0 --y_col=1 --z=-1.567e-4 -p --plot_file=plots/iter${iter}/lba_sim_mstack${i}_CI${t}.pdf
 done
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 ${SPECPATH}/spec2vel.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --z=-1.567e-4 --f_col=0
 ${SPECPATH}/goodlines.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --x_col=0 --z=-1.567e-4 -s 1
 mv CI${trans}_good_lines.log logs/CI${trans}_only_good_lines.log
@@ -344,7 +344,7 @@ rmslog=logs/iter${iter}_sbs_rms.log
 mv lines/iter${iter}/m${trans} lines/iter${iter}/${trans}
 mkdir lines/iter${iter}/${trans}/sbs
 cp lines/iter${iter}/sbs/lba_sim_SB*.ascii lines/iter${iter}/${trans}/sbs
-${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t CIalpha,CIbeta,CIgamma,CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
+${SPECPATH}/makeweightlist.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' ${rmslog} --f_col=0 --y_col=1 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta --z=-1.567e-4 -m 1/rms2 -d 50
 ${SPECPATH}/makestacklist.py logs/CIalpha_good_lines.log ${rmslog} logs/CIalpha ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIbeta_good_lines.log  ${rmslog} logs/CIbeta  ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
 ${SPECPATH}/makestacklist.py logs/CIgamma_good_lines.log ${rmslog} logs/CIgamma ${transs[alpha]} -p Last --path=lines/iter${iter}/${trans}/sbs --first=SB000
@@ -359,7 +359,7 @@ ${SPECPATH}/removemodel.py 'logs/CI'${t}'_stack'${i}'_SBs.log' 'models/CI'${t}'_
                             --x_col=0 --y_col=1 --z=-1.567e-4 -p --plot_file=plots/iter${iter}/lba_sim_mstack${i}_CI${t}.pdf
 done
 done
-${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t CIalpha,CIbeta,CIgamma,CIdelta
+${SPECPATH}/sbsplot.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' plots/only_CI${trans}_sbs.pdf --x_col=0 --y_col=1 -l --z=-1.567e-4 -t RRL_CIalpha,RRL_CIbeta,RRL_CIgamma,RRL_CIdelta
 ${SPECPATH}/spec2vel.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --z=-1.567e-4 --f_col=0
 ${SPECPATH}/goodlines.py 'lines/iter'${iter}'/'${trans}'/sbs/lba_sim_SB*.ascii' 'lines/iter'${iter}'/'${trans}'/lba_sim' -t CI${trans} --x_col=0 --z=-1.567e-4 -s 1
 mv CI${trans}_good_lines.log logs/CI${trans}_only_good_lines.log

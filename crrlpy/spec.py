@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+#from __future__ import division
+
 import numpy as np
 import crrls
 import utils
@@ -164,10 +166,13 @@ class Spectrum(object):
             
             try:
                 self.lines[line].append(refqns)
+                self.lines[line+'_freq'].append(reffreqs)
             except KeyError:
                 self.lines[line] = [refqns]
-            #print self.lines[line]
+                self.lines[line+'_freq'] = [reffreqs]
+
             self.lines[line] = utils.flatten_list(self.lines[line])
+            self.lines[line+'_freq'] = utils.flatten_list(self.lines[line+'_freq'])
             
         nlin = len(reffreqs)
         if verbose:
@@ -221,13 +226,16 @@ class Spectrum(object):
                 f <= self.x.compressed().max() - self.bw*redge:
                 try:
                     self.good_lines[line].append(ns[i])
+                    self.good_lines[line+'_freq'].append(rf[i])
                 except KeyError:
                     self.good_lines[line] = [ns[i]]
-                    
+                    self.good_lines[line+'_freq'] = [rf[i]]
         try:
             self.good_lines[line]
+            self.good_lines[line+'_freq']
         except KeyError:
             self.good_lines[line] = []
+            self.good_lines[line+'_freq'] = []
             
     def make_line_mask(self, line, z=0, df=5):
         """
@@ -366,7 +374,7 @@ class Spectrum(object):
         lines : array_like
                List of lines to split.
         """
-        
+
         nlines = len(reffreqs)
         
         if nlines == 0:
@@ -374,13 +382,25 @@ class Spectrum(object):
         
         lbw = self.nx/nlines
         
-        splits = np.zeros((nlines, 3, lbw))
+        splits = [[[] for i in range(3)] for j in range(nlines)] #np.zeros((nlines, 3, lbw))
         
         for i,line in enumerate(reffreqs):
             
-            splits[i,0] = self.x.data[i*lbw:(i + 1)*lbw]
-            splits[i,1] = self.y.data[i*lbw:(i + 1)*lbw]
-            splits[i,2] = self.z.data[i*lbw:(i + 1)*lbw]
+            ledge = int(utils.best_match_indx(line, self.x.compressed()) - lbw/2.)
+            redge = int(utils.best_match_indx(line, self.x.compressed()) + lbw/2.)
+            
+            if ledge < 0 or nlines == 1:
+                ledge = 0
+            if redge > self.nx or nlines == 1:
+                redge = self.nx
+            
+            splits[i][0].append(self.x.data[ledge:redge])
+            splits[i][1].append(self.y.data[ledge:redge])
+            splits[i][2].append(self.z.data[ledge:redge])
+            
+            #splits[i,0] = self.x.data[i*lbw:(i + 1)*lbw]
+            #splits[i,1] = self.y.data[i*lbw:(i + 1)*lbw]
+            #splits[i,2] = self.z.data[i*lbw:(i + 1)*lbw]
             
         return splits
             
