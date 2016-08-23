@@ -726,54 +726,6 @@ def get_rms(data, axis=None):
 
     return rms
 
-def get_max_sep(array):
-    """
-    Get the maximum element separation in an array.
-    
-    Parameters
-    ----------
-    array :   array
-              Array where the maximum separation is wanted.
-    
-    Returns
-    -------
-    max_sep : float
-              The maximum separation between the elements in `array`.
-    
-    Examples
-    --------
-    >>> import numpy as np
-    >>> x = np.array([1,2,3,4,5,7])
-    >>> get_max_sep(x)
-    2
-    """
-
-    return max(abs(array[0:-1:2] - array[1::2]))
-
-def get_min_sep(array):
-    """
-    Get the minimum element separation in an array.
-    
-    Parameters
-    ----------
-    array :   array
-              Array where the minimum separation is wanted.
-    
-    Returns
-    -------
-    max_sep : float
-              The minimum separation between the elements in `array`.
-    
-    Examples
-    --------
-    >>> import numpy as np
-    >>> x = np.array([1,2,3,4,5,7])
-    >>> get_min_sep(x)
-    1
-    """
-
-    return min(abs(array[0:-1:2] - array[1::2]))
-
 def is_number(str):
     """
     Checks wether a string is a number or not.
@@ -1640,6 +1592,26 @@ def voigt_area(amp, fwhm, gamma, sigma):
     c = 1.572 + 0.05288*k + -1.323*k**2 + 0.7658*k**3
     
     return c*amp*fwhm
+
+def voigt_area2(peak, fwhm, gamma, sigma):
+    """
+    Area under the Voigt profile using the expression provided by Sorochenko & Smirnov (1990).
+    
+    Parameters
+    ----------
+    peak : :obj:`float`
+          Peak of the Voigt line profile.
+    fwhm : :obj:`float`
+          Full width at half maximum of the Voigt profile.
+    gamma : :obj:`float`
+          Full width at half maximum of the Lorentzian profile.
+    sigma : :obj:`float`
+          Full width at half maximum of the Doppler profile.
+    """
+    
+    p = 1.57 - 0.507*np.exp(-0.85*gamma/sigma)
+    
+    return peak*fwhm*p
 
 def voigt_area_err(area, amp, damp, fwhm, dfwhm, gamma, sigma):
     """

@@ -42,6 +42,54 @@ def flatten_list(list):
         
     return result
 
+def get_max_sep(array):
+    """
+    Get the maximum element separation in an array.
+    
+    Parameters
+    ----------
+    array :   array
+              Array where the maximum separation is wanted.
+    
+    Returns
+    -------
+    max_sep : float
+              The maximum separation between the elements in `array`.
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> x = np.array([1,2,3,4,5,7])
+    >>> get_max_sep(x)
+    2
+    """
+
+    return max(abs(array[0:-1:2] - array[1::2]))
+
+def get_min_sep(array):
+    """
+    Get the minimum element separation in an array.
+    
+    Parameters
+    ----------
+    array :   array
+              Array where the minimum separation is wanted.
+    
+    Returns
+    -------
+    max_sep : float
+              The minimum separation between the elements in `array`.
+    
+    Examples
+    --------
+    >>> import numpy as np
+    >>> x = np.array([1,2,3,4,5,7])
+    >>> get_min_sep(x)
+    1
+    """
+
+    return min(abs(array[0:-1:2] - array[1::2]))
+
 def sci_notation(number, sig_fig=2):
     """
     Converts a number to scientific notation keeping sig_fig signitifcant figures.

@@ -13,11 +13,12 @@
 
 from __future__ import division
 
-import numpy as np
 import os
 import glob
 import re
+import pickle
 
+import numpy as np
 import astropy.units as u
 
 from crrlpy import frec_calc as fc
@@ -681,65 +682,7 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
         
     return data
 
-def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau'):
-    """
-    Loads the models defined by dict.
-    
-    :param dict: Dictionary containing a list with values for Te, ne and Tr.
-    :type dict: dict
-    :param line: Which models should be loaded.
-    :type line: string
-    :param n_min: Minimum n number to include in the output.
-    :type n_min: int
-    :param n_max: Maximum n number to include in the output.
-    :type n_max: int
-    :param verbose: Verbose output?
-    :type verbose: bool
-    :param value: ['itau'\|'bbnMdn'\|None] Which value should be in the output.
-    :type value: string
-    
-    :Example:
-    
-    >>> from crrlpy.models import rrlmod
-    
-    First define the range of parameters
-    
-    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1'])
-    >>> ne = np.arange(0.01,0.105,0.01)
-    >>> Tr = np.array([2000])
-    
-    Put them in a dictionary
-    
-    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr],
-    ...           'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],
-    ...           'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_))
-    ...                 for t_ in Te for n_ in ne for tr_ in Tr]}
-    
-    # Load the models
-    
-    >>> itau_mod = rrlmod.load_itau_dict(models, 'CIalpha', n_min=250, n_max=300, \
-                                         verbose=False, value='itau')
-                                                       
-    
-    """
-    
-    data = np.zeros((len(dict['Te']), 2, n_max-n_min))
-    
-    for i,t in enumerate(dict['Te']):
-        
-        if verbose:
-            print "Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], 
-                                                                        t, 
-                                                                        dict['Tr'][i])
-        n, int_tau = itau(t, dict['ne'][i], line, n_min=n_min, n_max=n_max, 
-                          other=dict['Tr'][i], verbose=verbose, value=value)
-        
-        data[i,0] = n
-        data[i,1] = int_tau
-        
-    return data
-
-def load_itau_all(line='CIalpha', n_min=5, n_max=1000, verbose=False, value='itau'):
+def load_itau_all(line='RRL_CIalpha', n_min=5, n_max=1000, verbose=False, value='itau'):
     """
     Loads all the available models for Carbon.
     
@@ -878,6 +821,64 @@ def load_itau_all_norad(trans='alpha', n_max=1000):
         
     return [Te, ne, other, data]
 
+def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau'):
+    """
+    Loads the models defined by dict.
+    
+    :param dict: Dictionary containing a list with values for Te, ne and Tr.
+    :type dict: dict
+    :param line: Which models should be loaded.
+    :type line: string
+    :param n_min: Minimum n number to include in the output.
+    :type n_min: int
+    :param n_max: Maximum n number to include in the output.
+    :type n_max: int
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :param value: ['itau'\|'bbnMdn'\|None] Which value should be in the output.
+    :type value: string
+    
+    :Example:
+    
+    >>> from crrlpy.models import rrlmod
+    
+    First define the range of parameters
+    
+    >>> Te = np.array(['1d1', '2d1', '3d1', '4d1', '5d1'])
+    >>> ne = np.arange(0.01,0.105,0.01)
+    >>> Tr = np.array([2000])
+    
+    Put them in a dictionary
+    
+    >>> models = {'Te':[t_ for t_ in Te for n_ in ne for tr_ in Tr],
+    ...           'ne':[round(n_,3) for t_ in Te for n_ in ne for tr_ in Tr],
+    ...           'Tr':['case_diffuse_{0}'.format(rrlmod.val2str(tr_))
+    ...                 for t_ in Te for n_ in ne for tr_ in Tr]}
+    
+    # Load the models
+    
+    >>> itau_mod = rrlmod.load_itau_dict(models, 'CIalpha', n_min=250, n_max=300, \
+                                         verbose=False, value='itau')
+                                                       
+    
+    """
+    
+    data = np.zeros((len(dict['Te']), 2, n_max-n_min))
+    
+    for i,t in enumerate(dict['Te']):
+        
+        if verbose:
+            print "Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], 
+                                                                        t, 
+                                                                        dict['Tr'][i])
+        n, int_tau = itau(t, dict['ne'][i], line, n_min=n_min, n_max=n_max, 
+                          other=dict['Tr'][i], verbose=verbose, value=value)
+        
+        data[i,0] = n
+        data[i,1] = int_tau
+        
+    return data
+
 def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='itau'):
     """
     Loads models given a temperature, radiation field and an 
@@ -906,7 +907,25 @@ def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='i
     
     return load_models(models, trans, n_max=n_max, verbose=verbose, value=value)
 
-def load_betabn(temp, dens, other='', trans='CIalpha', verbose=False):
+def load_itau_numpy(filename):
+    """
+    Loads all the models contained in filename.npy
+    
+    Parameters
+    ----------
+    filename : :obj:`string`
+              Filename with the models.
+    Returns
+    -------
+    
+    """
+    
+    itau_mod = np.load('{0}.npy'.format(filename))
+    head = pickle.load(open('{0}.p'.format(filename), 'rb'))
+    
+    return head, itau_mod
+
+def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
     """
     Loads a model for the CRRL emission.
     """
