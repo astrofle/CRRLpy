@@ -52,7 +52,7 @@ class Spectrum(object):
         self.good_lines = {}
         self.lines = {}
         self.bw = self.x.compressed().max() - self.x.compressed().min()
-        self.dx = crrls.get_min_sep(self.x.compressed())
+        self.dx = utils.get_min_sep(self.x.compressed())
         self.nx = len(self.x.data)
     
     def apply_bandpass_corr(self, bandpass_x, bandpass_y, offset=1000., overwrite=False):

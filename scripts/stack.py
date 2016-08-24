@@ -8,6 +8,7 @@ import glob
 import sys
 import argparse
 from crrlpy import crrls
+from crrlpy import utils
 from scipy import interpolate
 
 def stack_interpol(spec, output, vmax, vmin, dv, x_col, y_col, weight, weight_list=None):
@@ -25,9 +26,9 @@ def stack_interpol(spec, output, vmax, vmin, dv, x_col, y_col, weight, weight_li
             data = np.loadtxt(s)
             x = data[:,x_col]
             if i == 0:
-                dv = crrls.get_min_sep(x)
+                dv = utils.get_min_sep(x)
             else:
-                dv = max(dv, crrls.get_min_sep(x))
+                dv = max(dv, utils.get_min_sep(x))
 
     xgrid = np.arange(vmin, vmax, dv)
     ygrid = np.zeros(len(xgrid))      # the temperatures
@@ -118,8 +119,8 @@ def stack_filter(spec, output, vmax, vmin, dv, x_col, y_col, window, window_opts
         for s in specs:
             data = np.loadtxt(s)
             x = data[:,x_col]
-            dv = crrls.get_min_sep(x)
-            dv = max(dv, crrls.get_min_sep(x))
+            dv = utils.get_min_sep(x)
+            dv = max(dv, utils.get_min_sep(x))
     # Loop over the spectra to stack
     for i,s in enumerate(specs):
         data = np.loadtxt(s)
@@ -144,9 +145,9 @@ def stack_filter(spec, output, vmax, vmin, dv, x_col, y_col, window, window_opts
         
         # Determine the spectral resolution
         if dv == 0:
-            dv = crrls.get_min_sep(x)
-            dv_max = max(dv, crrls.get_min_sep(x))
-            dv_min = min(dv, crrls.get_min_sep(x))
+            dv = utils.get_min_sep(x)
+            dv_max = max(dv, utils.get_min_sep(x))
+            dv_min = min(dv, utils.get_min_sep(x))
             dv = 0
         
     # Flatten the stacked spectra

@@ -19,6 +19,7 @@ from scipy.special import wofz
 from scipy import interpolate
 from astropy.constants import c, k_B
 from frec_calc import set_dn, make_line_list
+from crrlpy import utils
 
 def alphanum_key(s):
     """ 
@@ -694,7 +695,7 @@ def get_line_mask2(freq, reffreq, dv):
     """
     
     df = dv2df(reffreq, dv*1e3)
-    df_chan = get_min_sep(freq)
+    df_chan = utils.get_min_sep(freq)
     f0_indx = best_match_indx(reffreq, np.asarray(freq))
 
     f_mini = f0_indx - df/df_chan
