@@ -21,7 +21,7 @@ def power_law(freq, Tc, nu):
     
     return Tc*np.power(freq/100., nu)
 
-def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
+def make_spec(fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
               Te, ne, Tr, W, dD, EM, cont, Tc, nu, plot, plot_out,
               n_max=1500, verbose=False):
     """
@@ -100,7 +100,9 @@ def make_spec(spec, fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
         plt.close()
         
         
-    np.savetxt(spec, np.c_[freq, tau_n])
+    #np.savetxt(spec, np.c_[freq, tau_n])
+    
+    return freq, tau_n
     
     
 if __name__ == '__main__':
