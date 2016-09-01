@@ -436,6 +436,7 @@ class Stack(object):
         self.x = np.ma.masked_invalid(np.arange(self.vmin, self.vmax, self.dv))
         self.y = np.ma.masked_invalid(np.zeros(len(self.x)))
         self.z = np.ma.masked_invalid(np.ones(len(self.x)))
+        self.model = np.ma.masked_invalid(np.ones(len(self.x)))
         
     def compute_dv(self):
         """
