@@ -274,6 +274,8 @@ class Spectrum(object):
             self.x.mask[-redge:] = True
             self.y.mask[:ledge] = True
             self.y.mask[-redge:] = True
+            self.z.mask[:ledge] = True
+            self.z.mask[-redge:] = True
         else:
             raise ValueError('redge and ledge should be integers')
     
@@ -394,9 +396,9 @@ class Spectrum(object):
             if redge > self.nx or nlines == 1:
                 redge = self.nx
             
-            splits[i][0].append(self.x.data[ledge:redge])
-            splits[i][1].append(self.y.data[ledge:redge])
-            splits[i][2].append(self.z.data[ledge:redge])
+            splits[i][0].append(self.x.compressed()[ledge:redge])
+            splits[i][1].append(self.y.compressed()[ledge:redge])
+            splits[i][2].append(self.z.compressed()[ledge:redge])
             
             #splits[i,0] = self.x.data[i*lbw:(i + 1)*lbw]
             #splits[i,1] = self.y.data[i*lbw:(i + 1)*lbw]
