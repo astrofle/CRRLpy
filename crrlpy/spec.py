@@ -400,10 +400,6 @@ class Spectrum(object):
             splits[i][1].append(self.y.compressed()[ledge:redge])
             splits[i][2].append(self.z.compressed()[ledge:redge])
             
-            #splits[i,0] = self.x.data[i*lbw:(i + 1)*lbw]
-            #splits[i,1] = self.y.data[i*lbw:(i + 1)*lbw]
-            #splits[i,2] = self.z.data[i*lbw:(i + 1)*lbw]
-            
         return splits
             
         
