@@ -92,9 +92,11 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
         # Remove the model
         if 'sub' in mode.lower():
             ys = ys - y_mod
+            off = 0.
         elif 'div' in mode.lower():
-            ys = (ys/y_mod - 1.)*10.
-            
+            ys = ((ys+10.)/y_mod - 1.)*10.
+            off = 10.
+
         # Return the masked values to their NaN values
         ys[mask] = np.nan
         x[mask] = np.nan
@@ -103,7 +105,7 @@ def remove_stack(spec, model, basename, transition, z, x_col, y_col, freq,
             fig = plt.figure(frameon=False)
             fig.suptitle(sb)
             ax = fig.add_subplot(1, 1, 1, adjustable='datalim')
-            ax.step(x, y_mod, 'r-', drawstyle='steps', lw=1, where='pre', label='model')
+            ax.step(x, y_mod-off, 'r-', drawstyle='steps', lw=1, where='pre', label='model')
             ax.step(x, y, 'b-', drawstyle='steps', lw=1, where='pre', label='in')
             ax.step(x, ys, 'g-', drawstyle='steps', lw=1, where='pre', label='out')
             ax.legend(loc=0, numpoints=1, frameon=False)

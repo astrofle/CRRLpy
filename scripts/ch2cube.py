@@ -2,6 +2,8 @@
  
 from astropy.io import fits
 from crrlpy.crrls import natural_sort
+
+import logging
 import sys
 import re
 import os
@@ -152,9 +154,7 @@ if __name__ == '__main__':
     formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     logging.basicConfig(filename=args.logfile, level=loglev, format=formatter)
     
-    logger = logging.getLogger(__name__)
-    logger.info('Will extract a spectrum from cube: {0}'.format(args.cube))
-    logger.info('Will extract region: {0}'.format(args.region))
+    logger = logging.getLogger(__name__) 
     
     outfits = args.outfits
     fitslist = args.fitslist

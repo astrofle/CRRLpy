@@ -274,6 +274,8 @@ class Spectrum(object):
             self.x.mask[-redge:] = True
             self.y.mask[:ledge] = True
             self.y.mask[-redge:] = True
+            self.z.mask[:ledge] = True
+            self.z.mask[-redge:] = True
         else:
             raise ValueError('redge and ledge should be integers')
     
