@@ -165,9 +165,11 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
             x0 = i*cx
             xf = (i+1)*cx
             #print j, ny
-            #print y0, yf, x0, xf
+            logger.debug('(x0,y0,xf,yf)=({0},{1},{2},{3})'.format(x0, y0, xf, yf)) 
+            
             y = np.ma.masked_invalid(data[:,y0:yf,x0:xf].mean(axis=1).mean(axis=1))
-
+            logger.debug('len y: {0}'.format(len(y)))
+            
             # Turn NaNs to zeros
             my = np.ma.masked_invalid(y)
             mx = np.ma.masked_where(np.ma.getmask(my), x)
@@ -177,6 +179,12 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
             np.ma.set_fill_value(mmx, 10.)
             gx = mmx.compressed()
             gy = mmy.compressed()
+            
+            logger.debug('len gx: {0}, len gy: {1}'.format(len(gx), len(gy)))
+            
+            if len(gx) == 0 and len(gy) == 0:
+                logger.debug('All pixels seem to be masked. Skipping region.')
+                continue
             
             # Derive a polynomial to correct the bandpass
             bp = np.polynomial.polynomial.polyfit(gx, gy, order)
