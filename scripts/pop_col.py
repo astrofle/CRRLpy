@@ -12,14 +12,14 @@ def pop_col(spec, col, basename=False):
     specs = glob.glob(spec)
     
     for spec in specs:
-        
-        data = np.loadtxt(spec, unpack=True)
-        data = np.delete(data, col, axis=0)
-        
+ 
+        data = np.loadtxt(spec)
+        data = np.concatenate((data[:,:col], data[:,col+1:]), axis=1) 
+
         if basename:
             np.savetxt('{0}.log'.format(basename), data)
         else:
-            np.savetxt(spec, np.c_[data])
+            np.savetxt(spec, data)
             
 if __name__ == '__main__':
     
