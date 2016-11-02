@@ -18,9 +18,10 @@ def get_cube_dims(fitslist, chan_id='chan'):
     nx = head['NAXIS1']
     ny = head['NAXIS2']
     #nv = len(fitslist)
-    ch0 = int(re.search(r'{0}(.+?)\.'.format(chan_id), fitslist[0]).group(1))
+    regex = r'{0}(.+?)(\.|\_)'.format(chan_id)
+    ch0 = int(re.search(r'{0}(.+?)(\.|\_)'.format(chan_id), fitslist[0]).group(1))
     #print "file {0} is channel {1}".format(fitslist[0], ch0)
-    chf = int(re.search(r'{0}(.+?)\.'.format(chan_id), fitslist[-1]).group(1))
+    chf = int(re.search(r'{0}(.+?)(\.|\_)'.format(chan_id), fitslist[-1]).group(1))
     #print "file {0} is channel {1}".format(fitslist[-1], chf)
     nv = chf - ch0
     
@@ -68,7 +69,7 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4, clobber=F
     
     for i in range(nv):
         print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
-        fitsch = filter(lambda x: '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros)) in x, fitslist)
+        fitsch = filter(lambda x: '{0}{1}'.format(chan_id, str(i+ch0).zfill(nzeros)) in x, fitslist)
         if fitsch:
             print fitsch
             hdulist = fits.open(fitsch[0])
