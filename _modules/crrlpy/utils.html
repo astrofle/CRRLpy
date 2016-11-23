@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>crrlpy.utils &mdash; CRRLpy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <link rel="top" title="CRRLpy 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for crrlpy.utils</h1><div class="highlight"><pre>
+<span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<div class="viewcode-block" id="best_match_indx"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.best_match_indx">[docs]</a><span class="k">def</span> <span class="nf">best_match_indx</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Searchs for the index of the closest entry to value inside an array.</span>
+<span class="sd">    </span>
+<span class="sd">    :param value: Value to find inside the array.</span>
+<span class="sd">    :type value: float</span>
+<span class="sd">    :param array: List to search for the given value.</span>
+<span class="sd">    :type array: list or numpy.array</span>
+<span class="sd">    :return: Best match index for the value inside array.</span>
+<span class="sd">    :rtype: float</span>
+<span class="sd">    </span>
+<span class="sd">    :Example:</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; a = [1,2,3,4]</span>
+<span class="sd">    &gt;&gt;&gt; best_match_indx(3, a)</span>
+<span class="sd">    2</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">subarr</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">array</span> <span class="o">-</span> <span class="n">value</span><span class="p">)</span>
+    <span class="n">subarrmin</span> <span class="o">=</span> <span class="n">subarr</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">subarr</span> <span class="o">==</span> <span class="n">subarrmin</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="flatten_list"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.flatten_list">[docs]</a><span class="k">def</span> <span class="nf">flatten_list</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    | Flattens a list of lists.</span>
+<span class="sd">    | Based on:</span>
+<span class="sd">    | http://stackoverflow.com/questions/457215/comprehension-for-flattening-a-sequence-of-sequences/5330178#5330178</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1">#print &#39;List: {0}&#39;.format(list)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">extend</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">extend</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">extend</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<div class="viewcode-block" id="get_max_sep"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.get_max_sep">[docs]</a><span class="k">def</span> <span class="nf">get_max_sep</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the maximum element separation in an array.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array :   array</span>
+<span class="sd">              Array where the maximum separation is wanted.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    max_sep : float</span>
+<span class="sd">              The maximum separation between the elements in `array`.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([1,2,3,4,5,7])</span>
+<span class="sd">    &gt;&gt;&gt; get_max_sep(x)</span>
+<span class="sd">    2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="get_min_sep"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.get_min_sep">[docs]</a><span class="k">def</span> <span class="nf">get_min_sep</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the minimum element separation in an array.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array :   array</span>
+<span class="sd">              Array where the minimum separation is wanted.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    max_sep : float</span>
+<span class="sd">              The minimum separation between the elements in `array`.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([1,2,3,4,5,7])</span>
+<span class="sd">    &gt;&gt;&gt; get_min_sep(x)</span>
+<span class="sd">    1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">array</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="myround"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.myround">[docs]</a><span class="k">def</span> <span class="nf">myround</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">base</span> <span class="o">*</span> <span class="nb">round</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">base</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="sci_notation"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.sci_notation">[docs]</a><span class="k">def</span> <span class="nf">sci_notation</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">sig_fig</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a number to scientific notation keeping sig_fig signitifcant figures.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">ret_string</span> <span class="o">=</span> <span class="s2">&quot;{0:.{1:d}e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">sig_fig</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">ret_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="c1">#removed leading &quot;+&quot; and strips leading zeros too.</span>
+    
+    <span class="k">return</span> <span class="s2">r&quot;${0}\times10^{{{1}}}$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="pow_notation"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.pow_notation">[docs]</a><span class="k">def</span> <span class="nf">pow_notation</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">sig_fig</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a number to scientific notation keeping sig_fig signitifcant figures.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">ret_string</span> <span class="o">=</span> <span class="s2">&quot;{0:.{1:d}e}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">sig_fig</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="n">ret_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;e&quot;</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="c1">#removed leading &quot;+&quot; and strips leading zeros too.</span>
+    
+    <span class="k">return</span> <span class="s2">r&quot;10$^{{{0}}}$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="str2bool"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.str2bool">[docs]</a><span class="k">def</span> <span class="nf">str2bool</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a string to a boolean value. The conversion is case insensitive.</span>
+<span class="sd">    </span>
+<span class="sd">    :param str: string to convert.</span>
+<span class="sd">    :type str: string</span>
+<span class="sd">    :returns: True if str is one of: &quot;yes&quot;, &quot;y&quot;, &quot;true&quot;, &quot;t&quot; or &quot;1&quot;.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;yes&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span> <span class="s2">&quot;t&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">)</span></div>
+
+<span class="n">rotated_labels</span> <span class="o">=</span> <span class="p">[]</span>
+<div class="viewcode-block" id="text_slope_match_line"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.text_slope_match_line">[docs]</a><span class="k">def</span> <span class="nf">text_slope_match_line</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">dindx</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">rotated_labels</span>
+
+    <span class="c1"># find the slope</span>
+    <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">xdata</span><span class="p">[</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xdata</span><span class="p">)]</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">xdata</span><span class="p">[</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xdata</span><span class="p">)</span><span class="o">+</span><span class="n">dindx</span><span class="p">]</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">ydata</span><span class="p">[</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)]</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">ydata</span><span class="p">[</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">ydata</span><span class="p">)</span><span class="o">+</span><span class="n">dindx</span><span class="p">]</span>
+
+    <span class="n">rotated_labels</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span><span class="n">text</span><span class="p">,</span> <span class="s2">&quot;line&quot;</span><span class="p">:</span><span class="n">line</span><span class="p">,</span> <span class="s2">&quot;p1&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">)),</span> <span class="s2">&quot;p2&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">))})</span></div>
+
+<div class="viewcode-block" id="update_text_slopes"><a class="viewcode-back" href="../../utils.html#crrlpy.utils.update_text_slopes">[docs]</a><span class="k">def</span> <span class="nf">update_text_slopes</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">rotated_labels</span>
+
+    <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">rotated_labels</span><span class="p">:</span>
+        <span class="c1"># slope_degrees is in data coordinates, the text() and annotate() functions need it in screen coordinates</span>
+        <span class="n">text</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span> <span class="n">label</span><span class="p">[</span><span class="s2">&quot;line&quot;</span><span class="p">]</span>
+        <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">label</span><span class="p">[</span><span class="s2">&quot;p1&quot;</span><span class="p">],</span> <span class="n">label</span><span class="p">[</span><span class="s2">&quot;p2&quot;</span><span class="p">]</span>
+
+        <span class="c1"># get the line&#39;s data transform</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">get_axes</span><span class="p">()</span>
+
+        <span class="n">sp1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">transData</span><span class="o">.</span><span class="n">transform_point</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+        <span class="n">sp2</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">transData</span><span class="o">.</span><span class="n">transform_point</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+
+        <span class="n">rise</span> <span class="o">=</span> <span class="p">(</span><span class="n">sp2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">sp1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">run</span> <span class="o">=</span> <span class="p">(</span><span class="n">sp2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">sp1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">slope_degrees</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">rise</span><span class="o">/</span><span class="n">run</span><span class="p">))</span>
+
+        <span class="n">text</span><span class="o">.</span><span class="n">set_rotation</span><span class="p">(</span><span class="n">slope_degrees</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

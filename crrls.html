@@ -1,0 +1,1391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>crrlpy.crrls module &mdash; CRRLpy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="top" title="CRRLpy 0.1 documentation" href="index.html" />
+    <link rel="next" title="crrlpy.spec module" href="spec.html" />
+    <link rel="prev" title="CRRLpy" href="includeme.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="spec.html" title="crrlpy.spec module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="includeme.html" title="CRRLpy"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-crrlpy.crrls">
+<span id="crrlpy-crrls-module"></span><h1>crrlpy.crrls module<a class="headerlink" href="#module-crrlpy.crrls" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="crrlpy.crrls.alphanum_key">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">alphanum_key</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#alphanum_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.alphanum_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn a string into a list of string and number chunks.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; String</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List with strings and integers.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">alphanum_key</span><span class="p">(</span><span class="s1">&#39;z23a&#39;</span><span class="p">)</span>
+<span class="go">[&#39;z&#39;, 23, &#39;a&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.average">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">average</code><span class="sig-paren">(</span><em>data</em>, <em>axis</em>, <em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.average" title="Permalink to this definition">¶</a></dt>
+<dd><p>Averages data along the given axis by combining n adjacent values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>numpy array</em>) &#8211; Data to average along a given axis.</li>
+<li><strong>axis</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Axis along which to average.</li>
+<li><strong>n</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Factor by which to average.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Data decimated by a factor n along the given axis.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.best_match_indx_tol">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">best_match_indx_tol</code><span class="sig-paren">(</span><em>value</em>, <em>array</em>, <em>tol</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_indx_tol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_indx_tol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searchs for the best match to a value inside an array given a tolerance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Value to find inside the array.</li>
+<li><strong>tol</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Tolerance for match.</li>
+<li><strong>array</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.11)"><em>numpy.array</em></a>) &#8211; List to search for the given value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match for val inside array.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.best_match_value">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">best_match_value</code><span class="sig-paren">(</span><em>value</em>, <em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#best_match_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.best_match_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searchs for the closest ocurrence of value in array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Value to find inside the array.</li>
+<li><strong>array</strong> (<em>list or numpy.array</em>) &#8211; List to search for the given value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match for the value inside array.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_match_value</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.blank_lines">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">blank_lines</code><span class="sig-paren">(</span><em>freq</em>, <em>tau</em>, <em>reffreqs</em>, <em>v0</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#blank_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.blank_lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blanks the lines in a spectra.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>freq</strong> (<em>array, MHz</em>) &#8211; Frequency axis of the spectra.</li>
+<li><strong>tau</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Optical depth axis of the spectra.</li>
+<li><strong>reffreqs</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List with the reference frequency of the lines. Should be the rest frequency.</li>
+<li><strong>v0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Velocity shift to apply to the lines defined by <cite>reffreq</cite>. (km/s)</li>
+<li><strong>dv</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Velocity range to blank around the lines. (km/s)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.blank_lines2">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">blank_lines2</code><span class="sig-paren">(</span><em>freq</em>, <em>tau</em>, <em>reffreqs</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#blank_lines2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.blank_lines2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blanks the lines in a spectra.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>freq</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Frequency axis of the spectra. (MHz)</li>
+<li><strong>tau</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Optical depth axis of the spectra.</li>
+<li><strong>reffreqs</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List with the reference frequency of the lines. Should be the rest frequency.</li>
+<li><strong>dv</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Velocity range to blank around the lines. (km/s)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.df2dv">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">df2dv</code><span class="sig-paren">(</span><em>f0</em>, <em>df</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#df2dv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.df2dv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a frequency delta to a velocity delta given a central frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Rest frequency.</li>
+<li><strong>df</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Frequency delta.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The equivalent velocity delta for the given frequency delta.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float in <span class="math">\(\mbox{m s}^{-1}\)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.dsigma2dfwtm">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">dsigma2dfwtm</code><span class="sig-paren">(</span><em>dsigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#dsigma2dfwtm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dsigma2dfwtm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the <span class="math">\(\sigma\)</span> parameter of a Gaussian distribution to its FWTM.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.dv2df">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">dv2df</code><span class="sig-paren">(</span><em>f0</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#dv2df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv2df" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a velocity delta to a frequency delta given a central frequency.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Rest frequency.</li>
+<li><strong>dv</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Velocity delta in m/s.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">For the given velocity delta the equivalent frequency delta.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.dv_minus_doppler">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">dv_minus_doppler</code><span class="sig-paren">(</span><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dV</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Total line width</li>
+<li><strong>ddV</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Uncertainty in the total line width.</li>
+<li><strong>dD</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Doppler contribution to the line width.</li>
+<li><strong>ddD</strong> &#8211; Uncertainty in the Doppler contribution to the line width.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Lorentz contribution to the total line width.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.dv_minus_doppler2">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">dv_minus_doppler2</code><span class="sig-paren">(</span><em>dV</em>, <em>ddV</em>, <em>dD</em>, <em>ddD</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#dv_minus_doppler2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.dv_minus_doppler2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the Lorentzian contribution to the line width assuming that the line has a Voigt profile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dV</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Total line width</li>
+<li><strong>ddV</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Uncertainty in the total line width.</li>
+<li><strong>dD</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Doppler contribution to the line width.</li>
+<li><strong>ddD</strong> &#8211; Uncertainty in the Doppler contribution to the line width.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Lorentz contribution to the total line width.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.f2n">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">f2n</code><span class="sig-paren">(</span><em>f</em>, <em>line</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#f2n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.f2n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a given frequency to a principal quantum number <span class="math">\(n\)</span> for a given line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Frequency to convert. (MHz)</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; The equivalent <span class="math">\(n\)</span> will be referenced to this line.</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n number to include in the search. (optional, Default 1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Corresponding <span class="math">\(n\)</span> for a given frequency and line.     If the frequency is not an exact match, then it will return an empty array.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.find_lines_sb">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">find_lines_sb</code><span class="sig-paren">(</span><em>freq</em>, <em>line</em>, <em>z=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#find_lines_sb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.find_lines_sb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finds if there are any lines of a given type in the frequency range.
+The line frequencies are corrected for redshift.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>:param freq: Frequency axis in which to search for lines (MHz). It should not contain     NaN or inf values.</strong></p>
+<p><strong>:type freq: array</strong></p>
+<p><strong>:param line: Line type to search for.</strong></p>
+<p><strong>:type line: string</strong></p>
+<p><strong>:param z: Redshift to apply to the rest frequencies.</strong></p>
+<p><strong>:type z: float</strong></p>
+<p><strong>:param verbose: Verbose output?</strong></p>
+<p><strong>:type verbose: bool</strong></p>
+<p><strong>:returns: Lists with the princpipal quantum number and the reference     frequency of the line. The frequencies are redshift corrected in MHz.</strong></p>
+<p class="last"><strong>:rtype: array.</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="#crrlpy.crrls.load_ref" title="crrlpy.crrls.load_ref"><code class="xref py py-obj docutils literal"><span class="pre">load_ref</span></code></a></dt>
+<dd>Describes the format of line and the available ones.</dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">crrlpy</span> <span class="kn">import</span> <span class="n">crrls</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">freq</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ns</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">crrls</span><span class="o">.</span><span class="n">find_lines_sb</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="s1">&#39;RRL_CIalpha&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ns</span>
+<span class="go">array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,</span>
+<span class="go">        852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,</span>
+<span class="go">        861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.fit_continuum">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">fit_continuum</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>degree</em>, <em>p0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_continuum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_continuum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits a polynomial to the continuum.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : x axis.</p>
+<p class="last"><strong>y</strong> : y axis.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.fit_model">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">fit_model</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>model</em>, <em>p0</em>, <em>wy=None</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fit_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fit_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits a model to the data defined by <cite>x</cite> and <cite>y</cite>.
+It uses <cite>p0</cite> as starting values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Abscissa values of the data to be fit.</li>
+<li><strong>y</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Ordinate values of the data to be fit.</li>
+<li><strong>model</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#callable" title="(in Python v2.7)"><em>callable</em></a>) &#8211; Model to be fit.</li>
+<li><strong>p0</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary with the starting values for the fit.</li>
+<li><strong>wy</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Weights of the ordinate values. (Optional)</li>
+<li><strong>mask</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Mask to apply to the <cite>x</cite> and <cite>y</cite> values. (Optional)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">An object containing the results of the fit.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://lmfit.github.io/lmfit-py/model.html?highlight=modelresult#model.ModelResult">lmfit.model.ModelResult</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.freq2vel">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">freq2vel</code><span class="sig-paren">(</span><em>f0</em>, <em>f</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#freq2vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.freq2vel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a frequency axis to a velocity axis given a central frequency.
+Uses the radio definition of velocity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Rest frequency for the conversion. (Hz)</li>
+<li><strong>f</strong> (<em>numpy array</em>) &#8211; Frequencies to be converted to velocity. (Hz)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">f converted to velocity given a rest frequency <span class="math">\(f_{0}\)</span>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.fwhm2sigma">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">fwhm2sigma</code><span class="sig-paren">(</span><em>fwhm</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#fwhm2sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.fwhm2sigma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a FWHM to the standard deviation, <span class="math">\(\sigma\)</span> of a Gaussian distribution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fwhm</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Gaussian.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Equivalent standard deviation of a Gausian with a Full Width at Half Maximum <cite>fwhm</cite>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="mi">1</span><span class="o">/</span><span class="n">fwhm2sigma</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">2.3548200450309493</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.gauss_area">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gauss_area</code><span class="sig-paren">(</span><em>amplitude</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the area under a Gaussian of a given amplitude and sigma.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>amplitude</strong> &#8211; Amplitude of the Gaussian, <span class="math">\(A\)</span>.</li>
+<li><strong>sigma</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Standard deviation fo the Gaussian, <span class="math">\(\sigma\)</span>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The area under a Gaussian of a given amplitude and standard deviation.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.gauss_area2peak">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gauss_area2peak</code><span class="sig-paren">(</span><em>area</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area2peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area2peak" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the maximum value of a Gaussian function given its
+amplitude and standard deviation &#8220;math:<cite>sigma</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.gauss_area2peak_err">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gauss_area2peak_err</code><span class="sig-paren">(</span><em>amplitude</em>, <em>area</em>, <em>darea</em>, <em>sigma</em>, <em>dsigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area2peak_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area2peak_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the maximum value of a Gaussian function given its
+amplitude, area and standard deviation &#8220;math:<cite>sigma</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.gauss_area_err">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gauss_area_err</code><span class="sig-paren">(</span><em>amplitude</em>, <em>amplitude_err</em>, <em>sigma</em>, <em>sigma_err</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gauss_area_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gauss_area_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the error on the area of a Gaussian of a given <cite>amplitude</cite> and <cite>sigma</cite>     with their corresponding errors. It assumes no correlation between <cite>amplitude</cite> and 
+<cite>sigma</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>amplitude</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Amplitude of the Gaussian.</li>
+<li><strong>amplitude_err</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Error on the amplitude.</li>
+<li><strong>sigma</strong> &#8211; Standard deviation of the Gaussian.</li>
+<li><strong>sigma_err</strong> &#8211; Error on sigma.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The error on the area.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.gaussian">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>sigma</em>, <em>center</em>, <em>amplitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gaussian function in one dimension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; x values for which to evaluate the Gaussian.</li>
+<li><strong>sigma</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Standard deviation of the Gaussian.</li>
+<li><strong>center</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Center of the Gaussian.</li>
+<li><strong>amplitude</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Peak value of the Gaussian.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Gaussian function of the given amplitude and standard deviation evaluated at x.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.get_axis">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_axis</code><span class="sig-paren">(</span><em>header</em>, <em>axis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a cube axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>header</strong> (<em>pyfits header</em>) &#8211; Fits cube header.</li>
+<li><strong>axis</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Axis to reconstruct.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">cube axis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.get_line_mask">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_line_mask</code><span class="sig-paren">(</span><em>freq</em>, <em>reffreq</em>, <em>v0</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a mask with ranges where a line is expected in the given frequency range for     a line with a given reference frequency at expected velocity v0 and line width dv0.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>freq</strong> (<em>numpy array or list</em>) &#8211; Frequency axis where the line is located.</li>
+<li><strong>reffreq</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Reference frequency for the line.</li>
+<li><strong>v0</strong> (<em>float, km/s</em>) &#8211; Velocity of the line.</li>
+<li><strong>dv</strong> (<em>float, km/s</em>) &#8211; Velocity range to mask.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Mask centered at the line center and width <cite>dv0</cite> referenced to the input <cite>freq</cite>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.get_line_mask2">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_line_mask2</code><span class="sig-paren">(</span><em>freq</em>, <em>reffreq</em>, <em>dv</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_line_mask2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_line_mask2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a mask with ranges where a line is expected in the given frequency range for     a line with a given reference frequency and line width dv.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>freq</strong> (<em>numpy array or list</em>) &#8211; Frequency axis where the line is located.</li>
+<li><strong>reffreq</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Reference frequency for the line.</li>
+<li><strong>dv</strong> (<em>float, km/s</em>) &#8211; Velocity range to mask.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Mask centered at the line center and width <cite>dv0</cite> referenced to the input <cite>freq</cite>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.get_rchi2">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_rchi2</code><span class="sig-paren">(</span><em>x_obs</em>, <em>x_mod</em>, <em>y_obs</em>, <em>y_mod</em>, <em>dy_obs</em>, <em>dof</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_rchi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_rchi2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the reduced <span class="math">\(\chi\)</span> squared, <span class="math">\(\chi_{\nu}^{2}=\chi^{2}/dof\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_obs</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Abscissa values of the observations.</li>
+<li><strong>x_mod</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Abscissa values of the model.</li>
+<li><strong>y_obs</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Ordinate values of the observations.</li>
+<li><strong>y_mod</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Ordinate values of the model.</li>
+<li><strong>dy_obs</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Error on the ordinate values of the observations.</li>
+<li><strong>dof</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Degrees of freedom.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.get_rms">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">get_rms</code><span class="sig-paren">(</span><em>data</em>, <em>axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#get_rms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.get_rms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the rms of the given data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>numpy array or list</em>) &#8211; Array with values where to compute the rms.</li>
+<li><strong>axis</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Axis over which to compute the rms. Default: None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The rms of data.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="math">
+\[\mbox{rms}=\sqrt{\langle\mbox{data}\rangle^{2}+V[\mbox{data}]}\]</div>
+<p>where <span class="math">\(V\)</span> is the variance of the data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.is_number">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">is_number</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#is_number"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.is_number" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks wether a string is a number or not.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if <cite>str</cite> can be converted to a float.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">is_number</span><span class="p">(</span><span class="s1">&#39;10&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.lambda2vel">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">lambda2vel</code><span class="sig-paren">(</span><em>wav0</em>, <em>wav</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#lambda2vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.lambda2vel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a wavelength axis to a velocity axis given a rest wavelength.
+Uses the optical definition of velocity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>wav0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Rest frequency for the conversion.)</li>
+<li><strong>wav</strong> (<em>numpy array</em>) &#8211; Frequencies to be converted to velocity.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Velocity. (Default: m/s)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.linear">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">linear</code><span class="sig-paren">(</span><em>x</em>, <em>a</em>, <em>b</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; x values where to evalueate the line.</li>
+<li><strong>a</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Slope of the line.</li>
+<li><strong>b</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; y value for x equals 0.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A line defined by <span class="math">\(ax+b\)</span>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.load_model">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">load_model</code><span class="sig-paren">(</span><em>prop</em>, <em>specie</em>, <em>temp</em>, <em>dens</em>, <em>other=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a model for the CRRL emission.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.load_ref">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">load_ref</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#load_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.load_ref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the reference spectrum for the specified line.</p>
+<div class="line-block">
+<div class="line">Available lines:</div>
+<div class="line">RRL_CIalpha</div>
+<div class="line">RRL_CIbeta</div>
+<div class="line">RRL_CIdelta</div>
+<div class="line">RRL_CIgamma</div>
+<div class="line">RRL_CI13alpha</div>
+<div class="line">RRL_HeIalpha</div>
+<div class="line">RRL_HeIbeta</div>
+<div class="line">RRL_HIalpha</div>
+<div class="line">RRL_HIbeta</div>
+<div class="line">RRL_SIalpha</div>
+<div class="line">RRL_SIbeta</div>
+</div>
+<p>More lines can be added by including a list in the 
+linelist directory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>line</strong> : string</p>
+<blockquote>
+<div><p>Line for which the principal quantum number and reference frequencies are desired.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>n</strong> : array</p>
+<blockquote>
+<div><p>Principal quantum numbers.</p>
+</div></blockquote>
+<p><strong>reference_frequencies</strong> : array</p>
+<blockquote class="last">
+<div><p>Reference frequencies of the lines inside the spectrum in MHz.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.lookup_freq">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">lookup_freq</code><span class="sig-paren">(</span><em>n</em>, <em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#lookup_freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.lookup_freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the frequency of a line given the transition number n.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Principal quantum number to look up for.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Line for which the frequency is desired.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Frequency of line(n).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.lorentz_width">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">lorentz_width</code><span class="sig-paren">(</span><em>n</em>, <em>ne</em>, <em>Te</em>, <em>Tr</em>, <em>W</em>, <em>dn=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#lorentz_width"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.lorentz_width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the Lorentzian line width due to a combination of radiation and     collisional broadening. The width is the FWHM in Hz.     It uses the models of Salgado et al. (2015).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Principal quantum number for which to evaluate the Lorentz widths.</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density to use in the collisional broadening term.</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature to use in the collisional broadening term.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Radiation field temperature.</li>
+<li><strong>W</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Cloud covering factor used in the radiation broadening term.</li>
+<li><strong>dn</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Separation between the levels of the transition. e.g., <cite>dn=1</cite> for CIalpha.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The Lorentz width of a line due to radiation and collisional broadening.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.mask_outliers">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">mask_outliers</code><span class="sig-paren">(</span><em>data</em>, <em>m=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#mask_outliers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.mask_outliers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Masks values larger than m times the data median.     This is similar to sigma clipping.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Data to mask.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">An array of the same shape as data with True where the data     should be flagged.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mask_outliers</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">array([ True, False, False, False, False,  True], dtype=bool)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.n2f">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">n2f</code><span class="sig-paren">(</span><em>n</em>, <em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em>, <em>unitless=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#n2f"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.n2f" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a given principal quantum number n to the 
+frequency of a given line.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.natural_sort">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">natural_sort</code><span class="sig-paren">(</span><em>list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#natural_sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.natural_sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort the given list in the way that humans expect.     Sorting is done in place.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>list</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List to sort.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">my_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;spec_3&#39;</span><span class="p">,</span> <span class="s1">&#39;spec_4&#39;</span><span class="p">,</span> <span class="s1">&#39;spec_1&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">natural_sort</span><span class="p">(</span><span class="n">my_list</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">my_list</span>
+<span class="go">[&#39;spec_1&#39;, &#39;spec_3&#39;, &#39;spec_4&#39;]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.ngaussian">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">ngaussian</code><span class="sig-paren">(</span><em>x</em>, <em>sigma</em>, <em>center</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#ngaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.ngaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalized Gaussian distribution.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.plot_fit">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_fit</code><span class="sig-paren">(</span><em>fig</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>params</em>, <em>vparams</em>, <em>sparams</em>, <em>rms</em>, <em>x0</em>, <em>refs</em>, <em>refs_cb=None</em>, <em>refs_cd=None</em>, <em>refs_cg=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.plot_fit_single">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_fit_single</code><span class="sig-paren">(</span><em>fig</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>params</em>, <em>rms</em>, <em>x0</em>, <em>refs</em>, <em>refs_cb=None</em>, <em>refs_cd=None</em>, <em>refs_cg=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_fit_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_fit_single" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.plot_model">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_model</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>xm</em>, <em>ym</em>, <em>out</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.plot_spec_vel">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">plot_spec_vel</code><span class="sig-paren">(</span><em>out</em>, <em>x</em>, <em>y</em>, <em>fit</em>, <em>A</em>, <em>Aerr</em>, <em>x0</em>, <em>x0err</em>, <em>sx</em>, <em>sxerr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#plot_spec_vel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.plot_spec_vel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.pressure_broad">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">pressure_broad</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>ne</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pressure induced broadening in Hz.
+Shaver (1975)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.pressure_broad_coefs">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">pressure_broad_coefs</code><span class="sig-paren">(</span><em>Te</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_coefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_coefs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the values of the constants <span class="math">\(a\)</span> and <span class="math">\(\gamma\)</span> that go into the collisional broadening formula
+of Salgado et al. (2015).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The values of <span class="math">\(a\)</span> and <span class="math">\(\gamma\)</span>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.pressure_broad_salgado">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">pressure_broad_salgado</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>ne</em>, <em>dn=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_salgado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pressure induced broadening in Hz.
+This gives the FWHM of a Lorentzian line.
+Salgado et al. (2015)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<em>float or array</em>) &#8211; Principal quantum number for which to compute the line broadening.</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature to use when computing the collisional line width.</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density to use when computing the collisional line width.</li>
+<li><strong>dn</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Difference between the upper and lower level for which the line width is computed. (default 1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The collisional broadening FWHM in Hz using Salgado et al. (2015) formulas.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float or array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.radiation_broad">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">radiation_broad</code><span class="sig-paren">(</span><em>n</em>, <em>W</em>, <em>Tr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radiation induced broadening in Hz.
+Shaver (1975)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.radiation_broad_salgado">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">radiation_broad_salgado</code><span class="sig-paren">(</span><em>n</em>, <em>W</em>, <em>Tr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad_salgado" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radiation induced broadening in Hz.
+This gives the FWHM of a Lorentzian line.
+Salgado et al. (2015)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.radiation_broad_salgado_general">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">radiation_broad_salgado_general</code><span class="sig-paren">(</span><em>n</em>, <em>W</em>, <em>Tr</em>, <em>nu0</em>, <em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad_salgado_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad_salgado_general" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radiation induced broadening in Hz.
+This gives the FWHM of a Lorentzian line.
+The expression is valid for power law like radiation fields.
+Salgado et al. (2015)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.sigma2fwhm">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2fwhm</code><span class="sig-paren">(</span><em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the <span class="math">\(\sigma\)</span> parameter of a Gaussian distribution to its FWHM.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sigma</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; <span class="math">\(\sigma\)</span> value of the Gaussian distribution.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The FWHM of a Gaussian with a standard deviation <span class="math">\(\sigma\)</span>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.sigma2fwhm_err">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2fwhm_err</code><span class="sig-paren">(</span><em>dsigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2fwhm_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2fwhm_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the error on the sigma parameter of a Gaussian distribution     to the error on the FWHM.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dsigma</strong> &#8211; Error on sigma of the Gaussian distribution.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The error on the FWHM of a Gaussian with a standard deviation <span class="math">\(\sigma\)</span>.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.sigma2fwtm">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">sigma2fwtm</code><span class="sig-paren">(</span><em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#sigma2fwtm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.sigma2fwtm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the <span class="math">\(\sigma\)</span> parameter of a Gaussian distribution to its FWTM.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.stack_interpol">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">stack_interpol</code><span class="sig-paren">(</span><em>spectra</em>, <em>vmin</em>, <em>vmax</em>, <em>dv</em>, <em>show=True</em>, <em>rmsvec=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#stack_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.stack_interpol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.stack_irregular">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">stack_irregular</code><span class="sig-paren">(</span><em>lines</em>, <em>window=''</em>, <em>**kargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#stack_irregular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.stack_irregular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stacks spectra by adding them together and 
+then convolving with a window to reduce 
+the noise.
+Available window functions:
+Gaussian, Savitzky-Golay and Wiener.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.temp2tau">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">temp2tau</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>model</em>, <em>p0</em>, <em>wy=None</em>, <em>mask=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#temp2tau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.temp2tau" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a temperature to optical depth. It will fit the continuum     using model and then subtract it and divide by it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; x values.</li>
+<li><strong>y</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; y values to be converted into optical depths.</li>
+<li><strong>model</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#callable" title="(in Python v2.7)"><em>callable</em></a>) &#8211; Model to fit to the continuum.</li>
+<li><strong>p0</strong> &#8211; Starting values for the model to be fit to the continuum.</li>
+<li><strong>wy</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Weights for the y values. (Optional)</li>
+<li><strong>mask</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Mask to apply to the <cite>x</cite> and <cite>y</cite> values.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">y/model - 1.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.tryint">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">tryint</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#tryint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.tryint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an integer if <cite>str</cite> can be represented as one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to check.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True is str can be cast to an int.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.vel2freq">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">vel2freq</code><span class="sig-paren">(</span><em>f0</em>, <em>vel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#vel2freq"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.vel2freq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a velocity axis to a frequency axis given a central frequency.
+Uses the radio definition, <span class="math">\(\nu=f_{0}(1-v/c)\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>f0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Rest frequency in Hz.</li>
+<li><strong>vel</strong> (<em>float or array</em>) &#8211; Velocity to convert in m/s.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The frequency which is equivalent to vel.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float or array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt</code><span class="sig-paren">(</span><em>x</em>, <em>sigma</em>, <em>gamma</em>, <em>center</em>, <em>amplitude</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Voigt line shape in terms of its physical parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; independent variable</li>
+<li><strong>sigma</strong> &#8211; HWHM of the Gaussian</li>
+<li><strong>gamma</strong> &#8211; HWHM of the Lorentzian</li>
+<li><strong>center</strong> &#8211; the line center</li>
+<li><strong>amplitude</strong> &#8211; the line area</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_area">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_area</code><span class="sig-paren">(</span><em>amp</em>, <em>fwhm</em>, <em>gamma</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the area under a Voigt profile.     This approximation has an error of less than 0.5%</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_area2">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_area2</code><span class="sig-paren">(</span><em>peak</em>, <em>fwhm</em>, <em>gamma</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_area2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_area2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Area under the Voigt profile using the expression provided by Sorochenko &amp; Smirnov (1990).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>peak</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote>
+<div><p>Peak of the Voigt line profile.</p>
+</div></blockquote>
+<p><strong>fwhm</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote>
+<div><p>Full width at half maximum of the Voigt profile.</p>
+</div></blockquote>
+<p><strong>gamma</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote>
+<div><p>Full width at half maximum of the Lorentzian profile.</p>
+</div></blockquote>
+<p><strong>sigma</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
+<blockquote class="last">
+<div><p>Full width at half maximum of the Doppler profile.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_area_err">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_area_err</code><span class="sig-paren">(</span><em>area</em>, <em>amp</em>, <em>damp</em>, <em>fwhm</em>, <em>dfwhm</em>, <em>gamma</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_area_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_area_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the error of the area under a Voigt profile.     Assumes that the parameter c has an error of 0.5%.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_fwhm">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_fwhm</code><span class="sig-paren">(</span><em>dD</em>, <em>dL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_fwhm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the FWHM of a Voigt profile.     <a class="reference external" href="http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile">http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</a></p>
+<div class="math">
+\[FWHM_{\rm{V}}=0.5346dL+\sqrt{0.2166dL^{2}+dD^{2}}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Gaussian core.</li>
+<li><strong>dL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Lorentz wings.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The FWHM of a Voigt profile.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_fwhm_err">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_fwhm_err</code><span class="sig-paren">(</span><em>dD</em>, <em>dL</em>, <em>ddD</em>, <em>ddL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_fwhm_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_fwhm_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the error in the FWHM of a Voigt profile.     <a class="reference external" href="http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile">http://en.wikipedia.org/wiki/Voigt_profile#The_width_of_the_Voigt_profile</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Gaussian core.</li>
+<li><strong>dL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; FWHM of the Lorentz wings.</li>
+<li><strong>ddD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Error on the FWHM of the Gaussian.</li>
+<li><strong>ddL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Error on the FWHM of the Lorentzian.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The FWHM of a Voigt profile.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_peak">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_peak</code><span class="sig-paren">(</span><em>A</em>, <em>alphaD</em>, <em>alphaL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the peak of a Voigt profile given its Area and the     Half Width at Half Maximum of the Gaussian and Lorentz profiles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>A</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Area of the Voigt profile.</li>
+<li><strong>alphaD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; HWHM of the Gaussian core.</li>
+<li><strong>alphaL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; HWHM of the Lorentz wings.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The peak of the Voigt profile.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_peak2area">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_peak2area</code><span class="sig-paren">(</span><em>peak</em>, <em>alphaD</em>, <em>alphaL</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak2area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak2area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts the peak of a Voigt profile into the area under the profile     given the Half Width at Half Maximum of the profile components.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>peak</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Peak of the Voigt profile.</li>
+<li><strong>alphaD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; HWHM of the Gaussian core.</li>
+<li><strong>alphaL</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; HWHM of the Lorentz wings.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The area under the Voigt profile.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.crrls.voigt_peak_err">
+<code class="descclassname">crrlpy.crrls.</code><code class="descname">voigt_peak_err</code><span class="sig-paren">(</span><em>peak</em>, <em>A</em>, <em>dA</em>, <em>alphaD</em>, <em>dalphaD</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#voigt_peak_err"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.voigt_peak_err" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the error on the peak of the Voigt profile.     It assumes no correlation between the parameters and that they are     normally distributed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>peak</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Peak of the Voigt profile.</li>
+<li><strong>A</strong> &#8211; Area under the Voigt profile.</li>
+<li><strong>dA</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Error on the area <cite>A</cite>.</li>
+<li><strong>alphaD</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; HWHM of the Gaussian core.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="includeme.html"
+                        title="previous chapter">CRRLpy</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="spec.html"
+                        title="next chapter">crrlpy.spec module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/crrls.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="spec.html" title="crrlpy.spec module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="includeme.html" title="CRRLpy"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

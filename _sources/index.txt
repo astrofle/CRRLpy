@@ -12,33 +12,11 @@ Contents:
    :maxdepth: 2
 
    includeme
-   
-crrlpy.crrls module
--------------------
-
-.. automodule:: crrlpy.crrls
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-    
-crrlpy.models.rrlmod module
----------------------------
-
-.. automodule:: crrlpy.models.rrlmod
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-    
-crrlpy.crrls.frec_calc module
------------------------------
-
-.. automodule:: crrlpy.frec_calc
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
+   crrls
+   spec
+   models.rrlmod
+   frec_calc
+   utils
 
 
 Indices and tables

@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>crrlpy.utils module &mdash; CRRLpy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="top" title="CRRLpy 0.1 documentation" href="index.html" />
+    <link rel="prev" title="crrlpy.frec_calc module" href="frec_calc.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frec_calc.html" title="crrlpy.frec_calc module"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="crrlpy-utils-module">
+<h1>crrlpy.utils module<a class="headerlink" href="#crrlpy-utils-module" title="Permalink to this headline">¶</a></h1>
+<p>Some utilities for python.</p>
+<span class="target" id="module-crrlpy.utils"></span><dl class="function">
+<dt id="crrlpy.utils.best_match_indx">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">best_match_indx</code><span class="sig-paren">(</span><em>value</em>, <em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#best_match_indx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.best_match_indx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searchs for the index of the closest entry to value inside an array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Value to find inside the array.</li>
+<li><strong>array</strong> (<em>list or numpy.array</em>) &#8211; List to search for the given value.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Best match index for the value inside array.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_match_indx</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.flatten_list">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">flatten_list</code><span class="sig-paren">(</span><em>list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#flatten_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.flatten_list" title="Permalink to this definition">¶</a></dt>
+<dd><div class="line-block">
+<div class="line">Flattens a list of lists.</div>
+<div class="line">Based on:</div>
+<div class="line"><a class="reference external" href="http://stackoverflow.com/questions/457215/comprehension-for-flattening-a-sequence-of-sequences/5330178#5330178">http://stackoverflow.com/questions/457215/comprehension-for-flattening-a-sequence-of-sequences/5330178#5330178</a></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.get_max_sep">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">get_max_sep</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#get_max_sep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.get_max_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the maximum element separation in an array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>array</strong> :   array</p>
+<blockquote>
+<div><p>Array where the maximum separation is wanted.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>max_sep</strong> : float</p>
+<blockquote class="last">
+<div><p>The maximum separation between the elements in <cite>array</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_max_sep</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">2</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.get_min_sep">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">get_min_sep</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#get_min_sep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.get_min_sep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the minimum element separation in an array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>array</strong> :   array</p>
+<blockquote>
+<div><p>Array where the minimum separation is wanted.</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>max_sep</strong> : float</p>
+<blockquote class="last">
+<div><p>The minimum separation between the elements in <cite>array</cite>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_min_sep</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.myround">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">myround</code><span class="sig-paren">(</span><em>x</em>, <em>base=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#myround"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.myround" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.pow_notation">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">pow_notation</code><span class="sig-paren">(</span><em>number</em>, <em>sig_fig=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#pow_notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.pow_notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a number to scientific notation keeping sig_fig signitifcant figures.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.sci_notation">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">sci_notation</code><span class="sig-paren">(</span><em>number</em>, <em>sig_fig=2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#sci_notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.sci_notation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a number to scientific notation keeping sig_fig signitifcant figures.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.str2bool">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">str2bool</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#str2bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.str2bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a string to a boolean value. The conversion is case insensitive.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; string to convert.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if str is one of: &#8220;yes&#8221;, &#8220;y&#8221;, &#8220;true&#8221;, &#8220;t&#8221; or &#8220;1&#8221;.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)">bool</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.text_slope_match_line">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">text_slope_match_line</code><span class="sig-paren">(</span><em>text</em>, <em>x</em>, <em>y</em>, <em>line</em>, <em>dindx=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#text_slope_match_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.text_slope_match_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.utils.update_text_slopes">
+<code class="descclassname">crrlpy.utils.</code><code class="descname">update_text_slopes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#update_text_slopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.update_text_slopes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="frec_calc.html"
+                        title="previous chapter">crrlpy.frec_calc module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/utils.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frec_calc.html" title="crrlpy.frec_calc module"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

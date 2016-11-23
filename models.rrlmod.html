@@ -1,0 +1,946 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>crrlpy.models.rrlmod module &mdash; CRRLpy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/copybutton.js"></script>
+    <link rel="top" title="CRRLpy 0.1 documentation" href="index.html" />
+    <link rel="next" title="crrlpy.frec_calc module" href="frec_calc.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frec_calc.html" title="crrlpy.frec_calc module"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="crrlpy-models-rrlmod-module">
+<h1>crrlpy.models.rrlmod module<a class="headerlink" href="#crrlpy-models-rrlmod-module" title="Permalink to this headline">¶</a></h1>
+<p>Module with RRL models.</p>
+<p>Models are not shipped with the code.</p>
+<span class="target" id="module-crrlpy.models.rrlmod"></span><span class="target" id="module-rrlmod"></span><dl class="function">
+<dt id="crrlpy.models.rrlmod.G_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">G_CII</code><span class="sig-paren">(</span><em>Tbg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#G_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.G_CII" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.I_Bnu">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_Bnu</code><span class="sig-paren">(</span><em>specie</em>, <em>Z</em>, <em>n</em>, <em>Inu_funct</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_Bnu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_Bnu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the product <span class="math">\(B_{n+\Delta n,n}I_{\nu}\)</span> to     compute the line broadening due to a radiation field <span class="math">\(I_{\nu}\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>specie</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Atomic specie to calculate for.</li>
+<li><strong>n</strong> (<em>int or list</em>) &#8211; Principal quantum number at which to evaluate <span class="math">\(\dfrac{2}{\pi}\sum\limits_{\Delta n}B_{n+\Delta n,n}I_{n+\Delta n,n}(\nu)\)</span>.</li>
+<li><strong>Inu_funct</strong> (<em>function</em>) &#8211; Function to call and evaluate <span class="math">\(I_{n+\Delta n,n}(\nu)\)</span>. It&#8217;s first argument must be the frequency.</li>
+<li><strong>args</strong> &#8211; Arguments to <cite>Inu_funct</cite>. The frequency must be left out.     The frequency will be passed internally in units of MHz. Use the same     unit when required. <cite>Inu_funct</cite> must take the frequency as first parameter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(Hz)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">I_Bnu</span><span class="p">(</span><span class="s1">&#39;CI&#39;</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mi">500</span><span class="p">,</span> <span class="n">I_broken_plaw</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="mi">26</span><span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">MHz</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;Hz&#39;</span><span class="p">),</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.6</span><span class="p">)</span>
+<span class="go">array([ 6.65540582])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.I_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_CII</code><span class="sig-paren">(</span><em>T158</em>, <em>R</em>, <em>NCII</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_CII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frequency integrated line intensity.
+Optically thin limit without radiative transfer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The frequency integrated line intensity in units of Jy Hz or g s-3</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.I_CII_rt">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_CII_rt</code><span class="sig-paren">(</span><em>wav</em>, <em>dnu</em>, <em>T158</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_CII_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_CII_rt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frequency integrated line intensity.
+Optically thin limit with radiative transfer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The frequency integrated line intensity in units of Jy Hz or g s-3</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.I_broken_plaw">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_broken_plaw</code><span class="sig-paren">(</span><em>nu</em>, <em>Tr</em>, <em>nu0</em>, <em>alpha1</em>, <em>alpha2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_broken_plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_broken_plaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the blackbody function evaluated at nu. 
+As temperature a broken power law is used.
+The power law shape has parameters: Tr, nu0, alpha1 and alpha2.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nu</strong> ((Hz) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a>) &#8211; Frequency. (Hz) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a></li>
+<li><strong>Tr</strong> &#8211; Temperature at nu0. (K) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a></li>
+<li><strong>nu0</strong> &#8211; Frequency at which the spectral index changes. (Hz) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a></li>
+<li><strong>alpha1</strong> &#8211; spectral index for <span class="math">\(\nu&lt;\nu_0\)</span></li>
+<li><strong>alpha2</strong> &#8211; spectral index for <span class="math">\(\nu\geq\nu_0\)</span></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Specific intensity in <span class="math">\(\rm{erg}\,\rm{cm}^{-2}\,\rm{Hz}^{-1}\,\rm{s}^{-1}\,\rm{sr}^{-1}\)</span>. See <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu">astropy.analytic_functions.blackbody.blackbody_nu</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.I_cont">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_cont</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>tau</em>, <em>I0</em>, <em>unitless=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_cont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_cont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the specific intensity due to a blackbody at temperature <span class="math">\(T_{e}\)</span> and optical depth <span class="math">\(\tau\)</span>. It considers that there is 
+background radiation with <span class="math">\(I_{0}\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nu</strong> ((Hz) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a>) &#8211; Frequency.</li>
+<li><strong>Te</strong> &#8211; Temperature of the source function. (K) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a></li>
+<li><strong>tau</strong> &#8211; Optical depth of the medium.</li>
+<li><strong>I0</strong> &#8211; Specific intensity of the background radiation. Must have units of erg / (cm2 Hz s sr) or see <cite>unitless</cite>.</li>
+<li><strong>unitless</strong> &#8211; If True the return</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The specific intensity of a ray of light after traveling in an LTE     medium with source function <span class="math">\(B_{\nu}(T_{e})\)</span> after crossing an optical     depth <span class="math">\(\tau_{\nu}\)</span>. The units are erg / (cm2 Hz s sr). See <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu">astropy.analytic_functions.blackbody.blackbody_nu</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.I_external">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_external</code><span class="sig-paren">(</span><em>nu</em>, <em>Tbkg</em>, <em>Tff</em>, <em>tau_ff</em>, <em>Tr</em>, <em>nu0=&lt;Quantity 100000000.0 MHz&gt;</em>, <em>alpha=-2.6</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_external"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_external" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is equivalent to the IDL routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nu</strong> &#8211; Frequency. (Hz) or <a class="reference external" href="http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity">astropy.units.Quantity</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.I_total">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">I_total</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>tau</em>, <em>I0</em>, <em>eta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#I_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.I_total" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.K_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">K_CII</code><span class="sig-paren">(</span><em>Tkin</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#K_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.K_CII" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.R_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">R_CII</code><span class="sig-paren">(</span><em>ne</em>, <em>nh</em>, <em>gamma_e</em>, <em>gamma_h</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#R_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.R_CII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ratio between the fine structure level population of CII, and
+the level population in LTE. It ignores the effect of collisions
+with molecular hydrogen.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.R_CII_FS">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">R_CII_FS</code><span class="sig-paren">(</span><em>ne</em>, <em>nh</em>, <em>gamma_e</em>, <em>gamma_h</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#R_CII_FS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.R_CII_FS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.R_CII_mod">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">R_CII_mod</code><span class="sig-paren">(</span><em>ne</em>, <em>nh</em>, <em>gamma_e</em>, <em>gamma_h</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#R_CII_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.R_CII_mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ratio between the fine structure level population of CII, and
+the level population in LTE. It ignores the effect of collisions
+with molecular hydrogen.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.T_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">T_CII</code><span class="sig-paren">(</span><em>Tex</em>, <em>tau</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#T_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.T_CII" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.T_CII_mod">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">T_CII_mod</code><span class="sig-paren">(</span><em>Te</em>, <em>tau</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#T_CII_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.T_CII_mod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.T_ex_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">T_ex_CII</code><span class="sig-paren">(</span><em>Te</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#T_ex_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.T_ex_CII" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.Ta_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">Ta_CII</code><span class="sig-paren">(</span><em>X</em>, <em>G</em>, <em>K</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#Ta_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.Ta_CII" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.Ta_CII_thick_subthermal">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">Ta_CII_thick_subthermal</code><span class="sig-paren">(</span><em>X</em>, <em>G</em>, <em>K</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#Ta_CII_thick_subthermal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.Ta_CII_thick_subthermal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.X_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">X_CII</code><span class="sig-paren">(</span><em>Cul</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#X_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.X_CII" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.alpha_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">alpha_CII</code><span class="sig-paren">(</span><em>Te</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#alpha_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.alpha_CII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value of <span class="math">\(\alpha_{1/2}\)</span>. 
+Sorochenko &amp; Tsivilev (2000).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.alpha_CII_mod">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">alpha_CII_mod</code><span class="sig-paren">(</span><em>Te</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#alpha_CII_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.alpha_CII_mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value of <span class="math">\(\alpha_{1/2}\)</span>. 
+Sorochenko &amp; Tsivilev (2000).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.beta_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">beta_CII</code><span class="sig-paren">(</span><em>Te</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#beta_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.beta_CII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value of <span class="math">\(\beta_{158}\)</span>. 
+Sorochenko &amp; Tsivilev (2000).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.beta_CII_mod">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">beta_CII_mod</code><span class="sig-paren">(</span><em>Te</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#beta_CII_mod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.beta_CII_mod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the value of <span class="math">\(\beta_{158}\)</span>. 
+Sorochenko &amp; Tsivilev (2000).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.bnbeta_approx">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">bnbeta_approx</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>ne</em>, <em>Tr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#bnbeta_approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.bnbeta_approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximates <span class="math">\(b_{n}\beta_{n^{\prime}n}\)</span> 
+for a particular set of conditions.
+Uses Equation (B1) of Salas et al. (2016).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Principal quantum number</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature in K.</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density per cubic centimeters.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Temperature of the radiation field in K at 100 MHz.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The value of <span class="math">\(b_{n}\beta_{n^{\prime}n}\)</span> given an approximate expression.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.bnbeta_approx_full">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">bnbeta_approx_full</code><span class="sig-paren">(</span><em>Te</em>, <em>ne</em>, <em>Tr</em>, <em>coefs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#bnbeta_approx_full"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.bnbeta_approx_full" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximates <span class="math">\(b_{n}\beta_{n^{\prime}n}\)</span> given a set of coefficients.
+Uses Equations (5) and (B1)-(B5) of Salas et al. (2016).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.broken_plaw">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">broken_plaw</code><span class="sig-paren">(</span><em>nu</em>, <em>nu0</em>, <em>T0</em>, <em>alpha1</em>, <em>alpha2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#broken_plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.broken_plaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a broken power law.</p>
+<div class="math">
+\[\begin{split}T(\nu) = T_{0}\left(\dfrac{\nu}{\nu_{0}}\right)^{\alpha_1}\mbox{ if }\nu&lt;\nu_{0}\end{split}\]\[T(\nu) = T_{0}\left(\dfrac{\nu}{\nu_{0}}\right)^{\alpha_2}\mbox{ if }\nu\geq\nu_{0}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nu</strong> &#8211; Frequency.</li>
+<li><strong>nu0</strong> &#8211; Frequency at which the power law breaks.</li>
+<li><strong>T0</strong> &#8211; Value of the power law at nu0.</li>
+<li><strong>alpha1</strong> &#8211; Index of the power law for nu&lt;nu0.</li>
+<li><strong>alpha2</strong> &#8211; Index of the power law for nu&gt;=nu0.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Broken power law evalueated at nu.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.chi">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">chi</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#chi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.chi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the <span class="math">\(\chi_{n}\)</span> value as defined by Salgado et al. (2015).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.eta">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">eta</code><span class="sig-paren">(</span><em>freq</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>trans</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#eta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.eta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the correction factor for the Planck function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.gamma_e_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">gamma_e_CII</code><span class="sig-paren">(</span><em>Te</em>, <em>method='FS'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#gamma_e_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.gamma_e_CII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the de-excitation rate of the CII atom due to collisions with electrons.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The collisional de-excitation rate in units of cm-3 s-1.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.gamma_h2_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">gamma_h2_CII</code><span class="sig-paren">(</span><em>Te</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#gamma_h2_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.gamma_h2_CII" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.gamma_h_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">gamma_h_CII</code><span class="sig-paren">(</span><em>Te</em>, <em>method='FS'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#gamma_h_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.gamma_h_CII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the de-excitation rate of the CII atom due to collisions with hydrogen atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The collisional de-excitation rate in units of cm-3 s-1.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.itau">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">itau</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>line</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the integrated optical depth for a given temperature and density.
+It assumes that the background radiation field dominates the continuum emission.
+The emission measure is unity. The output units are Hz.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>temp</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Electron temperature. Must be a string of the form &#8216;8d1&#8217;.</li>
+<li><strong>dens</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Line to load models for.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n value to include in the output. Default 1</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n value to include in the output. Default 1500, Maximum allowed value 9900</li>
+<li><strong>other</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to search for different radiation fields and others.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|&#8217;None&#8217;] Value to output. itau will output the integrated optical depth.     bbnMdn will output the <span class="math">\(\beta_{n,n^{\prime}}b_{n}\)</span> times the oscillator strenght <span class="math">\(M(\Delta n)\)</span>.     None will output the <span class="math">\(\beta_{n,n^{\prime}}b_{n}\)</span> values.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The principal quantum number and its asociated value.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.itau_h">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">itau_h</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>trans</em>, <em>n_max=1000</em>, <em>other=''</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau_h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the integrated optical depth for a given temperature and density. 
+The emission measure is unity. The output units are Hz.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.itau_norad">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">itau_norad</code><span class="sig-paren">(</span><em>n</em>, <em>Te</em>, <em>b</em>, <em>dn</em>, <em>mdn_</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#itau_norad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.itau_norad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the optical depth using the approximate solution to the 
+radiative transfer problem.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.j_line_lte">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">j_line_lte</code><span class="sig-paren">(</span><em>n</em>, <em>ne</em>, <em>nion</em>, <em>Te</em>, <em>Z</em>, <em>trans</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#j_line_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.j_line_lte" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.kappa_cont">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_cont</code><span class="sig-paren">(</span><em>freq</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_cont"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_cont" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the absorption coefficient for the free-free process.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.kappa_cont_base">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_cont_base</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_cont_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_cont_base" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.kappa_line">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_line</code><span class="sig-paren">(</span><em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>trans</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the line absorption coefficient for CRRLs between levels <span class="math">\(n_{i}\)</span> and <span class="math">\(n_{f}\)</span>, <span class="math">\(n_{i}&gt;n_{f}\)</span>.
+This can only go up to <span class="math">\(n_{\rm{max}}\)</span> 1500 because of the tables used for the Einstein Anm coefficients.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature of the gas. (K)</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>nion</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>Z</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Electric charge of the atoms being considered.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
+<li><strong>trans</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Transition for which to compute the absorption coefficient.</li>
+<li><strong>n_max</strong> (<em>int&lt;1500</em>) &#8211; Maximum principal quantum number to include in the output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.kappa_line_lte">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">kappa_line_lte</code><span class="sig-paren">(</span><em>nu</em>, <em>Te</em>, <em>ne</em>, <em>nion</em>, <em>Z</em>, <em>Tr</em>, <em>line</em>, <em>n_min=1</em>, <em>n_max=1500</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#kappa_line_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.kappa_line_lte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the line absorption coefficient under LTE conditions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>nu</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Frequency. (Hz)</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature of the gas. (K)</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>nion</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>Z</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Electric charge of the atoms being considered.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
+<li><strong>trans</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Transition for which to compute the absorption coefficient.</li>
+<li><strong>n_max</strong> (<em>int&lt;1500</em>) &#8211; Maximum principal quantum number to include in the output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.level_pop_lte">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">level_pop_lte</code><span class="sig-paren">(</span><em>n</em>, <em>ne</em>, <em>nion</em>, <em>Te</em>, <em>Z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#level_pop_lte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.level_pop_lte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the level population of level n.
+The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_betabn">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_betabn</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>other=''</em>, <em>trans='RRL_CIalpha'</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_betabn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_betabn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a model for the CRRL emission.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_betabn_h">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_betabn_h</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>other=''</em>, <em>trans='alpha'</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_betabn_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_betabn_h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a model for the HRRL emission.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_bn">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_bn</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>other=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the bn values from the CRRL models.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_bn2">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_bn2</code><span class="sig-paren">(</span><em>Te</em>, <em>ne</em>, <em>Tr=''</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the bn values from the CRRL models.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Electron temperature of the model.</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Electron density of the model.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Radiation field of the model.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The <span class="math">\(b_{n}\)</span> value for the given model conditions.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_bn_all">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_bn_all</code><span class="sig-paren">(</span><em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn_all" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_bn_dict">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_bn_dict</code><span class="sig-paren">(</span><em>dict</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_bn_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_bn_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the <span class="math">\(b_{n}\)</span> values defined by dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dict</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary containing a list with values for Te, ne and Tr.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List with the <span class="math">\(b_{n}\)</span> values for the conditions defined by dict.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.11)">numpy.array</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">crrlpy.models</span> <span class="kn">import</span> <span class="n">rrlmod</span>
+</pre></div>
+</div>
+<p>First define the range of parameters</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1d1&#39;</span><span class="p">,</span> <span class="s1">&#39;2d1&#39;</span><span class="p">,</span> <span class="s1">&#39;3d1&#39;</span><span class="p">,</span> <span class="s1">&#39;4d1&#39;</span><span class="p">,</span> <span class="s1">&#39;5d1&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.105</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">800</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Put them in a dictionary</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Te&#39;</span><span class="p">:[</span><span class="n">t_</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>                   <span class="s1">&#39;ne&#39;</span><span class="p">:[</span><span class="nb">round</span><span class="p">(</span><span class="n">n_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>                   <span class="s1">&#39;Tr&#39;</span><span class="p">:[</span><span class="s1">&#39;case_diffuse_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rrlmod</span><span class="o">.</span><span class="n">val2str</span><span class="p">(</span><span class="n">tr_</span><span class="p">))</span>                         <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p>Load the models</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">bn</span> <span class="o">=</span> <span class="n">rrlmod</span><span class="o">.</span><span class="n">load_bn_dict</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_itau_all">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all</code><span class="sig-paren">(</span><em>line='RRL_CIalpha'</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the available models for Carbon.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|None] Which value should be in the output.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_itau_all_hydrogen">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all_hydrogen</code><span class="sig-paren">(</span><em>trans='alpha'</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_hydrogen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the available models for Hydrogen.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_itau_all_match">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all_match</code><span class="sig-paren">(</span><em>trans_out='alpha'</em>, <em>trans_tin='beta'</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_match" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all trans_out models that can be found in trans_tin. This is useful when analyzing line ratios.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_itau_all_norad">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_all_norad</code><span class="sig-paren">(</span><em>trans='alpha'</em>, <em>n_max=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_all_norad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_all_norad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the available models.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_itau_dict">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_dict</code><span class="sig-paren">(</span><em>dict</em>, <em>line</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the models defined by dict.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>dict</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary containing a list with values for Te, ne and Tr.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|None] Which value should be in the output.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">crrlpy.models</span> <span class="kn">import</span> <span class="n">rrlmod</span>
+</pre></div>
+</div>
+<p>First define the range of parameters</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Te</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;1d1&#39;</span><span class="p">,</span> <span class="s1">&#39;2d1&#39;</span><span class="p">,</span> <span class="s1">&#39;3d1&#39;</span><span class="p">,</span> <span class="s1">&#39;4d1&#39;</span><span class="p">,</span> <span class="s1">&#39;5d1&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ne</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.01</span><span class="p">,</span><span class="mf">0.105</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Tr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2000</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Put them in a dictionary</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">models</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Te&#39;</span><span class="p">:[</span><span class="n">t_</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>
+<span class="gp">... </span>          <span class="s1">&#39;ne&#39;</span><span class="p">:[</span><span class="nb">round</span><span class="p">(</span><span class="n">n_</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">],</span>
+<span class="gp">... </span>          <span class="s1">&#39;Tr&#39;</span><span class="p">:[</span><span class="s1">&#39;case_diffuse_{0}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rrlmod</span><span class="o">.</span><span class="n">val2str</span><span class="p">(</span><span class="n">tr_</span><span class="p">))</span>
+<span class="gp">... </span>                <span class="k">for</span> <span class="n">t_</span> <span class="ow">in</span> <span class="n">Te</span> <span class="k">for</span> <span class="n">n_</span> <span class="ow">in</span> <span class="n">ne</span> <span class="k">for</span> <span class="n">tr_</span> <span class="ow">in</span> <span class="n">Tr</span><span class="p">]}</span>
+</pre></div>
+</div>
+<p># Load the models</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">itau_mod</span> <span class="o">=</span> <span class="n">rrlmod</span><span class="o">.</span><span class="n">load_itau_dict</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="s1">&#39;CIalpha&#39;</span><span class="p">,</span> <span class="n">n_min</span><span class="o">=</span><span class="mi">250</span><span class="p">,</span> <span class="n">n_max</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>                                          <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;itau&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_itau_nelim">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_nelim</code><span class="sig-paren">(</span><em>temp</em>, <em>dens</em>, <em>trad</em>, <em>trans</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_nelim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_nelim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads models given a temperature, radiation field and an 
+upper limit for the electron density.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_itau_numpy">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_itau_numpy</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_itau_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_itau_numpy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads all the models contained in filename.npy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : <a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><code class="xref py py-obj docutils literal"><span class="pre">string</span></code></a></p>
+<blockquote>
+<div><p>Filename with the models.</p>
+</div></blockquote>
+<p><strong>Returns</strong></p>
+<p class="last"><strong>&#8212;&#8212;-</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.load_models">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">load_models</code><span class="sig-paren">(</span><em>models</em>, <em>trans</em>, <em>n_max=1000</em>, <em>verbose=False</em>, <em>value='itau'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#load_models"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.load_models" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads the models in backwards compatible mode.
+It will sort the models by Te, ne and Tr.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.make_betabn">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">make_betabn</code><span class="sig-paren">(</span><em>line</em>, <em>temp</em>, <em>dens</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#make_betabn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.make_betabn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.make_betabn2">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">make_betabn2</code><span class="sig-paren">(</span><em>line</em>, <em>temp</em>, <em>dens</em>, <em>n_min=5</em>, <em>n_max=1000</em>, <em>other=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#make_betabn2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.make_betabn2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.mdn">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">mdn</code><span class="sig-paren">(</span><em>dn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#mdn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.mdn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives the <span class="math">\(M(\Delta n)\)</span> factor for a given <span class="math">\(\Delta n\)</span>.
+ref. Menzel (1968)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dn</strong> &#8211; <span class="math">\(\Delta n\)</span>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><span class="math">\(M(\Delta n)\)</span></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mdn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">0.1908</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mdn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">0.001812</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.models_dict">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">models_dict</code><span class="sig-paren">(</span><em>Te</em>, <em>ne</em>, <em>Tr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#models_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.models_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a dict for loading models given arrays with ne, Te and Tr.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.plaw">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">plaw</code><span class="sig-paren">(</span><em>x</em>, <em>x0</em>, <em>y0</em>, <em>alpha</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#plaw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.plaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a power law.</p>
+<div class="math">
+\[y(x)=y_0\left(\frac{x}{x_0}\right)^{\alpha}\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>float or array like</em>) &#8211; x values for which to compute the power law.</li>
+<li><strong>x0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; x value for which the power law has amplitude <cite>y0</cite>.</li>
+<li><strong>y0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Amplitude of the power law at <cite>x0</cite>.</li>
+<li><strong>alpha</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Index of the power law.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A power law of index <cite>alpha</cite> evaluated at <cite>x</cite>, with amplitude <cite>y0</cite> at <cite>x0</cite>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float or array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.str2val">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">str2val</code><span class="sig-paren">(</span><em>str</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#str2val"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.str2val" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a string representing a number to a float.
+The string must follow the IDL convention for floats.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to convert.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The equivalent number.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">str2val</span><span class="p">(</span><span class="s1">&#39;2d2&#39;</span><span class="p">)</span>
+<span class="go">200.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.tau_CII">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">tau_CII</code><span class="sig-paren">(</span><em>Te</em>, <em>nc</em>, <em>L</em>, <em>dnu</em>, <em>alpha</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#tau_CII"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.tau_CII" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the optical depth of the far infrared line of CII. Crawford et al. (1985).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</li>
+<li><strong>nc</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Ionized carbon number density.</li>
+<li><strong>L</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Path lenght.</li>
+<li><strong>dnu</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Line width FWHM in Hz.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.tau_CII_PG">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">tau_CII_PG</code><span class="sig-paren">(</span><em>ncii</em>, <em>dv</em>, <em>Te</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#tau_CII_PG"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.tau_CII_PG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optical depth of the far infrared line of [CII] following Goldsmith et al. (2012).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.val2str">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">val2str</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#val2str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.val2str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a float to the string format required for loading the CRRL models.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Value to convert to a string.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The value of val represented as a string in IDL double format.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)">string</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">val2str</span><span class="p">(</span><span class="mi">200</span><span class="p">)</span>
+<span class="go">&#39;2d2&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="crrlpy.models.rrlmod.valid_ne">
+<code class="descclassname">crrlpy.models.rrlmod.</code><code class="descname">valid_ne</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/models/rrlmod.html#valid_ne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.models.rrlmod.valid_ne" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks all the available models and lists the available ne values.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Next topic</h4>
+  <p class="topless"><a href="frec_calc.html"
+                        title="next chapter">crrlpy.frec_calc module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/models.rrlmod.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="frec_calc.html" title="crrlpy.frec_calc module"
+             >next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>

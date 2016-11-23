@@ -1,0 +1,663 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>crrlpy.spec &mdash; CRRLpy 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../_static/copybutton.js"></script>
+    <link rel="top" title="CRRLpy 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for crrlpy.spec</h1><div class="highlight"><pre>
+<span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1">#from __future__ import division</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">crrls</span>
+<span class="kn">import</span> <span class="nn">utils</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
+
+<div class="viewcode-block" id="Spectrum"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum">[docs]</a><span class="k">class</span> <span class="nc">Spectrum</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    Construction::</span>
+<span class="sd">    </span>
+<span class="sd">    spec = Spectrum(x, y, w=None, spw=None, stack=None)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : array_like</span>
+<span class="sd">        | Spectrum x axis.</span>
+<span class="sd">        | If x is a frequency axis, then its units should be MHz.</span>
+<span class="sd">    y : array_like</span>
+<span class="sd">        Spectrum y axis.</span>
+<span class="sd">    w : array_like, optional</span>
+<span class="sd">        Spectrum weight axis</span>
+<span class="sd">    spw : :obj:`int`</span>
+<span class="sd">        Spectrum spectral window.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="p">[],</span> <span class="n">spw</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stack</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="c1"># User provided values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="c1"># For smoothing purposes</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">fill_value</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spw</span> <span class="o">=</span> <span class="n">spw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="n">stack</span>
+        
+        <span class="c1"># Determine the global mask from x, y and z</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mask</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">mask</span>
+        <span class="c1"># Apply the global mask to the data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sy</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_min_sep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="Spectrum.apply_bandpass_corr"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.apply_bandpass_corr">[docs]</a>    <span class="k">def</span> <span class="nf">apply_bandpass_corr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bandpass_x</span><span class="p">,</span> <span class="n">bandpass_y</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies a bandpass correction to the y axis of Spectrum.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bandpass : :obj:`numpy.ma.array`</span>
+<span class="sd">                   Bandpass to apply to Spectrum.</span>
+<span class="sd">        offset : :obj:`float`, optional</span>
+<span class="sd">              | Offset to apply to the y axis data. Used to avoid division by 0.</span>
+<span class="sd">              | Should be the same value used when deriving the bandpass solution.</span>
+<span class="sd">        overwrite : :obj:`bool`, optional</span>
+<span class="sd">                    Should the bandpass applied overwrite the Spectrum.bp?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">bp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">bandpass_x</span><span class="p">,</span> <span class="n">bandpass_y</span><span class="p">))</span>
+        <span class="n">bp</span><span class="o">.</span><span class="n">fill_value</span> <span class="o">=</span> <span class="n">offset</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_bpcorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span><span class="o">/</span><span class="n">bp</span><span class="o">.</span><span class="n">filled</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">offset</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bp</span> <span class="o">=</span> <span class="n">bp</span></div>
+    
+<div class="viewcode-block" id="Spectrum.bandpass_corr"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.bandpass_corr">[docs]</a>    <span class="k">def</span> <span class="nf">bandpass_corr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mf">1000.</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fits a polynomial to the unmasked elements of spec</span>
+<span class="sd">        and uses it to correct the bandpass.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        order : :obj:`int`</span>
+<span class="sd">                Order of the polynomial to be fit.</span>
+<span class="sd">        offset : :obj:`float`, optional</span>
+<span class="sd">               | Offset to apply to the y axis data. </span>
+<span class="sd">               | Used to avoid division by 0.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># Add offset to avoid zeros</span>
+        <span class="n">oy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span> <span class="o">+</span> <span class="n">offset</span>
+        
+        <span class="c1"># Use a polynomial to remove the baseline</span>
+        <span class="n">bp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">(),</span> <span class="n">oy</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+        <span class="c1"># Interpolate and extrapolate to the original x axis</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">polyval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">bp</span><span class="p">)</span>
+        
+        <span class="c1"># Flag NaN values in the baseline</span>
+        <span class="n">mb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_equal</span><span class="p">(</span><span class="n">mb</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bp</span><span class="o">.</span><span class="n">fill_value</span> <span class="o">=</span> <span class="n">offset</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_bpcorr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(((</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">bp</span><span class="o">.</span><span class="n">filled</span><span class="p">()</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">offset</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Spectrum.find_lines"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.find_lines">[docs]</a>    <span class="k">def</span> <span class="nf">find_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds if there are any lines of a given type in the frequency range.</span>
+<span class="sd">        The line frequencies are corrected for redshift.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        line : :obj:`string`</span>
+<span class="sd">               Line type to search for.</span>
+<span class="sd">        z :    :obj:`float`</span>
+<span class="sd">            Redshift to apply to the rest frequencies.</span>
+<span class="sd">        verbose : :obj:`bool`</span>
+<span class="sd">                  Verbose output?</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        n : :obj:`numpy.array`</span>
+<span class="sd">            Principal quantum numbers. </span>
+<span class="sd">        reference_frequencies : :obj:`numpy.array`</span>
+<span class="sd">                                Reference frequencies of the lines inside the spectrum in MHz. </span>
+<span class="sd">                                The frequencies are redshift corrected.</span>
+<span class="sd">        </span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        crrlpy.crrls.load_ref : Describes the format of line and the available ones.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from crrlpy.spec import Spectrum</span>
+<span class="sd">        &gt;&gt;&gt; freq = [10, 11]</span>
+<span class="sd">        &gt;&gt;&gt; temp = [1, 1]</span>
+<span class="sd">        &gt;&gt;&gt; spec = Spectrum(freq, temp)</span>
+<span class="sd">        &gt;&gt;&gt; ns, rf = spec.find_lines(&#39;RRL_CIalpha&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ns</span>
+<span class="sd">        array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,</span>
+<span class="sd">                852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,</span>
+<span class="sd">                861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;line should be a string&#39;</span><span class="p">)</span>
+            
+        <span class="c1"># Load the reference frequencies.</span>
+        <span class="n">qn</span><span class="p">,</span> <span class="n">restfreq</span> <span class="o">=</span> <span class="n">crrls</span><span class="o">.</span><span class="n">load_ref</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        
+        <span class="c1"># Correct rest frequencies for redshift.</span>
+        <span class="n">reffreq</span> <span class="o">=</span> <span class="n">restfreq</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
+        
+        <span class="c1"># Check which lines lie within the sub band.</span>
+        <span class="n">mask_ref</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">reffreq</span><span class="p">)</span> <span class="o">&amp;</span> \
+                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">reffreq</span><span class="p">)</span>
+        <span class="n">reffreqs</span> <span class="o">=</span> <span class="n">reffreq</span><span class="p">[</span><span class="n">mask_ref</span><span class="p">]</span>
+        <span class="n">refqns</span> <span class="o">=</span> <span class="n">qn</span><span class="p">[</span><span class="n">mask_ref</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">refqns</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reffreqs</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">refqns</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">reffreqs</span><span class="p">]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">])</span>
+            
+        <span class="n">nlin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reffreqs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s2">&quot;Found {0} {1} lines within the subband.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlin</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nlin</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s2">&quot;Corresponding to n values: {0}--{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refqns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">refqns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">nlin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s2">&quot;Corresponding to n value {0} and frequency {1} MHz&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refqns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reffreqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">refqns</span><span class="p">,</span> <span class="n">reffreqs</span></div>
+    
+<div class="viewcode-block" id="Spectrum.find_good_lines"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.find_good_lines">[docs]</a>    <span class="k">def</span> <span class="nf">find_good_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">separation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">redge</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">ledge</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find any good lines in the Spectrum.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        line : :obj:`str`</span>
+<span class="sd">               Search for good lines of this kind.</span>
+<span class="sd">        lines : :obj:`str`</span>
+<span class="sd">               Compare against this kind of lines.</span>
+<span class="sd">        z : :obj:`float`</span>
+<span class="sd">               Redshift correction to apply to the rest frequencies.</span>
+<span class="sd">        separation : :obj:`float`</span>
+<span class="sd">                Minimum separation between lines to be considered good.</span>
+<span class="sd">        redge : :obj:`float`</span>
+<span class="sd">                The line frequency should be this far </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="c1"># If no value is given for the left edge, use the same as for the right edge</span>
+        <span class="k">if</span> <span class="n">ledge</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ledge</span> <span class="o">=</span> <span class="n">redge</span>
+        
+        <span class="c1"># Find the lines within the Spectrum corresponding to the desired line</span>
+        <span class="n">ns</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_lines</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        
+        <span class="c1"># Find other lines in the Spectrum</span>
+        <span class="n">ofs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">n</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_lines</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+            <span class="n">ofs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+        
+        <span class="n">fofs</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">flatten_list</span><span class="p">(</span><span class="n">ofs</span><span class="p">)</span>
+        
+        <span class="c1"># Loop over lines checking that their separation from the other lines</span>
+        <span class="c1"># is larger than separation.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rf</span><span class="p">):</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">of</span> <span class="o">-</span> <span class="n">f</span><span class="p">)</span> <span class="k">if</span> <span class="n">of</span> <span class="o">!=</span> <span class="n">f</span> <span class="k">else</span> <span class="n">separation</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">of</span> <span class="ow">in</span> <span class="n">fofs</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">d</span> <span class="o">&gt;</span> <span class="n">separation</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">diff</span><span class="p">)</span> <span class="ow">and</span> \
+                <span class="n">f</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">*</span><span class="n">ledge</span> <span class="ow">and</span> \
+                <span class="n">f</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bw</span><span class="o">*</span><span class="n">redge</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rf</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ns</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">rf</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">good_lines</span><span class="p">[</span><span class="n">line</span><span class="o">+</span><span class="s1">&#39;_freq&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span></div>
+            
+<div class="viewcode-block" id="Spectrum.make_line_mask"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.make_line_mask">[docs]</a>    <span class="k">def</span> <span class="nf">make_line_mask</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a list of indexes to mask lines in the spectrum.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        line : :obj:`str`</span>
+<span class="sd">               Line to mask.</span>
+<span class="sd">        </span>
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        crrlpy.crrls.load_ref : Describes the format of line and the available ones.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">ns</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_lines</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">nlines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="p">)</span>
+        <span class="n">rngs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nlines</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rf</span><span class="p">):</span>
+            <span class="n">rngs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">f</span><span class="o">-</span><span class="n">df</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+            <span class="n">rngs</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">f</span><span class="o">+</span><span class="n">df</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span>
+            
+        <span class="k">return</span> <span class="n">rngs</span></div>
+    
+<div class="viewcode-block" id="Spectrum.mask_edges"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.mask_edges">[docs]</a>    <span class="k">def</span> <span class="nf">mask_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">redge</span><span class="p">,</span> <span class="n">ledge</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mask the edges of the Spectrum frequency and amplitude.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">ledge</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">ledge</span> <span class="o">=</span> <span class="n">redge</span>
+            
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">redge</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ledge</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">[:</span><span class="n">ledge</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="o">-</span><span class="n">redge</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mask</span><span class="p">[:</span><span class="n">ledge</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="o">-</span><span class="n">redge</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">mask</span><span class="p">[:</span><span class="n">ledge</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="o">-</span><span class="n">redge</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;redge and ledge should be integers&#39;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="Spectrum.mask_ranges"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.mask_ranges">[docs]</a>    <span class="k">def</span> <span class="nf">mask_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ranges</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Masks the Spectrum inside the given ranges.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ranges : list of tuples</span>
+<span class="sd">                 Indexes defining the ranges to be masked.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = np.arange(0,10)</span>
+<span class="sd">        &gt;&gt;&gt; y = np.arange(0,10)</span>
+<span class="sd">        &gt;&gt;&gt; spec = Spectrum(x,y)</span>
+<span class="sd">        &gt;&gt;&gt; spec.y.compressed()</span>
+<span class="sd">        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</span>
+<span class="sd">        &gt;&gt;&gt; rngs = [[0,2], [7,9]]</span>
+<span class="sd">        &gt;&gt;&gt; spec.mask_ranges(rngs)</span>
+<span class="sd">        &gt;&gt;&gt; spec.y.compressed()</span>
+<span class="sd">        array([2, 3, 4, 5, 6, 9])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">rng</span> <span class="ow">in</span> <span class="n">ranges</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">rng</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">rng</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">mask</span><span class="p">[</span><span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">rng</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">True</span></div>
+            
+<div class="viewcode-block" id="Spectrum.remove_model"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.remove_model">[docs]</a>    <span class="k">def</span> <span class="nf">remove_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">is_freq</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Subtracts the model from the y axis of the Spectrum.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        line : :obj:`str`</span>
+<span class="sd">               Line which the model represents.</span>
+<span class="sd">        model : array_like</span>
+<span class="sd">               Array with the model to be removed. Should have shape (2xN).</span>
+<span class="sd">        is_freq : :obj:`bool`</span>
+<span class="sd">               Is the model x axis in frequency units?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">modx</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">mody</span> <span class="o">=</span> <span class="n">model</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">modx</span><span class="p">)</span>
+        
+        <span class="n">qns</span><span class="p">,</span> <span class="n">freqs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_lines</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">)</span>
+        
+        <span class="n">y_mod</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+        
+        <span class="k">if</span> <span class="n">is_freq</span><span class="p">:</span>
+            <span class="c1"># Interpolate the model axis to the spectrum grid</span>
+            <span class="n">imody</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">modx</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">mody</span><span class="p">[</span><span class="n">p</span><span class="p">],</span>
+                                         <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+                                         <span class="n">bounds_error</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                         <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">y_mod</span> <span class="o">+=</span> <span class="n">imody</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qns</span><span class="p">):</span>
+                <span class="c1"># Convert the model velocity axis to frequency</span>
+                <span class="n">fm</span> <span class="o">=</span> <span class="n">crrls</span><span class="o">.</span><span class="n">vel2freq</span><span class="p">(</span><span class="n">freqs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">modx</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+                
+                <span class="c1"># Interpolate the model axis to the spectrum grid</span>
+                <span class="n">imody</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">fm</span><span class="p">[</span><span class="n">p</span><span class="p">],</span> <span class="n">mody</span><span class="p">[</span><span class="n">p</span><span class="p">],</span>
+                                             <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+                                             <span class="n">bounds_error</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                             <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">y_mod</span> <span class="o">+=</span> <span class="n">imody</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        
+        <span class="c1"># Remove the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_minus_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_mod</span>
+        
+        <span class="c1"># Store the model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">y_mod</span></div>
+    
+<div class="viewcode-block" id="Spectrum.save"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the spectrum.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : :obj:`str`</span>
+<span class="sd">                  Output filename.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Spectrum.split_lines"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Spectrum.split_lines">[docs]</a>    <span class="k">def</span> <span class="nf">split_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reffreqs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Splits the spectrum to separate lines.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        lines : array_like</span>
+<span class="sd">               List of lines to split.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">nlines</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reffreqs</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">nlines</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span>
+        
+        <span class="n">lbw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span><span class="o">/</span><span class="n">nlines</span>
+        
+        <span class="n">splits</span> <span class="o">=</span> <span class="p">[[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nlines</span><span class="p">)]</span> <span class="c1">#np.zeros((nlines, 3, lbw))</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">reffreqs</span><span class="p">):</span>
+            
+            <span class="n">ledge</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span> <span class="o">-</span> <span class="n">lbw</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+            <span class="n">redge</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">())</span> <span class="o">+</span> <span class="n">lbw</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">ledge</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">nlines</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">ledge</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">redge</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span> <span class="ow">or</span> <span class="n">nlines</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">redge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nx</span>
+            
+            <span class="n">splits</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">compressed</span><span class="p">()[</span><span class="n">ledge</span><span class="p">:</span><span class="n">redge</span><span class="p">])</span>
+            <span class="n">splits</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">compressed</span><span class="p">()[</span><span class="n">ledge</span><span class="p">:</span><span class="n">redge</span><span class="p">])</span>
+            <span class="n">splits</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">compressed</span><span class="p">()[</span><span class="n">ledge</span><span class="p">:</span><span class="n">redge</span><span class="p">])</span>
+            
+        <span class="k">return</span> <span class="n">splits</span></div></div>
+            
+        
+<div class="viewcode-block" id="Stack"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Stack">[docs]</a><span class="k">class</span> <span class="nc">Stack</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    </span>
+<span class="sd">    Construction::</span>
+<span class="sd">    </span>
+<span class="sd">    stack = Stack(line, transitions, specs)</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    line : :obj:`str`</span>
+<span class="sd">          Line contained in the spectrum.</span>
+<span class="sd">    transitions : array_like</span>
+<span class="sd">          Transitions inside the Stack.</span>
+<span class="sd">    specs : array of :obj:`Spectrum`</span>
+<span class="sd">          Array with Spectrum objects to be stacked.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">transitions</span><span class="p">,</span> <span class="n">specs</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">dv</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transitions</span> <span class="o">=</span> <span class="n">transitions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specs</span> <span class="o">=</span> <span class="n">specs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vmin</span> <span class="o">=</span> <span class="n">vmin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span> <span class="o">=</span> <span class="n">vmax</span>
+        <span class="k">if</span> <span class="n">dv</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dv</span> <span class="o">=</span> <span class="n">dv</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">compute_dv</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dv</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)))</span>
+        
+<div class="viewcode-block" id="Stack.compute_dv"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Stack.compute_dv">[docs]</a>    <span class="k">def</span> <span class="nf">compute_dv</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determines the maximum velocity separation</span>
+<span class="sd">        between the channels inside Stack.specs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dv</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">dx</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dv</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">dv</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">dx</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">dv</span> <span class="o">=</span> <span class="n">dv</span></div>
+    
+<div class="viewcode-block" id="Stack.save"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Stack.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the spectrum.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : :obj:`str`</span>
+<span class="sd">                  Output filename.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">c_</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">data</span><span class="p">])</span></div>
+    
+<div class="viewcode-block" id="Stack.stack_interpol"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.Stack.stack_interpol">[docs]</a>    <span class="k">def</span> <span class="nf">stack_interpol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rms</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">ch0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">chf</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stack by interpolating to a common grid.</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rms : :obj:`bool`</span>
+<span class="sd">             Compute a the rms for each substack?</span>
+<span class="sd">        ch0 : :obj:`int`</span>
+<span class="sd">             First channel used to compute the rms.</span>
+<span class="sd">        chf : :obj:`int`</span>
+<span class="sd">             Last channel used to compute the rms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">))</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">spec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specs</span><span class="p">):</span>
+        
+            <span class="n">valid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">flatnotmasked_contiguous</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">y_aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">z_aux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">valid</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">rng</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">valid</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">rng</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">interp_y</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">rng</span><span class="p">],</span> <span class="n">spec</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">rng</span><span class="p">],</span>
+                                                        <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+                                                        <span class="n">bounds_error</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                        <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+                        <span class="n">y_aux</span> <span class="o">+=</span> <span class="n">interp_y</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                        <span class="n">interp_z</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">rng</span><span class="p">],</span> <span class="n">spec</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">rng</span><span class="p">],</span>
+                                                        <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+                                                        <span class="n">bounds_error</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                        <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+                        <span class="n">z_aux</span> <span class="o">+=</span> <span class="n">interp_z</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">rng</span><span class="p">]):</span>
+                        <span class="n">indx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">best_match_indx</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">rng</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+                        <span class="n">y_aux</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">spec</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">rng</span><span class="p">]</span>
+                        <span class="n">z_aux</span><span class="p">[</span><span class="n">indx</span><span class="p">]</span> <span class="o">+=</span> <span class="n">spec</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">rng</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">interp_y</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="n">spec</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span>
+                                                <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+                                                <span class="n">bounds_error</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">y_aux</span> <span class="o">+=</span> <span class="n">interp_y</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                <span class="n">interp_z</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp1d</span><span class="p">(</span><span class="n">spec</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span> <span class="n">spec</span><span class="o">.</span><span class="n">z</span><span class="p">[</span><span class="n">valid</span><span class="p">],</span>
+                                                <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+                                                <span class="n">bounds_error</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                <span class="n">fill_value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+                <span class="n">z_aux</span> <span class="o">+=</span> <span class="n">interp_z</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+                
+            <span class="c1"># Check which channels have data</span>
+            <span class="n">ychan</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">if</span> <span class="n">ch</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">y_aux</span><span class="p">]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">ychan</span><span class="p">,</span> <span class="n">z_aux</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">+=</span> <span class="n">y_aux</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">ychan</span><span class="p">,</span> <span class="n">z_aux</span><span class="p">)</span>
+                        
+            <span class="c1"># Compute the rms up to this point</span>
+            <span class="n">rms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">)))[</span><span class="n">ch0</span><span class="p">:</span><span class="n">chf</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+            <span class="c1"># Stacking, even a single line, reduces the rms. Is this due to the interpolation?</span>
+            
+        <span class="c1"># Divide by the total weight to preserve optical depth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ma</span><span class="o">.</span><span class="n">masked_invalid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="p">))</span>
+        
+        <span class="c1"># Apply a common mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mask</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span><span class="o">.</span><span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask</span>
+        
+        <span class="k">return</span> <span class="n">rms</span></div></div>
+
+<div class="viewcode-block" id="distribute_lines"><a class="viewcode-back" href="../../spec.html#crrlpy.spec.distribute_lines">[docs]</a><span class="k">def</span> <span class="nf">distribute_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">ngroups</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Groups a list of lines into ngroups.</span>
+<span class="sd">    This is used to make stacks.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    lines : array_like</span>
+<span class="sd">           List of lines to group.</span>
+<span class="sd">    ngroups : :ob:`int`</span>
+<span class="sd">           Number of groups to make. If the number of lines is not divisible</span>
+<span class="sd">           by the number of groups, then more lines are added to the first groups.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">glens</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span><span class="o">/</span><span class="nb">int</span><span class="p">(</span><span class="n">ngroups</span><span class="p">)]</span><span class="o">*</span><span class="n">ngroups</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">glens</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+        <span class="n">glens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">lgs</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngroups</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">lgs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lgs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">==</span> <span class="n">glens</span><span class="p">[</span><span class="n">k</span><span class="p">]:</span>
+            <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">return</span> <span class="n">lgs</span></div>
+
+        
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">doctest</span>
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">CRRLpy 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+    </div>
+  </body>
+</html>
