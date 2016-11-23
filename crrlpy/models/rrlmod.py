@@ -24,7 +24,8 @@ import astropy.units as u
 from crrlpy import frec_calc as fc
 from astropy.constants import h, k_B, c, m_e, Ryd, e
 from astropy.analytic_functions import blackbody_nu
-from crrlpy.crrls import natural_sort, best_match_indx, f2n, n2f
+from crrlpy.crrls import natural_sort, f2n, n2f
+from crrlpy.utils import best_match_indx
 
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -142,7 +143,13 @@ def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     
     return (kc + kl*bni)/(kc + kl*bnf*bnfni)
 
-def gamma_e_CII(Te):
+def G_CII(Tbg):
+    """
+    """
+    
+    return 1./(np.exp(91.25*u.K/Tbg) - 1.)
+
+def gamma_e_CII(Te, method='FS'):
     """
     Computes the de-excitation rate of the CII atom due to collisions with electrons.
     
@@ -152,9 +159,12 @@ def gamma_e_CII(Te):
     :rtype: float
     """
     
-    return 4.51e-6*np.power(Te, -0.5)
+    rates = {'FS': lambda Te: 4.51e-6*np.power(Te, -0.5),
+             'PG': lambda Te: 8.7e-8*np.power(Te/2000., -0.37)}
+    
+    return rates[method](Te) #4.51e-6*np.power(Te, -0.5)
 
-def gamma_h_CII(Te):
+def gamma_h_CII(Te, method='FS'):
     """
     Computes the de-excitation rate of the CII atom due to collisions with hydrogen atoms.
     
@@ -164,7 +174,17 @@ def gamma_h_CII(Te):
     :rtype: float
     """
     
-    return 5.8e-10*np.power(Te, 0.02)
+    rates = {'FS': lambda Te: 5.8e-10*np.power(Te, 0.02),
+             'PG': lambda Te: 7.6e-10*np.power(Te/100., 0.14),
+             'PGe': lambda Te: 4e-11*(16. + 0.35*np.power(Te, 0.5) + 48./Te)}
+    
+    return rates[method](Te) #5.8e-10*np.power(Te, 0.02)
+
+def gamma_h2_CII(Te):
+    """
+    """
+    
+    return 3.8e-10*np.power(Te/100., 0.14)
 
 def I_Bnu(specie, Z, n, Inu_funct, *args):
     """
@@ -424,6 +444,12 @@ def j_line_lte(n, ne, nion, Te, Z, trans):
     lc = line_center(nu)
     
     return cte*Aninf[:,2]*Nni*lc
+
+def K_CII(Tkin):
+    """
+    """
+    
+    return np.exp(91.25*u.K/Tkin)
 
 def kappa_cont(freq, Te, ne, nion, Z):
     """
@@ -1201,6 +1227,17 @@ def R_CII(ne, nh, gamma_e, gamma_h):
     
     return A/(neg + nhg)
 
+def R_CII_FS(ne, nh, gamma_e, gamma_h):
+    """
+    """
+    
+    A = 2.4e-6*u.s**-1
+    
+    neg = ne*gamma_e
+    nhg = nh*gamma_h
+    
+    return (neg + nhg)/(A + neg + nhg)
+
 def R_CII_mod(ne, nh, gamma_e, gamma_h):
     """
     Ratio between the fine structure level population of CII, and
@@ -1257,14 +1294,24 @@ def T_ex_CII(Te, R):
     
     return 91.21*Te/(91.21 + Te*np.log(1. + R))
 
-def tau_CII(Te, R, nc, L, dnu, alpha, beta):
+def Ta_CII(X, G, K):
+    """
+    """
+    
+    return 91.25*X*(1. - G*(K - 1.))/(X*(K - 1.) + K)
+
+def Ta_CII_thick_subthermal(X, G, K):
+    """
+    """
+    
+    return 91.25*X/K*(1. - G*(K - 1.))
+
+def tau_CII(Te, nc, L, dnu, alpha, beta):
     """
     Computes the optical depth of the far infrared line of CII. Crawford et al. (1985).
     
     :param Te: Electron temperature.
     :type Te: float
-    :param R: Ratio of collisional excitation to spontaneous emission.
-    :type R: float
     :param nc: Ionized carbon number density.
     :type nc: float
     :param L: Path lenght.
@@ -1280,6 +1327,17 @@ def tau_CII(Te, R, nc, L, dnu, alpha, beta):
     cte = np.power(c, 2.)/(8.*np.pi*np.power(nu, 2.))*A*2./1.06
     
     return cte*alpha*beta*nc*L/dnu
+
+def tau_CII_PG(ncii, dv, Te):
+    """
+    Optical depth of the far infrared line of [CII] following Goldsmith et al. (2012).
+    
+    """
+    
+    gu = 4.
+    gl = 2.
+    
+    return 7.49e-18*ncii.cgs.value/dv.to('km/s').value*(1. - np.exp(-91.25*u.K/Te))/(1. + gu/gl*np.exp(-91.25*u.K/Te))
 
 def val2str(val):
     """
@@ -1331,6 +1389,14 @@ def chi(n, Te, Z):
     """
     
     return np.power(Z, 2.)*h*c*Ryd/(k_B*np.power(n, 2)*Te)
+
+def X_CII(Cul, beta):
+    """
+    """
+    
+    Aul = 2.3e-6/u.s
+    
+    return Cul/(beta*Aul)
 
 if __name__ == "__main__":
     import doctest

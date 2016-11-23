@@ -10,6 +10,7 @@ import argparse
 import logging
 from astropy.io import fits
 from crrlpy import crrls
+from crrlpy import utils
 from scipy.interpolate import RegularGridInterpolator
 from datetime import datetime
 startTime = datetime.now()
@@ -30,11 +31,11 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
             head = hdu[0].header
             x = crrls.get_axis(head, v_axis)
             if i == 0:
-                dv = crrls.get_min_sep(x)
+                dv = utils.get_min_sep(x)
                 vmax_min = max(x)
                 vmin_max = min(x)
             else:
-                dv = max(dv, crrls.get_min_sep(x))
+                dv = max(dv, utils.get_min_sep(x))
                 vmax_min = min(vmax_min, max(x))
                 vmin_max = max(vmin_max, min(x))
         logger.info('Will use a velocity width of {0}'.format(dv))

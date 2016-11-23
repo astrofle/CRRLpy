@@ -433,7 +433,7 @@ class Stack(object):
             self.compute_dv()
         self.x = np.ma.masked_invalid(np.arange(self.vmin, self.vmax, self.dv))
         self.y = np.ma.masked_invalid(np.zeros(len(self.x)))
-        self.z = np.ma.masked_invalid(np.ones(len(self.x)))
+        self.z = np.ma.masked_invalid(np.zeros(len(self.x)))
         self.model = np.ma.masked_invalid(np.ones(len(self.x)))
         
     def compute_dv(self):
@@ -462,12 +462,23 @@ class Stack(object):
         
         np.savetxt(filename, np.c_[self.x.data, self.y.data, self.z.data])
     
-    def stack_interpol(self):
+    def stack_interpol(self, rms=True, ch0=0, chf=-1):
         """
         Stack by interpolating to a common grid.
+        
+        Parameters
+        ----------
+        rms : :obj:`bool`
+             Compute a the rms for each substack?
+        ch0 : :obj:`int`
+             First channel used to compute the rms.
+        chf : :obj:`int`
+             Last channel used to compute the rms.
         """
         
-        for spec in self.specs:
+        rms = np.zeros(len(self.specs))
+        
+        for i,spec in enumerate(self.specs):
         
             valid = np.ma.flatnotmasked_contiguous(spec.x)
             y_aux = np.zeros(len(self.x))
@@ -506,7 +517,11 @@ class Stack(object):
             
             self.z += np.multiply(ychan, z_aux)
             self.y += y_aux*np.multiply(ychan, z_aux)
-                
+                        
+            # Compute the rms up to this point
+            rms[i] = (np.ma.masked_invalid(np.divide(self.y, self.z)))[ch0:chf].std()
+            # Stacking, even a single line, reduces the rms. Is this due to the interpolation?
+            
         # Divide by the total weight to preserve optical depth
         self.y = np.ma.masked_invalid(np.divide(self.y, self.z))
         
@@ -515,6 +530,8 @@ class Stack(object):
         self.x.mask = self.mask
         self.y.mask = self.mask
         self.z.mask = self.mask
+        
+        return rms
 
 def distribute_lines(lines, ngroups):
     """

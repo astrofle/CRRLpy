@@ -90,6 +90,12 @@ def get_min_sep(array):
 
     return min(abs(array[0:-1:2] - array[1::2]))
 
+def myround(x, base=5):
+    """
+    """
+    
+    return int(base * round(float(x)/base))
+
 def sci_notation(number, sig_fig=2):
     """
     Converts a number to scientific notation keeping sig_fig signitifcant figures.
@@ -125,16 +131,16 @@ def str2bool(str):
     return str.lower() in ("yes", "y", "true", "t", "1")
 
 rotated_labels = []
-def text_slope_match_line(text, x, y, line):
+def text_slope_match_line(text, x, y, line, dindx=1):
     global rotated_labels
 
     # find the slope
     xdata, ydata = line.get_data()
 
-    x1 = xdata[0]
-    x2 = xdata[-1]
-    y1 = ydata[0]
-    y2 = ydata[-1]
+    x1 = xdata[best_match_indx(x, xdata)]
+    x2 = xdata[best_match_indx(x, xdata)+dindx]
+    y1 = ydata[best_match_indx(y, ydata)]
+    y2 = ydata[best_match_indx(y, ydata)+dindx]
 
     rotated_labels.append({"text":text, "line":line, "p1":np.array((x1, y1)), "p2":np.array((x2, y2))})
 

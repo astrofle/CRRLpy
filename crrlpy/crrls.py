@@ -66,7 +66,7 @@ def average(data, axis, n):
                 avg_tmp += swpdata[i:-si:n]
         avg_tmp = avg_tmp/n
         
-        return np.swapaxes(avg_tmp, axis, 0)
+    return np.swapaxes(avg_tmp, axis, 0)
 
 def best_match_indx_tol(value, array, tol):
     """
@@ -96,30 +96,30 @@ def best_match_indx_tol(value, array, tol):
         #return upp[0]
     return out
     
-def best_match_indx(value, array):
-    """
-    Searchs for the index of the closest entry to value inside an array.
+#def best_match_indx(value, array):
+    #"""
+    #Searchs for the index of the closest entry to value inside an array.
     
-    :param value: Value to find inside the array.
-    :type value: float
-    :param array: List to search for the given value.
-    :type array: list or numpy.array
-    :return: Best match index for the value inside array.
-    :rtype: float
+    #:param value: Value to find inside the array.
+    #:type value: float
+    #:param array: List to search for the given value.
+    #:type array: list or numpy.array
+    #:return: Best match index for the value inside array.
+    #:rtype: float
     
-    :Example:
+    #:Example:
     
-    >>> a = [1,2,3,4]
-    >>> best_match_indx(3, a)
-    2
+    #>>> a = [1,2,3,4]
+    #>>> best_match_indx(3, a)
+    #2
     
-    """
+    #"""
     
-    array = np.array(array)
-    subarr = abs(array - value)
-    subarrmin = subarr.min()
+    #array = np.array(array)
+    #subarr = abs(array - value)
+    #subarrmin = subarr.min()
         
-    return np.where(subarr == subarrmin)[0][0]
+    #return np.where(subarr == subarrmin)[0][0]
 
 def best_match_value(value, array):
     """
@@ -207,9 +207,9 @@ def df2dv(f0, df):
     """
     Convert a frequency delta to a velocity delta given a central frequency.
     
-    :param f0: Rest frequency. (Hz)
+    :param f0: Rest frequency.
     :type f0: float
-    :param df: Frequency delta. (Hz)
+    :param df: Frequency delta.
     :type df: float
     :returns: The equivalent velocity delta for the given frequency delta.
     :rtype: float in :math:`\mbox{m s}^{-1}`
@@ -228,11 +228,11 @@ def dv2df(f0, dv):
     """
     Convert a velocity delta to a frequency delta given a central frequency.
     
-    :param f0: Rest frequency in Hz.
+    :param f0: Rest frequency.
     :type f0: float
     :param dv: Velocity delta in m/s.
     :type dv: float
-    :returns: For the given velocity delta, the equivalent frequency delta in Hz.
+    :returns: For the given velocity delta the equivalent frequency delta.
     :rtype: float
     """
     
@@ -347,7 +347,7 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     
     Parameters
     ----------
-    :param freq: Frequency axis in which to search for lines. It should not contain \
+    :param freq: Frequency axis in which to search for lines (MHz). It should not contain \
     NaN or inf values.
     :type freq: array
     :param line: Line type to search for.
@@ -396,10 +396,9 @@ def find_lines_sb(freq, line, z=0, verbose=False):
 
     return refqns, reffreqs
 
-def fit_continuum(x, y, degree, p0):
+def fit_continuum(x, y, degree, p0, verbose=False):
     """
-    Divide tb by given a model and starting parameters p0.
-    Returns: tb/model - 1
+    Fits a polynomial to the continuum.
     
     Parameters
     ----------
@@ -411,8 +410,10 @@ def fit_continuum(x, y, degree, p0):
     mod = PolynomialModel(degree)
     params = mod.make_params()
     if len(p0) != len(params):
-        print "Insuficient starting parameter values."
-        return 0
+        if verbose:
+            print "Insuficient starting parameter values."
+            print "Will try to guess starting values."
+        params = mod.guess(y, x=x)
     else:
         for param in params:
             params[param].set(value=p0[param])
@@ -543,24 +544,24 @@ def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     
     return np.sqrt(err1 + err2)
 
-def gauss_area2peak(amplitude, sigma):
+def gauss_area2peak(area, sigma):
     """
     Returns the maximum value of a Gaussian function given its
     amplitude and standard deviation "math:`\\sigma`.
     
     """
     
-    return amplitude/sigma/np.sqrt(2.*np.pi)
+    return area/sigma/np.sqrt(2.*np.pi)
 
-def gauss_area2peak_err(peak, amplitude, damplitude, sigma, dsigma):
+def gauss_area2peak_err(amplitude, area, darea, sigma, dsigma):
     """
     Returns the maximum value of a Gaussian function given its
-    amplitude and standard deviation "math:`\\sigma`.
+    amplitude, area and standard deviation "math:`\\sigma`.
     
     """
     
-    err1 = peak/amplitude*damplitude
-    err2 = peak/sigma*dsigma
+    err1 = amplitude/area*darea
+    err2 = amplitude/sigma*dsigma
     
     return np.sqrt(np.power(err1, 2.) + np.power(err2, 2.))
 
@@ -574,9 +575,9 @@ def gaussian(x, sigma, center, amplitude):
     :type sigma: float
     :param center: Center of the Gaussian.
     :type center: float
-    :param amplitude: Amplitude of the Gaussian.
+    :param amplitude: Peak value of the Gaussian.
     :type amplitude: float
-    :returns: Gaussian function of the given amplitude and standard deviation evalueated at x.
+    :returns: Gaussian function of the given amplitude and standard deviation evaluated at x.
     :rtype: array
     """
     
@@ -938,6 +939,17 @@ def mask_outliers(data, m=2):
     
     return abs(data - np.median(data)) > m*np.std(data)
 
+def n2f(n, line, n_min=1, n_max=1500, unitless=True):
+    """
+    Converts a given principal quantum number n to the 
+    frequency of a given line.
+    """
+    
+    line, nn, freq = make_line_list(line, n_min, n_max, unitless)
+    nii = np.in1d(nn, n)
+    
+    return freq[nii]
+
 def natural_sort(list):
     """ 
     Sort the given list in the way that humans expect. \
@@ -955,17 +967,13 @@ def natural_sort(list):
     """
     
     list.sort(key=alphanum_key)
-
-def n2f(n, line, n_min=1, n_max=1500, unitless=True):
+    
+def ngaussian(x, sigma, center):
     """
-    Converts a given principal quantum number n to the 
-    frequency of a given line.
+    Normalized Gaussian distribution.
     """
     
-    line, nn, freq = make_line_list(line, n_min, n_max, unitless)
-    nii = np.in1d(nn, n)
-    
-    return freq[nii]
+    return 1./(np.sqrt(2.*np.pi)*sigma)*np.exp(-0.5*np.power((x - center)/sigma, 2.))
 
 def plot_spec_vel(out, x, y, fit, A, Aerr, x0, x0err, sx, sxerr):
     f = plt.figure(frameon=False)
@@ -1186,7 +1194,7 @@ def pressure_broad_coefs(Te):
           800, 900, 1000, 2000, 3000, 4000, 5000,
           6000, 7000, 8000, 9000, 10000, 20000, 30000]
     
-    te_indx = best_match_indx(Te, te)
+    te_indx = utils.best_match_indx(Te, te)
     
     a = [-10.974098,           
          -10.669695,
@@ -1252,12 +1260,12 @@ def pressure_broad_coefs(Te):
     
     a_func = interpolate.interp1d(te, a,
                                   kind='linear',
-                                  bounds_error=False,
+                                  bounds_error=True,
                                   fill_value=0.0)
     
     g_func = interpolate.interp1d(te, gammac,
                                   kind='linear',
-                                  bounds_error=False,
+                                  bounds_error=True,
                                   fill_value=0.0)
     
     return [a_func(Te), g_func(Te)]

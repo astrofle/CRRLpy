@@ -16,6 +16,7 @@ from copy import deepcopy
 import numpy as np
 import scipy.interpolate as si
 import crrlpy.crrls as crrls
+import crrlpy.utils as utils
 import crrlpy.imtools as ci
 import astropy.io.fits as fits
 from astropy.convolution import convolve, Gaussian2DKernel
@@ -66,6 +67,8 @@ def interpolate_bpsol(x, bp, head):
     ra, de, ve = ci.get_fits3axes(head)
     rs, ds, vs = ci.check_ascending(ra, de, x, True)
     
+    logger.debug('(rs,ds,vs)=({0},{1},{2})'.format(rs, ds, vs))
+    
     ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
                                   bp[::vs,::ds,::rs], 
                                   bounds_error=False, fill_value=10.)
@@ -93,13 +96,13 @@ def mask_cube(vel, data, vel_rngs):
 
     for i,velrng in enumerate(vel_rngs):
 
-        vel_indx[i][0] = crrls.best_match_indx(velrng[0], vel)
-        vel_indx[i][1] = crrls.best_match_indx(velrng[1], vel)
+        vel_indx[i][0] = utils.best_match_indx(velrng[0], vel)
+        vel_indx[i][1] = utils.best_match_indx(velrng[1], vel)
         
         nvel.extend(vel[vel_indx[i][0]:vel_indx[i][1]+1])
         
-        nvel_indx[i][0] = crrls.best_match_indx(velrng[0], nvel)
-        nvel_indx[i][1] = crrls.best_match_indx(velrng[1], nvel)
+        nvel_indx[i][0] = utils.best_match_indx(velrng[0], nvel)
+        nvel_indx[i][1] = utils.best_match_indx(velrng[1], nvel)
         
         chns[i] = vel_indx[i][1] - vel_indx[i][0] + 1
         nchns[i] = nvel_indx[i][1] - nvel_indx[i][0] + 1
@@ -292,9 +295,9 @@ if __name__ == '__main__':
     parser.add_argument('--std', type=int, default=11,
                         help="Standard deviation of the Gaussian kernel (float).\n" \
                              "Default: 11")
-    parser.add_argument('--oversample', type=int, default=1,
+    parser.add_argument('-o', '--oversample', type=int, default=1,
                         help="Derive bandpass solutions (float).\n" \
-                             "Default: 11")
+                             "Default: 1")
     parser.add_argument('-a', '--average', type=int, default=1,
                         help="Average the velocity axis by this amount (int).\n" \
                              "Default: 1")
