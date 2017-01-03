@@ -15,7 +15,7 @@ from scipy.interpolate import RegularGridInterpolator
 from datetime import datetime
 startTime = datetime.now()
 
-def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis=3, clobber=False, algo='channel'):
+def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clobber=False, algo='channel'):
     """
     """
     
@@ -38,6 +38,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
                 dv = max(dv, utils.get_min_sep(x))
                 vmax_min = min(vmax_min, max(x))
                 vmin_max = max(vmin_max, min(x))
+            logger.debug('Cube velocity limits: {0} {1} {2}'.format(min(x), max(x), utils.get_min_sep(x)))
         logger.info('Will use a velocity width of {0}'.format(dv))
         
         # Check velocity ranges to avoid latter crashes.
@@ -50,7 +51,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
         if vmin_max > vmin:
             logger.info('Requested minimum velocity is smaller '\
                         'than one of the cubes velocity axis.')
-            logger.info('v_min={0}, v_min_min={1}'.format(vmin, vmin_min))
+            logger.info('v_min={0}, v_min_max={1}'.format(vmin, vmin_max))
             logger.info('Will now exit')
             sys.exit(1)
 
@@ -63,6 +64,11 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
     
     nvaxis = np.arange(vmin, vmax, dv)
     stack = np.zeros((len(nvaxis),) + shape[s+1:])
+    if weight_list:
+        weight = np.zeros((len(nvaxis),) + shape[s+1:])
+    else:
+        weight = np.ones((len(nvaxis),) + shape[s+1:])*len(cubel)
+        
     logger.info('Output stack will have dimensions: {0}'.format(stack.shape))
     
     for i,cube in enumerate(cubel):
@@ -132,7 +138,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight, weight_list=None, v_axis
             sys.exit(1)
 
     # Divide by the number of input cubes to get the mean
-    stack = stack/len(cubel)
+    stack = stack/weight
     
     # Write to a fits file
     hdulist = fits.PrimaryHDU(stack)
@@ -155,22 +161,8 @@ if __name__ == '__main__':
                              "Wildcards and [] accepted.")
     parser.add_argument('stack', type=str,
                         help="Output stack filename (string).")
-    parser.add_argument('--weight', type=str, default=None,
-                        help="Weight type used to stack.\n" \
-                             "Can be None, sigma, sigma2 or list.\n" \
-                             "None uses no weight.\n" \
-                             "sigma uses the inverse of the spectra rms.\n" \
-                             "sigma2 uses the square of the inverse of \n" \
-                             "the spectra rms.\n" \
-                             "list uses a user provided list.\n" \
-                             "The list should have 2 columns, the first with\n" \
-                             "the spectrum filename and the second with the weight.\n" \
-                             "E.g., lba_hgh_n455 0.2\n" \
-                             "      lba_hgh_n456 0.8\n" \
-                             "      lba_hgh_n457 0.5\n" \
-                             "      ...          ...")
     parser.add_argument('--weight_list', type=str, default=None,
-                        help="File with list of spectrum and their weights.\n" \
+                        help="File with list of cubes and their weights.\n" \
                              "Default: None")
     parser.add_argument('--v_max', type=float, default=None, required=True,
                         help="Maximum velocity to include in stack.\n" \
@@ -209,6 +201,6 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
 
     stack_cubes(args.cubes, args.stack, args.v_max, args.v_min, args.dv, 
-                args.weight, args.weight_list, args.v_axis, args.clobber, args.algo)
+                args.weight_list, args.v_axis, args.clobber, args.algo)
     
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))

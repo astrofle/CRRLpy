@@ -527,20 +527,28 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
         logger.debug('Conversion to flux: {0}'.format(rgn['barea']))
     
     # Get the frequency axis
-    freq = get_axis(head, faxis)
-    freq = np.ma.masked_invalid(freq)
-    logger.debug('Invalid values will be replaced with: {0}'.format(freq.fill_value))
+    if faxis <= 4:
+        freq = get_axis(head, faxis)
+        freq = np.ma.masked_invalid(freq)
+        logger.debug('Invalid values will be replaced with: {0}'.format(freq.fill_value))
+    else:
+        fcol = 'FREQ'
+        freq = head[fcol]
+        logger.debug('No frequency axis. Will use column {0} of header.'.format(fcol))
     #freq.fill_value = np.nan
     
     logger.info("Will now extract the spectra,",)
     logger.info("using mode: {0}.".format(mode))
     
     spec = extract_spec(data, rgn, naxis, mode)
-    spec.fill_value = np.nan
-    logger.info("Extracted spec has shape: {0}.".format(spec.shape))
-    
-    #spec.set_fill_value(blank)
-    #print "nspec {0}".format(len(spec))
+    try:
+        spec.fill_value = np.nan
+        logger.info("Extracted spec has shape: {0}.".format(spec.shape))
+        fspec = spec.filled()
+    except AttributeError:
+        logger.info("Extracted spec has shape: {0}.".format(1))
+        fspec = spec
+        
     try:
         funit = head['CUNIT3']
         ftype = head['CTYPE3']
@@ -558,10 +566,16 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
     logger.debug('Brightness unit: {0}'.format(bunit))
     logger.debug('Frequency unit: {0}'.format(funit))
     logger.debug('ftype: {0}'.format(ftype))
-    logger.debug('len freq: {0}'.format(len(freq)))
-    logger.debug('len spec: {0}'.format(len(spec.filled())))
+    try:
+        logger.debug('len freq: {0}'.format(len(freq)))
+    except TypeError:
+        logger.debug('len freq: {0}'.format(1))
+    try:    
+        logger.debug('len spec: {0}'.format(len(fspec)))
+    except TypeError:
+        logger.debug('len spec: {0}'.format(1))
     
-    tbtable = Table(np.array([freq, spec.filled()]).T, 
+    tbtable = Table(np.array([freq, fspec]).T, 
                     names=['{0} {1}'.format(ftype, funit),
                            'Tb {0}'.format(bunit)],
                     dtype=[np.float64, np.float64])
@@ -570,10 +584,13 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
     
     fig = plt.figure(frameon=False)
     ax = fig.add_subplot(1, 1, 1)
-    try:
-        ax.imshow(data.sum(axis=0).sum(axis=0), origin='lower', interpolation='none')
-    except TypeError:
-        ax.imshow(data.sum(axis=0), interpolation='none', origin='lower')
+    if naxis == 2:
+        ax.imshow(data, interpolation='none', origin='lower')
+    else:
+        try:
+            ax.imshow(data.sum(axis=0).sum(axis=0), origin='lower', interpolation='none')
+        except TypeError:
+            ax.imshow(data.sum(axis=0), interpolation='none', origin='lower')
     show_rgn(ax, rgn)
     #ci.draw_beam(head, ax) # This requires a pywcsgrid2 object to work
     ax.autoscale(False)
