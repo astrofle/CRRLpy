@@ -8,6 +8,7 @@ import numpy as np
 from matplotlib import _cntr as cntr
 from astropy.coordinates import Angle
 from astropy import constants as c
+from astropy import wcs
 
 class Polygon:
     """
@@ -583,3 +584,20 @@ def remove_nans(contours, indx=0):
     contours[indx] = contours[indx][~mask]
     
     return contours
+
+def set_wcs(head):
+    """
+    Build a WCS object given the 
+    spatial header parameters.
+    """
+    
+    # Create a new WCS object. 
+    # The number of axes must be set from the start.
+    w = wcs.WCS(naxis=2)
+    
+    w.wcs.crpix = [head['CRPIX1'], head['CRPIX2']]
+    w.wcs.cdelt = [head['CDELT1'], head['CDELT2']]
+    w.wcs.crval = [head['CRVAL1'], head['CRVAL2']]
+    w.wcs.ctype = [head['CTYPE1'], head['CTYPE2']]
+    
+    return w

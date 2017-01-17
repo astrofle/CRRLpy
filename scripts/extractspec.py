@@ -27,7 +27,7 @@ from astropy.io import ascii
 from astropy import wcs
 from astropy.coordinates import SkyCoord
 
-import crrlpy.imtools as ci 
+import crrlpy.imtools as ci
 import astropy.units as u
 import matplotlib.patches as mpatches
 import numpy as np
