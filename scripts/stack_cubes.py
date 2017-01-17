@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-TODO: Implement parallelization in velocity.
+TODO:   Check behavior when cubes have missing channels.
+        Implement parallelization in velocity.
 """
 
 import numpy as np
@@ -64,10 +65,16 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
     
     nvaxis = np.arange(vmin, vmax, dv)
     stack = np.zeros((len(nvaxis),) + shape[s+1:])
+    
+    # Check if there is a weight list
     if weight_list:
-        weight = np.zeros((len(nvaxis),) + shape[s+1:])
-    else:
-        weight = np.ones((len(nvaxis),) + shape[s+1:])*len(cubel)
+        try:
+            wl = np.loadtxt(weight_list, dtype=[('fits', np.str_, 256), ('w', np.float64)])
+        except ValueError:
+            wl = np.loadtxt(weight_list, dtype=[('fits', np.str_, 256), ('w', np.str_, 256)])
+    weight = np.zeros((len(nvaxis),) + shape[s+1:])
+    #else:
+    #    weight = np.ones((len(nvaxis),) + shape[s+1:])*len(cubel)
         
     logger.info('Output stack will have dimensions: {0}'.format(stack.shape))
     
@@ -79,6 +86,18 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
         hdu = fits.open(cube)
         head = hdu[0].header
         data = np.ma.masked_invalid(hdu[0].data)
+
+        # Check the weight
+        if weight_list:
+            w = wl['w'][np.where(wl['fits'] == cube)]
+        else:
+            w = 1
+        logger.info('Will use a weight of {0}.'.format(w))
+        try:
+            aux_weight = np.ones(stack.shape)*w
+        except TypeError:
+            w = np.ma.masked_invalid(fits.open(w[0])[0].data)
+        #aux_weight = np.ones(shape[s+1:])*w
         
         if len(data.shape) > 3:
             logger.info('Will drop first axis.')
@@ -114,7 +133,8 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
                             for k in range(len(nvaxis)) \
                             for j in range(len(de)) \
                             for i in range(len(ra))])
-            stack += interp(pts).reshape(stack.shape)
+            aux_weight = np.ones(stack.shape)*w
+            stack += interp(pts).reshape(stack.shape)*aux_weight
 
         elif 'channel' in algo.lower():
             logger.info('Will reconstruct the cube one channel at a time')
@@ -123,8 +143,9 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
                                 for j in range(len(de)) \
                                 for i in range(len(ra[::vr]))])
                 newshape = (1,) + shape[s+1:]
+                aux_weight = np.ones(newshape)*w
                 try:
-                    stack[k] += interp(pts).reshape(newshape)[0]
+                    stack[k] += interp(pts).reshape(newshape)[0]*aux_weight[0]
                 except ValueError:
                     logger.info('Point outside range: ' \
                                 'vel={0}, ra={1}..{2}, dec={3}..{4}'.format(pts[0,0], 
@@ -136,6 +157,8 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
             logger.info('Cube reconstruction algorithm unrecognized.')
             logger.info('Will exit now.')
             sys.exit(1)
+        
+        weight += np.ones(stack.shape)*w
 
     # Divide by the number of input cubes to get the mean
     stack = stack/weight
@@ -150,6 +173,16 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
     hdulist.writeto(outfits, clobber=clobber)
+
+    stack_head = hdulist.header.copy()
+    hdulist = fits.PrimaryHDU(weight)
+    hdulist.header = stack_head
+    hdulist.header['CTYPE3'] = 'VELO'
+    hdulist.header['CRVAL3'] = nvaxis[0]
+    hdulist.header['CDELT3'] = dv
+    hdulist.header['CRPIX3'] = 1
+    hdulist.header['CUNIT3'] = 'm/s'
+    hdulist.writeto(outfits.split('.fits')[0]+'_weight.fits', clobber=clobber)
 
 if __name__ == '__main__':
     
