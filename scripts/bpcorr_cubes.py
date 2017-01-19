@@ -236,24 +236,24 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
         avg_x = x
         avg_data = data
     # Mask
-    if mode.lower() in ['mask', 'mask solve', 'mask solve apply', 'mask solve smooth apply']:
+    if mode.lower() in ['mask', 'mask,solve', 'mask,solve,apply', 'mask,solve,smooth,apply']:
         logger.info('Will mask the requested velocity ranges before solving.')
         mx, mdata = mask_cube(avg_x, avg_data, vrngs)
     else:
         mx = avg_x
         mdata = avg_data
     # Solve
-    if mode.lower() in ['solve', 'mask solve', 'mask solve apply', 'solve apply', 'solve smooth apply', 'mask solve smooth apply']:
+    if mode.lower() in ['solve', 'mask,solve', 'mask,solve,apply', 'solve,apply', 'solve,smooth,apply', 'mask,solve,smooth,apply']:
         bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample)
     if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower() and average <= 1:
         logger.info('Will write the bandpass cube with the solutions.')
         save(bp_cube, bandpass, head)
-    if 'mask solve' in mode.lower() or average > 1:
+    if 'mask,solve' in mode.lower() or average > 1:
         logger.info('Will write the bandpass cube with the solutions interpolated to the original axis.')
         bp_cube = interpolate_bpsol(mx, bp_cube, head)
         save(bp_cube, bandpass, head)
     # Smooth
-    if mode.lower() in ['mask solve smooth', 'solve smooth', 'solve smooth apply', 'mask solve smooth apply']:
+    if mode.lower() in ['mask,solve,smooth', 'solve,smooth', 'solve,smooth,apply', 'mask,solve,smooth,apply']:
         logger.info('Will smooth the bandpass solution with a ' \
                     'Gaussian kernel of standard deviation: {0}.'.format(std))
         bp_cube = smooth(bp_cube, std)
@@ -280,8 +280,8 @@ if __name__ == '__main__':
                         help="Bandpass to be applied (string).")
     parser.add_argument('-m', '--mode', type=str, default='apply',
                         help="Mode of operation (string).\n" \
-                             "['mask', 'solve', 'smooth', 'apply', 'solve apply',\n" \
-                              "'solve smooth apply', 'mask solve smooth apply']\n" \
+                             "['mask', 'solve', 'smooth', 'apply', 'solve,apply',\n" \
+                              "'solve,smooth,apply', 'mask,solve,smooth,apply']\n" \
                              "Default: 'apply'")
     parser.add_argument('--vrngs', type=str, default=None,
                         help="Velocity ranges to keep while solving for the bandpass (string).\n" \
