@@ -68,6 +68,10 @@ if __name__ == '__main__':
     parser.add_argument('--v_col', type=int, default=3,
                         help="Header axis where the velocity information will be stored.\n" \
                              "Default: 3")
+    parser.add_argument('--v_rng', type=str, default=None,
+                        help="Velocity range to keep in the cube.\n" \
+                             "E.g., -100e3,100e3 will keep from -100 to 100 km/s.\n" \
+                             "Default: keep all")
     args = parser.parse_args()
     
-    cube2vel(args.cube, args.transition, args.z, args.f_col, args.v_col)
+    cube2vel(args.cube, args.transition, args.z, args.f_col, args.v_col, args.v_rng)

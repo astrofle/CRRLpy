@@ -9,6 +9,7 @@ from matplotlib import _cntr as cntr
 from astropy.coordinates import Angle
 from astropy import constants as c
 from astropy import wcs
+from astropy.io import fits
 
 class Polygon:
     """
@@ -601,3 +602,14 @@ def set_wcs(head):
     w.wcs.ctype = [head['CTYPE1'], head['CTYPE2']]
     
     return w
+
+def write_fits(data, outfits, head, overwrite=False):
+    """
+    Write data to outfits as a fits file using header.
+    """
+    
+    data = np.ma.masked_invalid(data)
+    data.fill_value = np.nan
+    prihdu = fits.PrimaryHDU(data.filled())
+    prihdu.header = head.copy()
+    prihdu.writeto(outfits, clobber=overwrite)
