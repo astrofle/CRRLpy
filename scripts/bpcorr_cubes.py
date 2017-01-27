@@ -125,7 +125,7 @@ def save(data, output, head, clobber=False):
     # Copy the header from original cube
     hdulist.header = head.copy()
     # Write the fits file
-    hdulist.writeto(output, clobber=clobber)
+    hdulist.writeto(output, overwrite=clobber)
 
 def smooth(bp_cube, std):
     """

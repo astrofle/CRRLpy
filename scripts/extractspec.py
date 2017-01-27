@@ -168,7 +168,7 @@ def parse_region(region, w, frame='fk5'):
         
     return rgn
 
-def plotspec(faxis, taxis, ftype, funit, tunit, out):
+def plotspec(cube, faxis, taxis, ftype, funit, tunit, out):
     """
     """
     
@@ -176,8 +176,9 @@ def plotspec(faxis, taxis, ftype, funit, tunit, out):
     logger.info("Plotting extracted spectrum to {0}".format(out))
     
     fig = plt.figure(frameon=False)
+    fig.suptitle(cube)
     ax = fig.add_subplot(1, 1, 1)
-    
+     
     ax.plot(faxis, taxis, 'k-', drawstyle='steps')
     
     ax.set_xlabel('{0} axis ({1})'.format(ftype, funit))
@@ -599,7 +600,7 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
                 bbox_inches='tight', pad_inches=0.3)
     
     if plot_spec:
-        plotspec(freq, spec, ftype, funit, bunit, plot_spec)
+        plotspec(cube, freq, spec, ftype, funit, bunit, plot_spec)
 
 if __name__ == '__main__':
     

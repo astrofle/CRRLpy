@@ -9,7 +9,7 @@ if __name__ == '__main__':
     
     n_min = 5
     n_max = 1000
-    out = 'RRL_CIalpha_itau_LCASS'
+    out = 'RRL_CIalpha_itau_highdens'
     
     #Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', 
                    #'5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', 
@@ -22,13 +22,16 @@ if __name__ == '__main__':
                    #'3d2', '3.05d2', '3.1d2', '3.15d2', '3.2d2', '3.25d2', '3.3d2',
                    #'3.35d2', '3.4d2', '3.45d2', '3.5d2', '3.55d2', '3.6d2', '3.65d2',
                    #'3.7d2', '3.75d2', '3.8d2', '3.85d2', '3.9d2', '3.95d2', '4d2'])
-    Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', 
-                   '5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', 
-                   '9d1', '9.5d1', '1d2', '1.05d2', '1.1d2', '1.15d2', '1.2d2', 
-                   '1.25d2', '1.3d2', '1.35d2', '1.4d2', '1.45d2', '1.5d2'])
+    #Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', 
+    #               '5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', 
+    #               '9d1', '9.5d1', '1d2', '1.05d2', '1.1d2', '1.15d2', '1.2d2', 
+    #               '1.25d2', '1.3d2', '1.35d2', '1.4d2', '1.45d2', '1.5d2'])
+    Te = np.array(['8d1']) #np.array(['1d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', '5d1', '5.5d1', '6d1', '6.5d1', '7d1'])
     #ne = np.concatenate((np.arange(0.01, 0.11, 0.005), np.arange(0.011, 0.015, 0.001), np.arange(0.016, 0.02, 0.001)))
     ne = np.arange(0.01, 0.115, 0.005)
-    Tr = np.array([800, 1200, 1400, 1600, 2000])
+    ne = np.array([0.15, 0.2, 0.25, 0.3])
+    #Tr = np.array([800, 1200, 1400, 1600, 2000])
+    Tr = np.array([400, 600])
     
     models = rrlmod.models_dict(Te, ne, Tr)
     
@@ -36,7 +39,7 @@ if __name__ == '__main__':
     if not os.path.isfile('{0}.npy'.format(out)): 
     
         itau_mod = rrlmod.load_itau_dict(models, 'RRL_CIalpha', n_min=n_min, n_max=n_max, 
-                                         verbose=False, value='itau')
+                                         verbose=True, value='itau')
         np.save('{0}.npy'.format(out), itau_mod)
         pickle.dump(models, open('{0}.p'.format(out), "wb"))
     else:
