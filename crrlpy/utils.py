@@ -105,7 +105,7 @@ def sci_notation(number, sig_fig=2):
     a,b = ret_string.split("e")
     b = int(b) #removed leading "+" and strips leading zeros too.
     
-    return r"${0}\times10^{{{1}}}$".format(a, b)
+    return r"{0}\times10^{{{1}}}".format(a, b)
 
 def pow_notation(number, sig_fig=2):
     """
@@ -116,7 +116,7 @@ def pow_notation(number, sig_fig=2):
     a,b = ret_string.split("e")
     b = int(b) #removed leading "+" and strips leading zeros too.
     
-    return r"10$^{{{0}}}$".format(b)
+    return r"10^{{{0}}}".format(b)
 
 def str2bool(str):
     """

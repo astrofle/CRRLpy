@@ -10,6 +10,7 @@ from astropy.coordinates import Angle
 from astropy import constants as c
 from astropy import wcs
 from astropy.io import fits
+from matplotlib.patheffects import withStroke
 
 class Polygon:
     """
@@ -407,7 +408,13 @@ def K2Jy(head):
     """
     
     omega = beam_area(head)
-    k2jy = 2.*c.k_B.cgs.value/np.power(c.c.cgs.value/head['RESTFREQ'], 2.)*omega/1e-23
+    try:
+        freq = head['RESTFREQ']
+    except KeyError:
+        fcol = [s for s in head.keys() if "FREQ" in s]
+        freq = head[fcol[0]]
+    
+    k2jy = 2.*c.k_B.cgs.value/np.power(c.c.cgs.value/freq, 2.)*omega/1e-23
     
     return k2jy
 
@@ -585,6 +592,16 @@ def remove_nans(contours, indx=0):
     contours[indx] = contours[indx][~mask]
     
     return contours
+
+def set_tick_bkgd(ax, color, lw, alpha):
+    """
+    Applies a contour of color to the tick labels of ax.
+    """
+    
+    labs = ax.cax.get_yaxis().get_ticklabels()
+    for lab in labs:
+        lab.set_path_effects([withStroke(foreground=color, linewidth=lw)])
+        lab.set_alpha(alpha)
 
 def set_wcs(head):
     """

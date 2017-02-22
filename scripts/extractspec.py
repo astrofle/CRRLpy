@@ -326,7 +326,7 @@ def extract_spec(data, region, naxis, mode):
                                region['params']['r'],
                                (0, 360))
             mdata = data[:,mask]
-            
+            logger.debug("Masked data shape: {0}".format(mdata.shape))
             if 'sum' in mode.lower():
                 spec = mdata.sum(axis=1)#/len(np.where(mask.flatten() == 1)[0])
             elif 'avg' in mode.lower():
@@ -344,8 +344,9 @@ def extract_spec(data, region, naxis, mode):
                                (region['params']['cy'], region['params']['cx']),
                                region['params']['r'],
                                (0, 360))
-            mdata = data[mask]
-       
+            mdata = np.ma.masked_invalid(data[mask])
+            logger.debug("Masked data shape: {0}".format(mdata.shape))
+            logger.debug("Masked data sum: {0}".format(mdata))
             if 'sum' in mode.lower():
                 spec = mdata.sum()#/len(np.where(mask.flatten() == 1)[0])
             elif 'avg' in mode.lower():
@@ -528,13 +529,13 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
         logger.debug('Conversion to flux: {0}'.format(rgn['barea']))
     
     # Get the frequency axis
-    if faxis <= 4:
+    if faxis <= 4 and len(data.shape) > 2:
         freq = get_axis(head, faxis)
         freq = np.ma.masked_invalid(freq)
         logger.debug('Invalid values will be replaced with: {0}'.format(freq.fill_value))
     else:
-        fcol = 'FREQ'
-        freq = head[fcol]
+        fcol = [s for s in head.keys() if "FREQ" in s]
+        freq = head[fcol[0]]
         logger.debug('No frequency axis. Will use column {0} of header.'.format(fcol))
     #freq.fill_value = np.nan
     
@@ -581,7 +582,7 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
                            'Tb {0}'.format(bunit)],
                     dtype=[np.float64, np.float64])
 
-    ascii.write(tbtable, out, format='commented_header')
+    ascii.write(tbtable, out, format='commented_header', overwrite=True)
     
     fig = plt.figure(frameon=False)
     ax = fig.add_subplot(1, 1, 1)

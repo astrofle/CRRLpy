@@ -68,10 +68,15 @@ def interpolate_bpsol(x, bp, head):
     rs, ds, vs = ci.check_ascending(ra, de, x, True)
     
     logger.debug('(rs,ds,vs)=({0},{1},{2})'.format(rs, ds, vs))
-    
+    logger.debug('v0={0}, vf={1}'.format(x[::vs][0], x[::vs][-1]))
+    print x[::vs]
+    #vs = 1
     ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
                                   bp[::vs,::ds,::rs], 
                                   bounds_error=False, fill_value=10.)
+    #ibp = RegularGridInterpolator((de[::ds], ra[::rs], x[::vs]), 
+                                  #bp[::vs,::ds,::rs].T, 
+                                  #bounds_error=False, fill_value=10.)
     
     bp4c = np.zeros((len(ve), len(de), len(ra)))
     for k in range(len(ve)):
@@ -93,7 +98,11 @@ def mask_cube(vel, data, vel_rngs):
     nchns = np.zeros(len(vel_rngs))
     nvel = []
     extend = nvel.extend
-
+    
+    logger.debug(vel_rngs)
+    
+    #print vel
+    
     for i,velrng in enumerate(vel_rngs):
 
         vel_indx[i][0] = utils.best_match_indx(velrng[0], vel)
@@ -109,7 +118,9 @@ def mask_cube(vel, data, vel_rngs):
     
     mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*10.
     logger.info('Masked data shape: {0}'.format(mdata.shape))
-
+    
+    #logger.debug(nvel_indx)
+    
     logger.info('Will select the unmasked data.')
     for i in range(len(vel_indx)):
         mdata[nvel_indx[i][0]:nvel_indx[i][1]+1] = data[vel_indx[i][0]:vel_indx[i][1]+1]
