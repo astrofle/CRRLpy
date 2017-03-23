@@ -3,9 +3,8 @@
 Bandpass correction script for cubes.
 It provides tools for deriving bandpass 
 solutions, masking, applying and smoothing.
-
-TODO: normalize convolution.
 """
+
 from __future__ import division
 
 import sys
@@ -23,6 +22,8 @@ from astropy.convolution import convolve, Gaussian2DKernel
 from scipy.interpolate import RegularGridInterpolator
 from datetime import datetime
 startTime = datetime.now()
+
+offset = 10.
 
 def bpcorr(data, bandpass, head):
     """
@@ -46,7 +47,7 @@ def bpcorr(data, bandpass, head):
         
         ibp = RegularGridInterpolator((vebp[::vs], debp[::ds], rabp[::rs]), 
                                       bp[::vs,::ds,::rs].filled(), 
-                                      bounds_error=False, fill_value=10.)
+                                      bounds_error=False, fill_value=offset)
         
         bp4c = np.zeros(data.shape)
         for k in range(len(ve)):
@@ -56,7 +57,7 @@ def bpcorr(data, bandpass, head):
     else:
         bp4c = bp
         
-    return ((data)/bp4c - 1.)*10.
+    return ((data)/bp4c - 1.)*offset
 
 def interpolate_bpsol(x, bp, head):
     """
@@ -69,11 +70,11 @@ def interpolate_bpsol(x, bp, head):
     
     logger.debug('(rs,ds,vs)=({0},{1},{2})'.format(rs, ds, vs))
     logger.debug('v0={0}, vf={1}'.format(x[::vs][0], x[::vs][-1]))
-    print x[::vs]
+    #print x[::vs]
     #vs = 1
     ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
                                   bp[::vs,::ds,::rs], 
-                                  bounds_error=False, fill_value=10.)
+                                  bounds_error=False, fill_value=offset)
     #ibp = RegularGridInterpolator((de[::ds], ra[::rs], x[::vs]), 
                                   #bp[::vs,::ds,::rs].T, 
                                   #bounds_error=False, fill_value=10.)
@@ -116,7 +117,7 @@ def mask_cube(vel, data, vel_rngs):
         chns[i] = vel_indx[i][1] - vel_indx[i][0] + 1
         nchns[i] = nvel_indx[i][1] - nvel_indx[i][0] + 1
     
-    mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*10.
+    mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*offset
     logger.info('Masked data shape: {0}'.format(mdata.shape))
     
     #logger.debug(nvel_indx)
@@ -127,7 +128,7 @@ def mask_cube(vel, data, vel_rngs):
         
     return nvel, mdata
 
-def save(data, output, head, clobber=False):
+def save(data, output, head, overwrite=False):
     """
     """
     
@@ -136,7 +137,7 @@ def save(data, output, head, clobber=False):
     # Copy the header from original cube
     hdulist.header = head.copy()
     # Write the fits file
-    hdulist.writeto(output, overwrite=clobber)
+    hdulist.writeto(output, overwrite=overwrite)
 
 def smooth(bp_cube, std):
     """
@@ -189,8 +190,8 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
             mx = np.ma.masked_where(np.ma.getmask(my), x)
             mmx = np.ma.masked_invalid(mx)
             mmy = np.ma.masked_where(np.ma.getmask(mmx), my)
-            np.ma.set_fill_value(mmy, 10.)
-            np.ma.set_fill_value(mmx, 10.)
+            np.ma.set_fill_value(mmy, offset)
+            np.ma.set_fill_value(mmx, offset)
             gx = mmx.compressed()
             gy = mmy.compressed()
             
@@ -215,7 +216,7 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
 
     return np.ma.divide(bp_cube, bp_cube_cov)
 
-def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1):
+def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1, overwrite=False):
     """
     """
     
@@ -227,7 +228,7 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     # Load the data
     hdu = fits.open(cube)
     head = hdu[0].header
-    data = np.ma.masked_invalid(hdu[0].data) + 10.
+    data = np.ma.masked_invalid(hdu[0].data) + offset
     x = crrls.get_axis(head, 3)
     
     logger.info('Data shape: {0}'.format(data.shape))
@@ -258,25 +259,25 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
         bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample)
     if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower() and average <= 1:
         logger.info('Will write the bandpass cube with the solutions.')
-        save(bp_cube, bandpass, head)
-    if 'mask,solve' in mode.lower() or average > 1:
+        save(bp_cube, bandpass, head, overwrite)
+    if ('mask,solve' in mode.lower() or average > 1) and not 'smooth' in mode.lower():
         logger.info('Will write the bandpass cube with the solutions interpolated to the original axis.')
         bp_cube = interpolate_bpsol(mx, bp_cube, head)
-        save(bp_cube, bandpass, head)
+        save(bp_cube, bandpass, head, overwrite)
     # Smooth
     if mode.lower() in ['mask,solve,smooth', 'solve,smooth', 'solve,smooth,apply', 'mask,solve,smooth,apply']:
         logger.info('Will smooth the bandpass solution with a ' \
                     'Gaussian kernel of standard deviation: {0}.'.format(std))
-        bp_cube = smooth(bp_cube, std)
+        bp_cube = smooth(bp_cube - offset, std) + offset
         logger.info('Will write the smoothed bandpass cube with the solutions.')
-        save(bp_cube, bandpass, head)
+        save(bp_cube, bandpass, head, overwrite)
     # Apply with mask
     if 'apply' in mode.lower():
         logger.info('Will apply the bandpass solutions.')
         data_bpc = bpcorr(data, bandpass, head)
         # Only save if applying solutions
         logger.info('Will write the bandpass corrected cube.')
-        save(data_bpc, output, head)
+        save(data_bpc, output, head, overwrite)
 
 if __name__ == '__main__':
     
@@ -292,7 +293,7 @@ if __name__ == '__main__':
     parser.add_argument('-m', '--mode', type=str, default='apply',
                         help="Mode of operation (string).\n" \
                              "['mask', 'solve', 'smooth', 'apply', 'solve,apply',\n" \
-                              "'solve,smooth,apply', 'mask,solve,smooth,apply']\n" \
+                             "'solve,smooth,apply', 'mask,solve,smooth,apply']\n" \
                              "Default: 'apply'")
     parser.add_argument('--vrngs', type=str, default=None,
                         help="Velocity ranges to keep while solving for the bandpass (string).\n" \
@@ -317,6 +318,9 @@ if __name__ == '__main__':
     parser.add_argument('-l', '--logfile', type=str, default=None,
                         help="Where to store the logs.\n" \
                              "(string, Default: output to console)")
+    parser.add_argument('--overwrite', action='store_true',
+                        help="Overwrite existing cubes?.\n" \
+                             "Default: False")
     args = parser.parse_args()
     
     if args.verbose:
@@ -345,6 +349,6 @@ if __name__ == '__main__':
         vrngs = None
         
     main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, 
-         args.std, vrngs, args.oversample, args.average)
+         args.std, vrngs, args.oversample, args.average, args.overwrite)
 
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))

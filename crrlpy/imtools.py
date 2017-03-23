@@ -620,7 +620,7 @@ def set_wcs(head):
     
     return w
 
-def write_fits(data, outfits, head, overwrite=False):
+def write_fits(data, outfits, head=None, overwrite=False):
     """
     Write data to outfits as a fits file using header.
     """
@@ -628,5 +628,6 @@ def write_fits(data, outfits, head, overwrite=False):
     data = np.ma.masked_invalid(data)
     data.fill_value = np.nan
     prihdu = fits.PrimaryHDU(data.filled())
-    prihdu.header = head.copy()
-    prihdu.writeto(outfits, clobber=overwrite)
+    if head:
+        prihdu.header = head.copy()
+    prihdu.writeto(outfits, overwrite=overwrite)
