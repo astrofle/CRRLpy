@@ -63,7 +63,7 @@ def sbsplot(spec, output, show_lines, transitions, z,
         fig = plt.figure(frameon=False)
         fig.suptitle(sb)
         ax = fig.add_subplot(1, 1, 1, adjustable='datalim')
-        ax.step(x, y, 'k-', drawstyle='steps', lw=1, where='pre')
+        ax.step(x, y, 'k-', lw=1, where='mid')
         # Mark the transitions?
         if show_lines:
             trans = transitions.split(',')
@@ -109,7 +109,7 @@ if __name__ == '__main__':
                              "Will produce a single .pdf file.")
     parser.add_argument('-l', '--show_lines', action='store_true',
                         help="Show lines in the spectra? Default: False")
-    parser.add_argument('-t', '--transitions', type=str, default='CIalpha',
+    parser.add_argument('-t', '--transitions', type=str, default='RRL_CIalpha',
                         help="Transitions to show in the spectra.\n" \
                              "E.g., CIalpha,CI13beta,HIalpha\n" \
                              "Default: CIalpha")

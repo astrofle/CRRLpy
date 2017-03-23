@@ -71,7 +71,8 @@ if __name__ == '__main__':
     parser.add_argument('--v_rng', type=str, default=None,
                         help="Velocity range to keep in the cube.\n" \
                              "E.g., -100e3,100e3 will keep from -100 to 100 km/s.\n" \
-                             "Default: keep all")
+                             "Default: keep all \n" \
+                             "Not implemented.")
     args = parser.parse_args()
     
-    cube2vel(args.cube, args.transition, args.z, args.f_col, args.v_col, args.v_rng)
+    cube2vel(args.cube, args.transition, args.z, args.f_col, args.v_col)

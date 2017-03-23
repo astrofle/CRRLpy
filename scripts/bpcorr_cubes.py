@@ -69,7 +69,7 @@ def interpolate_bpsol(x, bp, head):
     
     logger.debug('(rs,ds,vs)=({0},{1},{2})'.format(rs, ds, vs))
     logger.debug('v0={0}, vf={1}'.format(x[::vs][0], x[::vs][-1]))
-    print x[::vs]
+    #print x[::vs]
     #vs = 1
     ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
                                   bp[::vs,::ds,::rs], 
@@ -108,8 +108,12 @@ def mask_cube(vel, data, vel_rngs):
         vel_indx[i][0] = utils.best_match_indx(velrng[0], vel)
         vel_indx[i][1] = utils.best_match_indx(velrng[1], vel)
         
+        #logger.debug('{0}'.format(vel_indx[i]))
+  
         nvel.extend(vel[vel_indx[i][0]:vel_indx[i][1]+1])
         
+        #logger.debug('nvel: ', nvel)
+
         nvel_indx[i][0] = utils.best_match_indx(velrng[0], nvel)
         nvel_indx[i][1] = utils.best_match_indx(velrng[1], nvel)
         
@@ -236,6 +240,15 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     if len(data.shape) > 3:
         logger.info('Will drop first axis.')
         data = data[0]
+    
+    # Flip velocity axis if descending
+    if x[0] > x[1]:
+        logger.info('Velocity axis is inverted. Will reorder.')
+        data = data[::-1]
+        x = x[::-1]
+        head['CRVAL3'] = x[0]
+        head['CDELT3'] = x[1] - x[0]
+        head['CRPIX3'] = 1
     
     # Average
     if average > 1:

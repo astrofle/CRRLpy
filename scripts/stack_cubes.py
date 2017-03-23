@@ -16,13 +16,29 @@ from scipy.interpolate import RegularGridInterpolator
 from datetime import datetime
 startTime = datetime.now()
 
+def parse_cube_list(cubes):
+    """
+    """
+
+    logger = logging.getLogger(__name__)
+    
+    if glob.glob(cubes):
+        return glob.glob(cubes)
+
+    else:
+        if len(cubes.split(',')) > 1:
+            return cubes.split(',')
+        else:
+            logger.info('Input cube list not understood.')
+
 def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clobber=False, algo='channel'):
     """
     """
     
     logger = logging.getLogger(__name__)
     
-    cubel = glob.glob(cubes)
+    cubel = cubes #glob.glob(cubes)
+    logger.debug(cubel)
     
     if dv == 0:
         logger.info('Velocity width not specified.'), 
@@ -149,10 +165,10 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
                 except ValueError:
                     logger.info('Point outside range: ' \
                                 'vel={0}, ra={1}..{2}, dec={3}..{4}'.format(pts[0,0], 
-                                                                            min(pts[:,1]), 
-                                                                            max(pts[:,1]), 
                                                                             min(pts[:,2]), 
-                                                                            max(pts[:,2])))
+                                                                            max(pts[:,2]), 
+                                                                            min(pts[:,1]), 
+                                                                            max(pts[:,1])))
         else:
             logger.info('Cube reconstruction algorithm unrecognized.')
             logger.info('Will exit now.')
@@ -233,7 +249,9 @@ if __name__ == '__main__':
     
     logger = logging.getLogger(__name__)
 
-    stack_cubes(args.cubes, args.stack, args.v_max, args.v_min, args.dv, 
+    cubel = parse_cube_list(args.cubes)
+
+    stack_cubes(cubel, args.stack, args.v_max, args.v_min, args.dv, 
                 args.weight_list, args.v_axis, args.clobber, args.algo)
     
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))

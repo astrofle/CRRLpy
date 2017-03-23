@@ -19,10 +19,10 @@ def get_cube_dims(fitslist, chan_id='chan'):
     ny = head['NAXIS2']
     #nv = len(fitslist)
     regex = r'{0}(.+?)(\.|\_)'.format(chan_id)
-    ch0 = int(re.search(r'{0}(.+?)(\.|\_)'.format(chan_id), fitslist[0]).group(1))
-    #print "file {0} is channel {1}".format(fitslist[0], ch0)
-    chf = int(re.search(r'{0}(.+?)(\.|\_)'.format(chan_id), fitslist[-1]).group(1))
-    #print "file {0} is channel {1}".format(fitslist[-1], chf)
+    ch0 = int(re.search(r'{0}(.+?)(\.|\_|\-)'.format(chan_id), fitslist[0]).group(1))
+    print "file {0} is channel {1}".format(fitslist[0], ch0)
+    chf = int(re.search(r'{0}(.+?)(\.|\_|\-)'.format(chan_id), fitslist[-1]).group(1))
+    print "file {0} is channel {1}".format(fitslist[-1], chf)
     nv = chf - ch0
     
     return nx, ny, nv, ch0
@@ -161,5 +161,7 @@ if __name__ == '__main__':
     fitslist = args.fitslist
     
     natural_sort(fitslist)
+    
+    logger.debug(fitslist)
 
     main(outfits, fitslist, args.stokeslast, args.chan_id, args.nzeros, args.clobber)
