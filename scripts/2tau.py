@@ -39,10 +39,17 @@ def main(cube, cont, outp, overwrite=False):
     if len(cont.shape) > 3:
         logger.info('Will drop Stokes axis from the continuum.')
         cont = cont[0]
-        
-    econt = np.ma.masked_invalid((cont*cube.shape[0]).reshape(cube.shape))
+
+    if len(cont.shape) > 2:
+        logger.info('Will drop spectral axis from the continuum.')
+        cont = cont[0]
     
-    csub = cube/econt - 1.
+    logger.debug('cube shape: {0}'.format(cube.shape))
+    logger.debug('cont shape: {0}'.format(cont.shape))    
+    
+    econt = np.ma.masked_invalid(([cont]*cube.shape[0])).reshape(cube.shape)
+    
+    csub = np.ma.divide(cube, econt) - 1.
     
     save(csub, outp, head, overwrite=overwrite)
 

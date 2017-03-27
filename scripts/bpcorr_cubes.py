@@ -25,7 +25,7 @@ startTime = datetime.now()
 
 offset = 10.
 
-def bpcorr(data, bandpass, head):
+def bpcorr(data, bandpass, head, mode):
     """
     """
     
@@ -56,8 +56,15 @@ def bpcorr(data, bandpass, head):
             bp4c[k] += ibp(pts).reshape(newshape)[0]
     else:
         bp4c = bp
-        
-    return ((data)/bp4c - 1.)*offset
+    
+    if 'div' in mode.lower():
+        logger.info('Will divide by the bandpass.')
+        bpcd = ((data)/bp4c - 1.)*offset
+    elif 'sub' in mode.lower():
+        logger.info('Will subtract the bandpass.')
+        bpcd = data - bp4c
+
+    return bpcd #((data)/bp4c - 1.)*offset
 
 def interpolate_bpsol(x, bp, head):
     """
@@ -220,7 +227,7 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
 
     return np.ma.divide(bp_cube, bp_cube_cov)
 
-def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1, overwrite=False):
+def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1, overwrite=False, operation='div'):
     """
     """
     
@@ -273,10 +280,12 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower() and average <= 1:
         logger.info('Will write the bandpass cube with the solutions.')
         save(bp_cube, bandpass, head, overwrite)
-    if ('mask,solve' in mode.lower() or average > 1) and not 'smooth' in mode.lower():
-        logger.info('Will write the bandpass cube with the solutions interpolated to the original axis.')
+    if 'mask,solve' in mode.lower() or average > 1:
+        logger.info('Will interpolate the bandpass cube with the solutions to the original unmasked axis.')
         bp_cube = interpolate_bpsol(mx, bp_cube, head)
-        save(bp_cube, bandpass, head, overwrite)
+        if not 'smooth' in mode.lower():
+            logger.info('Will write the interpolated bandpass cube with the solutions.')
+            save(bp_cube, bandpass, head, overwrite)
     # Smooth
     if mode.lower() in ['mask,solve,smooth', 'solve,smooth', 'solve,smooth,apply', 'mask,solve,smooth,apply']:
         logger.info('Will smooth the bandpass solution with a ' \
@@ -287,7 +296,7 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     # Apply with mask
     if 'apply' in mode.lower():
         logger.info('Will apply the bandpass solutions.')
-        data_bpc = bpcorr(data, bandpass, head)
+        data_bpc = bpcorr(data, bandpass, head, operation)
         # Only save if applying solutions
         logger.info('Will write the bandpass corrected cube.')
         save(data_bpc, output, head, overwrite)
@@ -334,6 +343,9 @@ if __name__ == '__main__':
     parser.add_argument('--overwrite', action='store_true',
                         help="Overwrite existing cubes?.\n" \
                              "Default: False")
+    parser.add_argument('--operation', type=str, default='div',
+                        help="Subtract or divide the bandpass correction?\n"\
+                             "Default: divide")
     args = parser.parse_args()
     
     if args.verbose:
@@ -362,6 +374,6 @@ if __name__ == '__main__':
         vrngs = None
         
     main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, 
-         args.std, vrngs, args.oversample, args.average, args.overwrite)
+         args.std, vrngs, args.oversample, args.average, args.overwrite, args.operation)
 
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))
