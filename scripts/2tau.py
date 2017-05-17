@@ -18,10 +18,10 @@ import astropy.io.fits as fits
 from datetime import datetime
 startTime = datetime.now()
 
-def main(cube, cont, outp, overwrite=False):
+def main(cube, cont, outp, operation='sub', overwrite=False):
     """
     Main body of the script: 2tau.py.
-    Converts a cube to optical depth units.
+    Converts a cube to and from optical depth units.
     The output cube will have the same header as the input cube.
     """
     
@@ -49,9 +49,12 @@ def main(cube, cont, outp, overwrite=False):
     
     econt = np.ma.masked_invalid(([cont]*cube.shape[0])).reshape(cube.shape)
     
-    csub = np.ma.divide(cube, econt) - 1.
+    if 'sub' in operation.lower():
+        data = np.ma.divide(cube, econt) - 1.
+    elif 'add' in operation.lower():
+        data = np.ma.multiply(cube + 1., econt)
     
-    save(csub, outp, head, overwrite=overwrite)
+    save(data, outp, head, overwrite=overwrite)
 
 def parse_args():
     """
@@ -75,6 +78,11 @@ def parse_args():
     parser.add_argument('--overwrite', action='store_true',
                         help="Overwrite existing cubes?.\n" \
                              "Default: False")
+    parser.add_argument('-o', '--operation', type=str, default='sub',
+                        help="Which operation to perform?.\n" \
+                             "add: converts from optical depth to line intensity plus continuum.\n" \
+                             "sub: converts from line intensity plus continuum to optical depth.\n" \
+                             "Default: sub")
     
     args = parser.parse_args()
     
@@ -109,6 +117,6 @@ if __name__ == '__main__':
     
     logger = logging.getLogger(__name__)
     
-    main(args.cube, args.cont, args.output, overwrite=args.overwrite)
+    main(args.cube, args.cont, args.output, operation=args.operation, overwrite=args.overwrite)
     
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))

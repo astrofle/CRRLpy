@@ -394,6 +394,12 @@ def get_contours(x, y, z, levs, segment=0, verbose=False):
             if verbose: print res[:nseg][segment]
         else:
             pass
+    
+    # Where should we add missing corners?
+    #if x.max() in np.asarray(segments)[0][:,0] \
+       #and x.max() not in np.asarray(segments)[1][:,0]:
+           #if np.asarray(segments)[1][:,1]
+                #segments[1].append()
                 
     return np.asarray(segments)
 
@@ -592,6 +598,36 @@ def remove_nans(contours, indx=0):
     contours[indx] = contours[indx][~mask]
     
     return contours
+
+def sector_mask(shape, centre, radius, angle_range):
+    """
+    Return a boolean mask for a circular sector. The start/stop angles in  
+    `angle_range` should be given in clockwise order.
+    """
+
+    x,y = np.ogrid[:shape[0],:shape[1]]
+    cx,cy = centre
+    tmin,tmax = np.deg2rad(angle_range)
+
+    # ensure stop angle > start angle
+    if tmax < tmin:
+            tmax += 2*np.pi
+
+    # convert cartesian --> polar coordinates
+    r2 = (x-cx)*(x-cx) + (y-cy)*(y-cy)
+    theta = np.arctan2(x-cx, y-cy) - tmin
+
+    # wrap angles between 0 and 2*pi
+    theta %= (2*np.pi)
+
+    # circular mask
+    circmask = r2 <= radius*radius
+
+    # angular mask
+    anglemask = theta <= (tmax-tmin)
+
+    return circmask*anglemask
+
 
 def set_tick_bkgd(ax, color, lw, alpha):
     """

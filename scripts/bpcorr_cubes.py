@@ -23,9 +23,7 @@ from scipy.interpolate import RegularGridInterpolator
 from datetime import datetime
 startTime = datetime.now()
 
-offset = 10.
-
-def bpcorr(data, bandpass, head, mode):
+def bpcorr(data, bandpass, head, mode, offset=10.):
     """
     """
     
@@ -66,7 +64,7 @@ def bpcorr(data, bandpass, head, mode):
 
     return bpcd #((data)/bp4c - 1.)*offset
 
-def interpolate_bpsol(x, bp, head):
+def interpolate_bpsol(x, bp, head, offset=10.):
     """
     """
     
@@ -94,7 +92,7 @@ def interpolate_bpsol(x, bp, head):
         
     return np.ma.masked_equal(bp4c, 0.0)
 
-def mask_cube(vel, data, vel_rngs):
+def mask_cube(vel, data, vel_rngs, offset=10.):
     """
     """
     
@@ -164,7 +162,7 @@ def smooth(bp_cube, std):
         
     return bp_cube_sm
 
-def solve(x, data, bandpass, cell, head, order, oversample=1):
+def solve(x, data, bandpass, cell, head, order, oversample=1, offset=10.):
     """
     """
     
@@ -227,7 +225,7 @@ def solve(x, data, bandpass, cell, head, order, oversample=1):
 
     return np.ma.divide(bp_cube, bp_cube_cov)
 
-def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1, overwrite=False, operation='div'):
+def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1, overwrite=False, operation='div', offset=10.):
     """
     """
     
@@ -270,19 +268,19 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     # Mask
     if mode.lower() in ['mask', 'mask,solve', 'mask,solve,apply', 'mask,solve,smooth,apply']:
         logger.info('Will mask the requested velocity ranges before solving.')
-        mx, mdata = mask_cube(avg_x, avg_data, vrngs)
+        mx, mdata = mask_cube(avg_x, avg_data, vrngs, offset)
     else:
         mx = avg_x
         mdata = avg_data
     # Solve
     if mode.lower() in ['solve', 'mask,solve', 'mask,solve,apply', 'solve,apply', 'solve,smooth,apply', 'mask,solve,smooth,apply']:
-        bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample)
+        bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample, offset)
     if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower() and average <= 1:
         logger.info('Will write the bandpass cube with the solutions.')
         save(bp_cube, bandpass, head, overwrite)
     if 'mask,solve' in mode.lower() or average > 1:
         logger.info('Will interpolate the bandpass cube with the solutions to the original unmasked axis.')
-        bp_cube = interpolate_bpsol(mx, bp_cube, head)
+        bp_cube = interpolate_bpsol(mx, bp_cube, head, offset)
         if not 'smooth' in mode.lower():
             logger.info('Will write the interpolated bandpass cube with the solutions.')
             save(bp_cube, bandpass, head, overwrite)
@@ -296,7 +294,7 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     # Apply with mask
     if 'apply' in mode.lower():
         logger.info('Will apply the bandpass solutions.')
-        data_bpc = bpcorr(data, bandpass, head, operation)
+        data_bpc = bpcorr(data, bandpass, head, operation, offset)
         # Only save if applying solutions
         logger.info('Will write the bandpass corrected cube.')
         save(data_bpc, output, head, overwrite)
@@ -346,6 +344,9 @@ if __name__ == '__main__':
     parser.add_argument('--operation', type=str, default='div',
                         help="Subtract or divide the bandpass correction?\n"\
                              "Default: divide")
+    parser.add_argument('--offset', type=float, default=10.,
+                        help="Offset to apply to data before solving. Useful to avoid division by zero.\n"\
+                             "Default: 10.")
     args = parser.parse_args()
     
     if args.verbose:
@@ -374,6 +375,7 @@ if __name__ == '__main__':
         vrngs = None
         
     main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, 
-         args.std, vrngs, args.oversample, args.average, args.overwrite, args.operation)
+         args.std, vrngs, args.oversample, args.average, args.overwrite, args.operation,
+         args.offset)
 
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))
