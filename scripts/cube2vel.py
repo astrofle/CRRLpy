@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 import glob
 import argparse
 from crrlpy import crrls
@@ -36,6 +37,11 @@ def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3):
     # Find the lines in the cube
     qns, reff = crrls.find_lines_sb(freq[::fi]*1e-6, transition, z) # returns in MHz
     #print reff
+
+    if not reff:
+        print 'No CRRL found.',
+        print 'Will now exit.'
+        sys.exit(0)
     
     # Get a velocity axis
     vel = crrls.freq2vel(reff*1e6, freq)

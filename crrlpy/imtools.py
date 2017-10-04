@@ -403,7 +403,7 @@ def get_contours(x, y, z, levs, segment=0, verbose=False):
                 
     return np.asarray(segments)
 
-def K2Jy(head):
+def K2Jy(head, freq=0):
     """
     Computes the conversion factor Jy/K.
     
@@ -414,12 +414,14 @@ def K2Jy(head):
     """
     
     omega = beam_area(head)
-    try:
-        freq = head['RESTFREQ']
-    except KeyError:
-        fcol = [s for s in head.keys() if "FREQ" in s]
-        freq = head[fcol[0]]
-    
+
+    if freq == 0:
+        try:
+            freq = head['RESTFREQ']
+        except KeyError:
+            fcol = [s for s in head.keys() if "FREQ" in s]
+            freq = head[fcol[0]]
+
     k2jy = 2.*c.k_B.cgs.value/np.power(c.c.cgs.value/freq, 2.)*omega/1e-23
     
     return k2jy

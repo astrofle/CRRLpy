@@ -55,6 +55,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
                 dv = max(dv, utils.get_min_sep(x))
                 vmax_min = min(vmax_min, max(x))
                 vmin_max = max(vmin_max, min(x))
+            logger.debug('Cube: {0}'.format(cube))
             logger.debug('Cube velocity limits: {0} {1} {2}'.format(min(x), max(x), utils.get_min_sep(x)))
         logger.info('Will use a velocity width of {0}'.format(dv))
         
@@ -62,12 +63,14 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
         if vmax_min < vmax:
             logger.info('Requested maximum velocity is larger '\
                         'than one of the cubes velocity axis.')
+            #logger.info('Conflicting cube: {0}'.format(cube))
             logger.info('v_max={0}, v_max_min={1}'.format(vmax, vmax_min))
             logger.info('Will now exit')
             sys.exit(1)
         if vmin_max > vmin:
             logger.info('Requested minimum velocity is smaller '\
                         'than one of the cubes velocity axis.')
+            #logger.info('Conflicting cube: {0}'.format(cube))
             logger.info('v_min={0}, v_min_max={1}'.format(vmin, vmin_max))
             logger.info('Will now exit')
             sys.exit(1)
@@ -188,7 +191,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
     hdulist.header['CDELT3'] = dv
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
-    hdulist.writeto(outfits, clobber=clobber)
+    hdulist.writeto(outfits, overwrite=clobber)
 
     stack_head = hdulist.header.copy()
     hdulist = fits.PrimaryHDU(weight)
@@ -198,7 +201,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
     hdulist.header['CDELT3'] = dv
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
-    hdulist.writeto(outfits.split('.fits')[0]+'_weight.fits', clobber=clobber)
+    hdulist.writeto(outfits.split('.fits')[0]+'_weight.fits', overwrite=clobber)
 
 if __name__ == '__main__':
     
