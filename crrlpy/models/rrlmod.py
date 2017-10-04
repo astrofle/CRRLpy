@@ -27,7 +27,7 @@ from astropy.analytic_functions import blackbody_nu
 from crrlpy.crrls import natural_sort, f2n, n2f
 from crrlpy.utils import best_match_indx
 
-LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+LOCALDIR = '/data2/psalas/python/CRRLpy/crrlpy/models' #os.path.dirname(os.path.realpath(__file__))
 
 def alpha_CII(Te, R):
     """
@@ -956,7 +956,7 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
     Loads a model for the CRRL emission.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if trans[:5] == 'RRL_C':
         atom = 'Carbon'

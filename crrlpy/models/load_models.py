@@ -9,7 +9,7 @@ if __name__ == '__main__':
     
     n_min = 5
     n_max = 1000
-    out = 'RRL_CIalpha_itau_highdens'
+    out = 'RRL_CIalpha_itau_lcass_ext'
     
     #Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', 
                    #'5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', 
@@ -26,14 +26,18 @@ if __name__ == '__main__':
     #               '5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', 
     #               '9d1', '9.5d1', '1d2', '1.05d2', '1.1d2', '1.15d2', '1.2d2', 
     #               '1.25d2', '1.3d2', '1.35d2', '1.4d2', '1.45d2', '1.5d2'])
-    Te = np.array(['8d1']) #np.array(['1d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', '5d1', '5.5d1', '6d1', '6.5d1', '7d1'])
+    #Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', '5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', '9d1', '9.5d1', '1d2', 
+    #               '1.05d2', '1.1d2', '1.15d2', '1.2d2', '1.25d2', '1.3d2', '1.35d2', '1.4d2', '1.45d2', '1.5d2'])
+    Te = np.array([rrlmod.val2str(t) for t in np.arange(10, 405, 5)])
     #ne = np.concatenate((np.arange(0.01, 0.11, 0.005), np.arange(0.011, 0.015, 0.001), np.arange(0.016, 0.02, 0.001)))
+    #ne = np.arange(0.01, 0.115, 0.005)
+    #ne = np.concatenate([np.arange(0.01, 0.115, 0.005), 
+    #                     np.array([0.11, 0.115, 0.12, 0.125, 0.13, 0.135, 0.14, 0.145, 0.15])])
     ne = np.arange(0.01, 0.115, 0.005)
-    ne = np.array([0.15, 0.2, 0.25, 0.3])
-    #Tr = np.array([800, 1200, 1400, 1600, 2000])
-    Tr = np.array([400, 600])
+    Tr = np.array([800, 1200, 1400, 1600, 2000])
+    #Tr = np.array([400, 600])
     
-    models = rrlmod.models_dict(Te, ne, Tr)
+    models = rrlmod.models_dict(Te[0:], ne[0:], Tr[0:])
     
     # Check if a models file already exists to avoid loading all the models again
     if not os.path.isfile('{0}.npy'.format(out)): 
