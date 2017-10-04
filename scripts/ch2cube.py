@@ -13,6 +13,9 @@ import numpy as np
 blankval = np.nan
 
 def get_cube_dims(fitslist, chan_id='chan'):
+    """
+    """
+    
     hdulist = fits.open(fitslist[0])
     head = hdulist[0].header
     nx = head['NAXIS1']
@@ -27,7 +30,9 @@ def get_cube_dims(fitslist, chan_id='chan'):
     
     return nx, ny, nv, ch0
 
-def main(outfits, fitslist, stokeslast=True, chan_id='chan', chan_end='.', nzeros=4, clobber=False):
+def main(outfits, fitslist, stokeslast=True, chan_id='chan', chan_end='.', nzeros=4, overwrite=False):
+    """
+    """
     
     # Get cube dimensions from first image
     nx, ny, nv, ch0 = get_cube_dims(fitslist, chan_id)
@@ -84,7 +89,7 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', chan_end='.', nzero
     
     #hdulist.header.append(('BLANK', blankval))
     # Write to a fits file
-    hdulist.writeto(outfits, clobber=clobber)
+    hdulist.writeto(outfits, overwrite=overwrite)
     
 if __name__ == '__main__':
     
@@ -105,7 +110,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', '--nzeros', 
                         help="Number of zeros to the right of the channel number. (int, Default: 4)",
                         type=int, default=4)
-    parser.add_argument('--clobber', 
+    parser.add_argument('--overwrite', 
                         help="Overwrite existing fits files?",
                         action='store_true')
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -134,4 +139,4 @@ if __name__ == '__main__':
     
     logger.debug(fitslist)
 
-    main(outfits, fitslist, args.stokeslast, args.chan_id, args.chan_end, args.nzeros, args.clobber)
+    main(outfits, fitslist, args.stokeslast, args.chan_id, args.chan_end, args.nzeros, args.overwrite)
