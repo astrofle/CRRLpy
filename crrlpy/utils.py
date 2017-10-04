@@ -1,6 +1,23 @@
 #!/usr/bin/env python
 
+import re
 import numpy as np
+
+def alphanum_key(s):
+    """ 
+    Turn a string into a list of string and number chunks.
+    
+    :param s: String
+    :returns: List with strings and integers.
+    :rtype: list
+    
+    :Example:
+    
+    >>> alphanum_key('z23a')
+    ['z', 23, 'a']
+    
+    """
+    return [ tryint(c) for c in re.split('([0-9]+)', s) ]
 
 def best_match_indx(value, array):
     """
@@ -96,16 +113,23 @@ def myround(x, base=5):
     
     return int(base * round(float(x)/base))
 
-def sci_notation(number, sig_fig=2):
-    """
-    Converts a number to scientific notation keeping sig_fig signitifcant figures.
+def natural_sort(list):
+    """ 
+    Sort the given list in the way that humans expect. \
+    Sorting is done in place.
+    
+    :param list: List to sort.
+    :type list: list
+    
+    :Example:
+    
+    >>> my_list = ['spec_3', 'spec_4', 'spec_1']
+    >>> natural_sort(my_list)
+    >>> my_list
+    ['spec_1', 'spec_3', 'spec_4']
     """
     
-    ret_string = "{0:.{1:d}e}".format(number, sig_fig)
-    a,b = ret_string.split("e")
-    b = int(b) #removed leading "+" and strips leading zeros too.
-    
-    return r"{0}\times10^{{{1}}}".format(a, b)
+    list.sort(key=alphanum_key)
 
 def pow_notation(number, sig_fig=2):
     """
@@ -117,6 +141,17 @@ def pow_notation(number, sig_fig=2):
     b = int(b) #removed leading "+" and strips leading zeros too.
     
     return r"10^{{{0}}}".format(b)
+
+def sci_notation(number, sig_fig=2):
+    """
+    Converts a number to scientific notation keeping sig_fig signitifcant figures.
+    """
+    
+    ret_string = "{0:.{1:d}e}".format(number, sig_fig)
+    a,b = ret_string.split("e")
+    b = int(b) #removed leading "+" and strips leading zeros too.
+    
+    return r"{0}\times10^{{{1}}}".format(a, b)
 
 def str2bool(str):
     """
@@ -143,6 +178,21 @@ def text_slope_match_line(text, x, y, line, dindx=1):
     y2 = ydata[best_match_indx(y, ydata)+dindx]
 
     rotated_labels.append({"text":text, "line":line, "p1":np.array((x1, y1)), "p2":np.array((x2, y2))})
+
+def tryint(str):
+    """
+    Returns an integer if `str` can be represented as one.
+    
+    :param str: String to check.
+    :type str: string
+    :returns: True is str can be cast to an int.
+    :rtype: int
+    """
+    
+    try:
+        return int(str)
+    except:
+        return str
 
 def update_text_slopes():
     global rotated_labels

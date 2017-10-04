@@ -382,7 +382,7 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     
     bbn = load_betabn(temp, dens, other, line, verbose)
     nimin = best_match_indx(n_min, bbn[:,0])
-    nimax = best_match_indx(n_max, bbn[:,0])
+    nimax = best_match_indx(n_max, bbn[:,0]) + 1
     n = bbn[nimin:nimax,0]
     b = bbn[nimin:nimax,1]
     

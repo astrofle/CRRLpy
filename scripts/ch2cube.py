@@ -54,7 +54,7 @@ def update_header(header, fitslist):
     #header.append('EQUINOX', head['EQUINOX'])
     #header.append('EQUINOX', head['LONPOLE'])
 
-def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4, clobber=False):
+def main(outfits, fitslist, stokeslast=True, chan_id='chan', chan_end='.', nzeros=4, clobber=False):
     
     # Get cube dimensions from first image
     nx, ny, nv, ch0 = get_cube_dims(fitslist, chan_id)
@@ -69,11 +69,16 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', nzeros=4, clobber=F
     
     for i in range(nv):
         print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
-        fitsch = filter(lambda x: '{0}{1}'.format(chan_id, str(i+ch0).zfill(nzeros)) in x, fitslist)
+        fitsch = filter(lambda x: '{0}{1}{2}'.format(chan_id, str(i+ch0).zfill(nzeros), chan_end) in x, fitslist)
         if fitsch:
             print fitsch
             hdulist = fits.open(fitsch[0])
-            data = hdulist[0].data[0][0]
+            data = hdulist[0].data
+            
+            if len(data.shape) > 3:
+                data = data[0][0]
+            if len(data.shape) > 2:
+                data = data[0]
         else:
             print "Inserting blank channel"
             data = np.ones([ny, nx])*blankval
@@ -132,6 +137,9 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--chan_id', 
                         help="String before the channel number. (string, Default: chan)",
                         type=str, default='chan')
+    parser.add_argument('--chan_end', 
+                        help="String after the channel number. (string, Default: .)",
+                        type=str, default='.')
     parser.add_argument('-n', '--nzeros', 
                         help="Number of zeros to the right of the channel number. (int, Default: 4)",
                         type=int, default=4)
@@ -164,4 +172,4 @@ if __name__ == '__main__':
     
     logger.debug(fitslist)
 
-    main(outfits, fitslist, args.stokeslast, args.chan_id, args.nzeros, args.clobber)
+    main(outfits, fitslist, args.stokeslast, args.chan_id, args.chan_end, args.nzeros, args.clobber)
