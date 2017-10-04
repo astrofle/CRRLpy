@@ -1148,13 +1148,19 @@ def plot_fit_single(fig, x, y, fit, params, rms, x0, \
     
     return fig
 
-def pressure_broad(n, Te, ne):
+def pressure_broad(n, te, ne):
     """
     Pressure induced broadening in Hz.
-    Shaver (1975)
+    Shaver (1975) Eq. (64a) for te <= 1000 K and
+    Eq. (61) for te > 1000 K.
     """
     
-    return 2e-5*np.power(Te, -3./2.)*np.exp(-26./np.power(Te, 1./3.))*ne*np.power(n, 5.2)
+    if te <= 1000:
+        dnup = 2e-5*np.power(te, -3./2.)*np.exp(-26./np.power(te, 1./3.))*ne*np.power(n, 5.2)
+    else:
+        dnup = 3.74e-8*ne*np.power(n, 4.4)*np.power(te, -0.1)
+        
+    return dnup
 
 def pressure_broad_salgado(n, Te, ne, dn=1):
     """
