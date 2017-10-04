@@ -27,33 +27,6 @@ def get_cube_dims(fitslist, chan_id='chan'):
     
     return nx, ny, nv, ch0
 
-def make_fits(data):
-    hdu = fits.PrimaryHDU(data)
-    hdulist = fits.HDUList([hdu])
-    return hdulist
-
-def update_header(header, fitslist):
-    hdulist = fits.open(fitslist[0])
-    head = hdulist[0].header
-    # copy the header from the first fits in the list
-    header = head.copy()
-    #for key in head.keys():
-        ##if key != 'CRVAL4':
-        #if key:
-            #print "{0}:  {1}".format(key, head[key])
-            #header.append((key, head[key]))
-        
-            
-    #header.append('BSCALE', head['BSCALE'])
-    #header.append('BZERO', head['BZERO'])
-    #header.append('BMAJ', head['BMAJ'])
-    #header.append('BMIN', head['BMIN'])
-    #header.append('BPA', head['BPA'])
-    #header.append('BTYPE', head['BTYPE'])
-    #header.append('BUNIT', head['BUNIT'])
-    #header.append('EQUINOX', head['EQUINOX'])
-    #header.append('EQUINOX', head['LONPOLE'])
-
 def main(outfits, fitslist, stokeslast=True, chan_id='chan', chan_end='.', nzeros=4, clobber=False):
     
     # Get cube dimensions from first image
@@ -61,15 +34,14 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', chan_end='.', nzero
     print "Starting channel: {0}".format(ch0)
     print "Number of channels: {0}".format(nv)
     # Create the cube, only stokes I
-    cube = np.empty([1, nv, ny, nx], dtype=float)
+    cube = np.ma.empty([1, nv, ny, nx], dtype=float)
     
-    # Get the first channel number
-    #ch0 = int(re.search('chan(.+?).', fitslist[0]))
-    #pch = ch0
-    
+    # Loop over images copying their data to the cube
     for i in range(nv):
+        
         print '{0}{1}.'.format(chan_id, str(i+ch0).zfill(nzeros))
         fitsch = filter(lambda x: '{0}{1}{2}'.format(chan_id, str(i+ch0).zfill(nzeros), chan_end) in x, fitslist)
+        
         if fitsch:
             print fitsch
             hdulist = fits.open(fitsch[0])
@@ -82,22 +54,12 @@ def main(outfits, fitslist, stokeslast=True, chan_id='chan', chan_end='.', nzero
         else:
             print "Inserting blank channel"
             data = np.ones([ny, nx])*blankval
-        cube[0,i,:,:] = data
+            
+        cube[0,i,:,:] = np.ma.masked_invalid(data)
     
-    # Loop over images copying their data to the cube
-    #for i,image in enumerate(fitslist):
-        #ch = int(re.search('chan(.+?).', fitslist[0]))
-        #if ch - pch != 1:
-            #for j in range(ch - pch):
-                #cube[0,i+j,:,:] = data
-        #hdulist = fits.open(image)
-        ##head = hdulist[0].header
-        ## Data is stokes I and one velocity channel
-        #data = hdulist[0].data[0][0] 
-        #cube[0,i,:,:] = data
-        #pch = ch
-        
-    hdulist = fits.PrimaryHDU(cube)
+    cube.fill_value = np.nan
+    
+    hdulist = fits.PrimaryHDU(cube.filled())
     # Copy the header from the first channel image
     hdulist.header = fits.open(fitslist[0])[0].header.copy()
     
