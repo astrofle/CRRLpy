@@ -39,7 +39,7 @@ def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3):
     #print reff
 
     if not reff:
-        print 'No CRRL found.',
+        print 'No RRL found.',
         print 'Will now exit.'
         sys.exit(0)
     

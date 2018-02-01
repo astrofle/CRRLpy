@@ -16,6 +16,12 @@ s for arcseconds. The conversion will use the scale in the RA direction of the c
 use CDELT1 to convert from angular units to pixels.
 """
 
+import os
+import matplotlib as mpl
+havedisplay = "DISPLAY" in os.environ
+if not havedisplay:
+    mpl.use('Agg')
+
 import sys
 import re
 import argparse
@@ -495,7 +501,7 @@ def split_str(str):
             
     return items[0], items[1]
     
-def main(out, cube, region, mode, plot_spec, faxis, stokes):
+def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
     """
     """
     
@@ -582,23 +588,26 @@ def main(out, cube, region, mode, plot_spec, faxis, stokes):
                            'Tb {0}'.format(bunit)],
                     dtype=[np.float64, np.float64])
 
+    logger.debug('Writing output spectrum to: {0}'.format(out))
     ascii.write(tbtable, out, format='commented_header', overwrite=True)
     
-    fig = plt.figure(frameon=False)
-    ax = fig.add_subplot(1, 1, 1)
-    if naxis == 2:
-        ax.imshow(data, interpolation='none', origin='lower')
-    else:
-        try:
-            ax.imshow(data.sum(axis=0).sum(axis=0), origin='lower', interpolation='none')
-        except TypeError:
-            ax.imshow(data.sum(axis=0), interpolation='none', origin='lower')
-    show_rgn(ax, rgn)
-    #ci.draw_beam(head, ax) # This requires a pywcsgrid2 object to work
-    ax.autoscale(False)
-    
-    plt.savefig('{0}_extract_region_{1}.png'.format(cube, region), 
-                bbox_inches='tight', pad_inches=0.3)
+    if show_region:
+        logger.debug('Plotting extraction region.')
+        fig = plt.figure(frameon=False)
+        ax = fig.add_subplot(1, 1, 1)
+        if naxis == 2:
+            ax.imshow(data, interpolation='none', origin='lower')
+        else:
+            try:
+                ax.imshow(data.sum(axis=0).sum(axis=0), origin='lower', interpolation='none')
+            except TypeError:
+                ax.imshow(data.sum(axis=0), interpolation='none', origin='lower')
+        show_rgn(ax, rgn)
+        #ci.draw_beam(head, ax) # This requires a pywcsgrid2 object to work
+        ax.autoscale(False)
+        
+        plt.savefig('{0}_extract_region_{1}.png'.format(cube, region), 
+                    bbox_inches='tight', pad_inches=0.3)
     
     if plot_spec:
         plotspec(cube, freq, spec, ftype, funit, bunit, plot_spec)
@@ -616,6 +625,8 @@ if __name__ == '__main__':
                         help="Output file name.")
     parser.add_argument('-m', '--mode', type=str, default='sum',
                         help="Mode of extraction. Can be sum, avg or flux.")
+    parser.add_argument('-r', '--show_region', action='store_true',
+                        help='Plot the extraction region?')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help="Verbose output?")
     parser.add_argument('-l', '--logfile', type=str, default=None,
@@ -642,5 +653,5 @@ if __name__ == '__main__':
     logger.info('Will extract a spectrum from cube: {0}'.format(args.cube))
     logger.info('Will extract region: {0}'.format(args.region))
     
-    main(args.out, args.cube, args.region, args.mode, args.plot_spec, args.faxis, args.stokes_last)
+    main(args.out, args.cube, args.region, args.mode, args.show_region, args.plot_spec, args.faxis, args.stokes_last)
     
