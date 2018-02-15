@@ -18,7 +18,7 @@ from lmfit.models import VoigtModel, ConstantModel, GaussianModel, PolynomialMod
 from scipy.special import wofz
 from scipy import interpolate
 from astropy.constants import c, k_B
-from frec_calc import set_dn, make_line_list
+from .frec_calc import set_dn, make_line_list
 from crrlpy import utils
 
 def alphanum_key(s):
@@ -54,7 +54,7 @@ def average(data, axis, n):
     swpdata = np.swapaxes(data, 0, axis)
     
     if n < 1:
-        print "Will not work"
+        print("Will not work")
         avg_tmp = swpdata
     else:
         avg_tmp = 0
@@ -259,7 +259,7 @@ def dv_minus_doppler(dV, ddV, dD, ddD):
     d = np.power(2.*a*dV, 2) - 4.*(b - a*a)*(np.power(dD, 2.) - np.power(dV, 2.))
     
     if d < 0:
-        print "No real solutions, check input."
+        print("No real solutions, check input.")
         return 0
     
     dL_p = (-2.*a*dV + np.sqrt(d))/(2.*(b - a*a))
@@ -301,7 +301,7 @@ def dv_minus_doppler2(dV, ddV, dD, ddD):
     d = np.power(a*dV, 2) - den*dif
     
     if d < 0:
-        print "No real solutions, check input."
+        print("No real solutions, check input.")
         return 0
     
     dL_p = (a*dV + np.sqrt(d))/den
@@ -381,18 +381,21 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     # Correct rest frequencies for redshift.
     reffreq = restfreq/(1.0 + z)
     
+    if verbose:
+        print("Subband edges: {0}--{1}".format(freq[0], freq[-1]))
+    
     # Check which lines lie within the sub band.
-    mask_ref = (freq[0] < reffreq) & (freq[-1] > reffreq)
+    mask_ref = (freq[0] < reffreq) & (freq[-1] >= reffreq)
     reffreqs = reffreq[mask_ref]
     refqns = qn[mask_ref]
     
     nlin = len(reffreqs)
     if verbose:
-        print "Found {0} {1} lines within the subband.".format(nlin, line)
+        print("Found {0} {1} lines within the subband.".format(nlin, line))
         if nlin > 1:
-            print "Corresponding to n values: {0}--{1}".format(refqns[0], refqns[-1])
+            print("Corresponding to n values: {0}--{1}".format(refqns[0], refqns[-1]))
         elif nlin == 1:
-            print "Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0])
+            print("Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0]))
 
     return refqns, reffreqs
 
@@ -411,8 +414,8 @@ def fit_continuum(x, y, degree, p0, verbose=False):
     params = mod.make_params()
     if len(p0) != len(params):
         if verbose:
-            print "Insuficient starting parameter values."
-            print "Will try to guess starting values."
+            print("Insuficient starting parameter values.")
+            print("Will try to guess starting values.")
         params = mod.guess(y, x=x)
     else:
         for param in params:
@@ -449,7 +452,7 @@ def fit_model(x, y, model, p0, wy=None, mask=None):
     params = mod.make_params()
     
     if len(p0) != len(params):
-        print "Insuficient starting parameter values."
+        print("Insuficient starting parameter values.")
         return 0
     else:
         for param in params:
@@ -660,25 +663,16 @@ def get_line_mask(freq, reffreq, v0, dv):
     :returns: Mask centered at the line center and width `dv0` referenced to the input `freq`.
     """
     
-    #print v0
     f0 = vel2freq(reffreq, v0*1e3)
-    #print "Line location in frequency {0} MHz".format(f0)
     df0 = dv2df(reffreq*1e6, dv0*1e3)
-    #print "Line width in frequency {0} Hz".format(df0)
     
     df = abs(freq[0] - freq[1])
-    #print "Channel width {} Hz".format(df*1e6)
     
     f0_indx = best_match_indx(f0, freq, df/2.0)
-    #f0_indx = abs(freq - f0).argmin()
-    #print "Frequency index: {}".format(f0_indx)
-    
-    #print "Line width in channels: {}".format(df0/df/1e6)
     
     mindx0 = f0_indx - df0/df/1e6
     mindxf = f0_indx + df0/df/1e6
     
-    #print mindx0, mindxf
     return [mindx0, mindxf]
 
 def get_line_mask2(freq, reffreq, dv):
@@ -1382,7 +1376,7 @@ def stack_irregular(lines, window='', **kargs):
     
     # Apply a window function to reduce noise
     if window == '':
-        print 'Using default Gaussian window.'
+        print('Using default Gaussian window.')
         stau = Gauss(tgrid, {'sigma':3, 'order':0})
     elif window == 'Wiener':
         stau = Wiener(tgrid, **kargs)
@@ -1405,7 +1399,7 @@ def stack_interpol(spectra, vmin, vmax, dv, show=True, rmsvec=False):
     
     for s,spec in enumerate(spectra):
         if show:
-            print "Working on file: {0}".format(spec)
+            print("Working on file: {0}".format(spec))
         nlist[s] = int(re.findall('\d+', spec.split('/')[-1])[0])
         data = np.loadtxt(spec)
         vel = data[:,1] # velocity in km/s
@@ -1478,8 +1472,8 @@ def stack_interpol(spectra, vmin, vmax, dv, show=True, rmsvec=False):
         best_fit = fit.best_fit
         if show:
             #print nlist
-            print fit.fit_report()
-            print "Lowest rms: {0} for # stacks: {1}".format(min(crms), len(crms))
+            print(fit.fit_report())
+            print("Lowest rms: {0} for # stacks: {1}".format(min(crms), len(crms)))
             fig = plt.figure()
             ax1 = fig.add_subplot(111)
             #ax2 = ax1.twiny()

@@ -17,7 +17,7 @@ if __name__ == '__main__':
     cwd = os.getcwd()
     os.chdir('bn2')
     
-    line = 'CIgamma'
+    line = 'RRL_CIbeta'
     files = glob.glob('*')
     h = mp.mpf(h.value)
     k_B = mp.mpf(k_B.value)

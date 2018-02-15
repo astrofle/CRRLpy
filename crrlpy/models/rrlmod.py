@@ -27,7 +27,7 @@ from astropy.analytic_functions import blackbody_nu
 from crrlpy.crrls import natural_sort, f2n, n2f
 from crrlpy.utils import best_match_indx
 
-LOCALDIR = '/data2/psalas/python/CRRLpy/crrlpy/models' #os.path.dirname(os.path.realpath(__file__))
+LOCALDIR = os.path.dirname(os.path.realpath(__file__)) #'/data2/psalas/python/CRRLpy/crrlpy/models' #
 
 def alpha_CII(Te, R):
     """
@@ -375,7 +375,7 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     """
 
     t = str2val(temp)
-    d = dens
+    d = float(dens)
     
     dn = fc.set_dn(line)
     mdn_ = mdn(dn)
@@ -630,7 +630,7 @@ def load_bn_all(n_min=5, n_max=1000, verbose=False):
     
     for i,model in enumerate(models):
         if verbose:
-            print model
+            print(model)
         st = model.split('_')[3]
         Te[i] = str2val(st)
         sn = model.split('_')[5].rstrip('0')
@@ -640,7 +640,7 @@ def load_bn_all(n_min=5, n_max=1000, verbose=False):
         else:
             Tr[i] = '_'.join(model.split('_')[8:11])
         if verbose:
-            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], Tr[i])
+            print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], Tr[i]))
         bn = load_bn2(st, sn, Tr=Tr[i], n_min=n_min, n_max=n_max, verbose=verbose)
         data[i,0] = bn[:,0]
         data[i,1] = bn[:,1]
@@ -695,8 +695,8 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
     for i,t in enumerate(dict['Te']):
         
         if verbose:
-            print "Trying to load model: ",
-            print "ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i])
+            print("Trying to load model: ")
+            print("ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i]))
         bn = load_bn2(t, dict['ne'][i], n_min=n_min, n_max=n_max, Tr=dict['Tr'][i], 
                       verbose=verbose)
         
@@ -743,7 +743,7 @@ def load_itau_all(line='RRL_CIalpha', n_min=5, n_max=1000, verbose=False, value=
     
     for i,model in enumerate(models):
         if verbose:
-            print model
+            print(model)
         st = model.split('_')[4]
         Te[i] = str2val(st)
         sn = model.split('_')[6].rstrip('0')
@@ -753,7 +753,7 @@ def load_itau_all(line='RRL_CIalpha', n_min=5, n_max=1000, verbose=False, value=
         else:
             other[i] = '_'.join(model.split('_')[9:12])
         if verbose:
-            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
+            print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i]))
         n, int_tau = itau(st, ne[i], line, n_min=n_min, n_max=n_max, 
                           other=other[i], verbose=verbose, 
                           value=value)
@@ -784,7 +784,7 @@ def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau
     
     for i,model in enumerate(models):
         if verbose:
-            print model
+            print(model)
         st = model.split('_')[4]
         Te[i] = str2val(st)
         sn = model.split('_')[6].rstrip('0')
@@ -794,7 +794,7 @@ def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau
         else:
             other[i] = '_'.join(model.split('_')[9:12])
         if verbose:
-            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
+            print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i]))
         n, int_tau = itau_h(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose, value=value)
         data[i,0] = n
         data[i,1] = int_tau
@@ -894,9 +894,9 @@ def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau')
     for i,t in enumerate(dict['Te']):
         
         if verbose:
-            print "Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], 
+            print("Trying to load model: ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], 
                                                                         t, 
-                                                                        dict['Tr'][i])
+                                                                        dict['Tr'][i]))
         n, int_tau = itau(t, dict['ne'][i], line, n_min=n_min, n_max=n_max, 
                           other=dict['Tr'][i], verbose=verbose, value=value)
         
@@ -957,6 +957,7 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
     """
     
     #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #print LOCALDIR
     
     if trans[:5] == 'RRL_C':
         atom = 'Carbon'
@@ -968,16 +969,18 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
     if other == '-' or other == '':
         model_file = 'bbn2_{0}/{3}_opt_T_{1}_ne_{2}_ncrit_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, atom, ncrit)
         if verbose:
-            print 'Will try to locate: {0}'.format(model_file)
+            print('Will try to locate: {0}'.format(model_file))
+            print('In: {0}'.format(LOCALDIR))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     else:
         model_file = 'bbn2_{0}/{4}_opt_T_{1}_ne_{2}_ncrit_{5}_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other, atom, ncrit)
         if verbose:
-            print 'Will try to locate: {0}'.format(model_file)
+            print('Will try to locate: {0}'.format(model_file))
+            print('In: {0}'.format(LOCALDIR))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     
     if verbose:
-        print "Loading {0}".format(model_path)
+        print("Loading {0}".format(model_path))
     data = np.loadtxt(model_path)
     
     return data
@@ -992,16 +995,16 @@ def load_betabn_h(temp, dens, other='', trans='alpha', verbose=False):
     if other == '-' or other == '':
         model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
         if verbose:
-            print 'Will try to locate: {0}'.format(model_file)
+            print('Will try to locate: {0}'.format(model_file))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     else:
         model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
         if verbose:
-            print 'Will try to locate: {0}'.format(model_file)
+            print('Will try to locate: {0}'.format(model_file))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     
     if verbose:
-        print "Loading {0}".format(model_path)
+        print("Loading {0}".format(model_path))
     data = np.loadtxt(model_path)
     
     return data
@@ -1040,16 +1043,16 @@ def load_bn2(Te, ne, Tr='', n_min=5, n_max=1000, verbose=False):
     if Tr == '-' or Tr == '':
         mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne)
         if verbose:
-            print "Loading {0}".format(mod_file)
+            print("Loading {0}".format(mod_file))
         mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne))[0]
     else:
         mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr)
         if verbose:
-            print "Loading {0}".format(mod_file)
+            print("Loading {0}".format(mod_file))
         mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr))[0]
     
     if verbose:
-        print "Loaded {0}".format(mod_file)
+        print("Loaded {0}".format(mod_file))
     bn = np.loadtxt(mod_file)
     
     nimin = best_match_indx(n_min, bn[:,0])
@@ -1076,7 +1079,7 @@ def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
     
     for i,model in enumerate(models):
         if verbose:
-            print model
+            print(model)
         st = model.split('_')[4]
         Te[i] = str2val(st)
         sn = model.split('_')[6].rstrip('0')
@@ -1086,7 +1089,7 @@ def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
         else:
             other[i] = '_'.join(model.split('_')[9:12])
         if verbose:
-            print "Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i])
+            print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i]))
         n, int_tau = itau(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose, value=value)
         data[i,0] = n
         data[i,1] = int_tau

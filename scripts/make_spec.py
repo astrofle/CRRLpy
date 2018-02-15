@@ -55,6 +55,9 @@ def make_spec(fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
         tau_n += synth.make_offset(rms, freq, order=order)
     
     z = v0/3e5
+    print "Will use a redshift of: {0}".format(z)
+    print "Subband edges: {0}--{1}".format(fi, ff)
+    
     for i,trans in enumerate(transitions.split(',')):
         if trans != '':
             n_l, f_l = crrls.find_lines_sb(freq, trans, z, verbose)
@@ -73,7 +76,7 @@ def make_spec(fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
                                         ne, 
                                         trans, n_max=n_max, 
                                         other=other,
-                                        verbose=verbose)
+                                        verbose=True)
         
             dD_f = crrls.dv2df(f_l, dD*1e3)
             
@@ -83,7 +86,7 @@ def make_spec(fi, bw, n, rms, v0, transitions, bandpass, baseline, order,
                 if verbose:
                     print "Line properties:"
                     print("f: {0}, A: {1}, dD: {2}, dD_f/2: {3}, " \
-                        "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
+                          "dL/2: {4}".format(f, itau*EM, dD, dD_f[j]/2., dL[j]/2.))
                 tau_n += line
             
     if cont:
