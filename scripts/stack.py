@@ -1,15 +1,19 @@
 #!/usr/bin/env python
+"""
+Simple stacking script.
+Works on 1D spectra.
+"""
 
-import matplotlib as mpl
-mpl.use('pdf')
-import pylab as plt
-import numpy as np
-import glob
 import sys
+import glob
+import logging
 import argparse
+import numpy as np
+
+from scipy import interpolate
+
 from crrlpy import crrls
 from crrlpy import utils
-from scipy import interpolate
 
 def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_list=None):
     """
@@ -21,9 +25,11 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
     #if len(specs) == 1:
         #specs = np.genfromtxt(specs[0], dtype=str)
     
-    print(specs)
+    logger.info('Will use the following files as input: ')
+    logger.info(specs)
     
     if dv == 0:
+        logger.info('Will determine the velocity resolution of the stack.')
         for i,s in enumerate(specs):
             data = np.loadtxt(s)
             x = data[:,x_col]
@@ -31,6 +37,7 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
                 dv = utils.get_min_sep(x)
             else:
                 dv = max(dv, utils.get_min_sep(x))
+    logger.info('Stack velocity resolution: {0}'.format(dv))
 
     xgrid = np.arange(vmin, vmax, dv)
     ygrid = np.zeros(len(xgrid))      # the temperatures
@@ -185,12 +192,14 @@ def stack_filter(specs, output, vmax, vmin, dv, x_col, y_col, window, window_opt
                                     fill_value=0.0)
     zgrid = interp_z(reg_xgrid)
     xgrid = reg_xgrid
-    print len(xgrid), len(ygrid), len(zgrid)
+    print(len(xgrid), len(ygrid), len(zgrid))
     np.savetxt(output, np.c_[xgrid, ygrid, zgrid], header="xaxis, " \
                                                           "combined y axis, " \
                                                           "filtered y axis")
 
-if __name__ == '__main__':
+def parse_args():
+    """
+    """
     
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawTextHelpFormatter)
@@ -246,13 +255,34 @@ if __name__ == '__main__':
                         help="Column with x axis values. Default: 0")
     parser.add_argument('--y_col', type=int, default=1,
                         help="Column with y axis values. Default: 1")
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help="Verbose output?")
+    parser.add_argument('-l', '--logfile', type=str, default=None,
+                        help="Where to store the logs.\n" \
+                             "(string, Default: output to console)")
     args = parser.parse_args()
     
+    return args
+
+if __name__ == '__main__':
+    
+    args = parse_args()
+    
+    if args.verbose:
+        loglev = logging.DEBUG
+    else:
+        loglev = logging.ERROR
+        
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    logging.basicConfig(filename=args.logfile, level=loglev, format=formatter)
+    
+    logger = logging.getLogger(__name__)
     
     if args.mode == 'interpol':
         if args.weight == 'list' and not args.weight_list:
-            print "No weight list given."
-            print "Will now exit."
+            logger.error("No weight list given.")
+            logger.error("Will now exit.")
             sys.exit()
         else:
             stack_interpol(args.specs, args.stack, args.v_max, args.v_min, args.dv, 
@@ -267,6 +297,6 @@ if __name__ == '__main__':
         stack_filter(args.spec, args.stack, args.v_max, args.v_min, args.dv,
                      args.x_col, args.y_col, args.window, window_opts)
     else:
-        print "mode not recognized."
-        print "Will exit now."
+        logger.error("Mode not recognized.")
+        logger.error("Will exit now.")
         sys.exit()

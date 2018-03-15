@@ -11,15 +11,19 @@ import sys
 import glob
 import logging
 import argparse
+
 from copy import deepcopy
+
 import numpy as np
 import scipy.interpolate as si
 import crrlpy.crrls as crrls
 import crrlpy.utils as utils
 import crrlpy.imtools as ci
 import astropy.io.fits as fits
+
 from astropy.convolution import convolve, Gaussian2DKernel
 from scipy.interpolate import RegularGridInterpolator
+
 from datetime import datetime
 startTime = datetime.now()
 
