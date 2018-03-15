@@ -11,15 +11,17 @@ from crrlpy import crrls
 from crrlpy import utils
 from scipy import interpolate
 
-def stack_interpol(spec, output, vmax, vmin, dv, x_col, y_col, weight, weight_list=None):
+def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_list=None):
     """
     """
     
-    specs = glob.glob(spec)
+    #specs = glob.glob(spec)
     
     # If only one file is passed, it probably contains the list
-    if len(specs) == 1:
-        specs = np.genfromtxt(specs[0], dtype=str)
+    #if len(specs) == 1:
+        #specs = np.genfromtxt(specs[0], dtype=str)
+    
+    print(specs)
     
     if dv == 0:
         for i,s in enumerate(specs):
@@ -101,7 +103,7 @@ def stack_interpol(spec, output, vmax, vmin, dv, x_col, y_col, weight, weight_li
                                                           "stacked y axis, " \
                                                           "y axis weight")
     
-def stack_filter(spec, output, vmax, vmin, dv, x_col, y_col, window, window_opts):
+def stack_filter(specs, output, vmax, vmin, dv, x_col, y_col, window, window_opts):
     """
     """
     
@@ -109,11 +111,13 @@ def stack_filter(spec, output, vmax, vmin, dv, x_col, y_col, window, window_opts
     ygrid = []
     zgrid = []
     
-    specs = glob.glob(spec)
+    #specs = glob.glob(spec)
 
     # If only one file is passed, it probably contains the list
-    if len(specs) == 1:
-        specs = np.genfromtxt(specs[0], dtype=str)
+    #if len(specs) == 1:
+        #specs = np.genfromtxt(specs[0], dtype=str)
+
+    #print(specs)
 
     if dv == 0:
         for s in specs:
@@ -190,11 +194,8 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('spec', type=str,
-                        help="List of spectra to process.\n" \
-                             "Can be a file with the list or a list.\n" \
-                             "E.g., \"lba_hgh_*.ascii\" (string).\n" \
-                             "Wildcards and [] accepted.")
+    parser.add_argument('specs', type=str, nargs='+',
+                        help="Spectra to process (string).")
     parser.add_argument('stack', type=str,
                         help="Output stack filename (string).")
     parser.add_argument('-m', '--mode', type=str, default='interpol',
@@ -254,7 +255,7 @@ if __name__ == '__main__':
             print "Will now exit."
             sys.exit()
         else:
-            stack_interpol(args.spec, args.stack, args.v_max, args.v_min, args.dv, 
+            stack_interpol(args.specs, args.stack, args.v_max, args.v_min, args.dv, 
                            args.x_col, args.y_col, args.weight, args.weight_list)
     elif args.mode == 'filter':
         waux = args.window_opts.split(',')
