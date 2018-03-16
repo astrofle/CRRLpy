@@ -15,7 +15,7 @@ from scipy import interpolate
 from crrlpy import crrls
 from crrlpy import utils
 
-def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_list=None):
+def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_list=None, weight_list_cols='0,1'):
     """
     """
     
@@ -24,10 +24,16 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
     # If only one file is passed, it probably contains the list
     #if len(specs) == 1:
         #specs = np.genfromtxt(specs[0], dtype=str)
+        
+    # Setup weight list columns, if need be.
+    if weight_list:
+        wlc0,wlc1 = list(map(int, weight_list_cols.split(',')))
+        print(wlc0,wlc1)
     
     logger.info('Will use the following files as input: ')
     logger.info(specs)
     
+    # Determine velocity resolution of stack.
     if dv == 0:
         logger.info('Will determine the velocity resolution of the stack.')
         for i,s in enumerate(specs):
@@ -37,13 +43,18 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
                 dv = utils.get_min_sep(x)
             else:
                 dv = max(dv, utils.get_min_sep(x))
+            logger.info('Spectrum {0} has velocity resolution of: {1}'.format(s, utils.get_min_sep(x)))
     logger.info('Stack velocity resolution: {0}'.format(dv))
 
+    # Setup the grid for the stack.
     xgrid = np.arange(vmin, vmax, dv)
     ygrid = np.zeros(len(xgrid))      # the temperatures
     zgrid = np.zeros(len(xgrid))      # the number of tb points in every stacked channel
     
     for i,s in enumerate(specs):
+        
+        logger.info('Working on file: {0}'.format(s))
+        
         data = np.loadtxt(s)
         x = data[:,x_col]
         y = data[:,y_col]
@@ -52,14 +63,13 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
         o = x.argsort()
         x = x[o]
         y = y[o]
-        #plt.plot(x,y)
         
         # Catch NaNs and invalid values:
         mask_x = np.ma.masked_equal(x, -9999).mask
         mask_y = np.isnan(y)
         mask = np.array(reduce(np.logical_or, [mask_x, mask_y]))
         
-        # Interpolate non masked ranges indepently
+        # Interpolate non masked ranges indepently.
         my = np.ma.masked_where(mask, y)
         mx = np.ma.masked_where(mask, x)
         valid = np.ma.flatnotmasked_contiguous(mx)
@@ -84,28 +94,32 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
                                             fill_value=0.0)
             y_aux += interp_y(xgrid)
         
-        # Check which channels have data
+        # Check which channels have data.
         ychan = [1 if ch != 0 else 0 for ch in y_aux]
         
-        # Stack!
+        # Determine the weight.
         if not weight:
             w = np.ones(len(xgrid))
+            
         elif weight == 'list':
-            wl = np.loadtxt(weight_list, dtype='|S99,<f4')
-            w = wl['f1'][np.where(wl['f0'] == s)[0][0]]
+            wl = np.loadtxt(weight_list, dtype=str)
+            w = float(wl[:,wlc1][np.where(wl[:,wlc0] == s)[0][0]])
+            
         elif weight == 'sigma':
             w = 1./crrls.get_rms(my)
+            
         elif weight == 'sigma2':
             w = 1./np.power(crrls.get_rms(my), 2)
-
+        
+        logger.info('Will use a weight of: {0}'.format(w))
+        
+        # Stack!
         zgrid = zgrid + np.multiply(ychan, w)
         ygrid = ygrid + y_aux*np.multiply(ychan, w)
             
     # Divide by the total weight to preserve optical depth
     ygrid = np.divide(ygrid, zgrid)
-    
-    #plt.show()
-    
+        
     np.savetxt(output, np.c_[xgrid, ygrid, zgrid], header="x axis, " \
                                                           "stacked y axis, " \
                                                           "y axis weight")
@@ -232,6 +246,9 @@ def parse_args():
     parser.add_argument('--weight_list', type=str, default=None,
                         help="File with list of spectrum and their weights.\n" \
                              "Default: None")
+    parser.add_argument('--weight_list_cols', type=str, default='0,1',
+                        help="Columns to use from the file with the weights.\n" \
+                             "Default: 0,1")
     parser.add_argument('--window', type=str, default='Gauss',
                         help="Window function to filter noise in stacked spectrum.\n" \
                              "Only used if mode is filter.\n" \
@@ -286,14 +303,16 @@ if __name__ == '__main__':
             sys.exit()
         else:
             stack_interpol(args.specs, args.stack, args.v_max, args.v_min, args.dv, 
-                           args.x_col, args.y_col, args.weight, args.weight_list)
+                           args.x_col, args.y_col, 
+                           args.weight, args.weight_list, args.weight_list_cols)
+            
     elif args.mode == 'filter':
         waux = args.window_opts.split(',')
         window_opts = {}
         for aux in waux:
             auxk, auxv = aux.split('=')
             window_opts[auxk] = float(auxv)
-        print window_opts
+        print(window_opts)
         stack_filter(args.spec, args.stack, args.v_max, args.v_min, args.dv,
                      args.x_col, args.y_col, args.window, window_opts)
     else:
