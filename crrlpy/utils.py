@@ -3,6 +3,8 @@
 import re
 import numpy as np
 
+from functools import reduce
+
 def alphanum_key(s):
     """ 
     Turn a string into a list of string and number chunks.
