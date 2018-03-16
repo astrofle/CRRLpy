@@ -119,7 +119,8 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
             
     # Divide by the total weight to preserve optical depth
     ygrid = np.divide(ygrid, zgrid)
-        
+    
+    logger.info('Saving stack to: {0}'.format(output))
     np.savetxt(output, np.c_[xgrid, ygrid, zgrid], header="x axis, " \
                                                           "stacked y axis, " \
                                                           "y axis weight")
