@@ -68,7 +68,7 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>specie</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Atomic specie to calculate for.</li>
+<li><strong>specie</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Atomic specie to calculate for.</li>
 <li><strong>n</strong> (<em>int or list</em>) &#8211; Principal quantum number at which to evaluate <span class="math">\(\dfrac{2}{\pi}\sum\limits_{\Delta n}B_{n+\Delta n,n}I_{n+\Delta n,n}(\nu)\)</span>.</li>
 <li><strong>Inu_funct</strong> (<em>function</em>) &#8211; Function to call and evaluate <span class="math">\(I_{n+\Delta n,n}(\nu)\)</span>. It&#8217;s first argument must be the frequency.</li>
 <li><strong>args</strong> &#8211; Arguments to <cite>Inu_funct</cite>. The frequency must be left out.     The frequency will be passed internally in units of MHz. Use the same     unit when required. <cite>Inu_funct</cite> must take the frequency as first parameter.</li>
@@ -78,7 +78,7 @@
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(Hz)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
@@ -289,17 +289,17 @@ Uses Equation (B1) of Salas et al. (2016).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Principal quantum number</li>
-<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature in K.</li>
-<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density per cubic centimeters.</li>
-<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Temperature of the radiation field in K at 100 MHz.</li>
+<li><strong>n</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Principal quantum number</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron temperature in K.</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron density per cubic centimeters.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Temperature of the radiation field in K at 100 MHz.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The value of <span class="math">\(b_{n}\beta_{n^{\prime}n}\)</span> given an approximate expression.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -359,11 +359,11 @@ Uses Equations (5) and (B1)-(B5) of Salas et al. (2016).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron temperature.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The collisional de-excitation rate in units of cm-3 s-1.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)">float</a></td>
 </tr>
 </tbody>
 </table>
@@ -382,11 +382,11 @@ Uses Equations (5) and (B1)-(B5) of Salas et al. (2016).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron temperature.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The collisional de-excitation rate in units of cm-3 s-1.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)">float</a></td>
 </tr>
 </tbody>
 </table>
@@ -403,14 +403,14 @@ The emission measure is unity. The output units are Hz.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>temp</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Electron temperature. Must be a string of the form &#8216;8d1&#8217;.</li>
-<li><strong>dens</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density.</li>
-<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Line to load models for.</li>
-<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n value to include in the output. Default 1</li>
-<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n value to include in the output. Default 1500, Maximum allowed value 9900</li>
-<li><strong>other</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to search for different radiation fields and others.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
-<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|&#8217;None&#8217;] Value to output. itau will output the integrated optical depth.     bbnMdn will output the <span class="math">\(\beta_{n,n^{\prime}}b_{n}\)</span> times the oscillator strenght <span class="math">\(M(\Delta n)\)</span>.     None will output the <span class="math">\(\beta_{n,n^{\prime}}b_{n}\)</span> values.</li>
+<li><strong>temp</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Electron temperature. Must be a string of the form &#8216;8d1&#8217;.</li>
+<li><strong>dens</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron density.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Line to load models for.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Minimum n value to include in the output. Default 1</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Maximum n value to include in the output. Default 1500, Maximum allowed value 9900</li>
+<li><strong>other</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; String to search for different radiation fields and others.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|&#8217;None&#8217;] Value to output. itau will output the integrated optical depth.     bbnMdn will output the <span class="math">\(\beta_{n,n^{\prime}}b_{n}\)</span> times the oscillator strenght <span class="math">\(M(\Delta n)\)</span>.     None will output the <span class="math">\(\beta_{n,n^{\prime}}b_{n}\)</span> values.</li>
 </ul>
 </td>
 </tr>
@@ -461,12 +461,12 @@ This can only go up to <span class="math">\(n_{\rm{max}}\)</span> 1500 because o
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature of the gas. (K)</li>
-<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
-<li><strong>nion</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
-<li><strong>Z</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Electric charge of the atoms being considered.</li>
-<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
-<li><strong>trans</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Transition for which to compute the absorption coefficient.</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron temperature of the gas. (K)</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>nion</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>Z</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Electric charge of the atoms being considered.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
+<li><strong>trans</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Transition for which to compute the absorption coefficient.</li>
 <li><strong>n_max</strong> (<em>int&lt;1500</em>) &#8211; Maximum principal quantum number to include in the output.</li>
 </ul>
 </td>
@@ -474,7 +474,7 @@ This can only go up to <span class="math">\(n_{\rm{max}}\)</span> 1500 because o
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -490,13 +490,13 @@ This can only go up to <span class="math">\(n_{\rm{max}}\)</span> 1500 because o
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>nu</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; Frequency. (Hz)</li>
-<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature of the gas. (K)</li>
-<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
-<li><strong>nion</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
-<li><strong>Z</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Electric charge of the atoms being considered.</li>
-<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
-<li><strong>trans</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Transition for which to compute the absorption coefficient.</li>
+<li><strong>nu</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v3.6)"><em>array</em></a>) &#8211; Frequency. (Hz)</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron temperature of the gas. (K)</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>nion</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Ion density. (<span class="math">\(\mbox{cm}^{-3}\)</span>)</li>
+<li><strong>Z</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Electric charge of the atoms being considered.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Temperature of the radiation field felt by the gas. This specifies the temperature of the field at 100 MHz. (K)</li>
+<li><strong>trans</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Transition for which to compute the absorption coefficient.</li>
 <li><strong>n_max</strong> (<em>int&lt;1500</em>) &#8211; Maximum principal quantum number to include in the output.</li>
 </ul>
 </td>
@@ -504,7 +504,7 @@ This can only go up to <span class="math">\(n_{\rm{max}}\)</span> 1500 because o
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -545,17 +545,17 @@ The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Electron temperature of the model.</li>
-<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Electron density of the model.</li>
-<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Radiation field of the model.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Electron temperature of the model.</li>
+<li><strong>ne</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Electron density of the model.</li>
+<li><strong>Tr</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Radiation field of the model.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) &#8211; Verbose output?</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The <span class="math">\(b_{n}\)</span> value for the given model conditions.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)">array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v3.6)">array</a></p>
 </td>
 </tr>
 </tbody>
@@ -576,18 +576,18 @@ The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dict</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary containing a list with values for Te, ne and Tr.</li>
-<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
-<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
-<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>dict</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) &#8211; Dictionary containing a list with values for Te, ne and Tr.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) &#8211; Verbose output?</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List with the <span class="math">\(b_{n}\)</span> values for the conditions defined by dict.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.11)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)">numpy.array</a></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
@@ -622,11 +622,11 @@ The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
-<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
-<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
-<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|None] Which value should be in the output.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|None] Which value should be in the output.</li>
 </ul>
 </td>
 </tr>
@@ -661,12 +661,12 @@ The return has units of <span class="math">\(\mbox{cm}^{-3}\)</span>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dict</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Dictionary containing a list with values for Te, ne and Tr.</li>
-<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
-<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
-<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
-<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Verbose output?</li>
-<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|None] Which value should be in the output.</li>
+<li><strong>dict</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v3.6)"><em>dict</em></a>) &#8211; Dictionary containing a list with values for Te, ne and Tr.</li>
+<li><strong>line</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; Which models should be loaded.</li>
+<li><strong>n_min</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Minimum n number to include in the output.</li>
+<li><strong>n_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><em>int</em></a>) &#8211; Maximum n number to include in the output.</li>
+<li><strong>verbose</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><em>bool</em></a>) &#8211; Verbose output?</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; [&#8216;itau&#8217;|&#8217;bbnMdn&#8217;|None] Which value should be in the output.</li>
 </ul>
 </td>
 </tr>
@@ -711,7 +711,7 @@ upper limit for the electron density.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : <a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><code class="xref py py-obj docutils literal"><span class="pre">string</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : <a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">string</span></code></a></p>
 <blockquote>
 <div><p>Filename with the models.</p>
 </div></blockquote>
@@ -753,7 +753,7 @@ ref. Menzel (1968)</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><span class="math">\(M(\Delta n)\)</span></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)">float</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>
@@ -785,9 +785,9 @@ ref. Menzel (1968)</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> (<em>float or array like</em>) &#8211; x values for which to compute the power law.</li>
-<li><strong>x0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; x value for which the power law has amplitude <cite>y0</cite>.</li>
-<li><strong>y0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Amplitude of the power law at <cite>x0</cite>.</li>
-<li><strong>alpha</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Index of the power law.</li>
+<li><strong>x0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; x value for which the power law has amplitude <cite>y0</cite>.</li>
+<li><strong>y0</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Amplitude of the power law at <cite>x0</cite>.</li>
+<li><strong>alpha</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Index of the power law.</li>
 </ul>
 </td>
 </tr>
@@ -810,11 +810,11 @@ The string must follow the IDL convention for floats.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to convert.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> (<a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><em>string</em></a>) &#8211; String to convert.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The equivalent number.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)">float</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>
@@ -835,17 +835,17 @@ The string must follow the IDL convention for floats.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Electron temperature.</li>
-<li><strong>nc</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Ionized carbon number density.</li>
-<li><strong>L</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Path lenght.</li>
-<li><strong>dnu</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Line width FWHM in Hz.</li>
+<li><strong>Te</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Electron temperature.</li>
+<li><strong>nc</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Ionized carbon number density.</li>
+<li><strong>L</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Path lenght.</li>
+<li><strong>dnu</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Line width FWHM in Hz.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)">float</a></p>
 </td>
 </tr>
 </tbody>
@@ -866,11 +866,11 @@ The string must follow the IDL convention for floats.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Value to convert to a string.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><em>float</em></a>) &#8211; Value to convert to a string.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The value of val represented as a string in IDL double format.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v2.7)">string</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)">string</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>

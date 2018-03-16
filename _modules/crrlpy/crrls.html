@@ -69,7 +69,7 @@
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">wofz</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">interpolate</span>
 <span class="kn">from</span> <span class="nn">astropy.constants</span> <span class="kn">import</span> <span class="n">c</span><span class="p">,</span> <span class="n">k_B</span>
-<span class="kn">from</span> <span class="nn">frec_calc</span> <span class="kn">import</span> <span class="n">set_dn</span><span class="p">,</span> <span class="n">make_line_list</span>
+<span class="kn">from</span> <span class="nn">.frec_calc</span> <span class="kn">import</span> <span class="n">set_dn</span><span class="p">,</span> <span class="n">make_line_list</span>
 <span class="kn">from</span> <span class="nn">crrlpy</span> <span class="kn">import</span> <span class="n">utils</span>
 
 <div class="viewcode-block" id="alphanum_key"><a class="viewcode-back" href="../../crrls.html#crrlpy.crrls.alphanum_key">[docs]</a><span class="k">def</span> <span class="nf">alphanum_key</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -105,7 +105,7 @@
     <span class="n">swpdata</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s2">&quot;Will not work&quot;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Will not work&quot;</span><span class="p">)</span>
         <span class="n">avg_tmp</span> <span class="o">=</span> <span class="n">swpdata</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">avg_tmp</span> <span class="o">=</span> <span class="mi">0</span>
@@ -310,7 +310,7 @@
     <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">dV</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="mf">4.</span><span class="o">*</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dD</span><span class="p">,</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">dV</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span>
     
     <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s2">&quot;No real solutions, check input.&quot;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No real solutions, check input.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span>
     
     <span class="n">dL_p</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">dV</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="n">b</span> <span class="o">-</span> <span class="n">a</span><span class="o">*</span><span class="n">a</span><span class="p">))</span>
@@ -352,7 +352,7 @@
     <span class="n">d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">dV</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-</span> <span class="n">den</span><span class="o">*</span><span class="n">dif</span>
     
     <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s2">&quot;No real solutions, check input.&quot;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;No real solutions, check input.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span>
     
     <span class="n">dL_p</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">dV</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">))</span><span class="o">/</span><span class="n">den</span>
@@ -432,18 +432,21 @@
     <span class="c1"># Correct rest frequencies for redshift.</span>
     <span class="n">reffreq</span> <span class="o">=</span> <span class="n">restfreq</span><span class="o">/</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">z</span><span class="p">)</span>
     
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Subband edges: {0}--{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">freq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    
     <span class="c1"># Check which lines lie within the sub band.</span>
-    <span class="n">mask_ref</span> <span class="o">=</span> <span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">reffreq</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">reffreq</span><span class="p">)</span>
+    <span class="n">mask_ref</span> <span class="o">=</span> <span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">reffreq</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">reffreq</span><span class="p">)</span>
     <span class="n">reffreqs</span> <span class="o">=</span> <span class="n">reffreq</span><span class="p">[</span><span class="n">mask_ref</span><span class="p">]</span>
     <span class="n">refqns</span> <span class="o">=</span> <span class="n">qn</span><span class="p">[</span><span class="n">mask_ref</span><span class="p">]</span>
     
     <span class="n">nlin</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reffreqs</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s2">&quot;Found {0} {1} lines within the subband.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlin</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Found {0} {1} lines within the subband.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nlin</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">nlin</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s2">&quot;Corresponding to n values: {0}--{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refqns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">refqns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Corresponding to n values: {0}--{1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refqns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">refqns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">elif</span> <span class="n">nlin</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s2">&quot;Corresponding to n value {0} and frequency {1} MHz&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refqns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reffreqs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Corresponding to n value {0} and frequency {1} MHz&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refqns</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">reffreqs</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
 
     <span class="k">return</span> <span class="n">refqns</span><span class="p">,</span> <span class="n">reffreqs</span></div>
 
@@ -462,8 +465,8 @@
     <span class="n">params</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s2">&quot;Insuficient starting parameter values.&quot;</span>
-            <span class="k">print</span> <span class="s2">&quot;Will try to guess starting values.&quot;</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Insuficient starting parameter values.&quot;</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Will try to guess starting values.&quot;</span><span class="p">)</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">guess</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
@@ -500,7 +503,7 @@
     <span class="n">params</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">make_params</span><span class="p">()</span>
     
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p0</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s2">&quot;Insuficient starting parameter values.&quot;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Insuficient starting parameter values.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
@@ -711,25 +714,16 @@
 <span class="sd">    :returns: Mask centered at the line center and width `dv0` referenced to the input `freq`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="c1">#print v0</span>
     <span class="n">f0</span> <span class="o">=</span> <span class="n">vel2freq</span><span class="p">(</span><span class="n">reffreq</span><span class="p">,</span> <span class="n">v0</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span>
-    <span class="c1">#print &quot;Line location in frequency {0} MHz&quot;.format(f0)</span>
     <span class="n">df0</span> <span class="o">=</span> <span class="n">dv2df</span><span class="p">(</span><span class="n">reffreq</span><span class="o">*</span><span class="mf">1e6</span><span class="p">,</span> <span class="n">dv0</span><span class="o">*</span><span class="mf">1e3</span><span class="p">)</span>
-    <span class="c1">#print &quot;Line width in frequency {0} Hz&quot;.format(df0)</span>
     
     <span class="n">df</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">freq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">freq</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="c1">#print &quot;Channel width {} Hz&quot;.format(df*1e6)</span>
     
     <span class="n">f0_indx</span> <span class="o">=</span> <span class="n">best_match_indx</span><span class="p">(</span><span class="n">f0</span><span class="p">,</span> <span class="n">freq</span><span class="p">,</span> <span class="n">df</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
-    <span class="c1">#f0_indx = abs(freq - f0).argmin()</span>
-    <span class="c1">#print &quot;Frequency index: {}&quot;.format(f0_indx)</span>
-    
-    <span class="c1">#print &quot;Line width in channels: {}&quot;.format(df0/df/1e6)</span>
     
     <span class="n">mindx0</span> <span class="o">=</span> <span class="n">f0_indx</span> <span class="o">-</span> <span class="n">df0</span><span class="o">/</span><span class="n">df</span><span class="o">/</span><span class="mf">1e6</span>
     <span class="n">mindxf</span> <span class="o">=</span> <span class="n">f0_indx</span> <span class="o">+</span> <span class="n">df0</span><span class="o">/</span><span class="n">df</span><span class="o">/</span><span class="mf">1e6</span>
     
-    <span class="c1">#print mindx0, mindxf</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">mindx0</span><span class="p">,</span> <span class="n">mindxf</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="get_line_mask2"><a class="viewcode-back" href="../../crrls.html#crrlpy.crrls.get_line_mask2">[docs]</a><span class="k">def</span> <span class="nf">get_line_mask2</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">reffreq</span><span class="p">,</span> <span class="n">dv</span><span class="p">):</span>
@@ -1199,13 +1193,19 @@
     
     <span class="k">return</span> <span class="n">fig</span></div>
 
-<div class="viewcode-block" id="pressure_broad"><a class="viewcode-back" href="../../crrls.html#crrlpy.crrls.pressure_broad">[docs]</a><span class="k">def</span> <span class="nf">pressure_broad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">):</span>
+<div class="viewcode-block" id="pressure_broad"><a class="viewcode-back" href="../../crrls.html#crrlpy.crrls.pressure_broad">[docs]</a><span class="k">def</span> <span class="nf">pressure_broad</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">te</span><span class="p">,</span> <span class="n">ne</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pressure induced broadening in Hz.</span>
-<span class="sd">    Shaver (1975)</span>
+<span class="sd">    Shaver (1975) Eq. (64a) for te &lt;= 1000 K and</span>
+<span class="sd">    Eq. (61) for te &gt; 1000 K.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
-    <span class="k">return</span> <span class="mf">2e-5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">26.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">Te</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span><span class="p">))</span><span class="o">*</span><span class="n">ne</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">)</span></div>
+    <span class="k">if</span> <span class="n">te</span> <span class="o">&lt;=</span> <span class="mi">1000</span><span class="p">:</span>
+        <span class="n">dnup</span> <span class="o">=</span> <span class="mf">2e-5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">te</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">26.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">te</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span><span class="p">))</span><span class="o">*</span><span class="n">ne</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dnup</span> <span class="o">=</span> <span class="mf">3.74e-8</span><span class="o">*</span><span class="n">ne</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">4.4</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">te</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">dnup</span></div>
 
 <div class="viewcode-block" id="pressure_broad_salgado"><a class="viewcode-back" href="../../crrls.html#crrlpy.crrls.pressure_broad_salgado">[docs]</a><span class="k">def</span> <span class="nf">pressure_broad_salgado</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">Te</span><span class="p">,</span> <span class="n">ne</span><span class="p">,</span> <span class="n">dn</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1427,7 +1427,7 @@
     
     <span class="c1"># Apply a window function to reduce noise</span>
     <span class="k">if</span> <span class="n">window</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-        <span class="k">print</span> <span class="s1">&#39;Using default Gaussian window.&#39;</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Using default Gaussian window.&#39;</span><span class="p">)</span>
         <span class="n">stau</span> <span class="o">=</span> <span class="n">Gauss</span><span class="p">(</span><span class="n">tgrid</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;sigma&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;order&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">})</span>
     <span class="k">elif</span> <span class="n">window</span> <span class="o">==</span> <span class="s1">&#39;Wiener&#39;</span><span class="p">:</span>
         <span class="n">stau</span> <span class="o">=</span> <span class="n">Wiener</span><span class="p">(</span><span class="n">tgrid</span><span class="p">,</span> <span class="o">**</span><span class="n">kargs</span><span class="p">)</span>
@@ -1450,7 +1450,7 @@
     
     <span class="k">for</span> <span class="n">s</span><span class="p">,</span><span class="n">spec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">spectra</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s2">&quot;Working on file: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Working on file: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">spec</span><span class="p">))</span>
         <span class="n">nlist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="n">spec</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
         <span class="n">vel</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># velocity in km/s</span>
@@ -1523,8 +1523,8 @@
         <span class="n">best_fit</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">best_fit</span>
         <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
             <span class="c1">#print nlist</span>
-            <span class="k">print</span> <span class="n">fit</span><span class="o">.</span><span class="n">fit_report</span><span class="p">()</span>
-            <span class="k">print</span> <span class="s2">&quot;Lowest rms: {0} for # stacks: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">crms</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">crms</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">fit</span><span class="o">.</span><span class="n">fit_report</span><span class="p">())</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Lowest rms: {0} for # stacks: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">crms</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">crms</span><span class="p">)))</span>
             <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
             <span class="n">ax1</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
             <span class="c1">#ax2 = ax1.twiny()</span>
