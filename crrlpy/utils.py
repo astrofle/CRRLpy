@@ -44,6 +44,18 @@ def best_match_indx(value, array):
         
     return np.where(subarr == subarrmin)[0][0]
 
+def factors(n):
+    """
+    Decomposes a number into its factors.
+    :param n: Number to decompose.
+    :type n: int
+    :return: List of values into which n can be decomposed.
+    :rtype: list
+    """
+
+    return set(reduce(list.__add__,
+                ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
+
 def flatten_list(list):
     """
     | Flattens a list of lists.
