@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import re
+import ntpath
 import numpy as np
 
 from functools import reduce
@@ -144,6 +145,15 @@ def natural_sort(list):
     """
     
     list.sort(key=alphanum_key)
+
+def path_leaf(path):
+    """
+    Taken from:
+    https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format
+    """
+
+    head, tail = ntpath.split(path)
+    return tail or ntpath.basename(head)
 
 def pow_notation(number, sig_fig=2):
     """
