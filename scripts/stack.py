@@ -32,6 +32,7 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
     
     logger.info('Will use the following files as input: ')
     logger.info(specs)
+    logger.info('The stack consists of {0} lines'.format(len(specs)))
     
     # Determine velocity resolution of stack.
     if dv == 0:
