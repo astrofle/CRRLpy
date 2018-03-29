@@ -33,14 +33,15 @@ def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3):
     # Invert frequency axis when searching for lines if necessary
     fi = 1
     if freq[0] > freq[-1]: fi = -1
-    
+#    print(freq[::fi][0], freq[::fi][-1])
+
     # Find the lines in the cube
     qns, reff = crrls.find_lines_sb(freq[::fi]*1e-6, transition, z) # returns in MHz
     #print reff
 
     if not reff:
-        print 'No RRL found.',
-        print 'Will now exit.'
+        print('No {0} line found.'.format(transition))
+        print('Will now exit.')
         sys.exit(0)
     
     # Get a velocity axis
