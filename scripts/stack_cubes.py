@@ -133,8 +133,8 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
         vmin_idx = utils.best_match_indx(vmin, ve)
         vmax_idx = utils.best_match_indx(vmax, ve)
         [vmin_idx,vmax_idx] = sorted([vmin_idx,vmax_idx])
-        vmin_idx -= 1
-        vmax_idx += 1
+        if vmin_idx > 0: vmin_idx -= 1
+        if vmax_idx < len(ve): vmax_idx += 1
         data_ = data[vmin_idx:vmax_idx]
         ve_ = ve[vmin_idx:vmax_idx]
  
