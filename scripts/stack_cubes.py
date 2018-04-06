@@ -31,7 +31,7 @@ def parse_cube_list(cubes):
         else:
             logger.info('Input cube list not understood.')
 
-def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clobber=False, algo='channel'):
+def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, overwrite=False, algo='channel'):
     """
     """
     
@@ -83,7 +83,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
         s = 0
     
     nvaxis = np.arange(vmin, vmax, dv)
-    stack = np.zeros((len(nvaxis),) + shape[s+1:])
+    stack = np.ma.zeros((len(nvaxis),) + shape[s+1:])
     
     # Check if there is a weight list
     if weight_list:
@@ -91,7 +91,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
             wl = np.loadtxt(weight_list, dtype=[('fits', np.str_, 256), ('w', np.float64)])
         except ValueError:
             wl = np.loadtxt(weight_list, dtype=[('fits', np.str_, 256), ('w', np.str_, 256)])
-    weight = np.zeros((len(nvaxis),) + shape[s+1:])
+    weight = np.ma.zeros((len(nvaxis),) + shape[s+1:])
     #else:
     #    weight = np.ones((len(nvaxis),) + shape[s+1:])*len(cubel)
         
@@ -130,9 +130,17 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
         logger.info('RA axis limits: {0} {1}'.format(min(ra), max(ra)))
         logger.info('DEC axis limits: {0} {1}'.format(min(de), max(de)))
         logger.info('VEL axis limits: {0} {1}'.format(min(ve), max(ve)))
-        
+       
+        vmin_idx = utils.best_match_indx(vmin, ve)
+        vmax_idx = utils.best_match_indx(vmax, ve)
+        [vmin_idx,vmax_idx] = sorted([vmin_idx,vmax_idx])
+        vmin_idx -= 1
+        vmax_idx += 1
+        data_ = data[vmin_idx:vmax_idx]
+        ve_ = ve[vmin_idx:vmax_idx]
+ 
         # Check that the axes are in ascending order
-        if ve[0] > ve[1]: 
+        if ve_[0] > ve_[1]: 
             vs = -1
         else:
             vs = 1
@@ -143,7 +151,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
             vr = 1
         
         # Interpolate the data
-        interp = RegularGridInterpolator((ve[::vs], de, ra[::vr]), data[::vs,:,::vr])
+        interp = RegularGridInterpolator((ve_[::vs], de, ra[::vr]), data_[::vs,:,::vr])
 
         # Add the data to the stack
         if 'vector' in algo.lower():
@@ -161,10 +169,16 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
                 pts = np.array([[nvaxis[k], de[j], ra[i]] \
                                 for j in range(len(de)) \
                                 for i in range(len(ra[::vr]))])
-                newshape = (1,) + shape[s+1:]
+#                newshape = (1,) + shape[s+1:]
+                newshape = shape[s+1:]
                 aux_weight = np.ones(newshape)*w
                 try:
-                    stack[k] += interp(pts).reshape(newshape)[0]*aux_weight[0]
+                    stack_ = np.ma.masked_invalid(interp(pts).reshape(newshape)*aux_weight[0])
+                    stack_.fill_value = 0.
+                    aux_weight[stack_.mask] = 0
+                    weight[k] += aux_weight
+                    stack[k] += stack_.filled()
+#                    stack[k] += np.ma.masked_invalid(interp(pts).reshape(newshape)[0]*aux_weight[0])
                 except ValueError:
                     logger.info('Point outside range: ' \
                                 'vel={0}, ra={1}..{2}, dec={3}..{4}'.format(pts[0,0], 
@@ -177,13 +191,15 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
             logger.info('Will exit now.')
             sys.exit(1)
         
-        weight += np.ones(stack.shape)*w
+#        weight += np.ones(stack.shape)*w
 
     # Divide by the number of input cubes to get the mean
     stack = stack/weight
-    
+    stack.fill_value = np.nan
+    weight.fill_value = np.nan
+
     # Write to a fits file
-    hdulist = fits.PrimaryHDU(stack)
+    hdulist = fits.PrimaryHDU(stack.filled())
     # Copy the header from the first channel image
     hdulist.header = fits.open(cubel[0])[0].header.copy()
     hdulist.header['CTYPE3'] = 'VELO'
@@ -191,23 +207,23 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, clob
     hdulist.header['CDELT3'] = dv
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
-    hdulist.writeto(outfits, overwrite=clobber)
+    hdulist.writeto(outfits, overwrite=overwrite)
 
     stack_head = hdulist.header.copy()
-    hdulist = fits.PrimaryHDU(weight)
+    hdulist = fits.PrimaryHDU(weight.filled())
     hdulist.header = stack_head
     hdulist.header['CTYPE3'] = 'VELO'
     hdulist.header['CRVAL3'] = nvaxis[0]
     hdulist.header['CDELT3'] = dv
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
-    hdulist.writeto(outfits.split('.fits')[0]+'_weight.fits', overwrite=clobber)
+    hdulist.writeto(outfits.split('.fits')[0]+'_weight.fits', overwrite=overwrite)
 
 if __name__ == '__main__':
     
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('cubes', type=str,
+    parser.add_argument('cubes', type=str, nargs='+',
                         help="List of cubes to process.\n" \
                              r"E.g., \"lba_hgh_*.ascii\" (string).\n" \
                              "Wildcards and [] accepted.")
@@ -233,7 +249,7 @@ if __name__ == '__main__':
     parser.add_argument('-l', '--logfile', type=str, default=None,
                         help="Where to store the logs.\n" \
                              "(string, Default: output to console)")
-    parser.add_argument('--clobber', 
+    parser.add_argument('--overwrite', 
                         help="Overwrite existing fits files?",
                         action='store_true')
     parser.add_argument('--algo', type=str, default='channel',
@@ -252,9 +268,9 @@ if __name__ == '__main__':
     
     logger = logging.getLogger(__name__)
 
-    cubel = parse_cube_list(args.cubes)
+    #cubel = parse_cube_list(args.cubes)
 
-    stack_cubes(cubel, args.stack, args.v_max, args.v_min, args.dv, 
-                args.weight_list, args.v_axis, args.clobber, args.algo)
+    stack_cubes(args.cubes, args.stack, args.v_max, args.v_min, args.dv, 
+                args.weight_list, args.v_axis, args.overwrite, args.algo)
     
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))
