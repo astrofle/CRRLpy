@@ -36,26 +36,37 @@ def bpcorr(data, bandpass, head, mode, offset=10.):
     hdu = fits.open(bandpass)
     bp = np.ma.masked_invalid(hdu[0].data)
     hbp = hdu[0].header
-    
+
+    try:
+        head['CDELT1']
+        wcs_info = True
+    except KeyError:
+        logger.info('There seems to be no WCS information...')
+        logger.info('Make sure the bandpass solution uses the same grid as the data being corrected.')
+        wcs_info = False
+        
     if len(bp.shape) > 3:
         logger.info('Will drop first axis from bandpass solution.')
         bp = bp[0]
+   
+    if wcs_info: 
+        if not ci.compare_headers(hbp, head):
     
-    if not ci.compare_headers(hbp, head):
-        logger.info('Headers do not match, will interpolate the bandpass solutions.')
-        ra, de, ve = ci.get_fits3axes(head)
-        rabp, debp, vebp = ci.get_fits3axes(hbp)
-        rs, ds, vs = ci.check_ascending(rabp, debp, vebp, True)
-        
-        ibp = RegularGridInterpolator((vebp[::vs], debp[::ds], rabp[::rs]), 
-                                      bp[::vs,::ds,::rs].filled(), 
-                                      bounds_error=False, fill_value=offset)
-        
-        bp4c = np.zeros(data.shape)
-        for k in range(len(ve)):
-            pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
-            newshape = (1,) + data.shape[1:]
-            bp4c[k] += ibp(pts).reshape(newshape)[0]
+            logger.info('Headers do not match, will interpolate the bandpass solutions.')
+            ra, de, ve = ci.get_fits3axes(head)
+            rabp, debp, vebp = ci.get_fits3axes(hbp)
+            rs, ds, vs = ci.check_ascending(rabp, debp, vebp, True)
+            
+            ibp = RegularGridInterpolator((vebp[::vs], debp[::ds], rabp[::rs]), 
+                                          bp[::vs,::ds,::rs].filled(), 
+                                          bounds_error=False, fill_value=offset)
+            
+            bp4c = np.zeros(data.shape)
+    
+            for k in range(len(ve)):
+                pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
+                newshape = (1,) + data.shape[1:]
+                bp4c[k] += ibp(pts).reshape(newshape)[0]
     else:
         bp4c = bp
     
