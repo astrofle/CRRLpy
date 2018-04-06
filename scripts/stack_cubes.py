@@ -84,7 +84,8 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
     
     nvaxis = np.arange(vmin, vmax, dv)
     stack = np.ma.zeros((len(nvaxis),) + shape[s+1:])
-    
+    covrg = np.zeros((len(nvaxis),) + shape[s+1:])
+
     # Check if there is a weight list
     if weight_list:
         try:
@@ -92,8 +93,6 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
         except ValueError:
             wl = np.loadtxt(weight_list, dtype=[('fits', np.str_, 256), ('w', np.str_, 256)])
     weight = np.ma.zeros((len(nvaxis),) + shape[s+1:])
-    #else:
-    #    weight = np.ones((len(nvaxis),) + shape[s+1:])*len(cubel)
         
     logger.info('Output stack will have dimensions: {0}'.format(stack.shape))
     
@@ -155,6 +154,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
 
         # Add the data to the stack
         if 'vector' in algo.lower():
+
             logger.info('Will use one vector to reconstruct the cube')
             pts = np.array([[nvaxis[k], de[j], ra[i]] \
                             for k in range(len(nvaxis)) \
@@ -164,21 +164,27 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
             stack += interp(pts).reshape(stack.shape)*aux_weight
 
         elif 'channel' in algo.lower():
+
             logger.info('Will reconstruct the cube one channel at a time')
+
             for k in range(len(nvaxis)):
+
                 pts = np.array([[nvaxis[k], de[j], ra[i]] \
                                 for j in range(len(de)) \
                                 for i in range(len(ra[::vr]))])
-#                newshape = (1,) + shape[s+1:]
                 newshape = shape[s+1:]
                 aux_weight = np.ones(newshape)*w
+                aux_cov = np.ones(newshape)
+
                 try:
                     stack_ = np.ma.masked_invalid(interp(pts).reshape(newshape)*aux_weight[0])
                     stack_.fill_value = 0.
                     aux_weight[stack_.mask] = 0
+                    aux_cov[stack_.mask] = 0
                     weight[k] += aux_weight
+                    covrg[k] += aux_cov
                     stack[k] += stack_.filled()
-#                    stack[k] += np.ma.masked_invalid(interp(pts).reshape(newshape)[0]*aux_weight[0])
+                    
                 except ValueError:
                     logger.info('Point outside range: ' \
                                 'vel={0}, ra={1}..{2}, dec={3}..{4}'.format(pts[0,0], 
@@ -186,13 +192,12 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
                                                                             max(pts[:,2]), 
                                                                             min(pts[:,1]), 
                                                                             max(pts[:,1])))
+        
         else:
             logger.info('Cube reconstruction algorithm unrecognized.')
             logger.info('Will exit now.')
             sys.exit(1)
         
-#        weight += np.ones(stack.shape)*w
-
     # Divide by the number of input cubes to get the mean
     stack = stack/weight
     stack.fill_value = np.nan
@@ -218,6 +223,15 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
     hdulist.header['CRPIX3'] = 1
     hdulist.header['CUNIT3'] = 'm/s'
     hdulist.writeto(outfits.split('.fits')[0]+'_weight.fits', overwrite=overwrite)
+
+    hdulist = fits.PrimaryHDU(covrg)
+    hdulist.header = stack_head
+    hdulist.header['CTYPE3'] = 'VELO'
+    hdulist.header['CRVAL3'] = nvaxis[0]
+    hdulist.header['CDELT3'] = dv
+    hdulist.header['CRPIX3'] = 1
+    hdulist.header['CUNIT3'] = 'm/s'
+    hdulist.writeto(outfits.split('.fits')[0]+'_coverage.fits', overwrite=overwrite)
 
 if __name__ == '__main__':
     
