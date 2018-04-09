@@ -2,7 +2,9 @@
 """
 Bandpass correction script for cubes.
 It provides tools for deriving bandpass 
-solutions, masking, applying and smoothing.
+solutions while masking line regions. 
+The solutions can be spatially smoothed
+before applying.
 """
 
 from __future__ import division
@@ -26,6 +28,8 @@ from scipy.interpolate import RegularGridInterpolator
 
 from datetime import datetime
 startTime = datetime.now()
+
+interp_opts = ['lineal', 'polyval']
 
 def bpcorr(data, bandpass, head, mode, offset=10.):
     """
@@ -67,17 +71,20 @@ def bpcorr(data, bandpass, head, mode, offset=10.):
                 pts = np.array([[ve[k], de[j], ra[i]] for j in range(len(de)) for i in range(len(ra))])
                 newshape = (1,) + data.shape[1:]
                 bp4c[k] += ibp(pts).reshape(newshape)[0]
+        else:
+            bp4c = bp
     else:
         bp4c = bp
     
     if 'div' in mode.lower():
         logger.info('Will divide by the bandpass.')
         bpcd = ((data)/bp4c - 1.)*offset
+        
     elif 'sub' in mode.lower():
         logger.info('Will subtract the bandpass.')
         bpcd = data - bp4c
 
-    return bpcd #((data)/bp4c - 1.)*offset
+    return bpcd
 
 def interpolate_bpsol(x, bp, head, offset=10.):
     """
@@ -90,14 +97,10 @@ def interpolate_bpsol(x, bp, head, offset=10.):
     
     logger.debug('(rs,ds,vs)=({0},{1},{2})'.format(rs, ds, vs))
     logger.debug('v0={0}, vf={1}'.format(x[::vs][0], x[::vs][-1]))
-    #print x[::vs]
-    #vs = 1
-    ibp = RegularGridInterpolator((x[::vs], de[::ds], ra[::rs]), 
+        
+    ibp = RegularGridInterpolator((x[::vs].compressed(), de[::ds], ra[::rs]), 
                                   bp[::vs,::ds,::rs], 
                                   bounds_error=False, fill_value=offset)
-    #ibp = RegularGridInterpolator((de[::ds], ra[::rs], x[::vs]), 
-                                  #bp[::vs,::ds,::rs].T, 
-                                  #bounds_error=False, fill_value=10.)
     
     bp4c = np.zeros((len(ve), len(de), len(ra)))
     for k in range(len(ve)):
@@ -121,20 +124,14 @@ def mask_cube(vel, data, vel_rngs, offset=10.):
     extend = nvel.extend
     
     logger.debug(vel_rngs)
-    
-    #print vel
-    
+        
     for i,velrng in enumerate(vel_rngs):
 
         vel_indx[i][0] = utils.best_match_indx(velrng[0], vel)
         vel_indx[i][1] = utils.best_match_indx(velrng[1], vel)
-        
-        #logger.debug('{0}'.format(vel_indx[i]))
-  
+          
         nvel.extend(vel[vel_indx[i][0]:vel_indx[i][1]+1])
         
-        #logger.debug('nvel: ', nvel)
-
         nvel_indx[i][0] = utils.best_match_indx(velrng[0], nvel)
         nvel_indx[i][1] = utils.best_match_indx(velrng[1], nvel)
         
@@ -143,25 +140,63 @@ def mask_cube(vel, data, vel_rngs, offset=10.):
     
     mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*offset
     logger.info('Masked data shape: {0}'.format(mdata.shape))
-    
-    #logger.debug(nvel_indx)
-    
+        
     logger.info('Will select the unmasked data.')
     for i in range(len(vel_indx)):
         mdata[nvel_indx[i][0]:nvel_indx[i][1]+1] = data[vel_indx[i][0]:vel_indx[i][1]+1]
         
     return nvel, mdata
 
+def mask_cube_(vel, data, vel_rngs, offset=10.):
+    """
+    """
+    
+    logger = logging.getLogger(__name__)
+    
+    vel_indx = np.empty(vel_rngs.shape, dtype=int)
+    #nvel_indx = np.empty(vel_rngs.shape, dtype=int)
+    #chns = np.zeros(len(vel_rngs))
+    #nchns = np.zeros(len(vel_rngs))
+    #nvel = []
+    #extend = nvel.extend
+    
+    logger.debug(vel_rngs)
+    
+    mdata = deepcopy(data)
+    mdata = np.ma.masked_invalid(mdata)
+        
+    for i,velrng in enumerate(vel_rngs):
+
+        vel_indx[i][0] = utils.best_match_indx(velrng[0], vel)
+        vel_indx[i][1] = utils.best_match_indx(velrng[1], vel)
+          
+        #nvel.extend(vel[vel_indx[i][0]:vel_indx[i][1]+1])
+        
+        #nvel_indx[i][0] = utils.best_match_indx(velrng[0], nvel)
+        #nvel_indx[i][1] = utils.best_match_indx(velrng[1], nvel)
+        
+        #chns[i] = vel_indx[i][1] - vel_indx[i][0] + 1
+        #nchns[i] = nvel_indx[i][1] - nvel_indx[i][0] + 1
+    
+    #mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*offset
+        logger.debug('Selected channels by mask: {0} -- {1}'.format(vel_indx[i][0], vel_indx[i][1]+1))
+        
+    #logger.info('Will select the unmasked data.')
+    #for i in range(len(vel_indx)):
+        mdata[vel_indx[i][0]:vel_indx[i][1]+1].mask = True
+        
+    return mdata
+
 def save(data, output, head, overwrite=False):
     """
     """
     
     data.fill_value = np.nan
-    hdulist = fits.PrimaryHDU(data.filled())
+    #hdulist = fits.PrimaryHDU(data.filled())
     # Copy the header from original cube
-    hdulist.header = head.copy()
+    #hdulist.header = head.copy()
     # Write the fits file
-    hdulist.writeto(output, overwrite=overwrite)
+    fits.writeto(output, data.filled(), header=head, overwrite=overwrite)
 
 def smooth(bp_cube, std):
     """
@@ -171,13 +206,15 @@ def smooth(bp_cube, std):
     
     gauss_kernel = Gaussian2DKernel(std)
     bp_cube_sm = np.ma.masked_invalid(np.empty(bp_cube.shape))
+    
     for v in range(bp_cube.shape[0]):
+        
         logger.info('{0:.0f}%'.format(v/bp_cube.shape[0]*100.))
-        bp_cube_sm[v] = np.ma.masked_invalid(convolve(bp_cube[v], gauss_kernel))
+        bp_cube_sm[v] = np.ma.masked_invalid(convolve(bp_cube[v].filled(), gauss_kernel))
         
     return bp_cube_sm
 
-def solve(x, data, bandpass, cell, head, order, oversample=1, offset=10.):
+def solve(x, data, bandpass, cell, head, order, oversample=1, offset=10., keep_masked=False):
     """
     """
     
@@ -189,35 +226,46 @@ def solve(x, data, bandpass, cell, head, order, oversample=1, offset=10.):
     nx = (data.shape[2]//cx)
     ny = nx
     cy = cx
+    
     if len(cell) > 1:
         cy = cell[1]//oversample
         ny = (data.shape[1]//cy)
     
-    bp_cube = np.ma.masked_invalid(np.zeros(data.shape))
-    bp_cube_cov = np.ma.masked_invalid(np.zeros(data.shape))
+    if keep_masked:
+        bp_shape = data.shape
+        mx = np.ma.masked_invalid(x)
+    else:
+        bp_shape = (len(data.mean(axis=(1,2)).compressed()),)+data.shape[1:]
+        mx = np.ma.masked_where(data.mean(axis=(1,2)).mask, x)
     
+    logger.debug('Bandpass solution shape: {0}'.format(bp_shape))
+    
+    bp_cube = np.ma.masked_invalid(np.zeros(bp_shape))
+    bp_cube_cov = np.ma.masked_invalid(np.zeros(bp_shape))
+        
     for i in range(nx):
+        
         logger.info('{0:.0f}%'.format(i/nx*100.))
+        
         for j in range(ny):
+            
             y0 = j*cy
             yf = (j+1)*cy
             x0 = i*cx
             xf = (i+1)*cx
-            #print j, ny
+
             logger.debug('(x0,y0,xf,yf)=({0},{1},{2},{3})'.format(x0, y0, xf, yf)) 
             
             y = np.ma.masked_invalid(data[:,y0:yf,x0:xf].mean(axis=1).mean(axis=1))
             logger.debug('len y: {0}'.format(len(y)))
             
-            # Turn NaNs to zeros
-            my = np.ma.masked_invalid(y)
-            mx = np.ma.masked_where(np.ma.getmask(my), x)
-            mmx = np.ma.masked_invalid(mx)
-            mmy = np.ma.masked_where(np.ma.getmask(mmx), my)
-            np.ma.set_fill_value(mmy, offset)
-            np.ma.set_fill_value(mmx, offset)
-            gx = mmx.compressed()
-            gy = mmy.compressed()
+            # Copy mask to x axis.
+            _mx = np.ma.masked_where(np.ma.getmask(y), x)
+            np.ma.set_fill_value(y, offset)
+            np.ma.set_fill_value(_mx, offset)
+            
+            gx = _mx.compressed()
+            gy = y.compressed()
             
             logger.debug('len gx: {0}, len gy: {1}'.format(len(gx), len(gy)))
             
@@ -229,18 +277,27 @@ def solve(x, data, bandpass, cell, head, order, oversample=1, offset=10.):
             bp = np.polynomial.polynomial.polyfit(gx, gy, order)
             
             # Interpolate and extrapolate to the original x axis
-            xbp = np.polynomial.polynomial.polyval(x, bp)
+            if keep_masked:
+                xbp = np.polynomial.polynomial.polyval(x, bp)
+            else:
+                xbp = np.polynomial.polynomial.polyval(mx.compressed(), bp)
+                
             shape = bp_cube[:,y0:yf,x0:xf].shape
             bp_cube[:,y0:yf,x0:xf] += np.reshape(np.array([xbp]*np.prod(np.array(shape[1:]))).T, 
                                                  shape, order='C')
             bp_cube_cov[:,y0:yf,x0:xf] += np.ones(shape)
-            
+    
     logger.info('Bandpass solution spatial pixels: {0:.0f}/{1:.0f} '\
                 '{2:.0f}/{3:.0f}'.format((i+1)*cx, data.shape[2], (j+1)*cy, data.shape[1]))
+    
+    bp_cube.fill_value = np.nan
 
-    return np.ma.divide(bp_cube, bp_cube_cov)
+    return mx, np.ma.divide(bp_cube, bp_cube_cov)
 
-def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversample=1, average=1, overwrite=False, operation='div', offset=10.):
+def main(cube, output, bandpass, mode, cell, order, 
+         std=11, vrngs=None, oversample=1, average=1, 
+         overwrite=False, operation='div', offset=10., 
+         keep_masked=False):
     """
     """
     
@@ -283,13 +340,14 @@ def main(cube, output, bandpass, mode, cell, order, std=11, vrngs=None, oversamp
     # Mask
     if mode.lower() in ['mask', 'mask,solve', 'mask,solve,apply', 'mask,solve,smooth,apply']:
         logger.info('Will mask the requested velocity ranges before solving.')
-        mx, mdata = mask_cube(avg_x, avg_data, vrngs, offset)
+        #mx, mdata = mask_cube(avg_x, avg_data, vrngs, offset)
+        mdata = mask_cube_(avg_x, avg_data, vrngs, offset)
     else:
-        mx = avg_x
+        #mx = avg_x
         mdata = avg_data
     # Solve
     if mode.lower() in ['solve', 'mask,solve', 'mask,solve,apply', 'solve,apply', 'solve,smooth,apply', 'mask,solve,smooth,apply']:
-        bp_cube = solve(mx, mdata, bandpass, cell, head, order, oversample, offset)
+        mx, bp_cube = solve(avg_x, mdata, bandpass, cell, head, order, oversample, offset, keep_masked)
     if not ('smooth' in mode.lower() or 'mask' in mode.lower()) and 'solve' in mode.lower() and average <= 1:
         logger.info('Will write the bandpass cube with the solutions.')
         save(bp_cube, bandpass, head, overwrite)
@@ -351,17 +409,23 @@ if __name__ == '__main__':
     parser.add_argument('-v', '--verbose', action='store_true',
                         help="Verbose output?")
     parser.add_argument('-l', '--logfile', type=str, default=None,
-                        help="Where to store the logs.\n" \
-                             "(string, Default: output to console)")
+                        help="Where to store the logs (string).\n" \
+                             "Default: output to console")
     parser.add_argument('--overwrite', action='store_true',
                         help="Overwrite existing cubes?.\n" \
                              "Default: False")
     parser.add_argument('--operation', type=str, default='div',
-                        help="Subtract or divide the bandpass correction?\n"\
+                        help="Subtract or divide the bandpass correction (string).\n"\
                              "Default: divide")
     parser.add_argument('--offset', type=float, default=10.,
                         help="Offset to apply to data before solving. Useful to avoid division by zero.\n"\
                              "Default: 10.")
+    parser.add_argument('--keep_masked', action='store_true',
+                        help='Keep masked channels in the bandpass solution?.\n' \
+                             'If True masked channels will be kept when solving for the bandpass.\n'\
+                             'If False, a linear interpolation will be used to reconstruct the \n'\
+                             'bandpass over masked velocity ranges.\n'\
+                             'Default: False')
     args = parser.parse_args()
     
     if args.verbose:
@@ -391,6 +455,6 @@ if __name__ == '__main__':
         
     main(args.cubes, args.output, args.bandpass, args.mode, cell, args.order, 
          args.std, vrngs, args.oversample, args.average, args.overwrite, args.operation,
-         args.offset)
+         args.offset, args.keep_masked)
 
     logger.info('Script run time: {0}'.format(datetime.now() - startTime))

@@ -284,21 +284,21 @@ def check_ascending(ra, dec, vel, verbose=False):
     if vel[0] > vel[1]: 
         vs = -1
         if verbose:
-            print "Velocity axis is inverted."
+            print("Velocity axis is inverted.")
     else:
         vs = 1
             
     if ra[0] > ra[1]:
         rs = -1
         if verbose:
-            print "RA axis is inverted."
+            print("RA axis is inverted.")
     else:
         rs = 1
         
     if dec[0] > dec[1]:
         ds = -1
         if verbose:
-            print "DEC axis is inverted."
+            print("DEC axis is inverted.")
     else:
         ds = 1
         
@@ -391,7 +391,8 @@ def get_contours(x, y, z, levs, segment=0, verbose=False):
         if res:
             nseg = len(res) // 2
             segments.append(res[:nseg][segment])
-            if verbose: print res[:nseg][segment]
+            if verbose: 
+                print(res[:nseg][segment])
         else:
             pass
     
