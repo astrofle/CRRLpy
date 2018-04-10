@@ -154,13 +154,6 @@ def mask_cube_(vel, data, vel_rngs, offset=10.):
     logger = logging.getLogger(__name__)
     
     vel_indx = np.empty(vel_rngs.shape, dtype=int)
-    #nvel_indx = np.empty(vel_rngs.shape, dtype=int)
-    #chns = np.zeros(len(vel_rngs))
-    #nchns = np.zeros(len(vel_rngs))
-    #nvel = []
-    #extend = nvel.extend
-    
-    logger.debug(vel_rngs)
     
     mdata = deepcopy(data)
     mdata = np.ma.masked_invalid(mdata)
@@ -170,19 +163,8 @@ def mask_cube_(vel, data, vel_rngs, offset=10.):
         vel_indx[i][0] = utils.best_match_indx(velrng[0], vel)
         vel_indx[i][1] = utils.best_match_indx(velrng[1], vel)
           
-        #nvel.extend(vel[vel_indx[i][0]:vel_indx[i][1]+1])
-        
-        #nvel_indx[i][0] = utils.best_match_indx(velrng[0], nvel)
-        #nvel_indx[i][1] = utils.best_match_indx(velrng[1], nvel)
-        
-        #chns[i] = vel_indx[i][1] - vel_indx[i][0] + 1
-        #nchns[i] = nvel_indx[i][1] - nvel_indx[i][0] + 1
-    
-    #mdata = np.ones(((int(sum(chns)),)+data.shape[1:]))*offset
         logger.debug('Selected channels by mask: {0} -- {1}'.format(vel_indx[i][0], vel_indx[i][1]+1))
         
-    #logger.info('Will select the unmasked data.')
-    #for i in range(len(vel_indx)):
         mdata[vel_indx[i][0]:vel_indx[i][1]+1].mask = True
         
     return mdata
@@ -192,10 +174,6 @@ def save(data, output, head, overwrite=False):
     """
     
     data.fill_value = np.nan
-    #hdulist = fits.PrimaryHDU(data.filled())
-    # Copy the header from original cube
-    #hdulist.header = head.copy()
-    # Write the fits file
     fits.writeto(output, data.filled(), header=head, overwrite=overwrite)
 
 def smooth(bp_cube, std):
