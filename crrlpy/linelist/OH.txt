@@ -1,0 +1,5 @@
+#SPECIES-NAME,  TRANSITION-TYPE,  N-LEVEL,  FREQUENCY-[MHZ]
+OH  finestructure  0  1612.23100
+OH  finestructure  1  1665.40180
+OH  finestructure  2  1667.35900
+OH  finestructure  3  1720.53000
