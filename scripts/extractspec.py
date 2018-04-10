@@ -541,8 +541,13 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
         logger.debug('Invalid values will be replaced with: {0}'.format(freq.fill_value))
     else:
         fcol = [s for s in head.keys() if "FREQ" in s]
-        freq = head[fcol[0]]
-        logger.debug('No frequency axis. Will use column {0} of header.'.format(fcol))
+        try:
+            freq = head[fcol[0]]
+            logger.debug('No frequency axis. Will use column {0} of header.'.format(fcol))
+        except IndexError:
+            freq = np.nan
+            logger.debug('Could not guess the frequency. Will use {0} as frequency.'.format(freq))
+        
     #freq.fill_value = np.nan
     
     logger.info("Will now extract the spectra,",)
