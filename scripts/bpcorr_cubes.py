@@ -389,7 +389,7 @@ if __name__ == '__main__':
                              "'solve,smooth,apply', 'mask,solve,smooth,apply']\n" \
                              "Default: 'apply'")
     parser.add_argument('--vrngs', type=str, default=None,
-                        help="Velocity ranges to keep while solving for the bandpass (string).\n" \
+                        help="Velocity ranges to mask while solving for the bandpass (string).\n" \
                              "Default: None")
     parser.add_argument('-k', '--order', type=int, default=5,
                         help="Polynomial order used for solving (int).\n" \
