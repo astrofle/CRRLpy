@@ -66,14 +66,14 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
             #logger.info('Conflicting cube: {0}'.format(cube))
             logger.info('v_max={0}, v_max_min={1}'.format(vmax, vmax_min))
             logger.info('Will now exit')
-            sys.exit(1)
+#            sys.exit(1)
         if vmin_max > vmin:
             logger.info('Requested minimum velocity is smaller '\
                         'than one of the cubes velocity axis.')
             #logger.info('Conflicting cube: {0}'.format(cube))
             logger.info('v_min={0}, v_min_max={1}'.format(vmin, vmin_max))
             logger.info('Will now exit')
-            sys.exit(1)
+#            sys.exit(1)
 
     shape = hdu[0].shape
     if len(shape) > 3:
