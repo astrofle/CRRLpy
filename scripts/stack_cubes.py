@@ -172,12 +172,13 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
                 pts = np.array([[nvaxis[k], de[j], ra[i]] \
                                 for j in range(len(de)) \
                                 for i in range(len(ra[::vr]))])
-                newshape = shape[s+1:]
+
+                newshape = shape[s+1:] # Only spatial dimensions
                 aux_weight = np.ones(newshape)*w
                 aux_cov = np.ones(newshape)
 
                 try:
-                    stack_ = np.ma.masked_invalid(interp(pts).reshape(newshape)*aux_weight[0])
+                    stack_ = np.ma.masked_invalid(interp(pts).reshape(newshape)*aux_weight)
                     stack_.fill_value = 0.
                     aux_weight[stack_.mask] = 0
                     aux_cov[stack_.mask] = 0
