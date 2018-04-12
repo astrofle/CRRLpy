@@ -151,7 +151,8 @@ def parse_region(region, w, frame='fk5'):
                 
             params[2] = r/lscale
         
-        params = [int(round(float(x))) for x in params]
+        #params = [int(round(float(x))) for x in params]
+        params = [float(x) for x in params]
         rgn = {'shape':'circle',
                'params':{'cx':params[0], 'cy':params[1], 'r':params[2]}}
         
@@ -304,7 +305,7 @@ def extract_spec(data, region, naxis, mode):
                 sys.exit(1)
                 
     elif region['shape'] == 'circle':
-        logger.info("Circular region has a center" \
+        logger.info("Circular region has a center " \
                     "at pixel ({0},{1}) with radius " \
                     "{2}".format(region['params']['cx'], 
                                     region['params']['cy'], 
@@ -562,19 +563,26 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
         logger.info("Extracted spec has shape: {0}.".format(1))
         fspec = spec
         
+    # Try to guess the units of each output column based on the header.
     try:
         funit = head['CUNIT3']
-        ftype = head['CTYPE3']
-        if 'avg' in mode.lower():
-            bunit = head['BUNIT']
-        elif 'sum' in mode.lower():
-            bunit = 'sum of {0}'.format(head['BUNIT'])
-        elif 'flux' in mode.lower():
-            bunit = head['BUNIT'].split('/')[0]
     except KeyError:
-        funit = '(unitless)'
-        ftype = 'None'
-        bunit = 'Only God knows'
+        funit = '?'
+    
+    try:
+        ftype = head['CTYPE3']
+    except KeyError:
+        ftype = '?'
+    
+    try:
+        bunit = head['BUNIT']
+    except KeyError:
+        bunit = '?'
+    
+    if 'sum' in mode.lower():
+        bunit = 'sum of {0}'.format(bunit)
+    elif 'flux' in mode.lower():
+        bunit = bunit.split('/')[0]
     
     logger.debug('Brightness unit: {0}'.format(bunit))
     logger.debug('Frequency unit: {0}'.format(funit))
