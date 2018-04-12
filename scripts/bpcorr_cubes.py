@@ -375,7 +375,7 @@ if __name__ == '__main__':
     parser.add_argument('--cell', type=str, default='(10,10)',
                         help="Cell size in pixels units used for spatial averaging while solving (string).\n" \
                              "Default=(10,10)")
-    parser.add_argument('--std', type=int, default=11,
+    parser.add_argument('--std', type=float, default=11,
                         help="Standard deviation of the Gaussian kernel (float).\n" \
                              "Default: 11")
     parser.add_argument('-o', '--oversample', type=int, default=1,

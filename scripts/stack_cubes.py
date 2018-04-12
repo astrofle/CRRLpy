@@ -82,7 +82,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
     else:
         s = 0
     
-    nvaxis = np.arange(vmin, vmax, dv)
+    nvaxis = np.arange(vmin, vmax+dv, dv)
     stack = np.ma.zeros((len(nvaxis),) + shape[s+1:])
     covrg = np.zeros((len(nvaxis),) + shape[s+1:])
 
