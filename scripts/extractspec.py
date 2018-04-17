@@ -3,7 +3,7 @@
 """
 Extracts a spectrum from a region in a spectral cube.
 The pixels will be averaged spatially inside the given region.
-The region must be specified as shape,coords,parameters
+The region must be specified as shape,coords,frame,parameters
 Region can be, point, box or circle. Also, CASA region files are supported.
 Coords can be pix or sky.
 Parameters, for point the coordinates of the point, e.g. point,pix,512,256.
@@ -30,7 +30,7 @@ import logging
 from astropy.io import fits
 from astropy.table import Table
 from astropy.io import ascii
-from astropy import wcs
+from astropy.wcs import WCS
 from astropy.coordinates import SkyCoord
 
 import crrlpy.imtools as ci
@@ -68,7 +68,7 @@ def sector_mask(shape, centre, radius, angle_range):
 
     return circmask*anglemask
 
-def parse_region(region, w, frame='fk5'):
+def parse_region(region, wcs):
     """
     Parses a region description to a dict
     """
@@ -76,12 +76,17 @@ def parse_region(region, w, frame='fk5'):
     logger = logging.getLogger(__name__)
     
     shape = region.split(',')[0]
-    #print shape
     coord = region.split(',')[1]
+    frame = region.split(',')[2]
     try:
-        params = region.split(',')[2:]
+        params = region.split(',')[3:]
     except IndexError:
         logger.error('No coordinates given.')
+        logger.error('Will exit now.')
+        sys.exit(1)
+        
+    if 'sky' in coord.lower() and frame == '':
+        logger.error('No frame specified.')
         logger.error('Will exit now.')
         sys.exit(1)
     
@@ -92,11 +97,11 @@ def parse_region(region, w, frame='fk5'):
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
             
             if frame in ['fk5', 'fk4']:
-                params[0:2] = w.all_world2pix([[coo_sky.ra.value, 
-                                                coo_sky.dec.value]], 0)[0]
-            elif frame == 'galactic':
-                params[0:2] = w.all_world2pix([[coo_sky.l.value, 
-                                                coo_sky.b.value]], 0)[0]
+                params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
+                                                  coo_sky.dec.value]], 0)[0]
+            elif 'gal' in frame:
+                params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
+                                                  coo_sky.b.value]], 0)[0]
 
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'point',
@@ -110,14 +115,14 @@ def parse_region(region, w, frame='fk5'):
             trc_sky = SkyCoord(params[2], params[3], frame=frame)
             
             if frame in ['fk5', 'fk4']:
-                params[0:2] = w.all_world2pix([[blc_sky.ra.value, 
+                params[0:2] = wcs.all_world2pix([[blc_sky.ra.value, 
                                                 blc_sky.dec.value]], 0)[0]
-                params[2:] = w.all_world2pix([[trc_sky.ra.value, 
+                params[2:] = wcs.all_world2pix([[trc_sky.ra.value, 
                                                trc_sky.dec.value]], 0)[0]
-            elif frame == 'galactic':
-                params[0:2] = w.all_world2pix([[blc_sky.l.value, 
+            elif 'gal' in frame:
+                params[0:2] = wcs.all_world2pix([[blc_sky.l.value, 
                                                 blc_sky.b.value]], 0)[0]
-                params[2:] = w.all_world2pix([[trc_sky.l.value, 
+                params[2:] = wcs.all_world2pix([[trc_sky.l.value, 
                                                trc_sky.b.value]], 0)[0]
                 
         params = [int(round(float(x))) for x in params]
@@ -132,13 +137,13 @@ def parse_region(region, w, frame='fk5'):
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
             
             if frame in ['fk5', 'fk4']:
-                params[0:2] = w.all_world2pix([[coo_sky.ra.value, 
-                                                coo_sky.dec.value]], 0)[0]
-            elif frame == 'galactic':
-                params[0:2] = w.all_world2pix([[coo_sky.l.value, 
-                                                coo_sky.b.value]], 0)[0]
+                params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
+                                                  coo_sky.dec.value]], 0)[0]
+            elif 'gal' in frame:
+                params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
+                                                  coo_sky.b.value]], 0)[0]
             
-            lscale = abs(w.to_fits()[0].header['CDELT1'])*u.deg
+            lscale = abs(wcs.to_fits()[0].header['CDELT1'])*u.deg
             val, uni = split_str(params[2])
             
             # Add units to the radius
@@ -212,7 +217,6 @@ def get_axis(header, axis):
     dx = header.get("CDELT" + axis)
     logger.debug('dx: {0}'.format(dx))
     try:
-        dx = int(dx)
         p0 = header.get("CRPIX" + axis)
         p0 = header.get("CRPIX" + axis)
         x0 = header.get("CRVAL" + axis)
@@ -444,14 +448,14 @@ def set_wcs(head):
     
     # Create a new WCS object. 
     # The number of axes must be set from the start.
-    w = wcs.WCS(naxis=2)
+    wcs = WCS(naxis=2)
     
-    w.wcs.crpix = [head['CRPIX1'], head['CRPIX2']]
-    w.wcs.cdelt = [head['CDELT1'], head['CDELT2']]
-    w.wcs.crval = [head['CRVAL1'], head['CRVAL2']]
-    w.wcs.ctype = [head['CTYPE1'], head['CTYPE2']]
+    wcs.wcs.crpix = [head['CRPIX1'], head['CRPIX2']]
+    wcs.wcs.cdelt = [head['CDELT1'], head['CDELT2']]
+    wcs.wcs.crval = [head['CRVAL1'], head['CRVAL2']]
+    wcs.wcs.ctype = [head['CTYPE1'], head['CTYPE2']]
     
-    return w
+    return wcs
 
 def show_rgn(ax, rgn, **kwargs):
     """
