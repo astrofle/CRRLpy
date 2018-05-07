@@ -153,8 +153,9 @@ def parse_region(region, wcs):
                 r = val*u.arcmin
             if uni == 's':
                 r = val*u.arcsec
-                
-            params[2] = r/lscale
+            logger.debug('lscale: {0}'.format(lscale))
+            logger.debug('radius: {0}'.format(r))
+            params[2] = (r/lscale).cgs.value
         
         #params = [int(round(float(x))) for x in params]
         params = [float(x) for x in params]
@@ -227,10 +228,16 @@ def get_axis(header, axis):
         x0 = 1
 
     n = header.get("NAXIS" + axis)
-    #print "Number channels in extracted spectrum: {0}".format(n)
     logger.info("Number channels in extracted spectrum: {0}".format(n))
     
-    return np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+    axis_vals = np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+
+    if len(axis_vals) > n:
+        logger.debug('The array with the axis values is longer than the axis itself...')
+        logger.debug('Selecting only the first {0} values.'.format(n))
+        axis_vals = axis_vals[:n]
+ 
+    return axis_vals # np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
 
 def extract_spec(data, region, naxis, mode):
     """
