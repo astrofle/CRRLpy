@@ -227,7 +227,7 @@ def update_text_slopes():
         p1, p2 = label["p1"], label["p2"]
 
         # get the line's data transform
-        ax = line.get_axes()
+        ax = line.axes
 
         sp1 = ax.transData.transform_point(p1)
         sp2 = ax.transData.transform_point(p2)
