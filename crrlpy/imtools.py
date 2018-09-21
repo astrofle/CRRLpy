@@ -5,7 +5,9 @@ import inspect
 
 import numpy as np
 
-from matplotlib import _cntr as cntr
+#from matplotlib import _cntr as cntr
+from contours.core import shapely_formatter as shapely_fmt
+from contours.quad import QuadContourGenerator
 from astropy.coordinates import Angle
 from astropy import constants as c
 from astropy import wcs
@@ -383,11 +385,14 @@ def get_contours(x, y, z, levs, segment=0, verbose=False):
     Creates an array with the contour vertices.
     """
     
-    c = cntr.Cntr(x, y, z)
+    c = QuadContourGenerator.from_rectilinear(x, y, z, shapely_fmt)
+    
+    #c = cntr.Cntr(x, y, z)
     
     segments = []
     for i,l in enumerate(levs):
-        res = c.trace(l)
+        #res = c.trace(l)
+        res = c.filled_contour(min=1-l, max=None)
         if res:
             nseg = len(res) // 2
             segments.append(res[:nseg][segment])

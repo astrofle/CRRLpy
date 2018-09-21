@@ -9,7 +9,7 @@ if __name__ == '__main__':
     
     n_min = 5
     n_max = 1000
-    out = 'RRL_CIalpha_itau_lcass_ext'
+    out = 'RRL_CIalpha_bnbeta_lcass_ext'
     
     #Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', 
                    #'5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', 
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     if not os.path.isfile('{0}.npy'.format(out)): 
     
         itau_mod = rrlmod.load_itau_dict(models, 'RRL_CIalpha', n_min=n_min, n_max=n_max, 
-                                         verbose=True, value='itau')
+                                         verbose=True, value='')
         np.save('{0}.npy'.format(out), itau_mod)
         pickle.dump(models, open('{0}.p'.format(out), "wb"))
     else:

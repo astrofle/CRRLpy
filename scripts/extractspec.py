@@ -143,7 +143,7 @@ def parse_region(region, wcs):
                 params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
                                                   coo_sky.b.value]], 0)[0]
             
-            lscale = abs(wcs.to_fits()[0].header['CDELT1'])*u.deg
+            lscale = abs(wcs.pixel_scale_matrix[0,0])*u.deg
             val, uni = split_str(params[2])
             
             # Add units to the radius
@@ -454,14 +454,13 @@ def set_wcs(head):
     """
     
     # Create a new WCS object. 
-    # The number of axes must be set from the start.
-    wcs = WCS(naxis=2)
+    wcs = WCS(head)
     
-    wcs.wcs.crpix = [head['CRPIX1'], head['CRPIX2']]
-    wcs.wcs.cdelt = [head['CDELT1'], head['CDELT2']]
-    wcs.wcs.crval = [head['CRVAL1'], head['CRVAL2']]
-    wcs.wcs.ctype = [head['CTYPE1'], head['CTYPE2']]
-    
+    if wcs.naxis > 3:
+        wcs = wcs.dropaxis(2)
+
+    print('WCS contains {0} axes.'.format(wcs.naxis))
+        
     return wcs
 
 def show_rgn(ax, rgn, **kwargs):
@@ -535,11 +534,15 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
     
     # Build a WCS object to handle sky coordinates
     if not 'pix' in region:
-        w = set_wcs(head)
+        wcs = set_wcs(head)
     else:
-        w = None
+        wcs = None
     
-    rgn = parse_region(region, w)
+    # Only pass spatial axes
+    if wcs.naxis > 2:
+        rgn = parse_region(region, wcs.dropaxis(2))
+    else:
+        rgn = parse_region(region, wcs)
     
     # Add beam area info to the region. Used when the requested units are flux units.
     if 'flux' in mode.lower():

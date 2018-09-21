@@ -23,7 +23,7 @@ import astropy.units as u
 
 from crrlpy import frec_calc as fc
 from astropy.constants import h, k_B, c, m_e, Ryd, e
-from astropy.analytic_functions import blackbody_nu
+from astropy.modeling.blackbody import blackbody_nu
 from crrlpy.crrls import natural_sort, f2n, n2f
 from crrlpy.utils import best_match_indx
 
@@ -149,7 +149,7 @@ def G_CII(Tbg):
     
     return 1./(np.exp(91.25*u.K/Tbg) - 1.)
 
-def gamma_e_CII(Te, method='FS'):
+def gamma_e_CII(te, method='FS'):
     """
     Computes the de-excitation rate of the CII atom due to collisions with electrons.
     
@@ -159,12 +159,12 @@ def gamma_e_CII(Te, method='FS'):
     :rtype: float
     """
     
-    rates = {'FS': lambda Te: 4.51e-6*np.power(Te, -0.5),
-             'PG': lambda Te: 8.7e-8*np.power(Te/2000., -0.37)}
+    rates = {'FS': lambda t: 4.51e-6*np.power(t, -0.5),
+             'PG': lambda t: 8.7e-8*np.power(t/2000., -0.37)}
     
-    return rates[method](Te) #4.51e-6*np.power(Te, -0.5)
+    return rates[method](te) #4.51e-6*np.power(Te, -0.5)
 
-def gamma_h_CII(Te, method='FS'):
+def gamma_h_CII(te, method='FS'):
     """
     Computes the de-excitation rate of the CII atom due to collisions with hydrogen atoms.
     
@@ -174,17 +174,20 @@ def gamma_h_CII(Te, method='FS'):
     :rtype: float
     """
     
-    rates = {'FS': lambda Te: 5.8e-10*np.power(Te, 0.02),
-             'PG': lambda Te: 7.6e-10*np.power(Te/100., 0.14),
-             'PGe': lambda Te: 4e-11*(16. + 0.35*np.power(Te, 0.5) + 48./Te)}
+    rates = {'FS': lambda t: 5.8e-10*np.power(t, 0.02),
+             'PG': lambda t: 7.6e-10*np.power(t/100., 0.14),
+             'PGe': lambda t: 4e-11*(16. + 0.35*np.power(t, 0.5) + 48./t)}
     
-    return rates[method](Te) #5.8e-10*np.power(Te, 0.02)
+    return rates[method](te)
 
-def gamma_h2_CII(Te):
+def gamma_h2_CII(te, method='TH'):
     """
     """
     
-    return 3.8e-10*np.power(Te/100., 0.14)
+    rates = {'TH': lambda t: 3.1e-10*np.power(t, 0.1),
+             'PG': lambda t: 3.8e-10*np.power(t/100., 0.14)}
+    
+    return rates[method](te)
 
 def I_Bnu(specie, Z, n, Inu_funct, *args):
     """
@@ -262,10 +265,10 @@ def I_CII(T158, R, NCII):
     :returns: The frequency integrated line intensity in units of Jy Hz or g s-3
     """
     
-    nu0 = 1900.53690*u.GHz
-    A = 2.4e-6*u.s**-1
+    nu0 = 1900.53690e6
+    A = 2.36e-6
     
-    cte = h*nu0/(4.*np.pi)*A*2.
+    cte = h.cgs.value*nu0/(4.*np.pi)*A*2.
     
     return cte*np.exp(-91.21/T158)*R*NCII/(1. + 2.*np.exp(-91.21/T158)*R)
 
@@ -382,7 +385,7 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     
     bbn = load_betabn(temp, dens, other, line, verbose)
     nimin = best_match_indx(n_min, bbn[:,0])
-    nimax = best_match_indx(n_max, bbn[:,0]) + 1
+    nimax = best_match_indx(n_max, bbn[:,0])
     n = bbn[nimin:nimax,0]
     b = bbn[nimin:nimax,1]
     
@@ -431,6 +434,13 @@ def itau_norad(n, Te, b, dn, mdn_):
     """
     
     return -1.069e7*dn*mdn_*b*np.exp(1.58e5/(np.power(n, 2.)*Te))/np.power(Te, 5./2.)
+
+def itau_lte(n, Te, dn, mdn_, em):
+    """
+    Returns the CRRL optical depth integrated in velocity.
+    """
+    
+    return 1.069e7*dn*mdn_*np.exp(1.58e5/(np.power(n, 2.)*Te))/np.power(Te, 5./2.)*em
 
 def j_line_lte(n, ne, nion, Te, Z, trans):
     """
@@ -608,6 +618,58 @@ def level_pop_lte(n, ne, nion, Te, Z):
     
     return Nn
 
+def load_bn(temp, dens, other=''):
+    """
+    Loads the bn values from the CRRL models.
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    mod_file = '{0}/bn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat{3}'.format(LOCALDIR, temp, dens, other)
+    
+    data = np.loadtxt(mod_file)
+    
+    return data
+
+def load_bn2(Te, ne, Tr='', n_min=5, n_max=1000, verbose=False):
+    """
+    Loads the bn values from the CRRL models.
+    
+    :param Te: Electron temperature of the model.
+    :type Te: string
+    :param ne: Electron density of the model.
+    :type ne: string
+    :param Tr: Radiation field of the model.
+    :type Tr: string
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :returns: The :math:`b_{n}` value for the given model conditions.
+    :rtype: array
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    if Tr == '-' or Tr == '':
+        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne)
+        if verbose:
+            print("Loading {0}".format(mod_file))
+        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne))[0]
+    else:
+        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr)
+        if verbose:
+            print("Loading {0}".format(mod_file))
+        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr))[0]
+    
+    if verbose:
+        print("Loaded {0}".format(mod_file))
+    bn = np.loadtxt(mod_file)
+    
+    nimin = best_match_indx(n_min, bn[:,0])
+    nimax = best_match_indx(n_max, bn[:,0])
+    bn = bn[nimin:nimax+1]
+    
+    return bn
+
 def load_bn_all(n_min=5, n_max=1000, verbose=False):
     """
     """
@@ -690,7 +752,7 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
                                                        
     """
     
-    data = np.zeros((len(dict['Te']), 5, n_max-n_min))
+    data = np.zeros((len(dict['Te']), 5, n_max-n_min+1))
     
     for i,t in enumerate(dict['Te']):
         
@@ -1009,58 +1071,6 @@ def load_betabn_h(temp, dens, other='', trans='alpha', verbose=False):
     
     return data
 
-def load_bn(temp, dens, other=''):
-    """
-    Loads the bn values from the CRRL models.
-    """
-    
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    mod_file = '{0}/bn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat{3}'.format(LOCALDIR, temp, dens, other)
-    
-    data = np.loadtxt(mod_file)
-    
-    return data
-
-def load_bn2(Te, ne, Tr='', n_min=5, n_max=1000, verbose=False):
-    """
-    Loads the bn values from the CRRL models.
-    
-    :param Te: Electron temperature of the model.
-    :type Te: string
-    :param ne: Electron density of the model.
-    :type ne: string
-    :param Tr: Radiation field of the model.
-    :type Tr: string
-    :param verbose: Verbose output?
-    :type verbose: bool
-    :returns: The :math:`b_{n}` value for the given model conditions.
-    :rtype: array
-    """
-    
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    if Tr == '-' or Tr == '':
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne)
-        if verbose:
-            print("Loading {0}".format(mod_file))
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne))[0]
-    else:
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr)
-        if verbose:
-            print("Loading {0}".format(mod_file))
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, Te, ne, Tr))[0]
-    
-    if verbose:
-        print("Loaded {0}".format(mod_file))
-    bn = np.loadtxt(mod_file)
-    
-    nimin = best_match_indx(n_min, bn[:,0])
-    nimax = best_match_indx(n_max, bn[:,0])
-    bn = bn[nimin:nimax]
-    
-    return bn
-    
 def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
     """
     Loads the models in backwards compatible mode.
@@ -1216,19 +1226,20 @@ def plaw(x, x0, y0, alpha):
     
     return y0*np.power(x/x0, alpha)
 
-def R_CII(ne, nh, gamma_e, gamma_h):
+def R_CII(ne, nh, nh2, gamma_e, gamma_h, gamma_h2):
     """
     Ratio between the fine structure level population of CII, and
     the level population in LTE. It ignores the effect of collisions
     with molecular hydrogen.
     """
     
-    A = 2.4e-6*u.s**-1
+    A = 2.36e-6
     
     neg = ne*gamma_e
     nhg = nh*gamma_h
+    nh2g = nh2*gamma_h2
     
-    return A/(neg + nhg)
+    return A/(neg + nhg + nh2g)
 
 def R_CII_FS(ne, nh, gamma_e, gamma_h):
     """
@@ -1272,7 +1283,7 @@ def str2val(str):
     """
     
     try:
-        aux = map(float, str.split('d'))
+        aux = list(map(float, str.split('d')))
         val = aux[0]*np.power(10., aux[1])
     except ValueError:
         val = 0
