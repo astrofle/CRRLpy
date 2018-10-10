@@ -9,7 +9,7 @@ if __name__ == '__main__':
     
     n_min = 5
     n_max = 1000
-    out = 'RRL_CIalpha_bnbeta_lcass_ext'
+    out = 'RRL_CIalpha_itau_te_3d1_2d2_1d1_ne_1d-2_1d0_var_tr_8d2_2d3_grid'
     
     #Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', 
                    #'5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', 
@@ -28,12 +28,15 @@ if __name__ == '__main__':
     #               '1.25d2', '1.3d2', '1.35d2', '1.4d2', '1.45d2', '1.5d2'])
     #Te = np.array(['1d1', '1.5d1', '2d1', '2.5d1', '3d1', '3.5d1', '4d1', '4.5d1', '5d1', '5.5d1', '6d1', '6.5d1', '7d1', '7.5d1', '8d1', '8.5d1', '9d1', '9.5d1', '1d2', 
     #               '1.05d2', '1.1d2', '1.15d2', '1.2d2', '1.25d2', '1.3d2', '1.35d2', '1.4d2', '1.45d2', '1.5d2'])
-    Te = np.array([rrlmod.val2str(t) for t in np.arange(10, 405, 5)])
+    Te = np.array([rrlmod.val2str(t) for t in np.arange(30, 210, 10)])
+    #Te = np.array([rrlmod.val2str(t) for t in np.arange(10, 405, 5)])
     #ne = np.concatenate((np.arange(0.01, 0.11, 0.005), np.arange(0.011, 0.015, 0.001), np.arange(0.016, 0.02, 0.001)))
     #ne = np.arange(0.01, 0.115, 0.005)
     #ne = np.concatenate([np.arange(0.01, 0.115, 0.005), 
     #                     np.array([0.11, 0.115, 0.12, 0.125, 0.13, 0.135, 0.14, 0.145, 0.15])])
-    ne = np.arange(0.01, 0.115, 0.005)
+    ne = np.concatenate([np.arange(0.01, 0.115, 0.005), 
+                         np.array([0.115, 0.12, 0.125, 0.13, 0.135, 0.14, 0.145, 0.15, 1.0])])
+    #ne = np.arange(0.01, 0.115, 0.005)
     Tr = np.array([800, 1200, 1400, 1600, 2000])
     #Tr = np.array([400, 600])
     
@@ -43,7 +46,7 @@ if __name__ == '__main__':
     if not os.path.isfile('{0}.npy'.format(out)): 
     
         itau_mod = rrlmod.load_itau_dict(models, 'RRL_CIalpha', n_min=n_min, n_max=n_max, 
-                                         verbose=True, value='')
+                                         verbose=True, value='itau')
         np.save('{0}.npy'.format(out), itau_mod)
         pickle.dump(models, open('{0}.p'.format(out), "wb"))
     else:

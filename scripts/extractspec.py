@@ -579,12 +579,12 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
         
     # Try to guess the units of each output column based on the header.
     try:
-        funit = head['CUNIT3']
+        funit = head['CUNIT{0}'.format(int(faxis))]
     except KeyError:
         funit = '?'
     
     try:
-        ftype = head['CTYPE3']
+        ftype = head['CTYPE{0}'.format(int(faxis))]
     except KeyError:
         ftype = '?'
     
