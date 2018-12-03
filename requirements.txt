@@ -2,3 +2,5 @@ astropy
 lmfit
 scipy>=0.13.3
 matplotlib>=1.4.2
+contours
+shapely

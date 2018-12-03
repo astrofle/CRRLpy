@@ -539,8 +539,9 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
         wcs = None
     
     # Only pass spatial axes
-    if wcs.naxis > 2:
-        rgn = parse_region(region, wcs.dropaxis(2))
+    if not 'pix' in region:
+        if wcs.naxis > 2:
+            rgn = parse_region(region, wcs.dropaxis(2))
     else:
         rgn = parse_region(region, wcs)
     
