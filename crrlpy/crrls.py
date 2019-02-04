@@ -524,7 +524,7 @@ def gauss_area(amplitude, sigma):
     :rtype: array
     """
     
-    return amplitude*sigma*np.sqrt(2*np.pi)
+    return amplitude*sigma*np.sqrt(2.*np.pi)
 
 def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     """
@@ -939,7 +939,7 @@ def n2f(n, line, n_min=1, n_max=1500, unitless=True):
     frequency of a given line.
     """
     
-    line, nn, freq = make_line_list(line, n_min, n_max, unitless)
+    line, nn, freq, trans = make_line_list(line, n_min, n_max, unitless)
     nii = np.in1d(nn, n)
     
     return freq[nii]
@@ -1156,7 +1156,7 @@ def pressure_broad(n, te, ne):
         
     return dnup
 
-def pressure_broad_salgado(n, Te, ne, dn=1):
+def pressure_broad_salgado(n, te, ne, dn=1):
     """
     Pressure induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
@@ -1174,7 +1174,7 @@ def pressure_broad_salgado(n, Te, ne, dn=1):
     :rtype: float or array
     """
     
-    a, g = pressure_broad_coefs(Te)
+    a, g = pressure_broad_coefs(te)
     
     return ne*np.power(10., a)*(np.power(n, g) + np.power(n + dn, g))/2./np.pi
 
@@ -1278,16 +1278,16 @@ def radiation_broad(n, W, Tr):
     
     return 8e-17*W*Tr*np.power(n, 5.8)
 
-def radiation_broad_salgado(n, W, Tr):
+def radiation_broad_salgado(n, w, tr):
     """
     Radiation induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
     Salgado et al. (2015)
     """
     
-    return 6.096e-17*W*Tr*np.power(n, 5.8)
+    return 6.096e-17*w*tr*np.power(n, 5.8)
 
-def radiation_broad_salgado_general(n, W, Tr, nu0, alpha):
+def radiation_broad_salgado_general(n, w, tr, nu0, alpha):
     """
     Radiation induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
@@ -1298,7 +1298,7 @@ def radiation_broad_salgado_general(n, W, Tr, nu0, alpha):
     cte = 2./np.pi*2.14e4*np.power(6.578e15/nu0, alpha + 1.)*k_B.cgs.value*nu0
     dnexp = alpha - 2.
     
-    return W*cte*Tr*np.power(n, -3.*alpha - 2.)*(1. + np.power(2., dnexp) + np.power(3., dnexp))
+    return w*cte*tr*np.power(n, -3.*alpha - 2.)*(1. + np.power(2., dnexp) + np.power(3., dnexp))
 
 def sigma2fwhm(sigma):
     """

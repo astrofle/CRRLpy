@@ -157,6 +157,7 @@ def make_line_list(line, n_min=1, n_max=1500, unitless=True):
     # set the specie
     X = set_specie(line)
     dn = set_dn(line)
+    trans = set_trans(dn)
     
     M_X = X[0]
     R_X = 10.97373/(1.0 + (m_e_amu/M_X))
@@ -167,7 +168,7 @@ def make_line_list(line, n_min=1, n_max=1500, unitless=True):
     if not unitless:
         freq = freq*u.MHz
     
-    return line, n, freq
+    return line, n, freq, trans
 
 def main():
     """
@@ -178,7 +179,7 @@ def main():
     parser.add_argument('-i', '--n_min', type=int,
                         dest='n_min', default=1, help="Minimum n number")
     parser.add_argument('-n', '--n_max', type=int,
-                        dest='n_max', default=1500, help="Maximum n number")
+                        dest='n_max', default=10000, help="Maximum n number")
     parser.add_argument('-l', '--line', dest='line', default='CI', type=str,
                         help="Line name. E.g., CIalpha, HeIbeta, HIalpha, CI13alpha, CI14gamma or SIepsilon")
     args = parser.parse_args()
@@ -187,7 +188,9 @@ def main():
     n_max = args.n_max
     line = args.line
     
-    specie, trans, n, freq = make_line_list(line, n_min, n_max)
+    line, n, freq, trans = make_line_list(line, n_min, n_max)
+    
+    specie = line[:line.index(trans)]
     
     # Write the line list to a file
     out = 'RRL_{0}{1}.txt'.format(specie, trans)
