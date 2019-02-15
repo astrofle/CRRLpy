@@ -124,17 +124,17 @@ def set_dn(name):
     
     if 'alpha' in name:
         dn = 1
-    if 'beta' in name:
+    elif 'beta' in name:
         dn = 2
-    if 'gamma' in name:
+    elif 'gamma' in name:
         dn = 3
-    if 'delta' in name:
+    elif 'delta' in name:
         dn = 4
-    if 'epsilon' in name:
+    elif 'epsilon' in name:
         dn = 5
-    if 'zeta' in name:
+    elif 'zeta' in name:
         dn = 6
-    if 'eta' in name:
+    elif 'eta' in name:
         dn = 7
         
     return dn
