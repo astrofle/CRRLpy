@@ -98,6 +98,10 @@ def set_trans(dn):
         name = 'delta'
     if dn == 5:
         name = 'epsilon'
+    if dn == 6:
+        name = 'zeta'
+    if dn == 7:
+        name = 'eta'
         
     return name
 
@@ -120,14 +124,18 @@ def set_dn(name):
     
     if 'alpha' in name:
         dn = 1
-    if 'beta' in name:
+    elif 'beta' in name:
         dn = 2
-    if 'gamma' in name:
+    elif 'gamma' in name:
         dn = 3
-    if 'delta' in name:
+    elif 'delta' in name:
         dn = 4
-    if 'epsilon' in name:
+    elif 'epsilon' in name:
         dn = 5
+    elif 'zeta' in name:
+        dn = 6
+    elif 'eta' in name:
+        dn = 7
         
     return dn
 

@@ -618,20 +618,7 @@ def level_pop_lte(n, ne, nion, Te, Z):
     
     return Nn
 
-def load_bn(temp, dens, other=''):
-    """
-    Loads the bn values from the CRRL models.
-    """
-    
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    mod_file = '{0}/bn/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat{3}'.format(LOCALDIR, temp, dens, other)
-    
-    data = np.loadtxt(mod_file)
-    
-    return data
-
-def load_bn2(te, ne, other='', n_min=5, n_max=1000, verbose=False):
+def load_bn(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     """
     Loads the bn values from the CRRL models.
     
@@ -659,6 +646,45 @@ def load_bn2(te, ne, other='', n_min=5, n_max=1000, verbose=False):
         if verbose:
             print("Loading {0}".format(mod_file))
         mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne, other))[0]
+    
+    if verbose:
+        print("Loaded {0}".format(mod_file))
+    bn = np.loadtxt(mod_file)
+    
+    nimin = best_match_indx(n_min, bn[:,0])
+    nimax = best_match_indx(n_max, bn[:,0])
+    bn = bn[nimin:nimax+1]
+    
+    return bn
+
+def load_bn_h(te, ne, other='', n_min=5, n_max=1000, verbose=False):
+    """
+    Loads the bn values from the HRRL models.
+    
+    :param te: Electron temperature of the model.
+    :type te: string
+    :param ne: Electron density of the model.
+    :type ne: string
+    :param other: Radiation field of the model or any other string with model characteristics.
+    :type other: string
+    :param verbose: Verbose output?
+    :type verbose: bool
+    :returns: The :math:`b_{n}` value for the given model conditions.
+    :rtype: array
+    """
+    
+    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    
+    if other == '-' or other == '':
+        mod_file = 'H_bn2/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne)
+        if verbose:
+            print("Loading {0}".format(mod_file))
+        mod_file = glob.glob('{0}/H_bn2/Hydrogen_opt_T_{1}_ne_{2}*_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne))[0]
+    else:
+        mod_file = 'H_bn2/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne, other)
+        if verbose:
+            print("Loading {0}".format(mod_file))
+        mod_file = glob.glob('{0}/H_bn2/Hydrogen_opt_T_{1}_ne_{2}*_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne, other))[0]
     
     if verbose:
         print("Loaded {0}".format(mod_file))
