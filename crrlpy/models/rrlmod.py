@@ -759,7 +759,7 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
         if verbose:
             print("Trying to load model: ")
             print("ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i]))
-        bn = load_bn2(t, dict['ne'][i], n_min=n_min, n_max=n_max, Tr=dict['Tr'][i], 
+        bn = load_bn2(t, dict['ne'][i], n_min=n_min, n_max=n_max, other=dict['Tr'][i], 
                       verbose=verbose)
         
         data[i,0] = bn[:,0]
