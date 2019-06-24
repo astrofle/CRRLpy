@@ -634,7 +634,7 @@ def load_bn(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     :rtype: array
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
         mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne)
@@ -673,7 +673,7 @@ def load_bn_h(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     :rtype: array
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
         mod_file = 'H_bn2/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne)
@@ -700,7 +700,7 @@ def load_bn_all(n_min=5, n_max=1000, verbose=False):
     """
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bn2/*'.format(LOCALDIR))
     natural_sort(models)
@@ -812,7 +812,7 @@ def load_itau_all(line='RRL_CIalpha', n_min=5, n_max=1000, verbose=False, value=
     :type value: string
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, line))
     natural_sort(models)
@@ -855,32 +855,32 @@ def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau
     Loads all the available models for Hydrogen.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    models = glob.glob('{0}/H_bbn2_{1}/*'.format(LOCALDIR, trans))
+    models = glob.glob('{0}/bbn2_RRL_HI{1}/*'.format(LOCALDIR, trans))
     natural_sort(models)
     models = np.asarray(models)
     
-    models = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
-                                           float(x.split('_')[6]),
+    models = sorted(models, key=lambda x: (str2val(x.split('_')[5]), 
+                                           float(x.split('_')[7]),
                                            str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
     
     Te = np.zeros(len(models))
     ne = np.zeros(len(models))
-    other = np.zeros(len(models), dtype='|S20')
+    other = np.zeros(len(models), dtype=object)
     data = np.zeros((len(models), 2, n_max))
     
     for i,model in enumerate(models):
         if verbose:
             print(model)
-        st = model.split('_')[4]
+        st = model.split('_')[5]
         Te[i] = str2val(st)
-        sn = model.split('_')[6].rstrip('0')
+        sn = model.split('_')[7]
         ne[i] = float(sn)
-        if len(model.split('_')) <= 17:
+        if len(model.split('_')) <= 18:
             other[i] = '-'
         else:
-            other[i] = '_'.join(model.split('_')[9:12])
+            other[i] = '_'.join(model.split('_')[10:13])
         if verbose:
             print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i]))
         n, int_tau = itau_h(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose, value=value)
@@ -894,7 +894,7 @@ def load_itau_all_match(trans_out='alpha', trans_tin='beta', n_max=1000, verbose
     Loads all trans_out models that can be found in trans_tin. This is useful when analyzing line ratios.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     target = [f.split('/')[-1] for f in glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans_tin))]
     models = ['bbn2_{0}/'.format(trans_out) + f for f in target]
@@ -908,7 +908,7 @@ def load_itau_all_norad(trans='alpha', n_max=1000):
     Loads all the available models.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn/*_dat_bn_beta'.format(LOCALDIR))
     natural_sort(models)
@@ -999,7 +999,7 @@ def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='i
     upper limit for the electron density.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn2_{1}/*_T_{2}_*_{3}_*'.format(LOCALDIR, trans, 
                                                              temp, trad))
@@ -1078,15 +1078,15 @@ def load_betabn_h(temp, dens, other='', trans='alpha', verbose=False):
     Loads a model for the HRRL emission.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
-        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
+        model_file = 'bbn2_RRL_HI{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     else:
-        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
+        model_file = 'bbn2_RRL_HI{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
@@ -1407,7 +1407,7 @@ def valid_ne(line):
     Checks all the available models and lists the available ne values.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, line))
     natural_sort(models)
