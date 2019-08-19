@@ -17,17 +17,20 @@ import os
 import glob
 import re
 import pickle
-
 import numpy as np
+
+from scipy.constants import physical_constants as pc
+
 import astropy.units as u
 
-from crrlpy import frec_calc as fc
 from astropy.constants import h, k_B, c, m_e, Ryd, e
 from astropy.modeling.blackbody import blackbody_nu
-from crrlpy.crrls import natural_sort, f2n, n2f
+
+from crrlpy import frec_calc as fc
+from crrlpy.crrls import natural_sort, f2n, n2f, load_ref
 from crrlpy.utils import best_match_indx
 
-LOCALDIR = os.path.dirname(os.path.realpath(__file__)) #'/data2/psalas/python/CRRLpy/crrlpy/models' #
+LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
 def alpha_CII(Te, R):
     """
@@ -48,7 +51,29 @@ def alpha_CII_mod(Te, R):
     """
     
     return R/(R + 2.*np.exp(-91.21/Te))
+
+def beta(n, bn, te):
+    """
+    Computes the correction factor for stimulated emission.
     
+    :param n: principal quantum number.
+    :param bn: level population departure coefficient.
+    :param te: electron temperature.
+    """
+    
+    qns, freq = load_ref('RRL_CIalpha') # qns lists the final quantum numbers, nu->nl=qns.
+    nmin_idx = np.argmin(abs(qns - n.min()))
+    nmax_idx = np.argmin(abs(qns - n.max()))
+    freq = freq[nmin_idx:nmax_idx]*1e6 # Hz
+
+    h_ = pc['Planck constant'][0]*1e7
+    kboltzmann_ = pc['Boltzmann constant'][0]*1e7
+    hnukt = h_*freq/kboltzmann_/te
+    beta = (1. - bn[1:]/bn[:-1]*np.exp(-hnukt))/(1. - np.exp(-hnukt))
+
+    return beta
+
+
 def beta_CII(Te, R):
     """
     Computes the value of :math:`\\beta_{158}`. 
