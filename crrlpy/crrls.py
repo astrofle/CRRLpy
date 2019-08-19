@@ -764,7 +764,7 @@ def levelpopc(electemp):
     g12 = 2.
     g32 = 4.
 
-  return g32/g12*np.exp(-92./electemp)
+    return g32/g12*np.exp(-92./electemp)
 
 def linear(x, a, b):
     """
