@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import division
 
-#import itertools
 import os
 import re
 
@@ -9,16 +8,14 @@ import matplotlib as mpl
 havedisplay = "DISPLAY" in os.environ
 if not havedisplay:
     mpl.use('Agg')
-#import pylab as plt
 import numpy as np
 
-#from lmfit import Model
-#from lmfit.models import PolynomialModel, PowerLawModel
-from scipy.special import wofz
 from scipy import interpolate
+from scipy.special import wofz
 from astropy.constants import c, k_B
-from .frec_calc import set_dn, make_line_list
+
 from crrlpy import utils
+from .frec_calc import set_dn, make_line_list
 
 def alphanum_key(s):
     """ 
@@ -397,79 +394,6 @@ def find_lines_sb(freq, line, z=0, verbose=False):
             print("Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0]))
 
     return refqns, reffreqs
-
-#def fit_continuum(x, y, degree, p0, verbose=False):
-    #"""
-    #Fits a polynomial to the continuum.
-    
-    #Parameters
-    #----------
-    #x : x axis.
-    #y : y axis. 
-    #"""
-    
-    ## Divide by linear baseline
-    #mod = PolynomialModel(degree)
-    #params = mod.make_params()
-    #if len(p0) != len(params):
-        #if verbose:
-            #print("Insuficient starting parameter values.")
-            #print("Will try to guess starting values.")
-        #params = mod.guess(y, x=x)
-    #else:
-        #for param in params:
-            #params[param].set(value=p0[param])
-
-    #fit = mod.fit(y, x=x, params=params)
-    
-    #return fit
-
-#def fit_model(x, y, model, p0, wy=None, mask=None):
-    #"""
-    #Fits a model to the data defined by `x` and `y`.
-    #It uses `p0` as starting values.
-    
-    #:param x: Abscissa values of the data to be fit.
-    #:type x: array
-    #:param y: Ordinate values of the data to be fit.
-    #:type y: array
-    #:param model: Model to be fit.
-    #:type model: callable
-    #:param p0: Dictionary with the starting values for the fit.
-    #:type p0: dict
-    #:param wy: Weights of the ordinate values. (Optional)
-    #:type wy: array
-    #:param mask: Mask to apply to the `x` and `y` values. (Optional)
-    #:type mask: array
-    #:returns: An object containing the results of the fit.
-    #:rtype: lmfit.model.ModelResult_
-    
-    #.. _lmfit.model.ModelResult: http://lmfit.github.io/lmfit-py/model.html?highlight=modelresult#model.ModelResult
-    #"""
-    
-    #mod = Model(model)
-    #params = mod.make_params()
-    
-    #if len(p0) != len(params):
-        #print("Insuficient starting parameter values.")
-        #return 0
-    #else:
-        #for param in params:
-            #params[param].set(value=p0[param])
-    
-    #if mask:
-        #mx = x[~mask]
-        #my = y[~mask]
-    #else:
-        #mx = x
-        #my = y
-        
-    #if not wy:
-        #wy = np.ones(len(mx))
-        
-    #fit = mod.fit(my, x=mx, params=params, weights=wy)
-    
-    #return fit
 
 def freq2vel(f0, f):
     """
