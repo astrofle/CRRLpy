@@ -162,7 +162,7 @@ def parse_region(region, wcs):
         rgn = {'shape':'circle',
                'params':{'cx':params[0], 'cy':params[1], 'r':params[2]}}
         
-    elif shape == 'crf':
+    elif shape == 'crtf':
         # CASA region files are always in sky coordinates
         polys = ci.read_casa_polys(params[0], wcs=w)
         rgn = {'shape':'polygon',
@@ -173,8 +173,8 @@ def parse_region(region, wcs):
                'params':'all'}
         
     else:
-        print 'region description not supported.'
-        print 'Will exit now.'
+        print('region description not supported.')
+        print('Will exit now.')
         logger.error('Region description not supported.')
         logger.error('Will exit now.')
         sys.exit(1)
