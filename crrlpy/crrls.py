@@ -814,7 +814,7 @@ def lookup_freq(n, line):
     """
     
     qns, freqs = load_ref(line)
-    indx = best_match_indx(n, qns)
+    indx = utils.best_match_indx(n, qns)
     
     return freqs[indx]
 
