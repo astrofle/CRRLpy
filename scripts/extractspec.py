@@ -164,7 +164,7 @@ def parse_region(region, wcs):
         
     elif shape == 'crtf':
         # CASA region files are always in sky coordinates
-        polys = ci.read_casa_polys(params[0], wcs=w)
+        polys = ci.read_casa_polys(params[0], wcs=wcs)
         rgn = {'shape':'polygon',
                'params':{'Polygons':polys}}
         
