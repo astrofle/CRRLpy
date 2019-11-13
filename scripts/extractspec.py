@@ -39,6 +39,8 @@ import matplotlib.patches as mpatches
 import numpy as np
 import pylab as plt
 
+eq_frames = ['icrs', 'fk5', 'fk4']
+
 def sector_mask(shape, centre, radius, angle_range):
     """
     Return a boolean mask for a circular sector. The start/stop angles in  
@@ -96,7 +98,7 @@ def parse_region(region, wcs):
             
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
             
-            if frame in ['fk5', 'fk4']:
+            if frame in eq_frames:
                 params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
                                                   coo_sky.dec.value]], 0)[0]
             elif 'gal' in frame:
@@ -114,7 +116,7 @@ def parse_region(region, wcs):
             blc_sky = SkyCoord(params[0], params[1], frame=frame)
             trc_sky = SkyCoord(params[2], params[3], frame=frame)
             
-            if frame in ['fk5', 'fk4']:
+            if frame in eq_frames:
                 params[0:2] = wcs.all_world2pix([[blc_sky.ra.value, 
                                                 blc_sky.dec.value]], 0)[0]
                 params[2:] = wcs.all_world2pix([[trc_sky.ra.value, 
@@ -136,7 +138,7 @@ def parse_region(region, wcs):
             
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
             
-            if frame in ['fk5', 'fk4']:
+            if frame in eq_frames:
                 params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
                                                   coo_sky.dec.value]], 0)[0]
             elif 'gal' in frame:
