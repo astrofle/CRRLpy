@@ -70,6 +70,40 @@ def sector_mask(shape, centre, radius, angle_range):
 
     return circmask*anglemask
 
+def ellipse_mask(shape, x0, y0, bmaj, bmin, angle):
+    """
+    """
+    
+    x,y = np.mgrid[:shape[0],:shape[1]]
+    
+    cos_angle = np.cos(np.radians(180. - angle))
+    sin_angle = np.sin(np.radians(180. - angle))
+    
+    # Shift the indexes.
+    xc = x - x0
+    yc = y - y0
+    
+    # Rotate the indexes.
+    xct = xc * cos_angle - yc * sin_angle
+    yct = xc * sin_angle - yc * cos_angle
+    
+    mask = (xct/bmaj)**2. + (yct/bmin)**2. <= 1.
+    
+    return mask
+
+def add_radius_units(value, units):
+    """
+    """
+    
+    if units == 'd':
+        r = value*u.deg
+    if units == 'm':
+        r = value*u.arcmin
+    if units == 's':
+        r = value*u.arcsec
+        
+    return r
+
 def parse_region(region, wcs):
     """
     Parses a region description to a dict
@@ -149,21 +183,51 @@ def parse_region(region, wcs):
             val, uni = split_str(params[2])
             
             # Add units to the radius
-            if uni == 'd':
-                r = val*u.deg
-            if uni == 'm':
-                r = val*u.arcmin
-            if uni == 's':
-                r = val*u.arcsec
+            r = add_radius_units(val, uni)
             logger.debug('lscale: {0}'.format(lscale))
             logger.debug('radius: {0}'.format(r))
             params[2] = (r/lscale).cgs.value
         
-        #params = [int(round(float(x))) for x in params]
         params = [float(x) for x in params]
         rgn = {'shape':'circle',
                'params':{'cx':params[0], 'cy':params[1], 'r':params[2]}}
+    
+    elif shape == 'ellipse':
+        # Convert sky coordinates to pixels if required
+        if 'sky' in coord.lower():
+            
+            coo_sky = SkyCoord(params[0], params[1], frame=frame)
+            
+            if frame in eq_frames:
+                params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
+                                                  coo_sky.dec.value]], 0)[0]
+            elif 'gal' in frame:
+                params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
+                                                  coo_sky.b.value]], 0)[0]
+            
+            lscale = abs(wcs.pixel_scale_matrix[0,0])*u.deg
+            logger.debug('lscale: {0}'.format(lscale))
+            
+            # Major axis.
+            val, uni = split_str(params[2])
+            # Add units to the major axis.
+            r = add_radius_units(val, uni)
+            logger.debug('major axis: {0}'.format(r))
+            params[2] = (r/lscale).cgs.value
+            
+            # Minor axis.
+            val, uni = split_str(params[3])
+            # Add units to the minor axis.
+            r = add_radius_units(val, uni)
+            logger.debug('minor axis: {0}'.format(r))
+            params[3] = (r/lscale).cgs.value
         
+        params = [float(x) for x in params]
+        rgn = {'shape':'ellipse',
+               'params':{'cx':params[0], 'cy':params[1], 
+                         'bmaj':params[2], 'bmin':params[3], 
+                         'theta':params[4]}}
+    
     elif shape == 'crtf':
         # CASA region files are always in sky coordinates
         polys = ci.read_casa_polys(params[0], wcs=wcs)
@@ -362,6 +426,44 @@ def extract_spec(data, region, naxis, mode):
                 logger.error('Mode not supported.')
                 logger.error('Will exit now.')
                 sys.exit(1)
+    
+    elif region['shape'] == 'ellipse':
+        logger.info("Elliptical region has a center " \
+                    "at pixel ({0},{1}) with major and minor axes " \
+                    "{2} and {3} at an angle {4}".format(region['params']['cx'], 
+                                                         region['params']['cy'], 
+                                                         region['params']['bmaj'],
+                                                         region['params']['bmin'],
+                                                         region['params']['theta']))
+    
+        logger.debug("Mask shape: {}".format(data.shape[-2:]))
+        mask = ellipse_mask(data.shape[-2:],
+                            region['params']['cy'], region['params']['cx'],
+                            region['params']['bmaj']/2., region['params']['bmin']/2.,
+                            region['params']['theta'])
+        logger.debug('Elements in mask: {}'.format(mask.sum()))
+        
+        if naxis > 3:
+            mdata = data[0][:,mask]
+            axis = 1
+        elif naxis == 3:
+            mdata = data[:,mask]
+            axis = 1
+        else:
+            mdata = data[mask]
+            axis = 0
+        logger.debug("Masked data shape: {0}".format(mdata.shape))
+        
+        if 'sum' in mode.lower():
+            spec = mdata.sum(axis=axis)
+        elif 'avg' in mode.lower():
+            spec = mdata.mean(axis=axis)
+        elif 'flux' in mode.lower():
+            spec = mdata.sum(axis=axis)/region['barea']
+        else:
+            logger.error('Mode not supported.')
+            logger.error('Will exit now.')
+            sys.exit(1)
             
     elif 'poly' in region['shape']:
         npolys = len(region['params']['Polygons'])
@@ -440,13 +542,15 @@ def set_wcs(head):
     spatial header parameters.
     """
     
+    logger = logging.getLogger(__name__)
+    
     # Create a new WCS object. 
     wcs = WCS(head)
     
     if wcs.naxis > 3:
         wcs = wcs.dropaxis(2)
 
-    print('WCS contains {0} axes.'.format(wcs.naxis))
+    logger.info('WCS contains {0} axes.'.format(wcs.naxis))
         
     return wcs
 
