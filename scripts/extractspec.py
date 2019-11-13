@@ -214,30 +214,40 @@ def get_axis(header, axis):
     
     logger = logging.getLogger(__name__)
     
-    axis = str(axis)
-    dx = header.get("CDELT" + axis)
-    logger.debug('dx: {0}'.format(dx))
-    try:
-        p0 = header.get("CRPIX" + axis)
-        p0 = header.get("CRPIX" + axis)
-        x0 = header.get("CRVAL" + axis)
-        
-    except TypeError:
-        dx = 1
-        p0 = 1
-        x0 = 1
-
-    n = header.get("NAXIS" + axis)
-    logger.info("Number channels in extracted spectrum: {0}".format(n))
+    wcs = WCS(header)
     
-    axis_vals = np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+    # swapaxes uses python convention for axes index.
+    wcs = wcs.swapaxes(axis-1,0)
+    wcs = wcs.sub(1)
+    n_axis = wcs.array_shape[-axis]
+    axis_vals = wcs.pixel_to_world_values(np.arange(0,n_axis))[0]
+    
+    return axis_vals
 
-    if len(axis_vals) > n:
-        logger.debug('The array with the axis values is longer than the axis itself...')
-        logger.debug('Selecting only the first {0} values.'.format(n))
-        axis_vals = axis_vals[:n]
+    #axis = str(axis)
+    #dx = header.get("CDELT" + axis)
+    #logger.debug('dx: {0}'.format(dx))
+    #try:
+        #p0 = header.get("CRPIX" + axis)
+        #p0 = header.get("CRPIX" + axis)
+        #x0 = header.get("CRVAL" + axis)
+        
+    #except TypeError:
+        #dx = 1
+        #p0 = 1
+        #x0 = 1
+
+    #n = header.get("NAXIS" + axis)
+    #logger.info("Number channels in extracted spectrum: {0}".format(n))
+    
+    #axis_vals = np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+
+    #if len(axis_vals) > n:
+        #logger.debug('The array with the axis values is longer than the axis itself...')
+        #logger.debug('Selecting only the first {0} values.'.format(n))
+        #axis_vals = axis_vals[:n]
  
-    return axis_vals # np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
+    #return axis_vals # np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
 
 def extract_spec(data, region, naxis, mode):
     """
