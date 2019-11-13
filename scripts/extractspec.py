@@ -4,11 +4,14 @@
 Extracts a spectrum from a region in a spectral cube.
 The pixels will be averaged spatially inside the given region.
 The region must be specified as shape,coords,frame,parameters
-Region can be, point, box or circle. Also, CASA region files are supported.
+Region can be, point, box, circle or ellipse. Also, CASA region files are supported.
 Coords can be pix or sky.
-Parameters, for point the coordinates of the point, e.g. point,pix,512,256.
-For box the bottom left corner and top right corner coordinates, e.g. box,pix,256,256,512,512.
-For circle the center of the circle and the radius, e.g. circle,pix,512,256,10.
+Frames supported include: fk4, fk5, icrs, and gal.
+Parameters, for point the coordinates of the point, e.g. point,pix,,512,256.
+For box the bottom left corner and top right corner coordinates, e.g. box,pix,,256,256,512,512.
+For circle the center of the circle and the radius, e.g. circle,pix,,512,256,10.
+For ellipse, its center, major and minor axes and the angle in degrees, e.g., 
+ellipse,sky,fk5,13h05m27.462s,-49d28m06.547s,0.345293s,0.493276s,0
 If the coordinates are given in sky values, then the units must included, e.g. 
 point,sky,12h,2d will extract the spectrum for the pixel located at RA 12 hours and DEC 2 degrees.
 For circle the radius units in sky coordinates can be either d for degrees, m for arcminutes or 
