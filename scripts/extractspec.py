@@ -224,31 +224,6 @@ def get_axis(header, axis):
     
     return axis_vals
 
-    #axis = str(axis)
-    #dx = header.get("CDELT" + axis)
-    #logger.debug('dx: {0}'.format(dx))
-    #try:
-        #p0 = header.get("CRPIX" + axis)
-        #p0 = header.get("CRPIX" + axis)
-        #x0 = header.get("CRVAL" + axis)
-        
-    #except TypeError:
-        #dx = 1
-        #p0 = 1
-        #x0 = 1
-
-    #n = header.get("NAXIS" + axis)
-    #logger.info("Number channels in extracted spectrum: {0}".format(n))
-    
-    #axis_vals = np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
-
-    #if len(axis_vals) > n:
-        #logger.debug('The array with the axis values is longer than the axis itself...')
-        #logger.debug('Selecting only the first {0} values.'.format(n))
-        #axis_vals = axis_vals[:n]
- 
-    #return axis_vals # np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
-
 def extract_spec(data, region, naxis, mode):
     """
     Sums the pixels inside a region preserving the spectral axis.
