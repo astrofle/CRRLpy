@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Extracts a spectrum from a region in a spectral cube.
@@ -37,7 +37,10 @@ import crrlpy.imtools as ci
 import astropy.units as u
 import matplotlib.patches as mpatches
 import numpy as np
-import pylab as plt
+try:
+    import pylab as plt
+except ModuleNotFoundError:
+    pass
 
 def sector_mask(shape, centre, radius, angle_range):
     """
@@ -173,8 +176,6 @@ def parse_region(region, wcs):
                'params':'all'}
         
     else:
-        print 'region description not supported.'
-        print 'Will exit now.'
         logger.error('Region description not supported.')
         logger.error('Will exit now.')
         sys.exit(1)
@@ -453,13 +454,15 @@ def set_wcs(head):
     spatial header parameters.
     """
     
+    logger = logging.getLogger(__name__)
+
     # Create a new WCS object. 
     wcs = WCS(head)
     
     if wcs.naxis > 3:
         wcs = wcs.dropaxis(2)
 
-    print('WCS contains {0} axes.'.format(wcs.naxis))
+    logger.debug('WCS contains {0} axes.'.format(wcs.naxis))
         
     return wcs
 
