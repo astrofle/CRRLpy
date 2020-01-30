@@ -447,6 +447,9 @@ def read_casa_polys(filename, image=None, wcs=None):
     :returns: list of Polygons.
     :rtype: Polygon
     """
+    
+    logger = logging.getLogger(__name__)
+    
     with open(filename, 'r') as f:
         lines = f.readlines()
 
@@ -489,7 +492,7 @@ def read_casa_polys(filename, image=None, wcs=None):
         elif line.startswith('ellipse'):
             ell_str_temp = line.split('[[')[1]
             if '], 0.0' not in ell_str_temp and '], 90.0' not in ell_str_temp:
-                mod_log.error('Only position angles of 0.0 and 90.0 are supported for CASA '
+                logger.error('Only position angles of 0.0 and 90.0 are supported for CASA '
                               'regions of type "ellipse"')
                 sys.exit(1)
             if '], 0.0' in ell_str_temp:
@@ -592,7 +595,7 @@ def read_casa_polys(filename, image=None, wcs=None):
             pass
 
         else:
-            mod_log.error('Only CASA regions of type "poly", "box", or "ellipse" are supported')
+            logger.error('Only CASA regions of type "poly", "box", or "ellipse" are supported')
             sys.exit(1)
 
     return polys
