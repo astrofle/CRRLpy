@@ -73,7 +73,6 @@ def beta(n, bn, te):
 
     return beta
 
-
 def beta_CII(Te, R):
     """
     Computes the value of :math:`\\beta_{158}`. 
@@ -375,7 +374,7 @@ def I_total(nu, Te, tau, I0, eta):
     
     return bnu*eta*(1. - exp) + I0*exp
 
-def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='itau'):
+def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='itau', location=LOCALDIR):
     """
     Gives the integrated optical depth for a given temperature and density.
     It assumes that the background radiation field dominates the continuum emission.
@@ -408,7 +407,7 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     dn = fc.set_dn(line)
     mdn_ = mdn(dn)
     
-    bbn = load_betabn(temp, dens, other, line, verbose)
+    bbn = load_betabn(temp, dens, other, line, verbose, location=location)
     nimin = best_match_indx(n_min, bbn[:,0])
     nimax = best_match_indx(n_max, bbn[:,0])
     n = bbn[nimin:nimax,0]
@@ -462,7 +461,7 @@ def itau_norad(n, Te, b, dn, mdn_):
 
 def itau_lte(n, Te, dn, mdn_, em):
     """
-    Returns the CRRL optical depth integrated in velocity.
+    Returns the CRRL optical depth integrated in velocity in units of Hz.
     """
     
     return 1.069e7*dn*mdn_*np.exp(1.58e5/(np.power(n, 2.)*Te))/np.power(Te, 5./2.)*em
@@ -960,7 +959,7 @@ def load_itau_all_norad(trans='alpha', n_max=1000):
         
     return [Te, ne, other, data]
 
-def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau'):
+def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau', location=LOCALDIR):
     """
     Loads the models defined by dict.
     
@@ -1011,7 +1010,7 @@ def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau')
                                                                         t, 
                                                                         dict['Tr'][i]))
         n, int_tau = itau(t, dict['ne'][i], line, n_min=n_min, n_max=n_max, 
-                          other=dict['Tr'][i], verbose=verbose, value=value)
+                          other=dict['Tr'][i], verbose=verbose, value=value, location=location)
         
         data[i,0] = n
         data[i,1] = int_tau
@@ -1064,7 +1063,7 @@ def load_itau_numpy(filename):
     
     return head, itau_mod
 
-def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
+def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, location=LOCALDIR):
     """
     Loads a model for the CRRL emission.
     """
@@ -1083,14 +1082,14 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
         model_file = 'bbn2_{0}/{3}_opt_T_{1}_ne_{2}_ncrit_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, atom, ncrit)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
-            print('In: {0}'.format(LOCALDIR))
-        model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
+            print('In: {0}'.format(location))
+        model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     else:
         model_file = 'bbn2_{0}/{4}_opt_T_{1}_ne_{2}_ncrit_{5}_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other, atom, ncrit)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
-            print('In: {0}'.format(LOCALDIR))
-        model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
+            print('In: {0}'.format(location))
+        model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     
     if verbose:
         print("Loading {0}".format(model_path))
