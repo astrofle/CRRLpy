@@ -720,13 +720,11 @@ def load_bn_h(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     
     return bn
 
-def load_bn_all(n_min=5, n_max=1000, verbose=False):
+def load_bn_all(n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
     """
     """
     
-    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    models = glob.glob('{0}/bn2/*'.format(LOCALDIR))
+    models = glob.glob('{0}/bn2/*_dat'.format(location))
     natural_sort(models)
     models = np.asarray(models)
     
