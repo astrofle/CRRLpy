@@ -1059,14 +1059,14 @@ def radiation_broad_salgado_general(n, w, tr, nu0, alpha):
     
     return w*cte*tr*np.power(n, -3.*alpha - 2.)*(1. + np.power(2., dnexp) + np.power(3., dnexp))
 
-def rval(te, ne, nh, rates='TH85'):
+def rval(te, ne, nh, rates='TH1985'):
     """
     """
     
-    if rates == 'TH85':
+    if rates == 'TH1985':
         gammah = 5.8e-10*te**2e-2 # cm3 s-1
         gammae = 4.51e-6/te**0.5 # cm3 s-1
-    elif rates == 'PS92':
+    elif rates == 'PG2012':
         gammah = 4e-11*(16. + 3.5e-1*te**5e-1 + 48./te) # cm3 s-1
         gammae = 8.7e-8*(te/2e3)**(-3.7e-1) # cm3 s-1        
     
