@@ -40,7 +40,10 @@ import crrlpy.imtools as ci
 import astropy.units as u
 import matplotlib.patches as mpatches
 import numpy as np
-import pylab as plt
+try:
+    import pylab as plt
+except ModuleNotFoundError:
+    pass
 
 eq_frames = ['icrs', 'fk5', 'fk4']
 
@@ -553,7 +556,7 @@ def set_wcs(head):
     if wcs.naxis > 3:
         wcs = wcs.dropaxis(2)
 
-    logger.info('WCS contains {0} axes.'.format(wcs.naxis))
+    logger.debug('WCS contains {0} axes.'.format(wcs.naxis))
         
     return wcs
 
