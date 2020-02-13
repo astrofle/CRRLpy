@@ -6,8 +6,8 @@ import inspect
 import numpy as np
 
 #from matplotlib import _cntr as cntr
-from contours.core import shapely_formatter as shapely_fmt
-from contours.quad import QuadContourGenerator
+#from contours.core import shapely_formatter as shapely_fmt
+#from contours.quad import QuadContourGenerator
 from astropy.coordinates import Angle
 from astropy import constants as c
 from astropy import wcs
@@ -663,15 +663,3 @@ def set_wcs(head):
     w.wcs.ctype = [head['CTYPE1'], head['CTYPE2']]
     
     return w
-
-def write_fits(data, outfits, head=None, overwrite=False):
-    """
-    Write data to outfits as a fits file using header.
-    """
-    
-    data = np.ma.masked_invalid(data)
-    data.fill_value = np.nan
-    prihdu = fits.PrimaryHDU(data.filled())
-    if head:
-        prihdu.header = head.copy()
-    prihdu.writeto(outfits, overwrite=overwrite)
