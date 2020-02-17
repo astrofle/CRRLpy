@@ -100,6 +100,7 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
         ychan = [1 if ch != 0 else 0 for ch in y_aux]
         
         # Determine the weight.
+        w = None
         if not weight:
             w = np.ones(len(xgrid))
             
@@ -110,6 +111,7 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
             except IndexError:
                 logger.error("Weight for spectrum {} not found in {} .".format(s, weight_list))
                 logger.error("Will not include it in the stack.")
+                continue
             
         elif weight == 'sigma':
             w = 1./crrls.get_rms(my)
