@@ -1064,6 +1064,8 @@ def load_itau_numpy(filename):
 def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, location=LOCALDIR):
     """
     Loads a model for the CRRL emission.
+    
+    location = "{0}/bbn2_CIalpha".format(rrlmod.LOCALDIR)
     """
     
     #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
@@ -1077,13 +1079,13 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, locati
         ncrit = '8d2'
     
     if other == '-' or other == '':
-        model_file = 'bbn2_{0}/{3}_opt_T_{1}_ne_{2}_ncrit_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, atom, ncrit)
+        model_file = '{0}_opt_T_{1}_ne_{2}_ncrit_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(atom, temp, dens, ncrit)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
             print('In: {0}'.format(location))
         model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     else:
-        model_file = 'bbn2_{0}/{4}_opt_T_{1}_ne_{2}_ncrit_{5}_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other, atom, ncrit)
+        model_file = '{0}_opt_T_{1}_ne_{2}_ncrit_{3}_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(atom, temp, dens, ncrit, other)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
             print('In: {0}'.format(location))
