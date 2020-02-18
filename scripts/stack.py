@@ -20,8 +20,7 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
     """
     """
 
-    logger = logging.getLogger(__name__)   
- 
+    logger = logging.getLogger(__name__)
     #specs = glob.glob(spec)
     
     # If only one file is passed, it probably contains the list
@@ -71,7 +70,7 @@ def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_l
         # Catch NaNs and invalid values:
         mask_x = np.ma.masked_equal(x, -9999).mask
         mask_y = np.isnan(y)
-        mask = np.array(reduce(np.logical_or, [mask_x, mask_y]))
+        mask = mask_x | mask_y
         
         # Interpolate non masked ranges indepently.
         my = np.ma.masked_where(mask, y)
