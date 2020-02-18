@@ -10,6 +10,8 @@ import logging
 import argparse
 import numpy as np
 
+from functools import reduce
+
 from scipy import interpolate
 
 from crrlpy import crrls
@@ -18,7 +20,9 @@ from crrlpy import utils
 def stack_interpol(specs, output, vmax, vmin, dv, x_col, y_col, weight, weight_list=None, weight_list_cols='0,1'):
     """
     """
-    
+
+    logger = logging.getLogger(__name__)   
+ 
     #specs = glob.glob(spec)
     
     # If only one file is passed, it probably contains the list
