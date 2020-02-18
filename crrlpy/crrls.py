@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 from __future__ import division
 
-#import itertools
 import os
 import re
 
@@ -9,16 +8,14 @@ import matplotlib as mpl
 havedisplay = "DISPLAY" in os.environ
 if not havedisplay:
     mpl.use('Agg')
-#import pylab as plt
 import numpy as np
 
-#from lmfit import Model
-#from lmfit.models import PolynomialModel, PowerLawModel
-from scipy.special import wofz
 from scipy import interpolate
+from scipy.special import wofz
 from astropy.constants import c, k_B
-from .frec_calc import set_dn, make_line_list
+
 from crrlpy import utils
+from .frec_calc import set_dn, make_line_list
 
 def alphanum_key(s):
     """ 
@@ -398,79 +395,6 @@ def find_lines_sb(freq, line, z=0, verbose=False):
 
     return refqns, reffreqs
 
-#def fit_continuum(x, y, degree, p0, verbose=False):
-    #"""
-    #Fits a polynomial to the continuum.
-    
-    #Parameters
-    #----------
-    #x : x axis.
-    #y : y axis. 
-    #"""
-    
-    ## Divide by linear baseline
-    #mod = PolynomialModel(degree)
-    #params = mod.make_params()
-    #if len(p0) != len(params):
-        #if verbose:
-            #print("Insuficient starting parameter values.")
-            #print("Will try to guess starting values.")
-        #params = mod.guess(y, x=x)
-    #else:
-        #for param in params:
-            #params[param].set(value=p0[param])
-
-    #fit = mod.fit(y, x=x, params=params)
-    
-    #return fit
-
-#def fit_model(x, y, model, p0, wy=None, mask=None):
-    #"""
-    #Fits a model to the data defined by `x` and `y`.
-    #It uses `p0` as starting values.
-    
-    #:param x: Abscissa values of the data to be fit.
-    #:type x: array
-    #:param y: Ordinate values of the data to be fit.
-    #:type y: array
-    #:param model: Model to be fit.
-    #:type model: callable
-    #:param p0: Dictionary with the starting values for the fit.
-    #:type p0: dict
-    #:param wy: Weights of the ordinate values. (Optional)
-    #:type wy: array
-    #:param mask: Mask to apply to the `x` and `y` values. (Optional)
-    #:type mask: array
-    #:returns: An object containing the results of the fit.
-    #:rtype: lmfit.model.ModelResult_
-    
-    #.. _lmfit.model.ModelResult: http://lmfit.github.io/lmfit-py/model.html?highlight=modelresult#model.ModelResult
-    #"""
-    
-    #mod = Model(model)
-    #params = mod.make_params()
-    
-    #if len(p0) != len(params):
-        #print("Insuficient starting parameter values.")
-        #return 0
-    #else:
-        #for param in params:
-            #params[param].set(value=p0[param])
-    
-    #if mask:
-        #mx = x[~mask]
-        #my = y[~mask]
-    #else:
-        #mx = x
-        #my = y
-        
-    #if not wy:
-        #wy = np.ones(len(mx))
-        
-    #fit = mod.fit(my, x=mx, params=params, weights=wy)
-    
-    #return fit
-
 def freq2vel(f0, f):
     """
     Convert a frequency axis to a velocity axis given a central frequency.
@@ -757,6 +681,15 @@ def lambda2vel(wav0, wav):
     
     return c*(wav/wav0 - 1.)
 
+def levelpopc(electemp):
+    """
+    """
+
+    g12 = 2.
+    g32 = 4.
+
+    return g32/g12*np.exp(-92./electemp)
+
 def linear(x, a, b):
     """
     Linear model.
@@ -881,7 +814,7 @@ def lookup_freq(n, line):
     """
     
     qns, freqs = load_ref(line)
-    indx = best_match_indx(n, qns)
+    indx = utils.best_match_indx(n, qns)
     
     return freqs[indx]
 
@@ -967,179 +900,6 @@ def ngaussian(x, sigma, center):
     """
     
     return 1./(np.sqrt(2.*np.pi)*sigma)*np.exp(-0.5*np.power((x - center)/sigma, 2.))
-
-#def plot_spec_vel(out, x, y, fit, A, Aerr, x0, x0err, sx, sxerr):
-    #f = plt.figure(frameon=False)
-    #ax = f.add_subplot(1, 1, 1, adjustable='datalim')
-    
-    #ax.plot(x, y, 'k-', drawstyle='steps', lw=1)
-    #ax.plot(x, fit, 'r--', lw=0.8)
-    ##ax.plot()
-    
-    #ax.text(0.6, 0.1, 
-            #r"$\sigma v_{{line}}=${0:.1f}$\pm${1:.1f} km s$^{{-1}}$".format(sx, sxerr),
-            #size="large", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.15, r"$v_{{line}}=${0:.1f}$\pm${1:.1f} km s$^{{-1}}$".format(x0, x0err), 
-            #size="large", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.2, r"$\tau_{{peak}}=${0:.4f}$\pm${1:.4f}".format(A, Aerr), 
-            #size="large", transform=ax.transAxes, alpha=0.9)
-    
-    #plt.xlabel(r"Radio velocity (km s$^{-1}$)")
-    #plt.ylabel(r"$\tau$")
-        
-    #plt.savefig('{0}'.format(out), 
-                #bbox_inches='tight', pad_inches=0.3)
-    #plt.close()
-
-#def plot_model(x, y, xm, ym, out):
-    
-    #f = plt.figure(frameon=False)
-    #ax = f.add_subplot(1, 1, 1, adjustable='datalim')
-    
-    #ax.step(x, y, 'k-', drawstyle='steps', lw=1, where='pre')
-    #for i,j in zip(xm,ym):
-        #ax.step(i, j, '--', drawstyle='steps', lw=1, where='pre')
-    
-    #ax.set_xlabel(r"Radio velocity (km s$^{-1}$)")
-    #ax.set_ylabel(r"$\tau$")
-    
-    #plt.savefig('{0}'.format(out), 
-                #bbox_inches='tight', pad_inches=0.3)
-    #plt.close()
-
-#def plot_fit(fig, x, y, fit, params, vparams, sparams, rms, x0, \
-             #refs, refs_cb=None, refs_cd=None, refs_cg=None):
-    
-    #fc = ['r', 'b', 'g']
-    
-    #fig.suptitle('SB{0}, $n=${1:.0f}'.format(params['sb'], params['n']))
-    
-    #ax = fig.add_subplot(2, 1, 1, adjustable='datalim')
-    
-    #ax.step(x, y, 'k-', drawstyle='steps', lw=1, where='pre')
-    ##ax.plot(refs, [y.max()]*len(refs), 'kd', alpha=0.5)
-    ##if refs_cb:
-    #ax.plot(refs_cb, [y.max()]*len(refs_cb), 'rd', alpha=1, ls='none')
-    #ax.plot(refs_cd, [y.max()]*len(refs_cd), c='orange', marker='s', alpha=1, ls='none')
-    #ax.plot(refs_cd, [y.max()]*len(refs_cd), 'yd', ms=10, alpha=1, ls='none')
-        
-    #for i,f in enumerate(fit):
-        #l = '{0}--'.format(fc[i])
-        #lr = '{0}:'.format(fc[i])
-        #ax.plot(x, f, l, lw=0.8)
-        #ax.plot(x, y-f, lr, lw=1)
-    #ax.plot([x[0],x[-1]], [params['tau0']]*2, 'k--')
-    #ax.plot([x[0],x[-1]], [params['tau0']-3*rms]*2, 'k:')
-    ##ax.plot()
-    
-    #ax.text(0.6, 0.1, 
-            #r"FWHM$_{{line}}=${0:.1f}$\pm${1:.1f} km s$^{{-1}}$".format(params['dv1'], params['ddv1']),
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.17, r"$v_{{line}}=${0:.1f}$\pm${1:.1f} km s$^{{-1}}$".format(params['vp1'], params['dvp1']), 
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.23, r"$\tau_{{peak}}=${0:.4f}$\pm${1:.4f}".format(params['tau1'], params['dtau1']), 
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.33, r"$\int\tau dv=${0:.4f}$\pm${1:.4f}".format(params['itau1'], params['ditau1']), 
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    ##ax.text(0.6, 0.25, r"$n=${0:.0f}".format(params['n']),
-            ##size="large", transform=ax.transAxes, alpha=0.9)
-    ##ax.text(0.6, 0.3, r"SB{0}".format(params['sb']),
-            ##size="large", transform=ax.transAxes, alpha=0.9)
-    
-    #ax.set_xlabel(r"Radio velocity (km s$^{-1}$)")
-    #ax.set_ylabel(r"$\tau$")
-    
-    #ax2 = fig.add_subplot(2, 1, 2, adjustable='datalim')
-    
-    #ax2.plot(refs_cb, [y.max()]*len(refs_cb), 'rd', alpha=1, ls='none')
-    #ax2.plot(refs_cd, [y.max()]*len(refs_cd), c='orange', marker='s', alpha=1, ls='none')
-    #ax2.plot(refs_cd, [y.max()]*len(refs_cd), 'yd', ms=10, alpha=1, ls='none')
-    
-    #ax2.step(x, y, 'k-', drawstyle='steps', lw=1, where='pre')
-    #for i,f in enumerate(fit):
-        #l = '{0}--'.format(fc[i])
-        #lr = '{0}:'.format(fc[i])
-        #ax2.plot(x, f, l, lw=0.8)
-        #ax2.plot(x, y-f, lr, lw=1)
-    #ax2.plot([x[0],x[-1]], [params['tau0']]*2, 'k--')
-    #ax2.plot([x[0],x[-1]], [params['tau0']-3*params['dtau0']]*2, 'k:')
-    #ch0 = sparams['ch0']
-    #chf = sparams['chf']
-    #ax2.fill_between(x[ch0:chf], y[ch0:chf], x0, facecolor='gray', alpha=0.5)
-    
-    #vp = params['vp1']
-    #dv = abs(params['dv1'])
-    ##ax2.set_xlim(vp - 6*dv, vp + 6*dv)
-    #ax2.set_xlim(-400, 400)
-    
-    #return fig
-
-#def plot_fit_single(fig, x, y, fit, params, rms, x0, \
-             #refs, refs_cb=None, refs_cd=None, refs_cg=None):
-    
-    #fc = ['r', 'b', 'g']
-    
-    #fig.suptitle('SB{0}, $n=${1:.0f}'.format(params['sb'], params['n']))
-    
-    #ax = fig.add_subplot(2, 1, 1, adjustable='datalim')
-    
-    #ax.step(x, y, 'k-', drawstyle='steps', lw=1, where='pre')
-    ##ax.plot(x, y, 'k-')
-    ##ax.plot(refs, [y.max()]*len(refs), 'kd', alpha=0.5)
-    ##if refs_cb:
-    #ax.plot(refs_cb, [y.max()]*len(refs_cb), 'rd', alpha=1, ls='none')
-    #ax.plot(refs_cd, [y.max()]*len(refs_cd), c='orange', marker='s', alpha=1, ls='none')
-    #ax.plot(refs_cd, [y.max()]*len(refs_cd), 'yd', ms=10, alpha=1, ls='none')
-        
-    #for i,f in enumerate(fit):
-        #l = '{0}--'.format(fc[i])
-        #lr = '{0}:'.format(fc[i])
-        #ax.plot(x, f, l, lw=0.8)
-        #ax.plot(x, y-f, lr, lw=1)
-    #ax.plot([x[0],x[-1]], [params['tau0']]*2, 'k--')
-    #ax.plot([x[0],x[-1]], [params['tau0']-3*rms]*2, 'k:')
-    ##ax.plot()
-    
-    #ax.text(0.6, 0.1, 
-            #r"FWHM$_{{line}}=${0:.1f}$\pm${1:.1f} km s$^{{-1}}$".format(params['dv1'], params['ddv1']),
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.17, r"$v_{{line}}=${0:.1f}$\pm${1:.1f} km s$^{{-1}}$".format(params['vp1'], params['dvp1']), 
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.23, r"$\tau_{{peak}}=${0:.6f}$\pm${1:.6f}".format(params['tau1'], params['dtau1']), 
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    #ax.text(0.6, 0.33, r"$\int\tau dv=${0:.6f}$\pm${1:.6f}".format(params['itau1'], params['ditau1']), 
-            #size="small", transform=ax.transAxes, alpha=0.9)
-    ##ax.text(0.6, 0.25, r"$n=${0:.0f}".format(params['n']),
-            ##size="large", transform=ax.transAxes, alpha=0.9)
-    ##ax.text(0.6, 0.3, r"SB{0}".format(params['sb']),
-            ##size="large", transform=ax.transAxes, alpha=0.9)
-    
-    #ax.minorticks_on()
-    #ax.set_xlabel(r"Radio velocity (km s$^{-1}$)")
-    #ax.set_ylabel(r"$\tau$")
-    
-    #ax2 = fig.add_subplot(2, 1, 2, adjustable='datalim')
-    
-    #ax2.plot(refs_cb, [y.max()]*len(refs_cb), 'rd', alpha=1, ls='none')
-    #ax2.plot(refs_cd, [y.max()]*len(refs_cd), c='orange', marker='s', alpha=1, ls='none')
-    #ax2.plot(refs_cd, [y.max()]*len(refs_cd), 'yd', ms=10, alpha=1, ls='none')
-    
-    #ax2.step(x, y, 'k-', drawstyle='steps', lw=1, where='pre')
-    #for i,f in enumerate(fit):
-        #l = '{0}--'.format(fc[i])
-        #lr = '{0}:'.format(fc[i])
-        #ax2.plot(x, f, l, lw=0.8)
-        #ax2.plot(x, y-f, lr, lw=1)
-    #ax2.plot([x[0],x[-1]], [params['tau0']]*2, 'k--')
-    #ax2.plot([x[0],x[-1]], [params['tau0']-3*params['dtau0']]*2, 'k:')
-    
-    #vp = params['vp1']
-    #dv = abs(params['dv1'])
-    ##ax2.set_xlim(vp - 6*dv, vp + 6*dv)
-    #ax2.set_xlim(-400, 400)
-    #ax2.minorticks_on()
-    
-    #return fig
 
 def pressure_broad(n, te, ne):
     """
@@ -1299,6 +1059,25 @@ def radiation_broad_salgado_general(n, w, tr, nu0, alpha):
     
     return w*cte*tr*np.power(n, -3.*alpha - 2.)*(1. + np.power(2., dnexp) + np.power(3., dnexp))
 
+def rval(te, ne, nh, rates='TH1985'):
+    """
+    """
+    
+    if rates == 'TH1985':
+        gammah = 5.8e-10*te**2e-2 # cm3 s-1
+        gammae = 4.51e-6/te**0.5 # cm3 s-1
+    elif rates == 'PG2012':
+        gammah = 4e-11*(16. + 3.5e-1*te**5e-1 + 48./te) # cm3 s-1
+        gammae = 8.7e-8*(te/2e3)**(-3.7e-1) # cm3 s-1        
+    
+    fac1 = ne*gammae
+    fac2 = nh*gammah
+    # Level population of the fine structure line
+    # N32*Ar+N32*ne*gammae+N32*nh*gammah = N12*ne* gammae+N12*nh*gammah
+    # 2.4e-6 is the spontaneous emission coefficient for the C+ line
+    
+    return (fac1 + fac2)/(fac1 + fac2 + 2.4e-6)
+
 def sigma2fwhm(sigma):
     """
     Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.
@@ -1330,202 +1109,6 @@ def sigma2fwtm(sigma):
     """
     
     return sigma*2.*np.sqrt(2.*np.log(10.))
-
-#def stack_irregular(lines, window='', **kargs):
-    #"""
-    #Stacks spectra by adding them together and 
-    #then convolving with a window to reduce 
-    #the noise.
-    #Available window functions:
-    #Gaussian, Savitzky-Golay and Wiener.
-    #"""
-    
-    #vgrid = []
-    #tgrid = []
-    #ngrid = []
-    
-    ## Loop over the spectra to stack
-    #for line in lines:
-        #data = np.loadtxt(line)
-        #vel = data[:,0] # Velocity in km/s
-        #tau = data[:,1] # Intensity in optical depth units
-        
-        ## Catch NaNs and invalid values:
-        #mask_v = np.ma.masked_equal(vel, 1.0).mask
-        #mask_t = np.isnan(tau)
-        #mask = np.array(reduce(np.logical_or, [mask_v, mask_t]))
-        
-        ## Remove NaNs and invalid values
-        #vel = vel[~mask]
-        #tau = tau[~mask]
-        
-        ## Sort by velocity
-        #vel, tau = (list(t) for t in zip(*sorted(zip(vel, tau))))
-        
-        ## Append
-        #vgrid.append(vel)
-        #tgrid.append(tau)
-        
-    ## Flatten the stacked spectra
-    #vgrid = list(itertools.chain.from_iterable(vgrid))
-    #tgrid = list(itertools.chain.from_iterable(tgrid))
-    
-     ## Sort by velocity
-    #vgrid, tgrid = (list(t) for t in zip(*sorted(zip(vgrid, tgrid))))
-    
-    ## Apply a window function to reduce noise
-    #if window == '':
-        #print('Using default Gaussian window.')
-        #stau = Gauss(tgrid, {'sigma':3, 'order':0})
-    #elif window == 'Wiener':
-        #stau = Wiener(tgrid, **kargs)
-    #elif window == 'SavGol':
-        #stau = SavGol(tgrid, **kargs)
-    #elif window == 'Gauss':
-        #stau = Gauss(tgrid, **kargs)
- 
-    #return vgrid, tgrid, stau
-        
-#def stack_interpol(spectra, vmin, vmax, dv, show=True, rmsvec=False):
-    
-    #vgrid = np.arange(vmin, vmax, dv)
-    #tgrid = np.zeros(len(vgrid))      # the temperatures
-    #ngrid = np.zeros(len(vgrid))      # the number of tb points in every stacked channel
-    #crms = np.zeros(len(spectra))
-    #snr = np.zeros(len(spectra))
-    #nspec = np.arange(len(spectra)) + 1 
-    #nlist = np.arange(len(spectra))
-    
-    #for s,spec in enumerate(spectra):
-        #if show:
-            #print("Working on file: {0}".format(spec))
-        #nlist[s] = int(re.findall('\d+', spec.split('/')[-1])[0])
-        #data = np.loadtxt(spec)
-        #vel = data[:,1] # velocity in km/s
-        #tau = data[:,2]  # optical depth
-        #rms = data[0,3] # continuum rms
-        
-        ## Sort by velocity
-        #vel, tau = (list(t) for t in zip(*sorted(zip(vel, tau))))
-        #vel = np.array(vel)
-        #tau = np.array(tau)
-        
-        ## Catch NaNs and invalid values:
-        #mask_v = np.ma.masked_equal(vel, 1.0).mask
-        #mask_tb = np.isnan(tau)
-        #mask = np.array(reduce(np.logical_or, [mask_v, mask_tb]))
-        
-        ## Interpolate non masked ranges indepently
-        #mtau = np.ma.masked_where(mask, tau)
-        #mvel = np.ma.masked_where(mask, vel)
-        #valid = np.ma.flatnotmasked_contiguous(mvel)
-        #itb = np.zeros(len(vgrid))
-        #if not isinstance(valid, slice):
-            #for i,rng in enumerate(valid):
-                ##print "slice {0}: {1}".format(i, rng)
-                #if len(vel[rng]) > 1:
-                    #interp_tb = interpolate.interp1d(vel[rng], tau[rng],
-                                                     #kind='linear',
-                                                     #bounds_error=False,
-                                                     #fill_value=0.0)
-                    #itb += interp_tb(vgrid)
-                #else:
-                    #itb[best_match_indx(vel[rng], vgrid, dv/2.0)] += tau[rng]
-        #else:
-            ##print "slice: {0}".format(valid)
-            #interp_tb = interpolate.interp1d(vel[valid], tau[valid],
-                                             #kind='linear',
-                                             #bounds_error=False,
-                                             #fill_value=0.0)
-            #itb += interp_tb(vgrid)
-        
-        ## Check the velocity coverage
-        #chstack = [1 if ch != 0 else 0 for ch in itb]
-        
-        ## Stack!
-        #w = [1/rms]*len(ngrid)
-        ##print w
-        #ngrid = ngrid + np.multiply(chstack, w)
-        #tgrid = tgrid + itb*np.multiply(chstack, w)
-        
-        #sspec = np.divide(tgrid, ngrid)
-        #svel = vgrid[~np.isnan(sspec)]
-        #sspec = sspec[~np.isnan(sspec)]
-        #vii = best_match_indx(vmin, svel)
-        #vfi = best_match_indx(-200, svel)
-        #rmsl = get_rms(sspec[vii+1:vfi])
-        #vii = best_match_indx(150, svel)
-        #vfi = best_match_indx(vmax, svel)
-        #rmsr = get_rms(sspec[vii:vfi-1])
-        #crms[s] = min(rmsl, rmsr)
-        #snr[s] = -min(sspec[5:-5])/crms[s]
-            
-    ## Divide by ngrid to preserve optical depth
-    #tgrid = np.divide(tgrid, ngrid)
-    
-    ## Compute the variation of the rms as we stack
-    #if len(crms) > 2:
-        #mod = PowerLawModel()
-        #parms = mod.make_params(amplitude=crms[0], exponent=-0.5)
-        #fit = mod.fit(crms, parms, x=nspec)
-        #best_fit = fit.best_fit
-        #if show:
-            ##print nlist
-            #print(fit.fit_report())
-            #print("Lowest rms: {0} for # stacks: {1}".format(min(crms), len(crms)))
-            #fig = plt.figure()
-            #ax1 = fig.add_subplot(111)
-            ##ax2 = ax1.twiny()
-            #ax1.plot(nlist[::1], crms, 'bo')
-            #ax1.plot(nlist[::1], best_fit, 'r--', label='best fit')
-            ##ax1.plot(nlist[::1], mod.eval(x=nspec, amplitude=fit.params['amplitude'].value, exponent=-0.5), 
-                     ##'r:', label=r'$1/\sqrt{\#}$')
-            #ax1.plot(nlist[::1], mod.eval(x=nspec, amplitude=crms[0], exponent=-0.5), 
-                     #'r:', label=r'$1/\sqrt{\#}$')
-            #ax1.set_xlabel(r'# stacks')
-            #ax1.set_ylabel(r'Continuum rms')
-            ##ax2.plot(nlist, np.ones(len(nlist))*min(crms), alpha=0)
-            #ax1.legend(loc=0, numpoints=1, frameon=False)
-            ##ax2.cla()
-            #plt.show()
-            
-            #fig = plt.figure()
-            #ax1 = fig.add_subplot(111)
-            #ax1.plot(nlist[::1], snr, 'bo')
-            #ax1.set_xlabel(r'# stacks')
-            #ax1.set_ylabel(r'SNR')
-            #plt.show()
-    
-    #if rmsvec:
-        #return vgrid[1:-1], tgrid[1:-1], ngrid[1:-1], nlist[::1], crms
-    #else:
-        #return vgrid[1:-1], tgrid[1:-1], ngrid[1:-1]
-
-#def temp2tau(x, y, model, p0, wy=None, mask=None):
-    #"""
-    #Converts a temperature to optical depth. It will fit the continuum \
-    #using model and then subtract it and divide by it.
-    
-    #:param x: x values.
-    #:type x: array
-    #:param y: y values to be converted into optical depths.
-    #:type y: array
-    #:param model: Model to fit to the continuum.
-    #:type model: callable
-    #:param p0: Starting values for the model to be fit to the continuum.
-    #:type p0: 
-    #:param wy: Weights for the y values. (Optional)
-    #:type wy: array
-    #:param mask: Mask to apply to the `x` and `y` values.
-    #:type mask: array
-    #:returns: y/model - 1.
-    #:rtype: array
-    #"""
-        
-    #fit = fit_model(x, y, model, p0, wy=wy, mask=mask)
-    #tau = y/fit.eval(x=x) - 1.
-    
-    #return tau
 
 def tryint(str):
     """

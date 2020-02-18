@@ -17,17 +17,20 @@ import os
 import glob
 import re
 import pickle
-
 import numpy as np
+
+from scipy.constants import physical_constants as pc
+
 import astropy.units as u
 
-from crrlpy import frec_calc as fc
 from astropy.constants import h, k_B, c, m_e, Ryd, e
 from astropy.modeling.blackbody import blackbody_nu
-from crrlpy.crrls import natural_sort, f2n, n2f
+
+from crrlpy import frec_calc as fc
+from crrlpy.crrls import natural_sort, f2n, n2f, load_ref
 from crrlpy.utils import best_match_indx
 
-LOCALDIR = os.path.dirname(os.path.realpath(__file__)) #'/data2/psalas/python/CRRLpy/crrlpy/models' #
+LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
 def alpha_CII(Te, R):
     """
@@ -48,7 +51,28 @@ def alpha_CII_mod(Te, R):
     """
     
     return R/(R + 2.*np.exp(-91.21/Te))
+
+def beta(n, bn, te):
+    """
+    Computes the correction factor for stimulated emission.
     
+    :param n: principal quantum number.
+    :param bn: level population departure coefficient.
+    :param te: electron temperature.
+    """
+    
+    qns, freq = load_ref('RRL_CIalpha') # qns lists the final quantum numbers, nu->nl=qns.
+    nmin_idx = np.argmin(abs(qns - n.min()))
+    nmax_idx = np.argmin(abs(qns - n.max()))
+    freq = freq[nmin_idx:nmax_idx]*1e6 # Hz
+
+    h_ = pc['Planck constant'][0]*1e7
+    kboltzmann_ = pc['Boltzmann constant'][0]*1e7
+    hnukt = h_*freq/kboltzmann_/te
+    beta = (1. - bn[1:]/bn[:-1]*np.exp(-hnukt))/(1. - np.exp(-hnukt))
+
+    return beta
+
 def beta_CII(Te, R):
     """
     Computes the value of :math:`\\beta_{158}`. 
@@ -350,7 +374,7 @@ def I_total(nu, Te, tau, I0, eta):
     
     return bnu*eta*(1. - exp) + I0*exp
 
-def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='itau'):
+def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='itau', location=LOCALDIR):
     """
     Gives the integrated optical depth for a given temperature and density.
     It assumes that the background radiation field dominates the continuum emission.
@@ -383,7 +407,7 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
     dn = fc.set_dn(line)
     mdn_ = mdn(dn)
     
-    bbn = load_betabn(temp, dens, other, line, verbose)
+    bbn = load_betabn(temp, dens, other, line, verbose, location=location)
     nimin = best_match_indx(n_min, bbn[:,0])
     nimax = best_match_indx(n_max, bbn[:,0])
     n = bbn[nimin:nimax,0]
@@ -437,7 +461,7 @@ def itau_norad(n, Te, b, dn, mdn_):
 
 def itau_lte(n, Te, dn, mdn_, em):
     """
-    Returns the CRRL optical depth integrated in velocity.
+    Returns the CRRL optical depth integrated in velocity in units of Hz.
     """
     
     return 1.069e7*dn*mdn_*np.exp(1.58e5/(np.power(n, 2.)*Te))/np.power(Te, 5./2.)*em
@@ -634,7 +658,7 @@ def load_bn(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     :rtype: array
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
         mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne)
@@ -673,7 +697,7 @@ def load_bn_h(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     :rtype: array
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
         mod_file = 'H_bn2/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne)
@@ -696,13 +720,11 @@ def load_bn_h(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     
     return bn
 
-def load_bn_all(n_min=5, n_max=1000, verbose=False):
+def load_bn_all(n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
     """
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
-    
-    models = glob.glob('{0}/bn2/*'.format(LOCALDIR))
+    models = glob.glob('{0}/bn2/*_dat'.format(location))
     natural_sort(models)
     models = np.asarray(models)
     
@@ -812,7 +834,7 @@ def load_itau_all(line='RRL_CIalpha', n_min=5, n_max=1000, verbose=False, value=
     :type value: string
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, line))
     natural_sort(models)
@@ -855,32 +877,32 @@ def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau
     Loads all the available models for Hydrogen.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    models = glob.glob('{0}/H_bbn2_{1}/*'.format(LOCALDIR, trans))
+    models = glob.glob('{0}/bbn2_RRL_HI{1}/*'.format(LOCALDIR, trans))
     natural_sort(models)
     models = np.asarray(models)
     
-    models = sorted(models, key=lambda x: (str2val(x.split('_')[4]), 
-                                           float(x.split('_')[6]),
+    models = sorted(models, key=lambda x: (str2val(x.split('_')[5]), 
+                                           float(x.split('_')[7]),
                                            str2val(x.split('_')[11]) if len(x.split('_')) > 17 else 0))
     
     Te = np.zeros(len(models))
     ne = np.zeros(len(models))
-    other = np.zeros(len(models), dtype='|S20')
+    other = np.zeros(len(models), dtype=object)
     data = np.zeros((len(models), 2, n_max))
     
     for i,model in enumerate(models):
         if verbose:
             print(model)
-        st = model.split('_')[4]
+        st = model.split('_')[5]
         Te[i] = str2val(st)
-        sn = model.split('_')[6].rstrip('0')
+        sn = model.split('_')[7]
         ne[i] = float(sn)
-        if len(model.split('_')) <= 17:
+        if len(model.split('_')) <= 18:
             other[i] = '-'
         else:
-            other[i] = '_'.join(model.split('_')[9:12])
+            other[i] = '_'.join(model.split('_')[10:13])
         if verbose:
             print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], other[i]))
         n, int_tau = itau_h(st, sn, trans, n_max=n_max, other=other[i], verbose=verbose, value=value)
@@ -894,7 +916,7 @@ def load_itau_all_match(trans_out='alpha', trans_tin='beta', n_max=1000, verbose
     Loads all trans_out models that can be found in trans_tin. This is useful when analyzing line ratios.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     target = [f.split('/')[-1] for f in glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, trans_tin))]
     models = ['bbn2_{0}/'.format(trans_out) + f for f in target]
@@ -908,7 +930,7 @@ def load_itau_all_norad(trans='alpha', n_max=1000):
     Loads all the available models.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn/*_dat_bn_beta'.format(LOCALDIR))
     natural_sort(models)
@@ -935,7 +957,7 @@ def load_itau_all_norad(trans='alpha', n_max=1000):
         
     return [Te, ne, other, data]
 
-def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau'):
+def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau', location=LOCALDIR):
     """
     Loads the models defined by dict.
     
@@ -986,7 +1008,7 @@ def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau')
                                                                         t, 
                                                                         dict['Tr'][i]))
         n, int_tau = itau(t, dict['ne'][i], line, n_min=n_min, n_max=n_max, 
-                          other=dict['Tr'][i], verbose=verbose, value=value)
+                          other=dict['Tr'][i], verbose=verbose, value=value, location=location)
         
         data[i,0] = n
         data[i,1] = int_tau
@@ -999,7 +1021,7 @@ def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='i
     upper limit for the electron density.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn2_{1}/*_T_{2}_*_{3}_*'.format(LOCALDIR, trans, 
                                                              temp, trad))
@@ -1039,7 +1061,7 @@ def load_itau_numpy(filename):
     
     return head, itau_mod
 
-def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
+def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, location=LOCALDIR):
     """
     Loads a model for the CRRL emission.
     """
@@ -1058,14 +1080,14 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False):
         model_file = 'bbn2_{0}/{3}_opt_T_{1}_ne_{2}_ncrit_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, atom, ncrit)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
-            print('In: {0}'.format(LOCALDIR))
-        model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
+            print('In: {0}'.format(location))
+        model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     else:
         model_file = 'bbn2_{0}/{4}_opt_T_{1}_ne_{2}_ncrit_{5}_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other, atom, ncrit)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
-            print('In: {0}'.format(LOCALDIR))
-        model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
+            print('In: {0}'.format(location))
+        model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     
     if verbose:
         print("Loading {0}".format(model_path))
@@ -1078,15 +1100,15 @@ def load_betabn_h(temp, dens, other='', trans='alpha', verbose=False):
     Loads a model for the HRRL emission.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     if other == '-' or other == '':
-        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
+        model_file = 'bbn2_RRL_HI{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
     else:
-        model_file = 'H_bbn2_{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
+        model_file = 'bbn2_RRL_HI{0}/Hydrogen_opt_T_{1}_ne_{2}_ncrit_8d2_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
         model_path = glob.glob('{0}/{1}'.format(LOCALDIR, model_file))[0]
@@ -1407,7 +1429,7 @@ def valid_ne(line):
     Checks all the available models and lists the available ne values.
     """
     
-    LOCALDIR = os.path.dirname(os.path.realpath(__file__))
+    #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
     models = glob.glob('{0}/bbn2_{1}/*'.format(LOCALDIR, line))
     natural_sort(models)
