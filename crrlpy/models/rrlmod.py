@@ -561,7 +561,7 @@ def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     
     cte = np.power(c, 2.)/(16.*np.pi)*np.power(np.power(h, 2)/(2.*np.pi*m_e*k_B), 3./2.)
     
-    bn = load_bn2(val2str(Te), ne, other='case_diffuse_{0}'.format(val2str(Tr)))
+    bn = load_bn(val2str(Te), ne, other='case_diffuse_{0}'.format(val2str(Tr)))
     bn = bn[:np.where(bn[:,0] == n_max)[0]]
     Anfni = np.loadtxt('{0}/rates/einstein_Anm_{1}.txt'.format(LOCALDIR, trans))
     
@@ -749,7 +749,7 @@ def load_bn_all(n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
             Tr[i] = '_'.join(model.split('_')[8:11])
         if verbose:
             print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], Tr[i]))
-        bn = load_bn2(st, sn, Tr=Tr[i], n_min=n_min, n_max=n_max, verbose=verbose)
+        bn = load_bn(st, sn, Tr=Tr[i], n_min=n_min, n_max=n_max, verbose=verbose)
         data[i,0] = bn[:,0]
         data[i,1] = bn[:,1]
         data[i,2] = bn[:,2]
@@ -805,6 +805,7 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False, location=LOCALDIR, nc
         if verbose:
             print("Trying to load model: ")
             print("ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i]))
+        
         bn = load_bn(t, dict['ne'][i], n_min=n_min, n_max=n_max, tr=dict['Tr'][i], 
                      ncrit=ncrit, verbose=verbose, location=location)
         
@@ -1186,7 +1187,7 @@ def make_betabn2(line, temp, dens, n_min=5, n_max=1000, other=''):
     d = dens
     
     dn = fc.set_dn(line)
-    bn = load_bn2(temp, dens, other=other)
+    bn = load_bn(temp, dens, other=other)
     line, n, freq = fc.make_line_list(line, n_min=n_min, n_max=bn[-1,0]+1)
     
     # Cut bn first

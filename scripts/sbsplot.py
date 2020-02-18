@@ -26,7 +26,7 @@ tprops = {'RRL_CIalpha':[r'C$\alpha$', 'r'],
 ylbl = 1e-4
 
 def sbsplot(spec, output, show_lines, transitions, z, 
-            x_axis, x_col, x_min, x_max, y_axis, y_col):
+            x_axis, x_col, x_min, x_max, y_axis, y_col, identifier):
     """
     """
     
@@ -53,11 +53,11 @@ def sbsplot(spec, output, show_lines, transitions, z,
         
         # Determine the subband name
         try:
-            sb = re.findall('SB\d+', s)[0]
+            sb = re.findall('{0}\d+'.format(identifier), s)[0]
         except IndexError:
-            print "Could not find SB number."
-            print "Will use SB???"
-            sb = 'SB???'
+            print("Could not find SB number.")
+            print("Will use the file name.")
+            sb = s
         
         # Begin ploting      
         fig = plt.figure(frameon=False)
@@ -102,10 +102,10 @@ if __name__ == '__main__':
     
     parser = argparse.ArgumentParser()
     parser.add_argument('spec', type=str,
-                        help="Files with spectrum to process." \
+                        help="Files with spectrum to process. " \
                              "(string, wildcards and [] accepted)")
     parser.add_argument('output', type=str,
-                        help="Name of output file with spectrum plots." \
+                        help="Name of output file with spectrum plots. " \
                              "Will produce a single .pdf file.")
     parser.add_argument('-l', '--show_lines', action='store_true',
                         help="Show lines in the spectra? Default: False")
@@ -114,10 +114,10 @@ if __name__ == '__main__':
                              "E.g., CIalpha,CI13beta,HIalpha\n" \
                              "Default: CIalpha")
     parser.add_argument('--z', type=float, default=0.0, dest='z',
-                        help="Redshift to apply to the transition rest frequency." \
+                        help="Redshift to apply to the transition rest frequency. " \
                              "Default: 0")
     parser.add_argument('-x', '--x_axis', type=str, default='Frequency (MHz)',
-                        help="X axis of the spectra." \
+                        help="X axis of the spectra. " \
                              "Default: Frequency (MHz)")
     parser.add_argument('--x_col', type=int, default=0,
                         help="Column with x axis values. Default: 0")
@@ -126,14 +126,17 @@ if __name__ == '__main__':
     parser.add_argument('--x_min', type=float, default=None,
                         help="Minimum x axis value to show. Default: None")
     parser.add_argument('-y', '--y_axis', type=str, default='Optical depth',
-                        help="Y axis of the spectra." \
+                        help="Y axis of the spectra. " \
                              "Default: Optical depth")
     parser.add_argument('--y_col', type=int, default=1,
                         help="Column with y axis values. Default: 1")
+    parser.add_argument('-i', '--identifier', default='SB',
+                        help='Identifier to label the plots. Default SB')
     args = parser.parse_args()
     
     sbsplot(args.spec, args.output, 
             args.show_lines, args.transitions, args.z,
             args.x_axis, args.x_col,
             args.x_min, args.x_max,
-            args.y_axis, args.y_col)
+            args.y_axis, args.y_col,
+            args.identifier)
