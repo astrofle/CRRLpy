@@ -642,7 +642,7 @@ def level_pop_lte(n, ne, nion, Te, Z):
     
     return Nn
 
-def load_bn(te, ne, other='', n_min=5, n_max=1000, verbose=False):
+def load_bn(te, ne, tr='', ncrit='1.5d3', n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
     """
     Loads the bn values from the CRRL models.
     
@@ -660,20 +660,18 @@ def load_bn(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     
     #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    if other == '-' or other == '':
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne)
+    if tr == '-' or tr == '' or tr == 0:
+        model_file = 'Carbon_opt_T_{0}_ne_{1}_ncrit_{2}_vriens_delta_500_vrinc_nmax_9900_dat'.format(te, ne, ncrit)
         if verbose:
-            print("Loading {0}".format(mod_file))
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne))[0]
+            print("Loading {0}".format(model_file))
     else:
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne, other)
+        model_file = 'Carbon_opt_T_{0}_ne_{1}_ncrit_{2}_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(te, ne, ncrit, tr)
         if verbose:
-            print("Loading {0}".format(mod_file))
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne, other))[0]
-    
+            print("Loading {0}".format(model_file))
+    model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     if verbose:
-        print("Loaded {0}".format(mod_file))
-    bn = np.loadtxt(mod_file)
+        print("Loaded {0}".format(model_path))
+    bn = np.loadtxt(model_path)
     
     nimin = best_match_indx(n_min, bn[:,0])
     nimax = best_match_indx(n_max, bn[:,0])
@@ -760,7 +758,7 @@ def load_bn_all(n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
         
     return [Te, ne, Tr, data]
   
-def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
+def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False, location=LOCALDIR, ncrit='1.5d3'):
     """
     Loads the :math:`b_{n}` values defined by dict.
     
@@ -807,8 +805,8 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
         if verbose:
             print("Trying to load model: ")
             print("ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i]))
-        bn = load_bn2(t, dict['ne'][i], n_min=n_min, n_max=n_max, Tr=dict['Tr'][i], 
-                      verbose=verbose)
+        bn = load_bn(t, dict['ne'][i], n_min=n_min, n_max=n_max, tr=dict['Tr'][i], 
+                     ncrit=ncrit, verbose=verbose, location=location)
         
         data[i,0] = bn[:,0]
         data[i,1] = bn[:,1]
