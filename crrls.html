@@ -603,8 +603,14 @@ Uses the optical definition of velocity.</p>
 
 <dl class="py function">
 <dt id="crrlpy.crrls.levelpopc">
-<code class="sig-prename descclassname">crrlpy.crrls.</code><code class="sig-name descname">levelpopc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">electemp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#levelpopc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.levelpopc" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-prename descclassname">crrlpy.crrls.</code><code class="sig-name descname">levelpopc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">t</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#levelpopc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.levelpopc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fraction of carbon atoms in the 3/2 state relative to the 1/2 state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Kinetic temperature.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
 <dt id="crrlpy.crrls.linear">
@@ -912,7 +918,7 @@ Salgado et al. (2017)</p>
 <li><p><strong>snr0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Signal-to-noise ratio computed as peak/rms.</p></li>
 <li><p><strong>fwhm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – FWHM of the line.</p></li>
 <li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Channel spacing.</p></li>
-<li><p><strong>prop</strong> (<em>string</em>) – Line property. Can be one of ‘amplitude’, ‘center’, ‘FWHM’ or ‘area’.</p></li>
+<li><p><strong>prop</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Line property. Can be one of ‘amplitude’, ‘center’, ‘FWHM’ or ‘area’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -933,10 +939,10 @@ Salgado et al. (2017)</p>
 <dd class="field-odd"><p><strong>str</strong> (<em>string</em>) – String to check.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>True is str can be cast to an int.</p>
+<dd class="field-even"><p>int(str) if str can be cast to an int, else str.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
