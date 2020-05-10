@@ -1,34 +1,26 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>crrlpy.spec module &mdash; CRRLpy 0.1 documentation</title>
-    
+    <meta charset="utf-8" />
+    <title>crrlpy.spec module &#8212; CRRLpy 0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/copybutton.js"></script>
-    <link rel="top" title="CRRLpy 0.1 documentation" href="index.html" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="_static/copybutton.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="crrlpy.models.rrlmod module" href="models.rrlmod.html" />
     <link rel="prev" title="crrlpy.crrls module" href="crrls.html" /> 
-  </head>
-  <body role="document">
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -39,9 +31,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="models.rrlmod.html" title="crrlpy.models.rrlmod module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
           <a href="crrls.html" title="crrlpy.crrls module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -53,470 +48,6 @@
   <div class="section" id="crrlpy-spec-module">
 <h1>crrlpy.spec module<a class="headerlink" href="#crrlpy-spec-module" title="Permalink to this headline">¶</a></h1>
 <p>Module dedicated to the processing of RRL spectra.</p>
-<span class="target" id="module-crrlpy.spec"></span><dl class="class">
-<dt id="crrlpy.spec.Spectrum">
-<em class="property">class </em><code class="descclassname">crrlpy.spec.</code><code class="descname">Spectrum</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>w=[]</em>, <em>spw=None</em>, <em>stack=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>Construction:</p>
-<p>spec = Spectrum(x, y, w=None, spw=None, stack=None)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x</strong> : array_like</p>
-<blockquote>
-<div><div class="line-block">
-<div class="line">Spectrum x axis.</div>
-<div class="line">If x is a frequency axis, then its units should be MHz.</div>
-</div>
-</div></blockquote>
-<p><strong>y</strong> : array_like</p>
-<blockquote>
-<div><p>Spectrum y axis.</p>
-</div></blockquote>
-<p><strong>w</strong> : array_like, optional</p>
-<blockquote>
-<div><p>Spectrum weight axis</p>
-</div></blockquote>
-<p><strong>spw</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
-<blockquote class="last">
-<div><p>Spectrum spectral window.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.apply_bandpass_corr" title="crrlpy.spec.Spectrum.apply_bandpass_corr"><code class="xref py py-obj docutils literal"><span class="pre">apply_bandpass_corr</span></code></a>(bandpass_x,&nbsp;bandpass_y)</td>
-<td>Applies a bandpass correction to the y axis of Spectrum.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.bandpass_corr" title="crrlpy.spec.Spectrum.bandpass_corr"><code class="xref py py-obj docutils literal"><span class="pre">bandpass_corr</span></code></a>(order[,&nbsp;offset])</td>
-<td>Fits a polynomial to the unmasked elements of spec and uses it to correct the bandpass.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.find_good_lines" title="crrlpy.spec.Spectrum.find_good_lines"><code class="xref py py-obj docutils literal"><span class="pre">find_good_lines</span></code></a>(line,&nbsp;lines[,&nbsp;z,&nbsp;...])</td>
-<td>Find any good lines in the Spectrum.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.find_lines" title="crrlpy.spec.Spectrum.find_lines"><code class="xref py py-obj docutils literal"><span class="pre">find_lines</span></code></a>(line[,&nbsp;z,&nbsp;verbose])</td>
-<td>Finds if there are any lines of a given type in the frequency range.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.make_line_mask" title="crrlpy.spec.Spectrum.make_line_mask"><code class="xref py py-obj docutils literal"><span class="pre">make_line_mask</span></code></a>(line[,&nbsp;z,&nbsp;df])</td>
-<td>Creates a list of indexes to mask lines in the spectrum.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.mask_edges" title="crrlpy.spec.Spectrum.mask_edges"><code class="xref py py-obj docutils literal"><span class="pre">mask_edges</span></code></a>(redge[,&nbsp;ledge])</td>
-<td>Mask the edges of the Spectrum frequency and amplitude.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.mask_ranges" title="crrlpy.spec.Spectrum.mask_ranges"><code class="xref py py-obj docutils literal"><span class="pre">mask_ranges</span></code></a>(ranges)</td>
-<td>Masks the Spectrum inside the given ranges.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.remove_model" title="crrlpy.spec.Spectrum.remove_model"><code class="xref py py-obj docutils literal"><span class="pre">remove_model</span></code></a>(line,&nbsp;model[,&nbsp;z,&nbsp;is_freq])</td>
-<td>Subtracts the model from the y axis of the Spectrum.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.save" title="crrlpy.spec.Spectrum.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a>(filename)</td>
-<td>Saves the spectrum.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#crrlpy.spec.Spectrum.split_lines" title="crrlpy.spec.Spectrum.split_lines"><code class="xref py py-obj docutils literal"><span class="pre">split_lines</span></code></a>(reffreqs)</td>
-<td>Splits the spectrum to separate lines.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.apply_bandpass_corr">
-<code class="descname">apply_bandpass_corr</code><span class="sig-paren">(</span><em>bandpass_x</em>, <em>bandpass_y</em>, <em>offset=1000.0</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.apply_bandpass_corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.apply_bandpass_corr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a bandpass correction to the y axis of Spectrum.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>bandpass</strong> : <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ma.array.html#numpy.ma.array" title="(in NumPy v1.14)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.ma.array</span></code></a></p>
-<blockquote>
-<div><p>Bandpass to apply to Spectrum.</p>
-</div></blockquote>
-<p><strong>offset</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, optional</p>
-<blockquote>
-<div><div class="line-block">
-<div class="line">Offset to apply to the y axis data. Used to avoid division by 0.</div>
-<div class="line">Should be the same value used when deriving the bandpass solution.</div>
-</div>
-</div></blockquote>
-<p><strong>overwrite</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a>, optional</p>
-<blockquote class="last">
-<div><p>Should the bandpass applied overwrite the Spectrum.bp?</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.bandpass_corr">
-<code class="descname">bandpass_corr</code><span class="sig-paren">(</span><em>order</em>, <em>offset=1000.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.bandpass_corr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.bandpass_corr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fits a polynomial to the unmasked elements of spec
-and uses it to correct the bandpass.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>order</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
-<blockquote>
-<div><p>Order of the polynomial to be fit.</p>
-</div></blockquote>
-<p><strong>offset</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a>, optional</p>
-<blockquote class="last">
-<div><div class="line-block">
-<div class="line">Offset to apply to the y axis data. </div>
-<div class="line">Used to avoid division by 0.</div>
-</div>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.find_good_lines">
-<code class="descname">find_good_lines</code><span class="sig-paren">(</span><em>line</em>, <em>lines</em>, <em>z=0</em>, <em>separation=0</em>, <em>redge=0.05</em>, <em>ledge=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.find_good_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.find_good_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find any good lines in the Spectrum.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>line</strong> : <a class="reference external" href="http://docs.python.org/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
-<blockquote>
-<div><p>Search for good lines of this kind.</p>
-</div></blockquote>
-<p><strong>lines</strong> : <a class="reference external" href="http://docs.python.org/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
-<blockquote>
-<div><p>Compare against this kind of lines.</p>
-</div></blockquote>
-<p><strong>z</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
-<blockquote>
-<div><p>Redshift correction to apply to the rest frequencies.</p>
-</div></blockquote>
-<p><strong>separation</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
-<blockquote>
-<div><p>Minimum separation between lines to be considered good.</p>
-</div></blockquote>
-<p><strong>redge</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
-<blockquote class="last">
-<div><p>The line frequency should be this far</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.find_lines">
-<code class="descname">find_lines</code><span class="sig-paren">(</span><em>line</em>, <em>z=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.find_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.find_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Finds if there are any lines of a given type in the frequency range.
-The line frequencies are corrected for redshift.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>line</strong> : <a class="reference external" href="http://docs.python.org/library/string.html#module-string" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">string</span></code></a></p>
-<blockquote>
-<div><p>Line type to search for.</p>
-</div></blockquote>
-<p><strong>z</strong> :    <a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">float</span></code></a></p>
-<blockquote>
-<div><p>Redshift to apply to the rest frequencies.</p>
-</div></blockquote>
-<p><strong>verbose</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a></p>
-<blockquote>
-<div><p>Verbose output?</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>n</strong> : <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a></p>
-<blockquote>
-<div><p>Principal quantum numbers.</p>
-</div></blockquote>
-<p><strong>reference_frequencies</strong> : <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.14)"><code class="xref py py-obj docutils literal"><span class="pre">numpy.array</span></code></a></p>
-<blockquote class="last">
-<div><p>Reference frequencies of the lines inside the spectrum in MHz. 
-The frequencies are redshift corrected.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="crrls.html#crrlpy.crrls.load_ref" title="crrlpy.crrls.load_ref"><code class="xref py py-obj docutils literal"><span class="pre">crrlpy.crrls.load_ref</span></code></a></dt>
-<dd>Describes the format of line and the available ones.</dd>
-</dl>
-</div>
-<p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">crrlpy.spec</span> <span class="kn">import</span> <span class="n">Spectrum</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">freq</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">temp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">Spectrum</span><span class="p">(</span><span class="n">freq</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ns</span><span class="p">,</span> <span class="n">rf</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">find_lines</span><span class="p">(</span><span class="s1">&#39;RRL_CIalpha&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ns</span>
-<span class="go">array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,</span>
-<span class="go">        852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,</span>
-<span class="go">        861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.make_line_mask">
-<code class="descname">make_line_mask</code><span class="sig-paren">(</span><em>line</em>, <em>z=0</em>, <em>df=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.make_line_mask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.make_line_mask" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a list of indexes to mask lines in the spectrum.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>line</strong> : <a class="reference external" href="http://docs.python.org/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
-<blockquote class="last">
-<div><p>Line to mask.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="crrls.html#crrlpy.crrls.load_ref" title="crrlpy.crrls.load_ref"><code class="xref py py-obj docutils literal"><span class="pre">crrlpy.crrls.load_ref</span></code></a></dt>
-<dd>Describes the format of line and the available ones.</dd>
-</dl>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.mask_edges">
-<code class="descname">mask_edges</code><span class="sig-paren">(</span><em>redge</em>, <em>ledge=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.mask_edges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.mask_edges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mask the edges of the Spectrum frequency and amplitude.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.mask_ranges">
-<code class="descname">mask_ranges</code><span class="sig-paren">(</span><em>ranges</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.mask_ranges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.mask_ranges" title="Permalink to this definition">¶</a></dt>
-<dd><p>Masks the Spectrum inside the given ranges.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>ranges</strong> : list of tuples</p>
-<blockquote class="last">
-<div><p>Indexes defining the ranges to be masked.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span> <span class="o">=</span> <span class="n">Spectrum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
-<span class="go">array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rngs</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span><span class="o">.</span><span class="n">mask_ranges</span><span class="p">(</span><span class="n">rngs</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">spec</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">compressed</span><span class="p">()</span>
-<span class="go">array([2, 3, 4, 5, 6, 9])</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.remove_model">
-<code class="descname">remove_model</code><span class="sig-paren">(</span><em>line</em>, <em>model</em>, <em>z=0</em>, <em>is_freq=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.remove_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.remove_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subtracts the model from the y axis of the Spectrum.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>line</strong> : <a class="reference external" href="http://docs.python.org/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
-<blockquote>
-<div><p>Line which the model represents.</p>
-</div></blockquote>
-<p><strong>model</strong> : array_like</p>
-<blockquote>
-<div><p>Array with the model to be removed. Should have shape (2xN).</p>
-</div></blockquote>
-<p><strong>is_freq</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a></p>
-<blockquote class="last">
-<div><p>Is the model x axis in frequency units?</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the spectrum.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : <a class="reference external" href="http://docs.python.org/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
-<blockquote class="last">
-<div><p>Output filename.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Spectrum.split_lines">
-<code class="descname">split_lines</code><span class="sig-paren">(</span><em>reffreqs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Spectrum.split_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Spectrum.split_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits the spectrum to separate lines.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lines</strong> : array_like</p>
-<blockquote class="last">
-<div><p>List of lines to split.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="crrlpy.spec.Stack">
-<em class="property">class </em><code class="descclassname">crrlpy.spec.</code><code class="descname">Stack</code><span class="sig-paren">(</span><em>line</em>, <em>transitions</em>, <em>specs</em>, <em>vmin=-100</em>, <em>vmax=100</em>, <em>dv=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Stack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v3.6)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>Construction:</p>
-<p>stack = Stack(line, transitions, specs)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>line</strong> : <a class="reference external" href="http://docs.python.org/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
-<blockquote>
-<div><p>Line contained in the spectrum.</p>
-</div></blockquote>
-<p><strong>transitions</strong> : array_like</p>
-<blockquote>
-<div><p>Transitions inside the Stack.</p>
-</div></blockquote>
-<p><strong>specs</strong> : array of <a class="reference internal" href="#crrlpy.spec.Spectrum" title="crrlpy.spec.Spectrum"><code class="xref py py-obj docutils literal"><span class="pre">Spectrum</span></code></a></p>
-<blockquote class="last">
-<div><p>Array with Spectrum objects to be stacked.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#crrlpy.spec.Stack.compute_dv" title="crrlpy.spec.Stack.compute_dv"><code class="xref py py-obj docutils literal"><span class="pre">compute_dv</span></code></a>()</td>
-<td>Determines the maximum velocity separation between the channels inside Stack.specs.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#crrlpy.spec.Stack.save" title="crrlpy.spec.Stack.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a>(filename)</td>
-<td>Saves the spectrum.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#crrlpy.spec.Stack.stack_interpol" title="crrlpy.spec.Stack.stack_interpol"><code class="xref py py-obj docutils literal"><span class="pre">stack_interpol</span></code></a>([rms,&nbsp;ch0,&nbsp;chf])</td>
-<td>Stack by interpolating to a common grid.</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="crrlpy.spec.Stack.compute_dv">
-<code class="descname">compute_dv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Stack.compute_dv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Stack.compute_dv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determines the maximum velocity separation
-between the channels inside Stack.specs.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Stack.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Stack.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Stack.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves the spectrum.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>filename</strong> : <a class="reference external" href="http://docs.python.org/library/stdtypes.html#str" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">str</span></code></a></p>
-<blockquote class="last">
-<div><p>Output filename.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="crrlpy.spec.Stack.stack_interpol">
-<code class="descname">stack_interpol</code><span class="sig-paren">(</span><em>rms=True</em>, <em>ch0=0</em>, <em>chf=-1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#Stack.stack_interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.Stack.stack_interpol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stack by interpolating to a common grid.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rms</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">bool</span></code></a></p>
-<blockquote>
-<div><p>Compute a the rms for each substack?</p>
-</div></blockquote>
-<p><strong>ch0</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
-<blockquote>
-<div><p>First channel used to compute the rms.</p>
-</div></blockquote>
-<p><strong>chf</strong> : <a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">int</span></code></a></p>
-<blockquote class="last">
-<div><p>Last channel used to compute the rms.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="crrlpy.spec.distribute_lines">
-<code class="descclassname">crrlpy.spec.</code><code class="descname">distribute_lines</code><span class="sig-paren">(</span><em>lines</em>, <em>ngroups</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/spec.html#distribute_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.spec.distribute_lines" title="Permalink to this definition">¶</a></dt>
-<dd><p>Groups a list of lines into ngroups.
-This is used to make stacks.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>lines</strong> : array_like</p>
-<blockquote>
-<div><p>List of lines to group.</p>
-</div></blockquote>
-<p><strong>ngroups</strong> : <a href="#id1"><span class="problematic" id="id2">:ob:`int`</span></a></p>
-<blockquote class="last">
-<div><p>Number of groups to make. If the number of lines is not divisible
-by the number of groups, then more lines are added to the first groups.</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </div>
 
 
@@ -528,26 +59,26 @@ by the number of groups, then more lines are added to the first groups.</p>
   <h4>Previous topic</h4>
   <p class="topless"><a href="crrls.html"
                         title="previous chapter">crrlpy.crrls module</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="models.rrlmod.html"
+                        title="next chapter">crrlpy.models.rrlmod module</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/spec.txt"
+      <li><a href="_sources/spec.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
+    </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -562,14 +93,17 @@ by the number of groups, then more lines are added to the first groups.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
+          <a href="models.rrlmod.html" title="crrlpy.models.rrlmod module"
+             >next</a> |</li>
+        <li class="right" >
           <a href="crrls.html" title="crrlpy.crrls module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Pedro Salas.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.6.
+        &#169; Copyright 2015, Pedro Salas.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
     </div>
   </body>
 </html>
