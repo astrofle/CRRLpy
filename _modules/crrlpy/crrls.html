@@ -977,7 +977,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pressure induced broadening in Hz.</span>
 <span class="sd">    This gives the FWHM of a Lorentzian line.</span>
-<span class="sd">    Salgado et al. (2015)</span>
+<span class="sd">    Salgado et al. (2017)</span>
 <span class="sd">    </span>
 <span class="sd">    :param n: Principal quantum number for which to compute the line broadening.</span>
 <span class="sd">    :type n: float or array</span>
@@ -998,7 +998,7 @@
 <div class="viewcode-block" id="pressure_broad_coefs"><a class="viewcode-back" href="../../crrls.html#crrlpy.crrls.pressure_broad_coefs">[docs]</a><span class="k">def</span> <span class="nf">pressure_broad_coefs</span><span class="p">(</span><span class="n">Te</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Defines the values of the constants :math:`a` and :math:`\\gamma` that go into the collisional broadening formula</span>
-<span class="sd">    of Salgado et al. (2015).</span>
+<span class="sd">    of Salgado et al. (2017).</span>
 <span class="sd">    </span>
 <span class="sd">    :param Te: Electron temperature.</span>
 <span class="sd">    :type Te: float</span>
@@ -1101,7 +1101,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Radiation induced broadening in Hz.</span>
 <span class="sd">    This gives the FWHM of a Lorentzian line.</span>
-<span class="sd">    Salgado et al. (2015)</span>
+<span class="sd">    Salgado et al. (2017)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="k">return</span> <span class="mf">6.096e-17</span><span class="o">*</span><span class="n">w</span><span class="o">*</span><span class="n">tr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">5.8</span><span class="p">)</span></div>
@@ -1112,7 +1112,7 @@
 <span class="sd">    Radiation induced broadening in Hz.</span>
 <span class="sd">    This gives the FWHM of a Lorentzian line.</span>
 <span class="sd">    The expression is valid for power law like radiation fields.</span>
-<span class="sd">    Salgado et al. (2015)</span>
+<span class="sd">    Salgado et al. (2017)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">cte</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mf">2.14e4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="mf">6.578e15</span><span class="o">/</span><span class="n">nu0</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">+</span> <span class="mf">1.</span><span class="p">)</span><span class="o">*</span><span class="n">k_B</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span><span class="o">*</span><span class="n">nu0</span>
@@ -1185,7 +1185,18 @@
 
 <div class="viewcode-block" id="signal2noise"><a class="viewcode-back" href="../../crrls.html#crrlpy.crrls.signal2noise">[docs]</a><span class="k">def</span> <span class="nf">signal2noise</span><span class="p">(</span><span class="n">snr0</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="s1">&#39;amplitude&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Signal to noise ratio of the corresponding line property</span>
+<span class="sd">    Signal to noise ratio of the corresponding line property, Lenz &amp; Ayres (1992).</span>
+<span class="sd">    </span>
+<span class="sd">    :param snr0: Signal-to-noise ratio computed as peak/rms.</span>
+<span class="sd">    :type snr0: float</span>
+<span class="sd">    :param fwhm: FWHM of the line.</span>
+<span class="sd">    :type fwhm: float</span>
+<span class="sd">    :param dx: Channel spacing.</span>
+<span class="sd">    :type dx: float</span>
+<span class="sd">    :param prop: Line property. Can be one of &#39;amplitude&#39;, &#39;center&#39;, &#39;FWHM&#39; or &#39;area&#39;.</span>
+<span class="sd">    :type prop: string</span>
+<span class="sd">    :returns: Signal-to-noise ratio assuming a Gaussian line profile.</span>
+<span class="sd">    :rtype: float</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     
     <span class="n">cx</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amplitude&#39;</span><span class="p">:</span><span class="mf">0.7</span><span class="p">,</span>

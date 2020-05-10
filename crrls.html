@@ -783,7 +783,7 @@ Eq. (61) for te &gt; 1000 K.</p>
 <dt id="crrlpy.crrls.pressure_broad_coefs">
 <code class="sig-prename descclassname">crrlpy.crrls.</code><code class="sig-name descname">pressure_broad_coefs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Te</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_coefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_coefs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Defines the values of the constants <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(\gamma\)</span> that go into the collisional broadening formula
-of Salgado et al. (2015).</p>
+of Salgado et al. (2017).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>Te</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Electron temperature.</p>
@@ -802,7 +802,7 @@ of Salgado et al. (2015).</p>
 <code class="sig-prename descclassname">crrlpy.crrls.</code><code class="sig-name descname">pressure_broad_salgado</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">te</span></em>, <em class="sig-param"><span class="n">ne</span></em>, <em class="sig-param"><span class="n">dn</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#pressure_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.pressure_broad_salgado" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pressure induced broadening in Hz.
 This gives the FWHM of a Lorentzian line.
-Salgado et al. (2015)</p>
+Salgado et al. (2017)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -833,7 +833,7 @@ Shaver (1975)</p>
 <code class="sig-prename descclassname">crrlpy.crrls.</code><code class="sig-name descname">radiation_broad_salgado</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">w</span></em>, <em class="sig-param"><span class="n">tr</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#radiation_broad_salgado"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.radiation_broad_salgado" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radiation induced broadening in Hz.
 This gives the FWHM of a Lorentzian line.
-Salgado et al. (2015)</p>
+Salgado et al. (2017)</p>
 </dd></dl>
 
 <dl class="py function">
@@ -842,7 +842,7 @@ Salgado et al. (2015)</p>
 <dd><p>Radiation induced broadening in Hz.
 This gives the FWHM of a Lorentzian line.
 The expression is valid for power law like radiation fields.
-Salgado et al. (2015)</p>
+Salgado et al. (2017)</p>
 </dd></dl>
 
 <dl class="py function">
@@ -905,7 +905,23 @@ Salgado et al. (2015)</p>
 <dl class="py function">
 <dt id="crrlpy.crrls.signal2noise">
 <code class="sig-prename descclassname">crrlpy.crrls.</code><code class="sig-name descname">signal2noise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">snr0</span></em>, <em class="sig-param"><span class="n">fwhm</span></em>, <em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">prop</span><span class="o">=</span><span class="default_value">'amplitude'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/crrls.html#signal2noise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.crrls.signal2noise" title="Permalink to this definition">¶</a></dt>
-<dd><p>Signal to noise ratio of the corresponding line property</p>
+<dd><p>Signal to noise ratio of the corresponding line property, Lenz &amp; Ayres (1992).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>snr0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Signal-to-noise ratio computed as peak/rms.</p></li>
+<li><p><strong>fwhm</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – FWHM of the line.</p></li>
+<li><p><strong>dx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Channel spacing.</p></li>
+<li><p><strong>prop</strong> (<em>string</em>) – Line property. Can be one of ‘amplitude’, ‘center’, ‘FWHM’ or ‘area’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Signal-to-noise ratio assuming a Gaussian line profile.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
