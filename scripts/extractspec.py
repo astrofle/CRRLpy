@@ -291,8 +291,8 @@ def get_axis(header, axis):
     # swapaxes uses python convention for axes index.
     wcs = wcs.swapaxes(axis-1,0)
     wcs = wcs.sub(1)
-    n_axis = wcs.array_shape[-axis]
-    axis_vals = wcs.pixel_to_world_values(np.arange(0,n_axis))[0]
+    n_axis = wcs.array_shape[0]
+    axis_vals = wcs.pixel_to_world_values(np.arange(0,n_axis))
     
     return axis_vals
 
