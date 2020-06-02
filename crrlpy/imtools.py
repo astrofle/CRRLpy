@@ -380,34 +380,34 @@ def get_fits3axes(head):
     
     return ra , de, ve
     
-def get_contours(x, y, z, levs, segment=0, verbose=False):
-    """
-    Creates an array with the contour vertices.
-    """
-    
-    c = QuadContourGenerator.from_rectilinear(x, y, z, shapely_fmt)
-    
-    #c = cntr.Cntr(x, y, z)
-    
-    segments = []
-    for i,l in enumerate(levs):
-        #res = c.trace(l)
-        res = c.filled_contour(min=1-l, max=None)
-        if res:
-            nseg = len(res) // 2
-            segments.append(res[:nseg][segment])
-            if verbose: 
-                print(res[:nseg][segment])
-        else:
-            pass
-    
-    # Where should we add missing corners?
-    #if x.max() in np.asarray(segments)[0][:,0] \
-       #and x.max() not in np.asarray(segments)[1][:,0]:
-           #if np.asarray(segments)[1][:,1]
-                #segments[1].append()
-                
-    return np.asarray(segments)
+#def get_contours(x, y, z, levs, segment=0, verbose=False):
+#    """
+#    Creates an array with the contour vertices.
+#    """
+#    
+#    c = QuadContourGenerator.from_rectilinear(x, y, z, shapely_fmt)
+#    
+#    #c = cntr.Cntr(x, y, z)
+#    
+#    segments = []
+#    for i,l in enumerate(levs):
+#        #res = c.trace(l)
+#        res = c.filled_contour(min=1-l, max=None)
+#        if res:
+#            nseg = len(res) // 2
+#            segments.append(res[:nseg][segment])
+#            if verbose: 
+#                print(res[:nseg][segment])
+#        else:
+#            pass
+#    
+#    # Where should we add missing corners?
+#    #if x.max() in np.asarray(segments)[0][:,0] \
+#       #and x.max() not in np.asarray(segments)[1][:,0]:
+#           #if np.asarray(segments)[1][:,1]
+#                #segments[1].append()
+#                
+#    return np.asarray(segments)
 
 def K2Jy(head, freq=0):
     """

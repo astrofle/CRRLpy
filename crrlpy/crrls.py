@@ -1059,6 +1059,7 @@ def radiation_broad_salgado_general(n, w, tr, nu0, alpha):
     
     return w*cte*tr*np.power(n, -3.*alpha - 2.)*(1. + np.power(2., dnexp) + np.power(3., dnexp))
 
+
 def rval(te, ne, nh, rates='TH1985'):
     """
     """
@@ -1078,6 +1079,7 @@ def rval(te, ne, nh, rates='TH1985'):
     
     return (fac1 + fac2)/(fac1 + fac2 + 2.4e-6)
 
+
 def sigma2fwhm(sigma):
     """
     Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWHM.
@@ -1089,6 +1091,7 @@ def sigma2fwhm(sigma):
     """
     
     return sigma*2.*np.sqrt(2.*np.log(2.))
+
 
 def sigma2fwhm_err(dsigma):
     """
@@ -1103,12 +1106,26 @@ def sigma2fwhm_err(dsigma):
     
     return dsigma*2.*np.sqrt(2.*np.log(2.))
 
+
 def sigma2fwtm(sigma):
     """
     Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWTM.
     """
     
     return sigma*2.*np.sqrt(2.*np.log(10.))
+
+
+def signal2noise(snr0, fwhm, dx, prop='amplitude'):
+    """
+    Signal to noise ratio of the corresponding line property
+    """
+    
+    cx = {'amplitude':0.7,
+          'center':1.47,
+          'FWHM':0.61,
+          'area':0.7}
+    
+    return cx[prop]*np.sqrt(fwhm/dx)*snr0
 
 def tryint(str):
     """
@@ -1124,6 +1141,7 @@ def tryint(str):
         return int(str)
     except:
         return str
+    
 
 def vel2freq(f0, vel):
     """
@@ -1139,6 +1157,7 @@ def vel2freq(f0, vel):
     """
     
     return f0*(1. - vel/c.to('m/s').value)
+
 
 def voigt_(x, y):
     # The Voigt function is also the real part of 
@@ -1242,6 +1261,7 @@ def voigt_fwhm(dD, dL):
     
     return np.multiply(0.5346, dL) + np.sqrt(np.multiply(0.2166, np.power(dL, 2)) + np.power(dD, 2))
 
+
 def voigt_fwhm_err(dD, dL, ddD, ddL):
     """
     Computes the error in the FWHM of a Voigt profile. \
@@ -1271,6 +1291,7 @@ def voigt_fwhm_err(dD, dL, ddD, ddL):
     
     return dT
 
+
 def voigt_peak(A, alphaD, alphaL):
     """
     Gives the peak of a Voigt profile given its Area and the \
@@ -1293,6 +1314,7 @@ def voigt_peak(A, alphaD, alphaL):
     peak = A/alphaD*np.sqrt(np.log(2.)/np.pi)*K
     
     return peak
+
 
 def voigt_peak2area(peak, alphaD, alphaL):
     """

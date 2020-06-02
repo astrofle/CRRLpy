@@ -561,7 +561,7 @@ def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     
     cte = np.power(c, 2.)/(16.*np.pi)*np.power(np.power(h, 2)/(2.*np.pi*m_e*k_B), 3./2.)
     
-    bn = load_bn2(val2str(Te), ne, other='case_diffuse_{0}'.format(val2str(Tr)))
+    bn = load_bn(val2str(Te), ne, other='case_diffuse_{0}'.format(val2str(Tr)))
     bn = bn[:np.where(bn[:,0] == n_max)[0]]
     Anfni = np.loadtxt('{0}/rates/einstein_Anm_{1}.txt'.format(LOCALDIR, trans))
     
@@ -642,7 +642,7 @@ def level_pop_lte(n, ne, nion, Te, Z):
     
     return Nn
 
-def load_bn(te, ne, other='', n_min=5, n_max=1000, verbose=False):
+def load_bn(te, ne, tr='', ncrit='1.5d3', n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
     """
     Loads the bn values from the CRRL models.
     
@@ -660,20 +660,18 @@ def load_bn(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     
     #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
     
-    if other == '-' or other == '':
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne)
+    if tr == '-' or tr == '' or tr == 0:
+        model_file = 'Carbon_opt_T_{0}_ne_{1}_ncrit_{2}_vriens_delta_500_vrinc_nmax_9900_dat'.format(te, ne, ncrit)
         if verbose:
-            print("Loading {0}".format(mod_file))
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne))[0]
+            print("Loading {0}".format(model_file))
     else:
-        mod_file = 'bn2/Carbon_opt_T_{1}_ne_{2}_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne, other)
+        model_file = 'Carbon_opt_T_{0}_ne_{1}_ncrit_{2}_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(te, ne, ncrit, tr)
         if verbose:
-            print("Loading {0}".format(mod_file))
-        mod_file = glob.glob('{0}/bn2/Carbon_opt_T_{1}_ne_{2}*_ncrit_1.5d3_{3}_vriens_delta_500_vrinc_nmax_9900_dat'.format(LOCALDIR, te, ne, other))[0]
-    
+            print("Loading {0}".format(model_file))
+    model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     if verbose:
-        print("Loaded {0}".format(mod_file))
-    bn = np.loadtxt(mod_file)
+        print("Loaded {0}".format(model_path))
+    bn = np.loadtxt(model_path)
     
     nimin = best_match_indx(n_min, bn[:,0])
     nimax = best_match_indx(n_max, bn[:,0])
@@ -751,7 +749,7 @@ def load_bn_all(n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
             Tr[i] = '_'.join(model.split('_')[8:11])
         if verbose:
             print("Trying to load model: ne={0}, te={1}, tr={2}".format(ne[i], Te[i], Tr[i]))
-        bn = load_bn2(st, sn, Tr=Tr[i], n_min=n_min, n_max=n_max, verbose=verbose)
+        bn = load_bn(st, sn, Tr=Tr[i], n_min=n_min, n_max=n_max, verbose=verbose)
         data[i,0] = bn[:,0]
         data[i,1] = bn[:,1]
         data[i,2] = bn[:,2]
@@ -760,7 +758,7 @@ def load_bn_all(n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
         
     return [Te, ne, Tr, data]
   
-def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
+def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False, location=LOCALDIR, ncrit='1.5d3'):
     """
     Loads the :math:`b_{n}` values defined by dict.
     
@@ -807,8 +805,9 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False):
         if verbose:
             print("Trying to load model: ")
             print("ne={0}, Te={1}, Tr={2}".format(dict['ne'][i], t, dict['Tr'][i]))
-        bn = load_bn2(t, dict['ne'][i], n_min=n_min, n_max=n_max, Tr=dict['Tr'][i], 
-                      verbose=verbose)
+        
+        bn = load_bn(t, dict['ne'][i], n_min=n_min, n_max=n_max, tr=dict['Tr'][i], 
+                     ncrit=ncrit, verbose=verbose, location=location)
         
         data[i,0] = bn[:,0]
         data[i,1] = bn[:,1]
@@ -1064,6 +1063,8 @@ def load_itau_numpy(filename):
 def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, location=LOCALDIR):
     """
     Loads a model for the CRRL emission.
+    
+    location = "{0}/bbn2_CIalpha".format(rrlmod.LOCALDIR)
     """
     
     #LOCALDIR = os.path.dirname(os.path.realpath(__file__))
@@ -1077,13 +1078,13 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, locati
         ncrit = '8d2'
     
     if other == '-' or other == '':
-        model_file = 'bbn2_{0}/{3}_opt_T_{1}_ne_{2}_ncrit_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, atom, ncrit)
+        model_file = '{0}_opt_T_{1}_ne_{2}_ncrit_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(atom, temp, dens, ncrit)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
             print('In: {0}'.format(location))
         model_path = glob.glob('{0}/{1}'.format(location, model_file))[0]
     else:
-        model_file = 'bbn2_{0}/{4}_opt_T_{1}_ne_{2}_ncrit_{5}_{3}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(trans, temp, dens, other, atom, ncrit)
+        model_file = '{0}_opt_T_{1}_ne_{2}_ncrit_{3}_{4}_vriens_delta_500_vrinc_nmax_9900_datbn_beta'.format(atom, temp, dens, ncrit, other)
         if verbose:
             print('Will try to locate: {0}'.format(model_file))
             print('In: {0}'.format(location))
@@ -1188,7 +1189,7 @@ def make_betabn2(line, temp, dens, n_min=5, n_max=1000, other=''):
     d = dens
     
     dn = fc.set_dn(line)
-    bn = load_bn2(temp, dens, other=other)
+    bn = load_bn(temp, dens, other=other)
     line, n, freq = fc.make_line_list(line, n_min=n_min, n_max=bn[-1,0]+1)
     
     # Cut bn first

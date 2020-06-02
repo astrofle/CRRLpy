@@ -33,7 +33,7 @@ import logging
 from astropy.io import fits
 from astropy.table import Table
 from astropy.io import ascii
-from astropy.wcs import WCS
+from astropy.wcs import WCS, WCSSUB_SPECTRAL
 from astropy.coordinates import SkyCoord
 
 import crrlpy.imtools as ci
@@ -285,15 +285,20 @@ def get_axis(header, axis):
     """
     
     logger = logging.getLogger(__name__)
-    
+   
+    logger.debug("Will extract axis: {}.".format(axis))
+ 
     wcs = WCS(header)
-    
-    # swapaxes uses python convention for axes index.
-    wcs = wcs.swapaxes(axis-1,0)
-    wcs = wcs.sub(1)
-    n_axis = wcs.array_shape[0]
-    axis_vals = wcs.pixel_to_world_values(np.arange(0,n_axis))
-    
+
+    wcs_arr_shape = wcs.array_shape
+    logger.debug("WCS array shape: {}".format(wcs_arr_shape))
+    n_axis = wcs.array_shape[-axis]
+    logger.debug("Axis should have {} elements.".format(n_axis))
+    if len(wcs_arr_shape) > 3:
+        axis_vals = wcs.pixel_to_world_values(np.c_[np.zeros(n_axis), np.zeros(n_axis), np.arange(0,n_axis), np.zeros(n_axis)])[:,axis-1]
+    else:
+        axis_vals = wcs.pixel_to_world_values(np.c_[np.zeros(n_axis), np.zeros(n_axis), np.arange(0,n_axis)])[:,axis-1]
+  
     return axis_vals
 
 def extract_spec(data, region, naxis, mode):
@@ -650,6 +655,7 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
     # Get the frequency axis
     if faxis <= 4 and len(data.shape) > 2:
         freq = get_axis(head, faxis)
+        logger.debug("freq has shape: {}".format(freq.shape))
         freq = np.ma.masked_invalid(freq)
         logger.debug('Invalid values will be replaced with: {0}'.format(freq.fill_value))
     else:
