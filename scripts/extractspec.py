@@ -275,6 +275,7 @@ def plotspec(cube, faxis, taxis, ftype, funit, tunit, out):
                 bbox_inches='tight', pad_inches=0.3)
     plt.close()
 
+
 def get_axis(header, axis):
     """
     Constructs a cube axis
@@ -303,18 +304,9 @@ def get_axis(header, axis):
 
     axis_vals = np.asarray(axis_vals)
     axis_vals = axis_vals[:,axis-1]
-
-    #print("axis shape:")
-    #print(axis_vals.shape)
- 
-    # swapaxes uses python convention for axes index.
-    #wcs = wcs.swapaxes(axis-1,0)
-    #wcs = wcs.sub(0)
-    #n_axis = wcs.array_shape[axis]
-    #logger.debug("Axis should have {} elements.".format(n_axis))
-    #axis_vals = wcs.pixel_to_world_values(np.arange(0,n_axis))[0]
     
     return axis_vals
+
 
 def extract_spec(data, region, naxis, mode):
     """
