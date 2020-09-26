@@ -177,13 +177,15 @@ def parse_region(region, wcs):
         if 'sky' in coord.lower():
             
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
+           
+            params[0:2] = coo_sky.to_pixel(wcs)
             
-            if frame in eq_frames:
-                params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
-                                                  coo_sky.dec.value]], 0)[0]
-            elif 'gal' in frame:
-                params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
-                                                  coo_sky.b.value]], 0)[0]
+            #if frame in eq_frames:
+            #    params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
+            #                                      coo_sky.dec.value]], 0)[0]
+            #elif 'gal' in frame:
+            #    params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
+            #                                      coo_sky.b.value]], 0)[0]
             
             lscale = abs(wcs.pixel_scale_matrix[0,0])*u.deg
             val, uni = split_str(params[2])
@@ -295,9 +297,15 @@ def get_axis(header, axis):
     n_axis = wcs.array_shape[-axis]
     logger.debug("Axis should have {} elements.".format(n_axis))
     if len(wcs_arr_shape) > 3:
-        axis_vals = wcs.pixel_to_world_values(np.c_[np.zeros(n_axis), np.zeros(n_axis), np.arange(0,n_axis), np.zeros(n_axis)])[:,axis-1]
+        axis_vals = wcs.pixel_to_world_values(np.c_[np.zeros(n_axis), np.zeros(n_axis), np.arange(0,n_axis), np.zeros(n_axis)])
     else:
-        axis_vals = wcs.pixel_to_world_values(np.c_[np.zeros(n_axis), np.zeros(n_axis), np.arange(0,n_axis)])[:,axis-1]
+        axis_vals = wcs.pixel_to_world_values(np.c_[np.zeros(n_axis), np.zeros(n_axis), np.arange(0,n_axis)])
+
+    axis_vals = np.asarray(axis_vals)
+    axis_vals = axis_vals[:,axis-1]
+
+    #print("axis shape:")
+    #print(axis_vals.shape)
  
     # swapaxes uses python convention for axes index.
     #wcs = wcs.swapaxes(axis-1,0)
@@ -648,11 +656,11 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
         wcs = None
     
     # Only pass spatial axes
-    if not 'pix' in region:
-        if wcs.naxis > 2:
-            rgn = parse_region(region, wcs.dropaxis(2))
-    else:
-        rgn = parse_region(region, wcs)
+    rgn = parse_region(region, wcs.celestial)
+#    if not 'pix' in region:
+#        rgn = parse_region(region, wcs.dropaxis(2))
+#    else:
+#        rgn = parse_region(region, wcs)
     
     # Add beam area info to the region. Used when the requested units are flux units.
     if 'flux' in mode.lower():
@@ -720,7 +728,8 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
         logger.debug('len spec: {0}'.format(len(fspec)))
     except TypeError:
         logger.debug('len spec: {0}'.format(1))
-    
+   
+
     tbtable = Table(np.array([freq, fspec]).T, 
                     names=['{0} {1}'.format(ftype, funit),
                            'Tb {0}'.format(bunit)],
