@@ -199,6 +199,7 @@ def blank_lines2(freq, tau, reffreqs, dv):
         
     return freq, tau
 
+
 def df2dv(f0, df):
     """
     Convert a frequency delta to a velocity delta given a central frequency.
@@ -213,12 +214,51 @@ def df2dv(f0, df):
     
     return c.to('m/s').value*(df/f0)
 
-def dsigma2dfwtm(dsigma):
+
+def doppler_broad(t, m, vrms, fwhm=False):
     """
-    Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWTM.
+    Doppler broadening.
+    
+    :math:`\\frac{\Delta v}{\mbox{m s}^{-1}}=(\\frac{2k_{B}T}{m}+v_{\mathrm{rms}}^2)^{1/2}`
+    
+    :param t: Gas temperature in K.
+    :type t: float
+    :param m: Mass of the element producing the line in amu.
+    :type m: float
+    :param vrms: Turbulent velocity in :math:`\mbox{m s}^{-1}`.
+    :type vrms: float
+    :returns: The sigma or FWHM of a Gaussian line due to Doppler broadening in :math:`\mbox{m s}^{-1}`.
+    :rtype: float
+    """
+
+    dv = np.sqrt(8314.46262103*t/m + np.power(vrms, 2.))
+    
+    if fwhm:
+        dv = sigma2fwhm(dv)
+    
+    return dv
+
+
+def doppler_temp(sigma, m, vrms, fwhm=False):
+    """
+    The temperature required to produce a Gaussian line of width sigma.
+    
+    :param sigma: The sigma or FWHM of a Gaussian line due to Doppler broadening in :math:`\mbox{m s}^{-1}`.
+    :type sigma: float
+    :param m: Mass of the element producing the line in amu.
+    :type m: float
+    :param vrms: Turbulent velocity in :math:`\mbox{m s}^{-1}`.
+    :type vrms: float
+    :returns: Gas temperature in K.
+    :rtype: float
     """
     
-    return dsigma*2.*np.sqrt(2.*np.log(10.))
+    dv = sigma
+    if fwhm:
+        dv = fwhm2sigma(dv)
+        
+    return (np.power(dv, 2.) - np.power(vrms, 2.))*m/8314.46262103
+
 
 def dv2df(f0, dv):
     """
@@ -233,6 +273,7 @@ def dv2df(f0, dv):
     """
     
     return dv*f0/c.to('m/s').value
+
 
 def dv_minus_doppler(dV, ddV, dD, ddD):
     """
@@ -273,6 +314,7 @@ def dv_minus_doppler(dV, ddV, dD, ddD):
     ddL = np.sqrt(np.power(ddL1*ddV, 2) + np.power(ddL2*ddV, 2)) 
     
     return dL, ddL
+
 
 def dv_minus_doppler2(dV, ddV, dD, ddD):
     """
@@ -316,6 +358,7 @@ def dv_minus_doppler2(dV, ddV, dD, ddD):
     
     return dL, ddL
 
+
 def f2n(f, line, n_max=1500):
     """
     Converts a given frequency to a principal quantum number :math:`n` for a given line.
@@ -336,13 +379,12 @@ def f2n(f, line, n_max=1500):
     
     return nn[fii]
 
+
 def find_lines_sb(freq, line, z=0, verbose=False):
     """
     Finds if there are any lines of a given type in the frequency range.
     The line frequencies are corrected for redshift.
     
-    Parameters
-    ----------
     :param freq: Frequency axis in which to search for lines (MHz). It should not contain \
     NaN or inf values.
     :type freq: array
@@ -395,6 +437,7 @@ def find_lines_sb(freq, line, z=0, verbose=False):
 
     return refqns, reffreqs
 
+
 def freq2vel(f0, f):
     """
     Convert a frequency axis to a velocity axis given a central frequency.
@@ -409,6 +452,7 @@ def freq2vel(f0, f):
     """
     
     return c.to('m/s').value*(1. - f/f0)
+
 
 def fwhm2sigma(fwhm):
     """
@@ -431,6 +475,7 @@ def fwhm2sigma(fwhm):
     
     return fwhm/(2.*np.sqrt(2.*np.log(2.)))
 
+
 def gauss_area(amplitude, sigma):
     """
     Returns the area under a Gaussian of a given amplitude and sigma.
@@ -448,6 +493,7 @@ def gauss_area(amplitude, sigma):
     """
     
     return amplitude*sigma*np.sqrt(2.*np.pi)
+
 
 def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     """
@@ -470,6 +516,7 @@ def gauss_area_err(amplitude, amplitude_err, sigma, sigma_err):
     
     return np.sqrt(err1 + err2)
 
+
 def gauss_area2peak(area, sigma):
     """
     Returns the maximum value of a Gaussian function given its
@@ -478,6 +525,7 @@ def gauss_area2peak(area, sigma):
     """
     
     return area/sigma/np.sqrt(2.*np.pi)
+
 
 def gauss_area2peak_err(amplitude, area, darea, sigma, dsigma):
     """
@@ -490,6 +538,7 @@ def gauss_area2peak_err(amplitude, area, darea, sigma, dsigma):
     err2 = amplitude/sigma*dsigma
     
     return np.sqrt(np.power(err1, 2.) + np.power(err2, 2.))
+
 
 def gaussian(x, sigma, center, amplitude):
     """
@@ -509,6 +558,7 @@ def gaussian(x, sigma, center, amplitude):
     
     #return amplitude/(sigma*np.sqrt(2.*np.pi))*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
     return amplitude*np.exp(-np.power((x - center), 2.)/(2.*np.power(sigma, 2.)))
+
 
 def get_axis(header, axis):
     """
@@ -545,6 +595,7 @@ def get_axis(header, axis):
     
     return axis
 
+
 def get_rchi2(x_obs, x_mod, y_obs, y_mod, dy_obs, dof):
     """
     Computes the reduced :math:`\\chi` squared, :math:`\\chi_{\\nu}^{2}=\\chi^{2}/dof`.
@@ -569,6 +620,7 @@ def get_rchi2(x_obs, x_mod, y_obs, y_mod, dy_obs, dof):
         n_indx_mod.append(np.where(x_mod == n)[0][0])
         
     return np.sum(np.power(y_obs - y_mod[n_indx_mod], 2.)/np.power(dy_obs, 2))/(len(x_obs) - dof)
+
 
 def get_line_mask(freq, reffreq, v0, dv):
     """
@@ -598,6 +650,7 @@ def get_line_mask(freq, reffreq, v0, dv):
     
     return [mindx0, mindxf]
 
+
 def get_line_mask2(freq, reffreq, dv):
     """
     Return a mask with ranges where a line is expected in the given frequency range for \
@@ -623,6 +676,7 @@ def get_line_mask2(freq, reffreq, dv):
 
     return [f_mini, f_maxi]
 
+
 def get_rms(data, axis=None):
     """
     Computes the rms of the given data.
@@ -645,6 +699,7 @@ def get_rms(data, axis=None):
 
     return rms
 
+
 def is_number(str):
     """
     Checks wether a string is a number or not.
@@ -666,6 +721,7 @@ def is_number(str):
     except ValueError:
         return False
 
+
 def lambda2vel(wav0, wav):
     """
     Convert a wavelength axis to a velocity axis given a rest wavelength.
@@ -681,14 +737,20 @@ def lambda2vel(wav0, wav):
     
     return c*(wav/wav0 - 1.)
 
-def levelpopc(electemp):
+
+def levelpopc(t):
     """
+    Fraction of carbon atoms in the 3/2 state relative to the 1/2 state.
+    
+    :param t: Kinetic temperature.
+    :type t: float
     """
 
     g12 = 2.
     g32 = 4.
 
-    return g32/g12*np.exp(-92./electemp)
+    return g32/g12*np.exp(-92./t)
+
 
 def linear(x, a, b):
     """
@@ -705,6 +767,7 @@ def linear(x, a, b):
     """
     
     return a*x + b
+
 
 def load_model(prop, specie, temp, dens, other=None):
     """
@@ -760,6 +823,7 @@ def load_model(prop, specie, temp, dens, other=None):
         
         return np.array([qn, freq, Ic, tau, eta_nu])
 
+
 def load_ref(line):
     """
     Loads the reference spectrum for the specified line.
@@ -801,6 +865,7 @@ def load_ref(line):
     
     return qn, reffreq
 
+
 def lookup_freq(n, line):
     """
     Returns the frequency of a line given the transition number n.
@@ -817,6 +882,7 @@ def lookup_freq(n, line):
     indx = utils.best_match_indx(n, qns)
     
     return freqs[indx]
+
 
 def lorentz_width(n, ne, Te, Tr, W, dn=1):
     """
@@ -845,6 +911,7 @@ def lorentz_width(n, ne, Te, Tr, W, dn=1):
     
     return dL_r + dL_p
 
+
 def mask_outliers(data, m=2):
     """
     Masks values larger than m times the data median. \
@@ -865,6 +932,7 @@ def mask_outliers(data, m=2):
     
     return abs(data - np.median(data)) > m*np.std(data)
 
+
 def n2f(n, line, n_min=1, n_max=1500, unitless=True):
     """
     Converts a given principal quantum number n to the 
@@ -875,6 +943,7 @@ def n2f(n, line, n_min=1, n_max=1500, unitless=True):
     nii = np.in1d(nn, n)
     
     return freq[nii]
+
 
 def natural_sort(list):
     """ 
@@ -894,12 +963,14 @@ def natural_sort(list):
     
     list.sort(key=alphanum_key)
     
+    
 def ngaussian(x, sigma, center):
     """
     Normalized Gaussian distribution.
     """
     
     return 1./(np.sqrt(2.*np.pi)*sigma)*np.exp(-0.5*np.power((x - center)/sigma, 2.))
+
 
 def pressure_broad(n, te, ne):
     """
@@ -915,11 +986,12 @@ def pressure_broad(n, te, ne):
         
     return dnup
 
+
 def pressure_broad_salgado(n, te, ne, dn=1):
     """
     Pressure induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
-    Salgado et al. (2015)
+    Salgado et al. (2017)
     
     :param n: Principal quantum number for which to compute the line broadening.
     :type n: float or array
@@ -937,10 +1009,11 @@ def pressure_broad_salgado(n, te, ne, dn=1):
     
     return ne*np.power(10., a)*(np.power(n, g) + np.power(n + dn, g))/2./np.pi
 
+
 def pressure_broad_coefs(Te):
     """
     Defines the values of the constants :math:`a` and :math:`\\gamma` that go into the collisional broadening formula
-    of Salgado et al. (2015).
+    of Salgado et al. (2017).
     
     :param Te: Electron temperature.
     :type Te: float
@@ -1028,30 +1101,33 @@ def pressure_broad_coefs(Te):
                                   fill_value=0.0)
     
     return [a_func(Te), g_func(Te)]
-    
-def radiation_broad(n, W, Tr):
+
+
+def radiation_broad(n, W, tr):
     """
     Radiation induced broadening in Hz.
     Shaver (1975)
     """
     
-    return 8e-17*W*Tr*np.power(n, 5.8)
+    return 8e-17*W*tr*np.power(n, 5.8)
+
 
 def radiation_broad_salgado(n, w, tr):
     """
     Radiation induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
-    Salgado et al. (2015)
+    Salgado et al. (2017)
     """
     
     return 6.096e-17*w*tr*np.power(n, 5.8)
+
 
 def radiation_broad_salgado_general(n, w, tr, nu0, alpha):
     """
     Radiation induced broadening in Hz.
     This gives the FWHM of a Lorentzian line.
     The expression is valid for power law like radiation fields.
-    Salgado et al. (2015)
+    Salgado et al. (2017)
     """
     
     cte = 2./np.pi*2.14e4*np.power(6.578e15/nu0, alpha + 1.)*k_B.cgs.value*nu0
@@ -1110,6 +1186,13 @@ def sigma2fwhm_err(dsigma):
 def sigma2fwtm(sigma):
     """
     Converts the :math:`\\sigma` parameter of a Gaussian distribution to its FWTM.
+    
+    :math:`\mbox{FWTM}=2(2\log(10))^{1/2}\\sigma`
+    
+    :param sigma: Standard deviation of the Gaussian distribution.
+    :type sigma: float
+    :returns: Full width at a tenth of the maximum.
+    :rtype: float
     """
     
     return sigma*2.*np.sqrt(2.*np.log(10.))
@@ -1117,7 +1200,18 @@ def sigma2fwtm(sigma):
 
 def signal2noise(snr0, fwhm, dx, prop='amplitude'):
     """
-    Signal to noise ratio of the corresponding line property
+    Signal to noise ratio of the corresponding line property, Lenz & Ayres (1992).
+    
+    :param snr0: Signal-to-noise ratio computed as peak/rms.
+    :type snr0: float
+    :param fwhm: FWHM of the line.
+    :type fwhm: float
+    :param dx: Channel spacing.
+    :type dx: float
+    :param prop: Line property. Can be one of 'amplitude', 'center', 'FWHM' or 'area'.
+    :type prop: str
+    :returns: Signal-to-noise ratio assuming a Gaussian line profile.
+    :rtype: float
     """
     
     cx = {'amplitude':0.7,
@@ -1127,14 +1221,15 @@ def signal2noise(snr0, fwhm, dx, prop='amplitude'):
     
     return cx[prop]*np.sqrt(fwhm/dx)*snr0
 
+
 def tryint(str):
     """
     Returns an integer if `str` can be represented as one.
     
     :param str: String to check.
     :type str: string
-    :returns: True is str can be cast to an int.
-    :rtype: int
+    :returns: int(str) if str can be cast to an int, else str.
+    :rtype: int or str
     """
     
     try:
