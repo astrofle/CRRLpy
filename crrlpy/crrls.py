@@ -64,6 +64,7 @@ def average(data, axis, n):
         
     return np.swapaxes(avg_tmp, axis, 0)
 
+
 def best_match_indx_tol(value, array, tol):
     """
     Searchs for the best match to a value inside an array given a tolerance.
@@ -83,39 +84,12 @@ def best_match_indx_tol(value, array, tol):
     
     if bool(set(upp) & set(low)):
         out = iter(set(upp) & set(low)).next()
-        #return iter(set(upp) & set(low)).next()
     elif low.any():
         out = low[-1]
-        #return low[-1]
     else:
         out = upp[0]
-        #return upp[0]
     return out
-    
-#def best_match_indx(value, array):
-    #"""
-    #Searchs for the index of the closest entry to value inside an array.
-    
-    #:param value: Value to find inside the array.
-    #:type value: float
-    #:param array: List to search for the given value.
-    #:type array: list or numpy.array
-    #:return: Best match index for the value inside array.
-    #:rtype: float
-    
-    #:Example:
-    
-    #>>> a = [1,2,3,4]
-    #>>> best_match_indx(3, a)
-    #2
-    
-    #"""
-    
-    #array = np.array(array)
-    #subarr = abs(array - value)
-    #subarrmin = subarr.min()
-        
-    #return np.where(subarr == subarrmin)[0][0]
+
 
 def best_match_value(value, array):
     """
@@ -643,7 +617,7 @@ def get_line_mask(freq, reffreq, v0, dv):
     
     df = abs(freq[0] - freq[1])
     
-    f0_indx = best_match_indx(f0, freq, df/2.0)
+    f0_indx = utils.best_match_indx(f0, freq, df/2.0)
     
     mindx0 = f0_indx - df0/df/1e6
     mindxf = f0_indx + df0/df/1e6
@@ -667,12 +641,12 @@ def get_line_mask2(freq, reffreq, dv):
     
     df = dv2df(reffreq, dv*1e3)
     df_chan = utils.get_min_sep(freq)
-    f0_indx = best_match_indx(reffreq, np.asarray(freq))
+    f0_indx = utils.best_match_indx(reffreq, np.asarray(freq))
 
-    f_mini = f0_indx - df/df_chan
+    f_mini = int(f0_indx - df/df_chan)
     if f_mini < 0:
         f_mini = 0
-    f_maxi = f0_indx + df/df_chan
+    f_maxi = int(f0_indx + df/df_chan)
 
     return [f_mini, f_maxi]
 

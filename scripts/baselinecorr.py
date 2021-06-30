@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import pylab as plt
+import matplotlib.pyplot as plt
 import numpy as np
 import glob
 import re
@@ -25,8 +25,8 @@ def main(spec, basename, order, median, x_col, y_col, save, baseline):
         try:
             sb = re.findall('SB\d+', s)[0]
         except IndexError:
-            print "Could not find SB number."
-            print "Will use SB???"
+            print("Could not find SB number.")
+            print("Will use SB???")
             sb = 'SB???'
         
         # Load the data
@@ -102,8 +102,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     if args.save and not args.baseline:
-        print "No basename to save the baseline models."
-        print "Will now exit."
+        print("No basename to save the baseline models.")
+        print("Will now exit.")
         sys.exit()
     
     main(args.spec, args.basename, args.order, args.median, 
