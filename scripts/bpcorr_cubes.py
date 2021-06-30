@@ -95,8 +95,8 @@ def interpolate_bpsol(x, bp, head, offset=10.):
     ra, de, ve = ci.get_fits3axes(head)
     rs, ds, vs = ci.check_ascending(ra, de, x, True)
     
-    logger.debug('(rs,ds,vs)=({0},{1},{2})'.format(rs, ds, vs))
-    logger.debug('v0={0}, vf={1}'.format(x[::vs][0], x[::vs][-1]))
+    logger.info('(rs,ds,vs)=({0},{1},{2})'.format(rs, ds, vs))
+    logger.info('v0={0}, vf={1}'.format(x[::vs][0], x[::vs][-1]))
         
     ibp = RegularGridInterpolator((x[::vs].compressed(), de[::ds], ra[::rs]), 
                                   bp[::vs,::ds,::rs], 
@@ -123,7 +123,7 @@ def mask_cube(vel, data, vel_rngs, offset=10.):
     nvel = []
     extend = nvel.extend
     
-    logger.debug(vel_rngs)
+    logger.info("Velocity ranges for masking: ", vel_rngs)
         
     for i,velrng in enumerate(vel_rngs):
 
@@ -163,7 +163,7 @@ def mask_cube_(vel, data, vel_rngs, offset=10.):
         vel_indx[i][0] = utils.best_match_indx(velrng[0], vel)
         vel_indx[i][1] = utils.best_match_indx(velrng[1], vel)
           
-        logger.debug('Selected channels by mask: {0} -- {1}'.format(vel_indx[i][0], vel_indx[i][1]+1))
+        logger.info('Channels selected to be masked: {0} -- {1}'.format(vel_indx[i][0], vel_indx[i][1]+1))
         
         mdata[vel_indx[i][0]:vel_indx[i][1]+1].mask = True
         
@@ -384,8 +384,8 @@ if __name__ == '__main__':
     parser.add_argument('-a', '--average', type=int, default=1,
                         help="Average the velocity axis by this amount (int).\n" \
                              "Default: 1")
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help="Verbose output?")
+    parser.add_argument('-v', '--verbose', type=int, default=1,
+                        help="Verbosity level. 1: ERROR, 2:INFO, 3: DEBUG")
     parser.add_argument('-l', '--logfile', type=str, default=None,
                         help="Where to store the logs (string).\n" \
                              "Default: output to console")
@@ -406,8 +406,10 @@ if __name__ == '__main__':
                              'Default: False')
     args = parser.parse_args()
     
-    if args.verbose:
+    if args.verbose == 3:
         loglev = logging.DEBUG
+    elif args.verbose == 2:
+        loglev = logging.INFO
     else:
         loglev = logging.ERROR
         
