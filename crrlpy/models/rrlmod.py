@@ -30,27 +30,9 @@ from crrlpy import frec_calc as fc
 from crrlpy.crrls import natural_sort, f2n, n2f, load_ref
 from crrlpy.utils import best_match_indx
 
+
 LOCALDIR = os.path.dirname(os.path.realpath(__file__))
 
-def alpha_CII(Te, R):
-    """
-    Computes the value of :math:`\\alpha_{1/2}`. 
-    Sorochenko \\& Tsivilev (2000).
-    
-    
-    """
-    
-    return (1. + R)/(1. + R + 2.*np.exp(-91.21/Te))
-  
-def alpha_CII_mod(Te, R):
-    """
-    Computes the value of :math:`\\alpha_{1/2}`. 
-    Sorochenko \\& Tsivilev (2000).
-    
-    
-    """
-    
-    return R/(R + 2.*np.exp(-91.21/Te))
 
 def beta(n, bn, te, line='RRL_CIalpha'):
     """
@@ -73,23 +55,6 @@ def beta(n, bn, te, line='RRL_CIalpha'):
 
     return beta
 
-def beta_CII(Te, R):
-    """
-    Computes the value of :math:`\\beta_{158}`. 
-    Sorochenko \\& Tsivilev (2000).
-    
-    """
-    
-    return 1. - np.exp(-91.21/Te)/(1. + R)
-
-def beta_CII_mod(Te, R):
-    """
-    Computes the value of :math:`\\beta_{158}`. 
-    Sorochenko \\& Tsivilev (2000).
-    
-    """
-    
-    return 1. - np.exp(-91.21/Te)/R
 
 def bnbeta_approx(n, Te, ne, Tr):
     """
@@ -117,6 +82,7 @@ def bnbeta_approx(n, Te, ne, Tr):
     
     return bnbeta
 
+
 def bnbeta_approx_full(Te, ne, Tr, coefs):
     """
     Approximates :math:`b_{n}\\beta_{n^{\\prime}n}` given a set of coefficients.
@@ -133,6 +99,7 @@ def bnbeta_approx_full(Te, ne, Tr, coefs):
     bnbeta = (a0 + a1*Te)/np.power((b0 + b1*Te)/ne + 1., c0 + c1*Te)
     
     return bnbeta
+
 
 def broken_plaw(nu, nu0, T0, alpha1, alpha2):
     """
@@ -157,6 +124,7 @@ def broken_plaw(nu, nu0, T0, alpha1, alpha2):
     
     return low + hgh
     
+    
 def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     """
     Returns the correction factor for the Planck function.
@@ -167,51 +135,6 @@ def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     
     return (kc + kl*bni)/(kc + kl*bnf*bnfni)
 
-def G_CII(Tbg):
-    """
-    """
-    
-    return 1./(np.exp(91.25*u.K/Tbg) - 1.)
-
-def gamma_e_CII(te, method='FS'):
-    """
-    Computes the de-excitation rate of the CII atom due to collisions with electrons.
-    
-    :param Te: Electron temperature.
-    :type Te: float
-    :returns: The collisional de-excitation rate in units of cm-3 s-1.
-    :rtype: float
-    """
-    
-    rates = {'FS': lambda t: 4.51e-6*np.power(t, -0.5),
-             'PG': lambda t: 8.7e-8*np.power(t/2000., -0.37)}
-    
-    return rates[method](te) #4.51e-6*np.power(Te, -0.5)
-
-def gamma_h_CII(te, method='FS'):
-    """
-    Computes the de-excitation rate of the CII atom due to collisions with hydrogen atoms.
-    
-    :param Te: Electron temperature.
-    :type Te: float
-    :returns: The collisional de-excitation rate in units of cm-3 s-1.
-    :rtype: float
-    """
-    
-    rates = {'FS': lambda t: 5.8e-10*np.power(t, 0.02),
-             'PG': lambda t: 7.6e-10*np.power(t/100., 0.14),
-             'PGe': lambda t: 4e-11*(16. + 0.35*np.power(t, 0.5) + 48./t)}
-    
-    return rates[method](te)
-
-def gamma_h2_CII(te, method='TH'):
-    """
-    """
-    
-    rates = {'TH': lambda t: 3.1e-10*np.power(t, 0.1),
-             'PG': lambda t: 3.8e-10*np.power(t/100., 0.14)}
-    
-    return rates[method](te)
 
 def I_Bnu(specie, Z, n, Inu_funct, *args):
     """
@@ -255,6 +178,7 @@ def I_Bnu(specie, Z, n, Inu_funct, *args):
     
     return 2./np.pi*BninfInu.sum(axis=1)
 
+
 def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
     """
     Returns the blackbody function evaluated at nu. 
@@ -281,33 +205,6 @@ def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
     
     return bnu_bpl
 
-def I_CII(T158, R, NCII):
-    """
-    Frequency integrated line intensity.
-    Optically thin limit without radiative transfer.
-    
-    :returns: The frequency integrated line intensity in units of Jy Hz or g s-3
-    """
-    
-    nu0 = 1900.53690e6
-    A = 2.36e-6
-    
-    cte = h.cgs.value*nu0/(4.*np.pi)*A*2.
-    
-    return cte*np.exp(-91.21/T158)*R*NCII/(1. + 2.*np.exp(-91.21/T158)*R)
-
-def I_CII_rt(wav, dnu, T158):
-    """
-    Frequency integrated line intensity.
-    Optically thin limit with radiative transfer.
-    
-    :returns: The frequency integrated line intensity in units of Jy Hz or g s-3
-    """
-    
-    nu0 = 1900.53690*u.GHz
-    cte = 2*h*nu0*1.06
-    
-    return cte/np.power(wav, 2.)*dnu/(np.exp(91.21/T158) - 1.)
 
 def I_cont(nu, Te, tau, I0, unitless=False):
     """
@@ -334,6 +231,7 @@ def I_cont(nu, Te, tau, I0, unitless=False):
         bnu = bnu.cgs.value
         
     return bnu*(1. - np.exp(-tau)) + I0*np.exp(-tau)
+
 
 def I_external(nu, Tbkg, Tff, tau_ff, Tr, nu0=100e6*u.MHz, alpha=-2.6):
     """
@@ -364,6 +262,7 @@ def I_external(nu, Tbkg, Tff, tau_ff, Tr, nu0=100e6*u.MHz, alpha=-2.6):
     
     return bnu_bkg + bnu_ff*exp_ff + bnu_pl
 
+
 def I_total(nu, Te, tau, I0, eta):
     """
     """
@@ -373,6 +272,7 @@ def I_total(nu, Te, tau, I0, eta):
     exp = np.exp(-tau)
     
     return bnu*eta*(1. - exp) + I0*exp
+
 
 def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='itau', location=LOCALDIR):
     """
@@ -422,6 +322,7 @@ def itau(temp, dens, line, n_min=5, n_max=1000, other='', verbose=False, value='
         
     return n, i
 
+
 def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau'):
     """
     Gives the integrated optical depth for a given temperature and density. 
@@ -451,6 +352,7 @@ def itau_h(temp, dens, trans, n_max=1000, other='', verbose=False, value='itau')
         
     return n, i
   
+  
 def itau_norad(n, Te, b, dn, mdn_):
     """
     Returns the optical depth using the approximate solution to the 
@@ -459,12 +361,14 @@ def itau_norad(n, Te, b, dn, mdn_):
     
     return -1.069e7*dn*mdn_*b*np.exp(1.58e5/(np.power(n, 2.)*Te))/np.power(Te, 5./2.)
 
+
 def itau_lte(n, Te, dn, mdn_, em):
     """
     Returns the CRRL optical depth integrated in velocity in units of Hz.
     """
     
     return 1.069e7*dn*mdn_*np.exp(1.58e5/(np.power(n, 2.)*Te))/np.power(Te, 5./2.)*em
+
 
 def j_line_lte(n, ne, nion, Te, Z, trans):
     """
@@ -479,11 +383,6 @@ def j_line_lte(n, ne, nion, Te, Z, trans):
     
     return cte*Aninf[:,2]*Nni*lc
 
-def K_CII(Tkin):
-    """
-    """
-    
-    return np.exp(91.25*u.K/Tkin)
 
 def kappa_cont(freq, Te, ne, nion, Z):
     """
@@ -528,6 +427,7 @@ def kappa_cont(freq, Te, ne, nion, Z):
         
     return kc*u.pc**-1*np.exp(-h.cgs.value*nu/k_B.cgs.value/Te.cgs.value)
 
+
 def kappa_cont_base(nu, Te, ne, nion, Z):
     """
     
@@ -535,6 +435,7 @@ def kappa_cont_base(nu, Te, ne, nion, Z):
     
     return 4.6460/np.power(nu, 7./3.)/np.power(Te, 1.5)* \
             (np.exp(4.7993e-2*nu/Te) - 1.)*np.power(Z, 8./3.)*ne*nion
+
 
 def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     """
@@ -586,6 +487,7 @@ def kappa_line(Te, ne, nion, Z, Tr, trans, n_max=1500):
     kl = cte.value/np.power(Te, 3./2.)*ne*nion*Anfni[:,2]*omega_ni[:]/omega_i*(bn[1:,-1]*exp_ni - bn[:-1,-1]*exp_nf)
     
     return kl
+
 
 def kappa_line_lte(nu, Te, ne, nion, Z, Tr, line, n_min=1, n_max=1500):
     """
@@ -642,6 +544,7 @@ def level_pop_lte(n, ne, nion, Te, Z):
     
     return Nn
 
+
 def load_bn(te, ne, tr='', ncrit='1.5d3', n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
     """
     Loads the bn values from the CRRL models.
@@ -678,6 +581,7 @@ def load_bn(te, ne, tr='', ncrit='1.5d3', n_min=5, n_max=1000, verbose=False, lo
     bn = bn[nimin:nimax+1]
     
     return bn
+
 
 def load_bn_h(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     """
@@ -717,6 +621,7 @@ def load_bn_h(te, ne, other='', n_min=5, n_max=1000, verbose=False):
     bn = bn[nimin:nimax+1]
     
     return bn
+
 
 def load_bn_all(n_min=5, n_max=1000, verbose=False, location=LOCALDIR):
     """
@@ -817,6 +722,7 @@ def load_bn_dict(dict, n_min=5, n_max=1000, verbose=False, location=LOCALDIR, nc
         
     return data
 
+
 def load_itau_all(line='RRL_CIalpha', n_min=5, n_max=1000, verbose=False, value='itau'):
     """
     Loads all the available models for Carbon.
@@ -871,6 +777,7 @@ def load_itau_all(line='RRL_CIalpha', n_min=5, n_max=1000, verbose=False, value=
         
     return [Te, ne, other, data]
 
+
 def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau'):
     """
     Loads all the available models for Hydrogen.
@@ -910,6 +817,7 @@ def load_itau_all_hydrogen(trans='alpha', n_max=1000, verbose=False, value='itau
         
     return [Te, ne, other, data]
 
+
 def load_itau_all_match(trans_out='alpha', trans_tin='beta', n_max=1000, verbose=False, value='itau'):
     """
     Loads all trans_out models that can be found in trans_tin. This is useful when analyzing line ratios.
@@ -923,6 +831,7 @@ def load_itau_all_match(trans_out='alpha', trans_tin='beta', n_max=1000, verbose
     [Te, ne, other, data] = load_models(models, trans_out, n_max, verbose, value)
     
     return [Te, ne, other, data]
+
 
 def load_itau_all_norad(trans='alpha', n_max=1000):
     """
@@ -955,6 +864,7 @@ def load_itau_all_norad(trans='alpha', n_max=1000):
         data[i,1] = int_tau
         
     return [Te, ne, other, data]
+
 
 def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau', location=LOCALDIR):
     """
@@ -1014,6 +924,7 @@ def load_itau_dict(dict, line, n_min=5, n_max=1000, verbose=False, value='itau',
         
     return data
 
+
 def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='itau'):
     """
     Loads models given a temperature, radiation field and an 
@@ -1042,6 +953,7 @@ def load_itau_nelim(temp, dens, trad, trans, n_max=1000, verbose=False, value='i
     
     return load_models(models, trans, n_max=n_max, verbose=verbose, value=value)
 
+
 def load_itau_numpy(filename):
     """
     Loads all the models contained in filename.npy
@@ -1059,6 +971,7 @@ def load_itau_numpy(filename):
     head = pickle.load(open('{0}.p'.format(filename), 'rb'))
     
     return head, itau_mod
+
 
 def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, location=LOCALDIR):
     """
@@ -1096,6 +1009,7 @@ def load_betabn(temp, dens, other='', trans='RRL_CIalpha', verbose=False, locati
     
     return data
 
+
 def load_betabn_h(temp, dens, other='', trans='alpha', verbose=False):
     """
     Loads a model for the HRRL emission.
@@ -1119,6 +1033,7 @@ def load_betabn_h(temp, dens, other='', trans='alpha', verbose=False):
     data = np.loadtxt(model_path)
     
     return data
+
 
 def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
     """
@@ -1155,6 +1070,7 @@ def load_models(models, trans, n_max=1000, verbose=False, value='itau'):
         
     return [Te, ne, other, data]
 
+
 def make_betabn(line, temp, dens, n_min=5, n_max=1000, other=''):
     """
     """
@@ -1180,6 +1096,7 @@ def make_betabn(line, temp, dens, n_min=5, n_max=1000, other=''):
             beta[i] = float((Decimal(1) - bnn*exp)/(Decimal(1) - exp))
         
     return np.array([bn[:-1,0], beta*bn[:-1,1]])
+
 
 def make_betabn2(line, temp, dens, n_min=5, n_max=1000, other=''):
     """
@@ -1208,6 +1125,7 @@ def make_betabn2(line, temp, dens, n_min=5, n_max=1000, other=''):
             beta[i] = float((Decimal(1) - bnn*exp)/(Decimal(1) - exp))
         
     return np.array([bn[:-1,0], beta*bn[:-1,1]])
+    
     
 def mdn(dn):
     """
@@ -1239,6 +1157,7 @@ def mdn(dn):
         
     return mdn_
 
+
 def models_dict(Te, ne, Tr):
     """
     Creates a dict for loading models given arrays with ne, Te and Tr.
@@ -1252,6 +1171,7 @@ def models_dict(Te, ne, Tr):
               'Tr_v':np.array([tr if tr!= 0 else '-' for t in Te for n in ne for tr in Tr])}
               
     return models
+
 
 def plaw(x, x0, y0, alpha):
     """
@@ -1275,45 +1195,6 @@ def plaw(x, x0, y0, alpha):
     
     return y0*np.power(x/x0, alpha)
 
-def R_CII(ne, nh, nh2, gamma_e, gamma_h, gamma_h2):
-    """
-    Ratio between the fine structure level population of CII, and
-    the level population in LTE. It ignores the effect of collisions
-    with molecular hydrogen.
-    """
-    
-    A = 2.36e-6
-    
-    neg = ne*gamma_e
-    nhg = nh*gamma_h
-    nh2g = nh2*gamma_h2
-    
-    return A/(neg + nhg + nh2g)
-
-def R_CII_FS(ne, nh, gamma_e, gamma_h):
-    """
-    """
-    
-    A = 2.4e-6*u.s**-1
-    
-    neg = ne*gamma_e
-    nhg = nh*gamma_h
-    
-    return (neg + nhg)/(A + neg + nhg)
-
-def R_CII_mod(ne, nh, gamma_e, gamma_h):
-    """
-    Ratio between the fine structure level population of CII, and
-    the level population in LTE. It ignores the effect of collisions
-    with molecular hydrogen.
-    """
-    
-    A = 2.4e-6*u.s**-1
-    
-    neg = ne*gamma_e
-    nhg = nh*gamma_h
-    
-    return (A + neg + nhg)/(neg + nhg)
 
 def str2val(str):
     """
@@ -1339,68 +1220,6 @@ def str2val(str):
     
     return val
 
-def T_CII(Tex, tau, R):
-    """
-    """
-    
-    return 91.21/(np.log( (np.exp(91.21/Tex)*np.exp(tau) - 1.)/(np.exp(tau) - 1.) ))
-
-def T_CII_mod(Te, tau, R):
-    """
-    """
-    
-    return 91.21/(np.log( (np.exp(91.21/Te)*np.exp(tau)*R - 1.)/(np.exp(tau) - 1.) ))
-
-def T_ex_CII(Te, R):
-    """
-    """
-    
-    return 91.21*Te/(91.21 + Te*np.log(1. + R))
-
-def Ta_CII(X, G, K):
-    """
-    """
-    
-    return 91.25*X*(1. - G*(K - 1.))/(X*(K - 1.) + K)
-
-def Ta_CII_thick_subthermal(X, G, K):
-    """
-    """
-    
-    return 91.25*X/K*(1. - G*(K - 1.))
-
-def tau_CII(Te, nc, L, dnu, alpha, beta):
-    """
-    Computes the optical depth of the far infrared line of CII. Crawford et al. (1985).
-    
-    :param Te: Electron temperature.
-    :type Te: float
-    :param nc: Ionized carbon number density.
-    :type nc: float
-    :param L: Path lenght.
-    :type L: float
-    :param dnu: Line width FWHM in Hz.
-    :type dnu: float
-    :returns:
-    :rtype: float
-    """
-    
-    A = 2.4e-6*u.s**-1
-    nu = 1900.53690*u.GHz
-    cte = np.power(c, 2.)/(8.*np.pi*np.power(nu, 2.))*A*2./1.06
-    
-    return cte*alpha*beta*nc*L/dnu
-
-def tau_CII_PG(ncii, dv, Te):
-    """
-    Optical depth of the far infrared line of [CII] following Goldsmith et al. (2012).
-    
-    """
-    
-    gu = 4.
-    gl = 2.
-    
-    return 7.49e-18*ncii.cgs.value/dv.to('km/s').value*(1. - np.exp(-91.25*u.K/Te))/(1. + gu/gl*np.exp(-91.25*u.K/Te))
 
 def val2str(val):
     """
@@ -1425,6 +1244,7 @@ def val2str(val):
     else:
         return "{0}d{1:.0f}".format(u, d)
     
+    
 def valid_ne(line):
     """
     Checks all the available models and lists the available ne values.
@@ -1446,6 +1266,7 @@ def valid_ne(line):
     
     return np.unique(ne)
 
+
 def chi(n, Te, Z):
     """
     Computes the :math:`\\chi_{n}` value as defined by Salgado et al. (2015).
@@ -1453,13 +1274,6 @@ def chi(n, Te, Z):
     
     return np.power(Z, 2.)*h*c*Ryd/(k_B*np.power(n, 2)*Te)
 
-def X_CII(Cul, beta):
-    """
-    """
-    
-    Aul = 2.3e-6/u.s
-    
-    return Cul/(beta*Aul)
 
 if __name__ == "__main__":
     import doctest
