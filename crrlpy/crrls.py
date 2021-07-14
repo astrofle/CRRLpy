@@ -15,7 +15,7 @@ from scipy.special import wofz
 from astropy.constants import c, k_B
 
 from crrlpy import utils
-from .frec_calc import set_dn, make_line_list
+from crrlpy.frec_calc import set_dn, make_line_list
 
 def alphanum_key(s):
     """ 
@@ -65,57 +65,6 @@ def average(data, axis, n):
     return np.swapaxes(avg_tmp, axis, 0)
 
 
-def best_match_indx_tol(value, array, tol):
-    """
-    Searchs for the best match to a value inside an array given a tolerance.
-    
-    :param value: Value to find inside the array.
-    :type value: float
-    :param tol: Tolerance for match.
-    :type tol: float
-    :param array: List to search for the given value.
-    :type array: numpy.array
-    :return: Best match for val inside array.
-    :rtype: float
-    """
-    
-    upp = np.where(array >= value - tol)[0]
-    low = np.where(array <= value + tol)[0]
-    
-    if bool(set(upp) & set(low)):
-        out = iter(set(upp) & set(low)).next()
-    elif low.any():
-        out = low[-1]
-    else:
-        out = upp[0]
-    return out
-
-
-def best_match_value(value, array):
-    """
-    Searchs for the closest ocurrence of value in array.
-    
-    :param value: Value to find inside the array.
-    :type value: float
-    :param array: List to search for the given value.
-    :type array: list or numpy.array
-    :return: Best match for the value inside array.
-    :rtype: float.
-    
-    :Example:
-    
-    >>> a = [1,2,3,4]
-    >>> best_match_value(3.5, a)
-    3
-    
-    """
-    
-    array = np.array(array)
-    subarr = abs(array - value)
-    subarrmin = subarr.min()
-    
-    return array[np.where(subarr == subarrmin)[0][0]]
-    
 def blank_lines(freq, tau, reffreqs, v0, dv):
     """
     Blanks the lines in a spectra.
@@ -144,6 +93,7 @@ def blank_lines(freq, tau, reffreqs, v0, dv):
         tau = np.concatenate((tau[:lm0], tau[lmf:]))
         
     return freq, tau
+
 
 def blank_lines2(freq, tau, reffreqs, dv):
     """
@@ -382,9 +332,9 @@ def find_lines_sb(freq, line, z=0, verbose=False):
     >>> freq = [10, 11]
     >>> ns, rf = crrls.find_lines_sb(freq, 'RRL_CIalpha')
     >>> ns
-    array([ 843.,  844.,  845.,  846.,  847.,  848.,  849.,  850.,  851.,
-            852.,  853.,  854.,  855.,  856.,  857.,  858.,  859.,  860.,
-            861.,  862.,  863.,  864.,  865.,  866.,  867.,  868.,  869.])
+    array([843., 844., 845., 846., 847., 848., 849., 850., 851., 852., 853.,
+           854., 855., 856., 857., 858., 859., 860., 861., 862., 863., 864.,
+           865., 866., 867., 868., 869.])
     """
     
     # Load the reference frequencies.
@@ -901,7 +851,7 @@ def mask_outliers(data, m=2):
     
     >>> data = [1,2,3,4,5,6]
     >>> mask_outliers(data, m=1)
-    array([ True, False, False, False, False,  True], dtype=bool)
+    array([ True, False, False, False, False,  True])
     """
     
     return abs(data - np.median(data)) > m*np.std(data)

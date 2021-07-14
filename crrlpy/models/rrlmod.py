@@ -233,7 +233,7 @@ def I_Bnu(specie, Z, n, Inu_funct, *args):
     :Example:
     
     >>> I_Bnu('CI', 1.,  500, I_broken_plaw, 800, 26*u.MHz.to('Hz'), -1., -2.6)
-    array([ 6.65540582])
+    array([6.6554062])
     
     """
     

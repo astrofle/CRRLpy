@@ -6,6 +6,7 @@ import numpy as np
 
 from functools import reduce
 
+
 def alphanum_key(s):
     """ 
     Turn a string into a list of string and number chunks.
@@ -21,6 +22,7 @@ def alphanum_key(s):
     
     """
     return [ tryint(c) for c in re.split('([0-9]+)', s) ]
+
 
 def best_match_indx(value, array):
     """
@@ -47,6 +49,59 @@ def best_match_indx(value, array):
         
     return np.where(subarr == subarrmin)[0][0]
 
+
+def best_match_indx_tol(value, array, tol):
+    """
+    Searchs for the best match to a value inside an array given a tolerance.
+    
+    :param value: Value to find inside the array.
+    :type value: float
+    :param tol: Tolerance for match.
+    :type tol: float
+    :param array: List to search for the given value.
+    :type array: numpy.array
+    :return: Best match for val inside array.
+    :rtype: float
+    """
+    
+    upp = np.where(array >= value - tol)[0]
+    low = np.where(array <= value + tol)[0]
+    
+    if bool(set(upp) & set(low)):
+        out = iter(set(upp) & set(low)).next()
+    elif low.any():
+        out = low[-1]
+    else:
+        out = upp[0]
+    return out
+
+
+def best_match_value(value, array):
+    """
+    Searchs for the closest ocurrence of value in array.
+    
+    :param value: Value to find inside the array.
+    :type value: float
+    :param array: List to search for the given value.
+    :type array: list or numpy.array
+    :return: Best match for the value inside array.
+    :rtype: float.
+    
+    :Example:
+    
+    >>> a = [1,2,3,4]
+    >>> best_match_value(3.5, a)
+    3
+    
+    """
+    
+    array = np.array(array)
+    subarr = abs(array - value)
+    subarrmin = subarr.min()
+    
+    return array[np.where(subarr == subarrmin)[0][0]]
+
+
 def factors(n):
     """
     Decomposes a number into its factors.
@@ -58,6 +113,7 @@ def factors(n):
 
     return set(reduce(list.__add__,
                 ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0)))
+
 
 def flatten_list(list):
     """
@@ -73,6 +129,7 @@ def flatten_list(list):
         extend(l)
         
     return result
+
 
 def get_max_sep(array):
     """
@@ -98,6 +155,7 @@ def get_max_sep(array):
 
     return max(abs(array[0:-1:2] - array[1::2]))
 
+
 def get_min_sep(array):
     """
     Get the minimum element separation in an array.
@@ -120,13 +178,15 @@ def get_min_sep(array):
     1
     """
 
-    return min(abs(array[0:-1:2] - array[1::2]))
+    return min(abs(np.diff(array)))
+
 
 def myround(x, base=5):
     """
     """
     
     return int(base * round(float(x)/base))
+
 
 def natural_sort(list):
     """ 
@@ -146,6 +206,7 @@ def natural_sort(list):
     
     list.sort(key=alphanum_key)
 
+
 def path_leaf(path):
     """
     Taken from:
@@ -154,6 +215,7 @@ def path_leaf(path):
 
     head, tail = ntpath.split(path)
     return tail or ntpath.basename(head)
+
 
 def pow_notation(number, sig_fig=2):
     """
@@ -166,6 +228,7 @@ def pow_notation(number, sig_fig=2):
     
     return r"10^{{{0}}}".format(b)
 
+
 def sci_notation(number, sig_fig=2):
     """
     Converts a number to scientific notation keeping sig_fig signitifcant figures.
@@ -176,6 +239,7 @@ def sci_notation(number, sig_fig=2):
     b = int(b) #removed leading "+" and strips leading zeros too.
     
     return r"{0}\times10^{{{1}}}".format(a, b)
+
 
 def str2bool(str):
     """
@@ -188,6 +252,7 @@ def str2bool(str):
     """
     
     return str.lower() in ("yes", "y", "true", "t", "1")
+
 
 rotated_labels = []
 def text_slope_match_line(text, x, y, line, dindx=1):
@@ -203,6 +268,7 @@ def text_slope_match_line(text, x, y, line, dindx=1):
 
     rotated_labels.append({"text":text, "line":line, "p1":np.array((x1, y1)), "p2":np.array((x2, y2))})
 
+
 def tryint(str):
     """
     Returns an integer if `str` can be represented as one.
@@ -217,6 +283,7 @@ def tryint(str):
         return int(str)
     except:
         return str
+
 
 def update_text_slopes():
     global rotated_labels
