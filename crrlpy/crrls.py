@@ -1239,6 +1239,7 @@ def voigt_(x, y):
 
     return I
 
+
 def voigt(x, sigma, gamma, center, amplitude):
     """
     The Voigt line shape in terms of its physical parameters.
@@ -1258,6 +1259,7 @@ def voigt(x, sigma, gamma, center, amplitude):
     V = amplitude*f/(sigma*np.sqrt(np.pi)) * voigt_(rx, ry)
 
     return V
+
 
 def voigt_area(amp, fwhm, gamma, sigma):
     """

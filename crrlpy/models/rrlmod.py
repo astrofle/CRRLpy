@@ -52,7 +52,7 @@ def alpha_CII_mod(Te, R):
     
     return R/(R + 2.*np.exp(-91.21/Te))
 
-def beta(n, bn, te):
+def beta(n, bn, te, line='RRL_CIalpha'):
     """
     Computes the correction factor for stimulated emission.
     
@@ -61,7 +61,7 @@ def beta(n, bn, te):
     :param te: electron temperature.
     """
     
-    qns, freq = load_ref('RRL_CIalpha') # qns lists the final quantum numbers, nu->nl=qns.
+    qns, freq = load_ref(line) # qns lists the final quantum numbers, nu->nl=qns.
     nmin_idx = np.argmin(abs(qns - n.min()))
     nmax_idx = np.argmin(abs(qns - n.max()))
     freq = freq[nmin_idx:nmax_idx]*1e6 # Hz
