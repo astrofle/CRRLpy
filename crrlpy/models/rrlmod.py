@@ -22,6 +22,7 @@ import numpy as np
 from scipy.constants import physical_constants as pc
 
 import astropy.units as u
+import astropy.constants as ac
 
 from astropy.constants import h, k_B, c, m_e, Ryd, e
 from astropy.modeling.blackbody import blackbody_nu
@@ -134,6 +135,14 @@ def eta(freq, Te, ne, nion, Z, Tr, trans, n_max=1500):
     kc = kappa_cont(freq, Te, ne, nion, Z)
     
     return (kc + kl*bni)/(kc + kl*bnf*bnfni)
+
+
+def fnnp_app(n, dn):
+    """
+    Eq. (1) Menzel (1969)
+    """
+    
+    return n*mdn(dn)*(1. + 1.5*dn/n)
 
 
 def I_Bnu(specie, Z, n, Inu_funct, *args):
@@ -1273,6 +1282,18 @@ def chi(n, Te, Z):
     """
     
     return np.power(Z, 2.)*h*c*Ryd/(k_B*np.power(n, 2)*Te)
+
+
+def tau_exact(t, ne, Ni, n, fnnp, line='RRL_CIalpha'):
+    """
+    Uses the column density of ions as input.
+    """
+    
+    cte = (ac.h**3*ac.e.gauss**2.*np.pi/(np.power(2*np.pi*ac.m_e*ac.k_B, 3./2.)*ac.m_e*ac.c)).cgs
+    
+    nu = n2f(n, line)*1e6*u.Hz
+    
+    return cte*n**2*fnnp*ne*Ni/np.power(t, 3./2.)*np.exp(1.57e5*u.K/n**2/t)*(1. - np.exp(-ac.h*nu/(ac.k_B*t)))
 
 
 if __name__ == "__main__":
