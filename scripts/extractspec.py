@@ -137,13 +137,7 @@ def parse_region(region, wcs):
         if 'sky' in coord.lower():
             
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
-            
-            if frame in eq_frames:
-                params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
-                                                  coo_sky.dec.value]], 0)[0]
-            elif 'gal' in frame:
-                params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
-                                                  coo_sky.b.value]], 0)[0]
+            params[0:2] = coo_sky.to_pixel(wcs)
 
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'point',
@@ -155,18 +149,10 @@ def parse_region(region, wcs):
             
             blc_sky = SkyCoord(params[0], params[1], frame=frame)
             trc_sky = SkyCoord(params[2], params[3], frame=frame)
-            
-            if frame in eq_frames:
-                params[0:2] = wcs.all_world2pix([[blc_sky.ra.value, 
-                                                blc_sky.dec.value]], 0)[0]
-                params[2:] = wcs.all_world2pix([[trc_sky.ra.value, 
-                                               trc_sky.dec.value]], 0)[0]
-            elif 'gal' in frame:
-                params[0:2] = wcs.all_world2pix([[blc_sky.l.value, 
-                                                blc_sky.b.value]], 0)[0]
-                params[2:] = wcs.all_world2pix([[trc_sky.l.value, 
-                                               trc_sky.b.value]], 0)[0]
-                
+
+            params[0:2] = blc_sky.to_pixel(wcs)
+            params[2:] = trc_sky.to_pixel(wcs)
+
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'box',
                'params':{'blcx':params[0], 'blcy':params[1], 
