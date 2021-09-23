@@ -93,7 +93,7 @@ def ellipse_mask(shape, x0, y0, bmaj, bmin, angle):
     xct = xc * cos_angle - yc * sin_angle
     yct = xc * sin_angle - yc * cos_angle
     
-    mask = (xct/bmaj)**2. + (yct/bmin)**2. <= 1.
+    mask = ( (xct/bmaj)**2. + (yct/bmin)**2. ) <= 1.
     
     return mask
 
