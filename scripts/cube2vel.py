@@ -1,10 +1,13 @@
-#!/usr/bin/env python
+"""
+
+"""
 
 import sys
 import glob
 import argparse
 from crrlpy import crrls
 from astropy.io import fits
+
 
 def add_axis(head, axis, naxis, crpix, crval, cdelt, ctype, cunit):
     """
@@ -18,7 +21,8 @@ def add_axis(head, axis, naxis, crpix, crval, cdelt, ctype, cunit):
     head['CDELT{0}'.format(axis)] = cdelt
     head['CTYPE{0}'.format(axis)] = ctype
     head['CUNIT{0}'.format(axis)] = cunit
-    
+   
+
 def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3):
     """
     Read the frequency axis of a fits cube and creates and axis 
