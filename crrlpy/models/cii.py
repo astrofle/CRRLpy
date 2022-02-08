@@ -70,11 +70,11 @@ def cul(tgas, ne, nh, nh2):
     except:
         pass
     
-    gamma_e = gamma_e(tgas, method='PG')*u.cm**3/u.s
-    gamma_h = gamma_h(tgas, method='PGe')*u.cm**3/u.s
-    gamma_h2 = gamma_h2(tgas, method='PG')*u.cm**3/u.s
+    ge = gamma_e(tgas, method='PG')*u.cm**3/u.s
+    gh = gamma_h(tgas, method='PGe')*u.cm**3/u.s
+    gh2 = gamma_h2(tgas, method='PG')*u.cm**3/u.s
     
-    return gamma_e*ne + gamma_h*nh + gamma_h2*nh2
+    return ge*ne + gh*nh + gh2*nh2
 
 
 def gamma_e(te, method='FS'):

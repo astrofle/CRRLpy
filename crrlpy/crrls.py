@@ -184,6 +184,23 @@ def doppler_temp(sigma, m, vrms, fwhm=False):
     return (np.power(dv, 2.) - np.power(vrms, 2.))*m/8314.46262103
 
 
+def doppler_temp_err(sigma, sigma_err, m, vrms, vrms_err, fwhm=False):
+    """
+    """
+    
+    dv = sigma
+    dv_err = sigma_err
+    if fwhm:
+        dv = fwhm2sigma(dv)
+        dv_err = fwhm2sigma(dv_err)
+
+    cte = m/8314.46262103
+    fac1 = 2.*dv*dv_err
+    fac2 = 2.*vrms*vrms_err
+    
+    return np.sqrt((np.power(fac1, 2.) + np.power(fac2, 2.)))*cte
+
+
 def dv2df(f0, dv):
     """
     Convert a velocity delta to a frequency delta given a central frequency.

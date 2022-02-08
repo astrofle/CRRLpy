@@ -93,7 +93,7 @@ def ellipse_mask(shape, x0, y0, bmaj, bmin, angle):
     xct = xc * cos_angle - yc * sin_angle
     yct = xc * sin_angle - yc * cos_angle
     
-    mask = (xct/bmaj)**2. + (yct/bmin)**2. <= 1.
+    mask = ( (xct/bmaj)**2. + (yct/bmin)**2. ) <= 1.
     
     return mask
 
@@ -137,13 +137,7 @@ def parse_region(region, wcs):
         if 'sky' in coord.lower():
             
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
-            
-            if frame in eq_frames:
-                params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
-                                                  coo_sky.dec.value]], 0)[0]
-            elif 'gal' in frame:
-                params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
-                                                  coo_sky.b.value]], 0)[0]
+            params[0:2] = coo_sky.to_pixel(wcs)
 
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'point',
@@ -155,18 +149,10 @@ def parse_region(region, wcs):
             
             blc_sky = SkyCoord(params[0], params[1], frame=frame)
             trc_sky = SkyCoord(params[2], params[3], frame=frame)
-            
-            if frame in eq_frames:
-                params[0:2] = wcs.all_world2pix([[blc_sky.ra.value, 
-                                                blc_sky.dec.value]], 0)[0]
-                params[2:] = wcs.all_world2pix([[trc_sky.ra.value, 
-                                               trc_sky.dec.value]], 0)[0]
-            elif 'gal' in frame:
-                params[0:2] = wcs.all_world2pix([[blc_sky.l.value, 
-                                                blc_sky.b.value]], 0)[0]
-                params[2:] = wcs.all_world2pix([[trc_sky.l.value, 
-                                               trc_sky.b.value]], 0)[0]
-                
+
+            params[0:2] = blc_sky.to_pixel(wcs)
+            params[2:] = trc_sky.to_pixel(wcs)
+
         params = [int(round(float(x))) for x in params]
         rgn = {'shape':'box',
                'params':{'blcx':params[0], 'blcy':params[1], 
@@ -176,16 +162,8 @@ def parse_region(region, wcs):
         # Convert sky coordinates to pixels if required
         if 'sky' in coord.lower():
             
-            coo_sky = SkyCoord(params[0], params[1], frame=frame)
-           
+            coo_sky = SkyCoord(params[0], params[1], frame=frame) 
             params[0:2] = coo_sky.to_pixel(wcs)
-            
-            #if frame in eq_frames:
-            #    params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
-            #                                      coo_sky.dec.value]], 0)[0]
-            #elif 'gal' in frame:
-            #    params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
-            #                                      coo_sky.b.value]], 0)[0]
             
             lscale = abs(wcs.pixel_scale_matrix[0,0])*u.deg
             val, uni = split_str(params[2])
@@ -205,13 +183,7 @@ def parse_region(region, wcs):
         if 'sky' in coord.lower():
             
             coo_sky = SkyCoord(params[0], params[1], frame=frame)
-            
-            if frame in eq_frames:
-                params[0:2] = wcs.all_world2pix([[coo_sky.ra.value, 
-                                                  coo_sky.dec.value]], 0)[0]
-            elif 'gal' in frame:
-                params[0:2] = wcs.all_world2pix([[coo_sky.l.value, 
-                                                  coo_sky.b.value]], 0)[0]
+            params[0:2] = coo_sky.to_pixel(wcs)
             
             lscale = abs(wcs.pixel_scale_matrix[0,0])*u.deg
             logger.debug('lscale: {0}'.format(lscale))
@@ -254,6 +226,7 @@ def parse_region(region, wcs):
         sys.exit(1)
         
     return rgn
+
 
 def plotspec(cube, faxis, taxis, ftype, funit, tunit, out):
     """
@@ -535,6 +508,7 @@ def extract_spec(data, region, naxis, mode):
         
     return spec
 
+
 def proc_data(data, mode, region):
     """
     """
@@ -554,6 +528,7 @@ def proc_data(data, mode, region):
     
     return spec
 
+
 def set_wcs(head):
     """
     Build a WCS object given the 
@@ -571,6 +546,7 @@ def set_wcs(head):
     logger.debug('WCS contains {0} axes.'.format(wcs.naxis))
         
     return wcs
+
 
 def show_rgn(ax, rgn, **kwargs):
     """
@@ -605,6 +581,7 @@ def show_rgn(ax, rgn, **kwargs):
     elif rgn['shape'] == 'pixel':
         ax.plot(region['params']['cy'], region['params']['cx'], 'rs', ms=5)
 
+
 def split_str(str):
     """
     Splits text from digits in a string.
@@ -620,7 +597,8 @@ def split_str(str):
         items = match.groups()
             
     return items[0], items[1]
-    
+
+
 def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
     """
     """
@@ -649,10 +627,6 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
     
     # Only pass spatial axes
     rgn = parse_region(region, wcs.celestial)
-#    if not 'pix' in region:
-#        rgn = parse_region(region, wcs.dropaxis(2))
-#    else:
-#        rgn = parse_region(region, wcs)
     
     # Add beam area info to the region. Used when the requested units are flux units.
     if 'flux' in mode.lower():
@@ -674,7 +648,6 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
             freq = np.nan
             logger.debug('Could not guess the frequency. Will use {0} as frequency.'.format(freq))
         
-    #freq.fill_value = np.nan
     
     logger.info("Will now extract the spectra,",)
     logger.info("using mode: {0}.".format(mode))
@@ -750,6 +723,7 @@ def main(out, cube, region, mode, show_region, plot_spec, faxis, stokes):
     
     if plot_spec:
         plotspec(cube, freq, spec, ftype, funit, bunit, plot_spec)
+
 
 if __name__ == '__main__':
     
