@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>CRRLpy &#8212; CRRLpy 0.1 documentation</title>
+    <title>Examples &#8212; CRRLpy 0.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -20,8 +20,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="Examples.html" />
-    <link rel="prev" title="This is the documentation for CRRLpy" href="index.html" /> 
+    <link rel="next" title="API" href="API.html" />
+    <link rel="prev" title="CRRLpy" href="includeme.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -33,13 +33,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Examples.html" title="Examples"
+          <a href="API.html" title="API"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="This is the documentation for CRRLpy"
+          <a href="includeme.html" title="CRRLpy"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">CRRLpy</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Examples</a></li> 
       </ul>
     </div>  
 
@@ -48,21 +48,28 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="crrlpy">
-<h1>CRRLpy<a class="headerlink" href="#crrlpy" title="Permalink to this heading">¶</a></h1>
-<p>Tools for processing <strong>C</strong>arbon <strong>R</strong>adio <strong>R</strong>ecombination <strong>L</strong>ine spectra.</p>
-<p>The models are not shipped with the modules and scripts.</p>
-<p>The documentation can be found in: <a class="reference external" href="http://astrofle.github.io/CRRLpy/">http://astrofle.github.io/CRRLpy/</a></p>
-<a class="reference external image-reference" href="https://travis-ci.org/astrofle/CRRLpy"><img alt="https://travis-ci.org/astrofle/CRRLpy.svg?branch=master" src="https://travis-ci.org/astrofle/CRRLpy.svg?branch=master" /></a>
-<a class="reference external image-reference" href="https://zenodo.org/badge/latestdoi/19820/astrofle/CRRLpy"><img alt="https://zenodo.org/badge/19820/astrofle/CRRLpy.svg" src="https://zenodo.org/badge/19820/astrofle/CRRLpy.svg" /></a>
-</section>
-<section id="install">
-<h1>Install<a class="headerlink" href="#install" title="Permalink to this heading">¶</a></h1>
-<p>To install clone or download the repository from github, then add it to your <cite>PYTHONPATH</cite>.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/astrofle/CRRLpy.git
-<span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span><span class="nv">$PYTHONPATH</span>:./CRRLpy
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
+<section id="line-frequencies">
+<h2>Line frequencies<a class="headerlink" href="#line-frequencies" title="Permalink to this heading">¶</a></h2>
+<p>To get the frequency of all the alpha transitions for carbon between 1.15 and 1.73 GHz (L-band at the Green Bank Telescope)</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">crrlpy</span> <span class="kn">import</span> <span class="n">crrls</span>
+<span class="n">n</span><span class="p">,</span><span class="n">f</span> <span class="o">=</span> <span class="n">crrls</span><span class="o">.</span><span class="n">find_lines_sb</span><span class="p">([</span><span class="mi">1150</span><span class="p">,</span> <span class="mi">1730</span><span class="p">],</span> <span class="s2">&quot;RRL_CIalpha&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+</section>
+<section id="line-broadening">
+<h2>Line broadening<a class="headerlink" href="#line-broadening" title="Permalink to this heading">¶</a></h2>
+<p>To compute the line broadening due to collisions with ions as computed by <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2017ApJ...837..142S/abstract">Salgado et al. (2017)</a></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">crrlpy</span> <span class="kn">import</span> <span class="n">crrls</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">df_p</span> <span class="o">=</span> <span class="n">crrls</span><span class="o">.</span><span class="n">pressure_broad_salgado</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">100.</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The above will return the line broadening in Hz.</p>
+</section>
 </section>
 
 
@@ -75,25 +82,28 @@
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">CRRLpy</a></li>
-<li><a class="reference internal" href="#install">Install</a></li>
+<li><a class="reference internal" href="#">Examples</a><ul>
+<li><a class="reference internal" href="#line-frequencies">Line frequencies</a></li>
+<li><a class="reference internal" href="#line-broadening">Line broadening</a></li>
+</ul>
+</li>
 </ul>
 
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="index.html"
-                          title="previous chapter">This is the documentation for CRRLpy</a></p>
+    <p class="topless"><a href="includeme.html"
+                          title="previous chapter">CRRLpy</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="Examples.html"
-                          title="next chapter">Examples</a></p>
+    <p class="topless"><a href="API.html"
+                          title="next chapter">API</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/includeme.rst.txt"
+      <li><a href="_sources/Examples.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -121,13 +131,13 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="Examples.html" title="Examples"
+          <a href="API.html" title="API"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="This is the documentation for CRRLpy"
+          <a href="includeme.html" title="CRRLpy"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">CRRLpy</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Examples</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

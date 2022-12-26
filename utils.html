@@ -1,19 +1,21 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
     <title>crrlpy.utils module &#8212; CRRLpy 0.1 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/copybutton.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -32,7 +34,9 @@
         <li class="right" >
           <a href="frec_calc.html" title="crrlpy.frec_calc module"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="API.html" accesskey="U">API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">crrlpy.utils module</a></li> 
       </ul>
     </div>  
 
@@ -41,24 +45,24 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="crrlpy-utils-module">
-<h1>crrlpy.utils module<a class="headerlink" href="#crrlpy-utils-module" title="Permalink to this headline">¶</a></h1>
+  <section id="crrlpy-utils-module">
+<h1>crrlpy.utils module<a class="headerlink" href="#crrlpy-utils-module" title="Permalink to this heading">¶</a></h1>
 <p>Some utilities for python.</p>
 <span class="target" id="module-crrlpy.utils"></span><dl class="py function">
-<dt id="crrlpy.utils.alphanum_key">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">alphanum_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#alphanum_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.alphanum_key" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.alphanum_key">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">alphanum_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#alphanum_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.alphanum_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Turn a string into a list of string and number chunks.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>s</strong> – String</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List with strings and integers.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)">list</a></p>
 </dd>
-<dt class="field-even">Example</dt>
+<dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">alphanum_key</span><span class="p">(</span><span class="s1">&#39;z23a&#39;</span><span class="p">)</span>
@@ -68,23 +72,23 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.best_match_indx">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">best_match_indx</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em>, <em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#best_match_indx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.best_match_indx" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.best_match_indx">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">best_match_indx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#best_match_indx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.best_match_indx" title="Permalink to this definition">¶</a></dt>
 <dd><p>Searchs for the index of the closest entry to value inside an array.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Value to find inside the array.</p></li>
-<li><p><strong>array</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> or </em><em>numpy.array</em>) – List to search for the given value.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to find inside the array.</p></li>
+<li><p><strong>array</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><em>numpy.array</em>) – List to search for the given value.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Best match index for the value inside array.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
 </dd>
-<dt class="field-even">Example</dt>
+<dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
@@ -95,8 +99,56 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.factors">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">factors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#factors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.factors" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.best_match_indx_tol">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">best_match_indx_tol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#best_match_indx_tol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.best_match_indx_tol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searchs for the best match to a value inside an array given a tolerance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to find inside the array.</p></li>
+<li><p><strong>tol</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Tolerance for match.</p></li>
+<li><p><strong>array</strong> (<em>numpy.array</em>) – List to search for the given value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Best match for val inside array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="crrlpy.utils.best_match_value">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">best_match_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#best_match_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.best_match_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searchs for the closest ocurrence of value in array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><em>float</em></a>) – Value to find inside the array.</p></li>
+<li><p><strong>array</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a><em> or </em><em>numpy.array</em>) – List to search for the given value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Best match for the value inside array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float.</p>
+</dd>
+<dt class="field-even">Example<span class="colon">:</span></dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">best_match_value</span><span class="p">(</span><span class="mf">3.5</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="crrlpy.utils.factors">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#factors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.factors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decomposes a number into its factors.
 :param n: Number to decompose.
 :type n: int
@@ -105,8 +157,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.flatten_list">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">flatten_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#flatten_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.flatten_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.flatten_list">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">flatten_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#flatten_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.flatten_list" title="Permalink to this definition">¶</a></dt>
 <dd><div class="line-block">
 <div class="line">Flattens a list of lists.</div>
 <div class="line">Based on:</div>
@@ -115,17 +167,17 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.get_max_sep">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">get_max_sep</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#get_max_sep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.get_max_sep" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.get_max_sep">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">get_max_sep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#get_max_sep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.get_max_sep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the maximum element separation in an array.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>array</strong><span class="classifier">array</span></dt><dd><p>Array where the maximum separation is wanted.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>max_sep</strong><span class="classifier">float</span></dt><dd><p>The maximum separation between the elements in <cite>array</cite>.</p>
 </dd>
@@ -142,17 +194,17 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.get_min_sep">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">get_min_sep</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#get_min_sep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.get_min_sep" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.get_min_sep">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">get_min_sep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#get_min_sep"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.get_min_sep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the minimum element separation in an array.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>array</strong><span class="classifier">array</span></dt><dd><p>Array where the minimum separation is wanted.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><strong>max_sep</strong><span class="classifier">float</span></dt><dd><p>The minimum separation between the elements in <cite>array</cite>.</p>
 </dd>
@@ -169,19 +221,19 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.myround">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">myround</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">base</span><span class="o">=</span><span class="default_value">5</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#myround"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.myround" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.myround">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">myround</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#myround"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.myround" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.natural_sort">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">natural_sort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#natural_sort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.natural_sort" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.natural_sort">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">natural_sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#natural_sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.natural_sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sort the given list in the way that humans expect.     Sorting is done in place.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List to sort.</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>list</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.11)"><em>list</em></a>) – List to sort.</p>
 </dd>
-<dt class="field-even">Example</dt>
+<dt class="field-even">Example<span class="colon">:</span></dt>
 <dd class="field-even"><p></p></dd>
 </dl>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">my_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;spec_3&#39;</span><span class="p">,</span> <span class="s1">&#39;spec_4&#39;</span><span class="p">,</span> <span class="s1">&#39;spec_1&#39;</span><span class="p">]</span>
@@ -193,79 +245,108 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.path_leaf">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">path_leaf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#path_leaf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.path_leaf" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.path_leaf">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">path_leaf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#path_leaf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.path_leaf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Taken from:
 <a class="reference external" href="https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format">https://stackoverflow.com/questions/8384737/extract-file-name-from-path-no-matter-what-the-os-path-format</a></p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.pow_notation">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">pow_notation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number</span></em>, <em class="sig-param"><span class="n">sig_fig</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#pow_notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.pow_notation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.pow_notation">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">pow_notation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig_fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#pow_notation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.pow_notation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a number to scientific notation keeping sig_fig signitifcant figures.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.sci_notation">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">sci_notation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">number</span></em>, <em class="sig-param"><span class="n">sig_fig</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#sci_notation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.sci_notation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.sci_notation">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">sci_notation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sig_fig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#sci_notation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.sci_notation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a number to scientific notation keeping sig_fig signitifcant figures.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.str2bool">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">str2bool</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#str2bool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.str2bool" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.str2bool">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">str2bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#str2bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.str2bool" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts a string to a boolean value. The conversion is case insensitive.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>str</strong> (<em>string</em>) – string to convert.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if str is one of: “yes”, “y”, “true”, “t” or “1”.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.text_slope_match_line">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">text_slope_match_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">text</span></em>, <em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">line</span></em>, <em class="sig-param"><span class="n">dindx</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#text_slope_match_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.text_slope_match_line" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.text_slope_match_line">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">text_slope_match_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dindx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#text_slope_match_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.text_slope_match_line" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.tryint">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">tryint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#tryint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.tryint" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.tryint">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">tryint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#tryint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.tryint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an integer if <cite>str</cite> can be represented as one.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>str</strong> (<em>string</em>) – String to check.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True is str can be cast to an int.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)">int</a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="crrlpy.utils.update_text_slopes">
-<code class="sig-prename descclassname">crrlpy.utils.</code><code class="sig-name descname">update_text_slopes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#update_text_slopes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#crrlpy.utils.update_text_slopes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="crrlpy.utils.update_text_slopes">
+<span class="sig-prename descclassname"><span class="pre">crrlpy.utils.</span></span><span class="sig-name descname"><span class="pre">update_text_slopes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/crrlpy/utils.html#update_text_slopes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#crrlpy.utils.update_text_slopes" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="frec_calc.html"
-                        title="previous chapter">crrlpy.frec_calc module</a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">crrlpy.utils module</a><ul>
+<li><a class="reference internal" href="#crrlpy.utils.alphanum_key"><code class="docutils literal notranslate"><span class="pre">alphanum_key()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.best_match_indx"><code class="docutils literal notranslate"><span class="pre">best_match_indx()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.best_match_indx_tol"><code class="docutils literal notranslate"><span class="pre">best_match_indx_tol()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.best_match_value"><code class="docutils literal notranslate"><span class="pre">best_match_value()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.factors"><code class="docutils literal notranslate"><span class="pre">factors()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.flatten_list"><code class="docutils literal notranslate"><span class="pre">flatten_list()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.get_max_sep"><code class="docutils literal notranslate"><span class="pre">get_max_sep()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.get_min_sep"><code class="docutils literal notranslate"><span class="pre">get_min_sep()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.myround"><code class="docutils literal notranslate"><span class="pre">myround()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.natural_sort"><code class="docutils literal notranslate"><span class="pre">natural_sort()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.path_leaf"><code class="docutils literal notranslate"><span class="pre">path_leaf()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.pow_notation"><code class="docutils literal notranslate"><span class="pre">pow_notation()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.sci_notation"><code class="docutils literal notranslate"><span class="pre">sci_notation()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.str2bool"><code class="docutils literal notranslate"><span class="pre">str2bool()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.text_slope_match_line"><code class="docutils literal notranslate"><span class="pre">text_slope_match_line()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.tryint"><code class="docutils literal notranslate"><span class="pre">tryint()</span></code></a></li>
+<li><a class="reference internal" href="#crrlpy.utils.update_text_slopes"><code class="docutils literal notranslate"><span class="pre">update_text_slopes()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="frec_calc.html"
+                          title="previous chapter">crrlpy.frec_calc module</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -277,12 +358,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -299,12 +380,14 @@
         <li class="right" >
           <a href="frec_calc.html" title="crrlpy.frec_calc module"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">CRRLpy 0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="API.html" >API</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">crrlpy.utils module</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Pedro Salas.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>
