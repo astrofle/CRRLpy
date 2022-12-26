@@ -90,7 +90,7 @@ def gamma_e(te, method='FS'):
     rates = {'FS': lambda t: 4.51e-6*np.power(t, -0.5),
              'PG': lambda t: 8.7e-8*np.power(t/2000., -0.37)}
     
-    return rates[method](te) #4.51e-6*np.power(Te, -0.5)
+    return rates[method](te)
 
 
 def gamma_h(te, method='FS'):
