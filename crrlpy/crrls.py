@@ -4,10 +4,10 @@ from __future__ import division
 import os
 import re
 
-import matplotlib as mpl
-havedisplay = "DISPLAY" in os.environ
-if not havedisplay:
-    mpl.use('Agg')
+#import matplotlib as mpl
+#havedisplay = "DISPLAY" in os.environ
+#if not havedisplay:
+#    mpl.use('Agg')
 import numpy as np
 
 from scipy import interpolate

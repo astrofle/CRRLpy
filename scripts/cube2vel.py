@@ -1,10 +1,13 @@
-#!/usr/bin/env python
+"""
+
+"""
 
 import sys
 import glob
 import argparse
 from crrlpy import crrls
 from astropy.io import fits
+
 
 def add_axis(head, axis, naxis, crpix, crval, cdelt, ctype, cunit):
     """
@@ -18,8 +21,9 @@ def add_axis(head, axis, naxis, crpix, crval, cdelt, ctype, cunit):
     head['CDELT{0}'.format(axis)] = cdelt
     head['CTYPE{0}'.format(axis)] = ctype
     head['CUNIT{0}'.format(axis)] = cunit
-    
-def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3):
+   
+
+def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3, unit='m/s', qnidx=None):
     """
     Read the frequency axis of a fits cube and creates and axis 
     with velocity with respect to the specified transition.
@@ -33,26 +37,41 @@ def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3):
     # Invert frequency axis when searching for lines if necessary
     fi = 1
     if freq[0] > freq[-1]: fi = -1
-#    print(freq[::fi][0], freq[::fi][-1])
 
     # Find the lines in the cube
     qns, reff = crrls.find_lines_sb(freq[::fi]*1e-6, transition, z) # returns in MHz
-    #print reff
 
     if not reff:
         print('No {0} line found.'.format(transition))
         print('Will now exit.')
         sys.exit(0)
     
+    # Handle multiple lines in one cube.
+    if len(reff) > 1:
+        print('More than one line in the cube.')
+        if qnidx is None:
+            print('Split the cube or set `qnidx`.')
+            print('Will now exit.')
+            sys.exit(0)
+        else:
+            qns = qns[qnidx]
+            reff = qns[qnidx]
+
     # Get a velocity axis
     vel = crrls.freq2vel(reff*1e6, freq)
     
-    add_axis(head, v_col, len(vel), 1, vel[0], vel[1]-vel[0], 'VELO', 'm/s')
-    
+    if unit == 'km/s':
+        vel = vel*1e-3
+
+    add_axis(head, v_col, len(vel), 1, vel[0], vel[1]-vel[0], 'VELO', unit)
+    # Add principal quantum number to header.
+    head['PQN'] = (qns, 'Principal quantum number')
+
     hdu[0].header = head
     
     hdu.flush()
     hdu.close()
+
 
 if __name__ == '__main__':
     
