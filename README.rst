@@ -12,3 +12,12 @@ The documentation can be found in: `http://astrofle.github.io/CRRLpy/ <http://as
 .. image:: https://zenodo.org/badge/19820/astrofle/CRRLpy.svg
    :target: https://zenodo.org/badge/latestdoi/19820/astrofle/CRRLpy
 
+
+Install
+=======
+To install clone or download the repository from github, then add it to you `PYTHONPATH`.
+
+.. code-block:: bash
+
+   git clone https://github.com/astrofle/CRRLpy.git
+   export PYTHONPATH=$PYTHONPATH:./CRRLpy
