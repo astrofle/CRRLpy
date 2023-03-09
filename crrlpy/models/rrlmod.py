@@ -27,7 +27,7 @@ import astropy.constants as ac
 from astropy.modeling.models import BlackBody
 from astropy.constants import h, k_B, c, m_e, Ryd, e
 
-from crrlpy import frec_calc as fc
+from crrlpy import freq_calc as fc
 from crrlpy.crrls import natural_sort, f2n, n2f, load_ref
 from crrlpy.utils import best_match_indx
 
