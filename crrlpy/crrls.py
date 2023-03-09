@@ -15,7 +15,7 @@ from scipy.special import wofz
 from astropy.constants import c, k_B
 
 from crrlpy import utils
-from crrlpy.frec_calc import set_dn, make_line_list
+from crrlpy.freq_calc import set_dn, make_line_list
 
 def alphanum_key(s):
     """ 
@@ -315,10 +315,31 @@ def f2n(f, line, n_max=1500):
     :rtype: array
     """
     
-    line, nn, freq = make_line_list(line, n_max=n_max)
+    line, nn, freq, trans = make_line_list(line, n_max=n_max)
     fii = np.in1d(freq, f)
     
     return nn[fii]
+
+
+def f2n_best(f, line, n_max=1500): 
+    """
+    Converts a given frequency to a principal quantum number :math:`n` for a given line.
+    
+    :param f: Frequency to convert. (MHz)
+    :type f: array
+    :param line: The equivalent :math:`n` will be referenced to this line.
+    :type line: string
+    :param n_max: Maximum n number to include in the search. (optional, Default 1)
+    :type n_max: int
+    :returns: Corresponding :math:`n` for a given frequency and line. \
+    If the frequency is not an exact match, then it will return an empty array.
+    :rtype: array
+    """
+    
+    line, nn, freq, trans = make_line_list(line, n_max=n_max)
+    fii = np.argmin(abs(freq - f))
+
+    return nn[fii], freq[fii]
 
 
 def find_lines_sb(freq, line, z=0, verbose=False):
