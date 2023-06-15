@@ -23,7 +23,31 @@ def add_axis(head, axis, naxis, crpix, crval, cdelt, ctype, cunit):
     head['CUNIT{0}'.format(axis)] = cunit
    
 
-def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3, unit='m/s', qnidx=None):
+def find_line_qn_cube(freq, transition, z, qnidx=0):
+    """
+    """
+
+    qns, reff = crrls.find_lines_sb(freq, transition, z)
+
+    if not reff:
+        print('No {0} line found.'.format(transition))
+        print('Will now exit.')
+        sys.exit(0)
+
+    # Handle multiple lines in one cube.
+    if len(reff) > 1:
+        print('More than one line in the cube.')
+        if qnidx is None:
+            print('Split the cube or set `qnidx`.')
+            print('Will now exit.')
+            sys.exit(0)
+    qns = qns[qnidx]
+    reff = reff[qnidx]
+
+    return qns, reff
+
+
+def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3, unit='m/s', qnidx=0, n=None):
     """
     Read the frequency axis of a fits cube and creates and axis 
     with velocity with respect to the specified transition.
@@ -33,29 +57,37 @@ def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3, unit='m/s', 
     hdu = fits.open(cube, mode='update')
     head = hdu[0].header
     freq = crrls.get_axis(head, f_col)
+    #print(freq.mean(), freq.ptp())
     
     # Invert frequency axis when searching for lines if necessary
     fi = 1
     if freq[0] > freq[-1]: fi = -1
 
-    # Find the lines in the cube
-    qns, reff = crrls.find_lines_sb(freq[::fi]*1e-6, transition, z) # returns in MHz
+    ## Find the lines in the cube
+    #qns, reff = crrls.find_lines_sb(freq[::fi]*1e-6, transition, z) # returns in MHz
 
-    if not reff:
-        print('No {0} line found.'.format(transition))
-        print('Will now exit.')
-        sys.exit(0)
-    
-    # Handle multiple lines in one cube.
-    if len(reff) > 1:
-        print('More than one line in the cube.')
-        if qnidx is None:
-            print('Split the cube or set `qnidx`.')
-            print('Will now exit.')
-            sys.exit(0)
-        else:
-            qns = qns[qnidx]
-            reff = qns[qnidx]
+    #if not reff:
+    #    print('No {0} line found.'.format(transition))
+    #    print('Will now exit.')
+    #    sys.exit(0)
+    #
+    ## Handle multiple lines in one cube.
+    #if len(reff) > 1:
+    #    print('More than one line in the cube.')
+    #    if qnidx is None:
+    #        print('Split the cube or set `qnidx`.')
+    #        print('Will now exit.')
+    #        sys.exit(0)
+    #qns = qns[qnidx]
+    #reff = reff[qnidx]
+
+    if n is None:
+        qns, reff = find_line_qn_cube(freq[::fi]*1e-6, transition, z, qnidx=0)
+    else:
+        print("Principal quantum number given.")
+        print("Will use the rest frequency for that transition.")
+        qns = n
+        reff = crrls.n2f(n, transition)
 
     # Get a velocity axis
     vel = crrls.freq2vel(reff*1e6, freq)
@@ -66,7 +98,7 @@ def cube2vel(cube, transition='RRL_CIalpha', z=0, f_col=3, v_col=3, unit='m/s', 
     add_axis(head, v_col, len(vel), 1, vel[0], vel[1]-vel[0], 'VELO', unit)
     # Add principal quantum number to header.
     head['PQN'] = (qns, 'Principal quantum number')
-
+    
     hdu[0].header = head
     
     hdu.flush()
@@ -94,11 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('--v_col', type=int, default=3,
                         help="Header axis where the velocity information will be stored.\n" \
                              "Default: 3")
-    parser.add_argument('--v_rng', type=str, default=None,
-                        help="Velocity range to keep in the cube.\n" \
-                             "E.g., -100e3,100e3 will keep from -100 to 100 km/s.\n" \
-                             "Default: keep all \n" \
-                             "Not implemented.")
+    parser.add_argument('-n', '--principal_qn', type=int)
     args = parser.parse_args()
     
-    cube2vel(args.cube, args.transition, args.z, args.f_col, args.v_col)
+    cube2vel(args.cube, args.transition, args.z, args.f_col, args.v_col, n=args.principal_qn)

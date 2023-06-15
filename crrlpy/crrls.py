@@ -528,7 +528,6 @@ def get_axis(header, axis):
     n = header.get("NAXIS" + axis)
     
     p0 -= 1 # Fits files index start at 1, not for python.
-    
     axis = np.arange(x0 - p0*dx, x0 - p0*dx + n*dx, dx)
     
     if len(axis) > n:

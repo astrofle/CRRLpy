@@ -16,6 +16,7 @@ from scipy.interpolate import RegularGridInterpolator
 from datetime import datetime
 startTime = datetime.now()
 
+
 def parse_cube_list(cubes):
     """
     """
@@ -31,15 +32,18 @@ def parse_cube_list(cubes):
         else:
             logger.info('Input cube list not understood.')
 
+
 def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, overwrite=False, algo='channel'):
     """
     """
     
     logger = logging.getLogger(__name__)
     
+    drop_stokes = False
+
     cubel = cubes #glob.glob(cubes)
     logger.debug(cubel)
-    
+
     if dv == 0:
         logger.info('Velocity width not specified.'), 
         logger.info('Will try to determine from input data.')
@@ -75,6 +79,7 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
             logger.info('Will now exit')
 #            sys.exit(1)
 
+    hdu = fits.open(cubel[0])
     shape = hdu[0].shape
     if len(shape) > 3:
         logger.info('Will drop first axis.')
@@ -98,6 +103,8 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
     
     for i,cube in enumerate(cubel):
         
+        drop_stokes = False
+
         logger.info('Adding cube {0}/{1}'.format(i, len(cubel)-1))
 
         # Load the data
@@ -105,21 +112,36 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
         head = hdu[0].header
         data = np.ma.masked_invalid(hdu[0].data)
 
+        if len(data.shape) > 3:
+            drop_stokes = True
+            logger.info('Will drop first axis.')
+            data = data[0]
+
         # Check the weight
         if weight_list:
             w = wl['w'][np.where(wl['fits'] == cube)]
+            if len(w) == 0:
+                logger.info('Will use a weight of {0}.'.format(w))
+                w = np.ones_like(data)*w
+            else:
+                w = np.ma.masked_invalid(fits.open(w[0])[0].data)
+                if drop_stokes:
+                    w = w[0]
+                logger.info('Will use a weight with shape {0}.'.format(w.shape))
         else:
-            w = 1
-        logger.info('Will use a weight of {0}.'.format(w))
-        try:
-            aux_weight = np.ones(stack.shape)*w
-        except TypeError:
-            w = np.ma.masked_invalid(fits.open(w[0])[0].data)
-        #aux_weight = np.ones(shape[s+1:])*w
-        
-        if len(data.shape) > 3:
-            logger.info('Will drop first axis.')
-            data = data[0]
+            w = np.ones_like(data)
+            logger.info('Will use a weight with shape {0}.'.format(w.shape))
+
+#        else:
+#            w = np.ones_like(stack.shape)
+#        logger.info('Will use a weight of {0}.'.format(w))
+#        try:
+#            aux_weight = np.ones(stack.shape)*w
+#        except TypeError:
+#            w = np.ma.masked_invalid(fits.open(w[0])[0].data)
+#            if drop_stokes:
+#                w = w[0]
+#            logger.info('Will use a weight with shape {0}.'.format(w.shape))
         
         # Get the cube axes
         ra = crrls.get_axis(head, 1)
@@ -138,6 +160,9 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
         data_ = data[vmin_idx:vmax_idx]
         ve_ = ve[vmin_idx:vmax_idx]
  
+        if data.shape == w.shape:
+            w = w[vmin_idx:vmax_idx]
+
         # Check that the axes are in ascending order
         if ve_[0] > ve_[1]: 
             vs = -1
@@ -151,6 +176,10 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
         
         # Interpolate the data
         interp = RegularGridInterpolator((ve_[::vs], de, ra[::vr]), data_[::vs,:,::vr])
+
+        # 
+        if data_.shape == w.shape:
+            winterp = RegularGridInterpolator((ve_[::vs], de, ra[::vr]), w[::vs,:,::vr])
 
         # Add the data to the stack
         if 'vector' in algo.lower():
@@ -174,17 +203,19 @@ def stack_cubes(cubes, outfits, vmax, vmin, dv, weight_list=None, v_axis=3, over
                                 for i in range(len(ra[::vr]))])
 
                 newshape = shape[s+1:] # Only spatial dimensions
-                aux_weight = np.ones(newshape)*w
+                #aux_weight = np.ones(newshape)
                 aux_cov = np.ones(newshape)
 
                 try:
-                    stack_ = np.ma.masked_invalid(interp(pts).reshape(newshape)*aux_weight)
+                    stack_ = np.ma.masked_invalid(interp(pts).reshape(newshape))
                     stack_.fill_value = 0.
+                    #if len(w) !=0 and w.shape == data_.shape:
+                    aux_weight = winterp(pts).reshape(newshape)
                     aux_weight[stack_.mask] = 0
                     aux_cov[stack_.mask] = 0
                     weight[k] += aux_weight
                     covrg[k] += aux_cov
-                    stack[k] += stack_.filled()
+                    stack[k] += stack_.filled()*aux_weight
                     
                 except ValueError:
                     logger.info('Point outside range: ' \
