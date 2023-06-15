@@ -24,10 +24,10 @@ from scipy.constants import physical_constants as pc
 import astropy.units as u
 import astropy.constants as ac
 
+from astropy.modeling.models import BlackBody
 from astropy.constants import h, k_B, c, m_e, Ryd, e
-from astropy.modeling.blackbody import blackbody_nu
 
-from crrlpy import frec_calc as fc
+from crrlpy import freq_calc as fc
 from crrlpy.crrls import natural_sort, f2n, n2f, load_ref
 from crrlpy.utils import best_match_indx
 
@@ -194,23 +194,25 @@ def I_broken_plaw(nu, Tr, nu0, alpha1, alpha2):
     As temperature a broken power law is used.
     The power law shape has parameters: Tr, nu0, alpha1 and alpha2.
     
-    :param nu: Frequency. (Hz) or astropy.units.Quantity_
-    :type nu: (Hz) or astropy.units.Quantity_
+    :param nu: Frequency at which to evaluate the broken power law.
+    :type nu: astropy.units.Quantity_
     :param Tr: Temperature at nu0. (K) or astropy.units.Quantity_
+    :type Tr: astropy.units.Quantity_
     :param nu0: Frequency at which the spectral index changes. (Hz) or astropy.units.Quantity_
     :param alpha1: spectral index for :math:`\\nu<\\nu_0`
     :param alpha2: spectral index for :math:`\\nu\\geq\\nu_0`
-    :returns: Specific intensity in :math:`\\rm{erg}\\,\\rm{cm}^{-2}\\,\\rm{Hz}^{-1}\\,\\rm{s}^{-1}\\,\\rm{sr}^{-1}`. See `astropy.analytic_functions.blackbody.blackbody_nu`__
+    :returns: Specific intensity in :math:`\\rm{erg}\\,\\rm{cm}^{-2}\\,\\rm{Hz}^{-1}\\,\\rm{s}^{-1}\\,\\rm{sr}^{-1}`. See `astropy.modeling.physical_models.BlackBody`__
     :rtype: astropy.units.Quantity_
     
     .. _astropy.units.Quantity: http://docs.astropy.org/en/stable/api/astropy.units.Quantity.html#astropy.units.Quantity
     __ blackbody_
-    .. _blackbody: http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu
+    .. _blackbody: https://docs.astropy.org/en/stable/api/astropy.modeling.physical_models.BlackBody.html
     """
     
     Tbpl = broken_plaw(nu, nu0, Tr, alpha1, alpha2)
     
-    bnu_bpl = blackbody_nu(nu, Tbpl)
+    bb = BlackBody(Tbpl)
+    bnu_bpl = bb(nu)
     
     return bnu_bpl
 
@@ -228,13 +230,14 @@ def I_cont(nu, Te, tau, I0, unitless=False):
     :param unitless: If True the return 
     :returns: The specific intensity of a ray of light after traveling in an LTE \
     medium with source function :math:`B_{\\nu}(T_{e})` after crossing an optical \
-    depth :math:`\\tau_{\\nu}`. The units are erg / (cm2 Hz s sr). See `astropy.analytic_functions.blackbody.blackbody_nu`__
+    depth :math:`\\tau_{\\nu}`. The units are erg / (cm2 Hz s sr). See `astropy.modeling.physical_models.BlackBody`__
     
     __ blackbody_
-    .. _blackbody: http://docs.astropy.org/en/stable/api/astropy.analytic_functions.blackbody.blackbody_nu.html#astropy.analytic_functions.blackbody.blackbody_nu
+    .. _blackbody: https://docs.astropy.org/en/stable/api/astropy.modeling.physical_models.BlackBody.html
     """
     
-    bnu = blackbody_nu(nu, Te)
+    bb = BlackBody(Te)
+    bnu = bb(nu)
     
     if unitless:
         bnu = bnu.cgs.value
@@ -252,12 +255,14 @@ def I_external(nu, Tbkg, Tff, tau_ff, Tr, nu0=100e6*u.MHz, alpha=-2.6):
     """
     
     if Tbkg.value != 0:
-        bnu_bkg = blackbody_nu(nu, Tbkg)
+        bb = BlackBody(Tbkg)
+        bnu_bkg = bb(nu)
     else:
         bnu_bkg = 0
     
     if Tff.value != 0:
-        bnu_ff = blackbody_nu(nu, Tff)
+        bb = BlackBody(Tff)
+        bnu_ff = bb(nu)
         exp_ff = (1. - np.exp(-tau_ff))
     else:
         bnu_ff = 0
@@ -265,7 +270,8 @@ def I_external(nu, Tbkg, Tff, tau_ff, Tr, nu0=100e6*u.MHz, alpha=-2.6):
         
     if Tr.value != 0:
         Tpl = plaw(nu, nu0, Tr, alpha)#Tr*np.power(nu/nu0, alpha)
-        bnu_pl = blackbody_nu(nu, Tpl)
+        bb = BlackBody(Tpl)
+        bnu_pl = bb(nu)
     else:
         bnu_pl = 0
     
@@ -276,7 +282,8 @@ def I_total(nu, Te, tau, I0, eta):
     """
     """
     
-    bnu = blackbody_nu(nu, Te)
+    bb = BlackBody(Te)
+    bnu = bb(nu)
     
     exp = np.exp(-tau)
     

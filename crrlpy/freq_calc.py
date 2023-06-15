@@ -9,6 +9,7 @@ import numpy as np
 from scipy.constants import c, m_e, physical_constants
 from astropy import units as u
 
+
 def line_freq(Z, R_X, n, dn):
     """
     Uses the Rydberg formula to get the frequency
@@ -28,6 +29,7 @@ def line_freq(Z, R_X, n, dn):
     """
     
     return (Z**2)*R_X*c*((1./(n**2))-(1./((n + dn)**2)))
+
 
 def set_specie(specie):
     """
@@ -73,6 +75,7 @@ def set_specie(specie):
         
     return X
 
+
 def set_trans(dn):
     """
     Sets a name depending on the difference between atomic levels.
@@ -104,6 +107,7 @@ def set_trans(dn):
         name = 'eta'
         
     return name
+
 
 def set_dn(name):
     """
@@ -138,6 +142,7 @@ def set_dn(name):
         dn = 7
         
     return dn
+
 
 def make_line_list(line, n_min=1, n_max=1500, unitless=True):
     """
@@ -177,6 +182,7 @@ def make_line_list(line, n_min=1, n_max=1500, unitless=True):
         freq = freq*u.MHz
     
     return line, n, freq, trans
+
 
 def main():
     """

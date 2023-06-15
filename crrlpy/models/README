@@ -1,1 +1,1 @@
-the _dat files contain 5 columns, the first with the quantum number fo the transition and then the bn using different ways of treating the ell transitions of the carbon atom.
+Tools for handling the models and for computing derived quantities (e.g., integrated optical depths).

@@ -176,11 +176,11 @@ class Spectrum(object):
             
         nlin = len(reffreqs)
         if verbose:
-            print "Found {0} {1} lines within the subband.".format(nlin, line)
+            print("Found {0} {1} lines within the subband.".format(nlin, line))
             if nlin > 1:
-                print "Corresponding to n values: {0}--{1}".format(refqns[0], refqns[-1])
+                print("Corresponding to n values: {0}--{1}".format(refqns[0], refqns[-1]))
             elif nlin == 1:
-                print "Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0])
+                print("Corresponding to n value {0} and frequency {1} MHz".format(refqns[0], reffreqs[0]))
 
         return refqns, reffreqs
     

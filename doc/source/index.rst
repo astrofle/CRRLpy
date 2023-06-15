@@ -9,14 +9,11 @@ This is the documentation for CRRLpy
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    includeme
-   crrls
-   spec
-   models.rrlmod
-   frec_calc
-   utils
+   Examples
+   API
 
 
 Indices and tables
