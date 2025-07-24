@@ -1,4 +1,4 @@
-This module is no longer maintained. Similar functionality is provided by `RRLpy <http://astrofle.github.io/RRLpy/>`_.
+This module is no longer maintained. Similar functionality is provided by `RRLpy <https://github.com/astrofle/RRLpy>`_.
 
 CRRLpy
 ======
