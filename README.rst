@@ -1,3 +1,5 @@
+This module is no longer maintained. Similar functionality is provided by `RRLpy <http://astrofle.github.io/RRLpy/>`_.
+
 CRRLpy
 ======
 Tools for processing **C**\arbon **R**\adio **R**\ecombination **L**\ine spectra.
